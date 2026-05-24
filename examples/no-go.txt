@@ -1,0 +1,13 @@
+1. zero-div error
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract RoundingIssue {
+    uint256 public totalShares = 0;
+    uint256 public totalTokens = 10; // not divisible by 3
+
+    function shareOf(address) external view returns (uint256) {
+        // 10 / 3 = 3 (floor) → 1 token lost
+        return totalTokens / totalShares;
+    }
+}
