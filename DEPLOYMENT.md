@@ -55,6 +55,11 @@ to be flaky), set these up manually in the dashboard instead:
    when Slither/solc aren't available, so the app boots and serves requests either way.
 5. **Start Command:** `uvicorn main:app --host 0.0.0.0 --port $PORT`
 6. **Environment variables** to set in the dashboard:
+   - `PYTHON_VERSION=3.11.9` — **set this one first.** Render's default Python (3.14 at time of
+     writing) has no prebuilt wheel for `pydantic-core==2.23.2`, so pip falls back to building it
+     from source via Rust/maturin — which fails on Render's build sandbox because the Cargo
+     registry cache directory is read-only there. Pinning the Python version sidesteps the
+     source build entirely by letting pip pull pydantic-core's existing wheel.
    - `LLM_BACKEND=groq`
    - `GROQ_API_KEY=<your key>`
    - `GROQ_MODEL=llama-3.3-70b-versatile` (or leave default)
