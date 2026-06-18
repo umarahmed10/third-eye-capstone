@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # must run before any local import that reads env vars at module-import time (db.py, services/llm.py)
+
 from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -11,15 +14,19 @@ from db import (
     get_session_analyses,
 )
 from services.llm import check_ollama
-import hashlib, json, secrets
+import hashlib, json, os, secrets
 from pathlib import Path
 
 DATASET_INDEX = Path(__file__).parent / "datasets" / "index.json"
 
+ALLOWED_ORIGINS = [
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()
+]
+
 app = FastAPI(title="ThirdEye", version="3.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True,
+    allow_origins=ALLOWED_ORIGINS, allow_credentials=True,
     allow_methods=["*"], allow_headers=["*"],
 )
 

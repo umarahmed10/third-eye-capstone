@@ -6,6 +6,11 @@ import asyncio
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "300"))
+LLM_BACKEND = os.getenv("LLM_BACKEND", "ollama").lower()
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 PREFERRED_MODELS = [
     "llama3.1:8b", "llama3.2:3b", "llama3.2:1b", "llama3:8b",
@@ -17,6 +22,8 @@ _cached_model: str | None = None
 
 async def _detect_model() -> str:
     global _cached_model
+    if LLM_BACKEND == "groq":
+        return f"groq:{GROQ_MODEL}"
     if _cached_model:
         return _cached_model
     async with httpx.AsyncClient() as client:
@@ -39,6 +46,13 @@ async def _detect_model() -> str:
 
 
 async def check_ollama() -> dict:
+    if LLM_BACKEND == "groq":
+        return {
+            "status": "connected" if GROQ_API_KEY else "disconnected",
+            "models": [GROQ_MODEL],
+            "active_model": f"groq:{GROQ_MODEL}",
+            "message": None if GROQ_API_KEY else "GROQ_API_KEY not set",
+        }
     async with httpx.AsyncClient() as client:
         try:
             resp = await client.get(f"{OLLAMA_URL}/api/tags", timeout=5)
@@ -54,6 +68,12 @@ async def check_ollama() -> dict:
 
 
 async def _query(prompt: str, timeout: int | None = None) -> str:
+    if LLM_BACKEND == "groq":
+        return await _query_groq(prompt, timeout)
+    return await _query_ollama(prompt, timeout)
+
+
+async def _query_ollama(prompt: str, timeout: int | None = None) -> str:
     model = await _detect_model()
     async with httpx.AsyncClient() as client:
         try:
@@ -69,6 +89,33 @@ async def _query(prompt: str, timeout: int | None = None) -> str:
             return "[LLM timeout]"
         except httpx.ConnectError:
             return "[Ollama not running]"
+        except Exception as e:
+            return f"[Error: {e}]"
+
+
+async def _query_groq(prompt: str, timeout: int | None = None) -> str:
+    if not GROQ_API_KEY:
+        return "[Groq API key not configured]"
+    async with httpx.AsyncClient() as client:
+        try:
+            resp = await client.post(
+                GROQ_URL,
+                headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
+                json={
+                    "model": GROQ_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "stream": False,
+                },
+                timeout=timeout or LLM_TIMEOUT,
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                return data["choices"][0]["message"]["content"]
+            return f"[LLM Error {resp.status_code}: {resp.text[:200]}]"
+        except httpx.TimeoutException:
+            return "[LLM timeout]"
+        except httpx.ConnectError:
+            return "[Groq unreachable]"
         except Exception as e:
             return f"[Error: {e}]"
 

@@ -4,6 +4,9 @@ Stores past analyses so Raven can learn from previous scans.
 Falls back gracefully if ChromaDB isn't installed.
 """
 import json
+import os
+
+ENABLE_VECTORDB = os.getenv("ENABLE_VECTORDB", "true").lower() != "false"
 
 _client = None
 _collection = None
@@ -11,6 +14,8 @@ _collection = None
 
 def _get_collection():
     global _client, _collection
+    if not ENABLE_VECTORDB:
+        return None
     if _collection is not None:
         return _collection
     try:

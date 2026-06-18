@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from "react";
 
-const API = "/api";
+const API = import.meta.env.VITE_API_URL || "/api";
 
 // ─── Types ───
 type User = { user_id: number; username: string; token: string };
