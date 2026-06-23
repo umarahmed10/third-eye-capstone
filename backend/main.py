@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from pydantic import BaseModel
 from services.llm import run_full_analysis, get_raven_greeting
+from services.council import run_council
 from services.report import generate_pdf_report
 from services.vectordb import store_analysis, find_similar
 from db import (
@@ -117,6 +118,32 @@ async def analyze(req: AnalyzeReq):
     msgs = await get_messages(req.session_id)
     if len(msgs) <= 2:  # First exchange
         # Generate a short title from the contract
+        title = _generate_title(code)
+        await rename_session(req.session_id, title)
+
+    return result
+
+@app.post("/api/analyze/council")
+async def analyze_council(req: AnalyzeReq):
+    code = req.code.strip()
+    if len(code) < 10:
+        raise HTTPException(422, "Code too short")
+
+    await add_message(req.session_id, "user", code)
+    similar = find_similar(code)
+    result = await run_council(code, similar)
+    result["mode"] = "council"
+
+    try:
+        code_hash = hashlib.sha256(code.encode()).hexdigest()[:12]
+        store_analysis(code_hash, code, result)
+    except:
+        pass
+
+    await add_message(req.session_id, "assistant", json.dumps(result))
+
+    msgs = await get_messages(req.session_id)
+    if len(msgs) <= 2:
         title = _generate_title(code)
         await rename_session(req.session_id, title)
 
@@ -264,12 +291,22 @@ async def _run_dataset_bg(static_only: bool, limit: int | None):
 
         data["contracts"] = contracts
         data["last_run"] = datetime.utcnow().isoformat()
-        data["run_stats"] = {
-            "total_processed": processed,
-            "correct_verdicts": correct,
-            "accuracy": round(correct / processed, 3) if processed else 0,
-            "mode": "static_only" if static_only else "full_pipeline",
-        }
+        if static_only:
+            data["run_stats"] = {
+                "total_processed": processed,
+                "correct_verdicts": None,
+                "accuracy": None,
+                "mode": "smoke_test",
+                "note": "smoke_test mode makes no prediction — it only verifies the pipeline parses "
+                        "every contract without crashing. It does not produce an accuracy number.",
+            }
+        else:
+            data["run_stats"] = {
+                "total_processed": processed,
+                "correct_verdicts": correct,
+                "accuracy": round(correct / processed, 3) if processed else 0,
+                "mode": "full_pipeline",
+            }
         mod.save_index(data)
         mod.write_csv(contracts)
         _dataset_run_status = {"running": False, "progress": processed, "total": processed,

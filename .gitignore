@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 venv/
+venv_wsl/
 *.db
 .env
 node_modules/
@@ -8,3 +9,10 @@ dist/
 .vite/
 *.tsbuildinfo
 data/
+
+# Large third-party benchmark corpora (cloned by backend/eval/loaders/, not authored here)
+datasets/
+
+# Generated eval run output, not source
+backend/eval/results/
+backend/eval/checkpoints/

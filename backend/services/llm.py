@@ -186,8 +186,18 @@ def preanalyze_code(code: str) -> dict:
 
 
 # ─── The actual analysis pipeline ───
-async def run_full_analysis(code: str, similar_exploits: list | None = None) -> dict:
-    """Run the complete ThirdEye analysis with Raven personality."""
+async def run_full_analysis(code: str, similar_exploits: list | None = None, disable_slither: bool = False) -> dict:
+    """Run the complete ThirdEye analysis with Raven personality.
+
+    disable_slither: eval-only toggle to isolate the single-LLM number as
+    its own ablation-table baseline row (per docs/GAP_ANALYSIS.md's Phase 0
+    plan). Defaults to False everywhere — the live deployed app and
+    dataset_runner.py's normal full_pipeline mode are unaffected unless a
+    caller explicitly opts in. When True, Slither simply isn't run; nothing
+    in _parse_slither/_merge_vulns/_determine_verdict changes — they already
+    handle an empty slither_vulns list as their normal "Slither unavailable"
+    path, so no analysis logic needed to change to support this.
+    """
 
     features = preanalyze_code(code)
 
@@ -201,11 +211,23 @@ async def run_full_analysis(code: str, similar_exploits: list | None = None) -> 
     # Run all analyses concurrently
     summary_task = _raven_summary(code, features)
     vuln_task = _scan_vulnerabilities(code, features, context)
-    from services.slither import run_slither
-    slither_task = asyncio.to_thread(run_slither, code)
+    if disable_slither:
+        slither_task = asyncio.sleep(0, result={"status": "skipped", "message": "Slither disabled (single-LLM isolation, eval mode)"})
+    else:
+        from services.slither import run_slither
+        slither_task = asyncio.to_thread(run_slither, code)
 
     summary, vuln_raw, slither_out = await asyncio.gather(
         summary_task, vuln_task, slither_task
+    )
+
+    # Diagnostic only — does not affect verdict/merge/filter logic at all,
+    # purely exposes a fact eval/run_baselines.py needs to tell "genuinely
+    # clean contract" apart from "the LLM call errored/rate-limited and
+    # silently produced an empty result" (see its retry-on-429 logic).
+    llm_error_detected = any(
+        marker in s for s in (summary, vuln_raw)
+        for marker in ("[LLM Error", "[LLM timeout]", "not running]", "unreachable]", "[Error:")
     )
 
     # Parse LLM vulns
@@ -239,6 +261,7 @@ async def run_full_analysis(code: str, similar_exploits: list | None = None) -> 
             "slither_findings": len(slither_vulns),
             "final_findings": len(all_vulns),
             "similar_in_db": len(similar_exploits) if similar_exploits else 0,
+            "llm_error_detected": llm_error_detected,
         },
         "slither": slither_out,
     }

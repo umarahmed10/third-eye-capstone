@@ -8,7 +8,13 @@ Usage:
     python dataset_runner.py [--limit N] [--static-only]
 
     --limit N        Only run the first N contracts (default: all)
-    --static-only    Skip LLM/Slither, use only preanalyze_code (fast, offline)
+    --static-only    Skip LLM/Slither; run only preanalyze_code as a smoke test
+                      (does it parse without crashing?) — NOT an evaluation.
+                      It does not produce an accuracy number: see
+                      run_smoke_test()'s docstring for why. For a real
+                      accuracy number, use the metrics module in eval/ against
+                      a full_pipeline run, or against one of the benchmark
+                      datasets in eval/loaders/.
 """
 
 import asyncio
@@ -44,24 +50,28 @@ def resolve_sol_path(entry: dict) -> Path | None:
     return None
 
 
-async def run_static_only(code: str, entry: dict) -> dict:
+async def run_smoke_test(code: str, entry: dict) -> dict:
+    """Fast, offline check that the pipeline can parse this contract — NOT an
+    evaluation. This used to be called run_static_only() and fabricated a
+    "prediction" directly from entry["auto_label"]/entry["vuln_types"] — the
+    same ground-truth fields compare_verdict() then checked it against. That
+    produced a meaningless ~100% "accuracy" number (a label compared to
+    itself). This version makes no prediction at all: final_verdict is an
+    explicit NOT_EVALUATED sentinel so it can never be scored as a match.
+    """
     from services.llm import preanalyze_code
     features = preanalyze_code(code)
-    auto_label = entry["auto_label"]
     return {
-        "final_verdict": "NO-GO" if auto_label == "vulnerable" else "GO",
-        "vulnerabilities": [
-            {"type": vt, "severity": entry.get("expected_severity", "medium").lower(),
-             "confidence": 0.75, "description": f"Detected via static pattern analysis", "source": "static"}
-            for vt in entry.get("vuln_types", [])
-        ],
-        "summary": f"Static analysis of {entry['contract_name']}. No LLM run.",
+        "final_verdict": "NOT_EVALUATED",
+        "vulnerabilities": [],
+        "summary": f"Smoke test only for {entry['contract_name']} — preanalyze_code ran without crashing. No prediction was made.",
         "raven_note": None,
         "contract_name": features["contract_name"] or entry["contract_name"],
+        "features_detected": {k: v for k, v in features.items() if v and k not in ("solidity_version", "contract_name")},
         "stats": {"models_run": 0, "raw_llm_findings": 0, "slither_findings": 0,
-                  "final_findings": len(entry.get("vuln_types", [])), "similar_in_db": 0},
+                  "final_findings": 0, "similar_in_db": 0},
         "slither": {"status": "skipped"},
-        "mode": "static_only",
+        "mode": "smoke_test",
     }
 
 
@@ -75,7 +85,7 @@ async def analyze_contract(entry: dict, static_only: bool = False) -> dict | Non
         code = f.read()
 
     if static_only:
-        result = await run_static_only(code, entry)
+        result = await run_smoke_test(code, entry)
     else:
         from services.llm import run_full_analysis
         from services.vectordb import store_analysis, find_similar
@@ -86,13 +96,29 @@ async def analyze_contract(entry: dict, static_only: bool = False) -> dict | Non
             store_analysis(code_hash, code, result)
             result["mode"] = "full_pipeline"
         except Exception as e:
-            print(f"  [WARN] {entry['id']} full analysis failed: {e}. Falling back to static.")
-            result = await run_static_only(code, entry)
+            print(f"  [WARN] {entry['id']} full analysis failed: {e}. Falling back to smoke test.")
+            result = await run_smoke_test(code, entry)
 
     return result
 
 
 def compare_verdict(entry: dict, result: dict) -> dict:
+    if result.get("mode") == "smoke_test":
+        # No prediction was made — nothing to compare. Returning match=None
+        # (not True/False) so callers can't silently fold this into an
+        # accuracy count, which is exactly the bug this replaces.
+        return {
+            "match": None,
+            "note": "smoke_test mode makes no prediction; not an evaluation result",
+            "expected_label": entry.get("auto_label", "unknown"),
+            "predicted_label": None,
+            "expected_verdict": "NO-GO" if entry.get("auto_label") == "vulnerable" else "GO",
+            "predicted_verdict": "NOT_EVALUATED",
+            "expected_vuln_types": entry.get("vuln_types", []),
+            "predicted_vuln_types": [],
+            "type_overlap": [],
+        }
+
     predicted = result.get("final_verdict", "GO")
     expected_label = entry.get("auto_label", "unknown")
     predicted_label = "vulnerable" if predicted == "NO-GO" else "likely_safe"
@@ -157,7 +183,7 @@ async def main(limit: int | None = None, static_only: bool = False):
 
     total = len(contracts)
     print(f"\n[ThirdEye Dataset Runner]")
-    print(f"Mode: {'static-only' if static_only else 'full pipeline (LLM + Slither)'}")
+    print(f"Mode: {'smoke-test (no prediction, parse-only)' if static_only else 'full pipeline (LLM + Slither)'}")
     print(f"Contracts to process: {total}\n")
 
     correct = 0
@@ -174,7 +200,10 @@ async def main(limit: int | None = None, static_only: bool = False):
         entry["comparison"] = compare_verdict(entry, result)
 
         cmp = entry["comparison"]
-        status = "OK" if cmp["match"] else "MISS"
+        if cmp["match"] is None:
+            status = "SKIPPED (smoke test)"
+        else:
+            status = "OK" if cmp["match"] else "MISS"
         print(f"  [{status}] expected={cmp['expected_verdict']} predicted={cmp['predicted_verdict']} | vulns={cmp['predicted_vuln_types']}")
 
         if cmp["match"]:
@@ -183,18 +212,32 @@ async def main(limit: int | None = None, static_only: bool = False):
 
     data["contracts"] = contracts
     data["last_run"] = datetime.utcnow().isoformat()
-    data["run_stats"] = {
-        "total_processed": processed,
-        "correct_verdicts": correct,
-        "accuracy": round(correct / processed, 3) if processed else 0,
-        "mode": "static_only" if static_only else "full_pipeline",
-    }
+    if static_only:
+        data["run_stats"] = {
+            "total_processed": processed,
+            "correct_verdicts": None,
+            "accuracy": None,
+            "mode": "smoke_test",
+            "note": "smoke_test mode makes no prediction — it only verifies the pipeline parses every "
+                    "contract without crashing. It does not produce an accuracy number. Run without "
+                    "--static-only, or use eval/ against a benchmark dataset, for a real evaluation.",
+        }
+    else:
+        data["run_stats"] = {
+            "total_processed": processed,
+            "correct_verdicts": correct,
+            "accuracy": round(correct / processed, 3) if processed else 0,
+            "mode": "full_pipeline",
+        }
     save_index(data)
     write_csv(contracts)
 
     print(f"\n[Results]")
     print(f"  Processed: {processed}")
-    print(f"  Correct verdicts: {correct}/{processed} ({round(correct/processed*100 if processed else 0, 1)}%)")
+    if static_only:
+        print(f"  Mode was smoke_test — no accuracy number was computed (see run_stats.note).")
+    else:
+        print(f"  Correct verdicts: {correct}/{processed} ({round(correct/processed*100 if processed else 0, 1)}%)")
     print(f"  Results saved to: {DATASET_INDEX}")
     print(f"  CSV saved to: {RESULTS_CSV}")
 
