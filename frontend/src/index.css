@@ -1,11 +1,184 @@
 @import "tailwindcss";
-@theme { --font-sans: "Outfit", system-ui, sans-serif; --font-mono: "JetBrains Mono", monospace; }
-* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.05) transparent; }
-body { margin:0; background:#08080c; color:#e8e6e1; font-family:var(--font-sans); -webkit-font-smoothing:antialiased; }
-textarea, code, pre { font-family: var(--font-mono); }
-@keyframes pulse-glow { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+/* ─── Argus design tokens ─────────────────────────────────────────────
+   Deep graphite base, single cyan/teal accent, semantic severity colors.
+   Security-product aesthetic: sharp, data-dense, trustworthy.            */
+@theme {
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Base surfaces */
+  --color-base: #07090d;        /* app background */
+  --color-surface: #0c0f15;     /* panels */
+  --color-surface-2: #11151d;   /* raised panels */
+  --color-line: rgba(148, 163, 184, 0.10);
+
+  /* Accent — a single confident cyan */
+  --color-accent: #22d3ee;
+  --color-accent-dim: rgba(34, 211, 238, 0.12);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.16) transparent;
+}
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.24);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #07090d;
+  color: #d7dce5;
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizedLegibility;
+}
+
+textarea,
+code,
+pre,
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: rgba(34, 211, 238, 0.25);
+  color: #fff;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid rgba(34, 211, 238, 0.55);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ─── Animations ─────────────────────────────────────────────── */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
 .animate-pulse-glow { animation: pulse-glow 1.8s ease-in-out infinite; }
-@keyframes slide-up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .animate-slide-up { animation: slide-up 0.35s ease-out both; }
-@keyframes fade-in { from{opacity:0} to{opacity:1} }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .animate-fade-in { animation: fade-in 0.3s ease-out both; }
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scale-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.04) 25%,
+    rgba(34, 211, 238, 0.12) 50%,
+    rgba(148, 163, 184, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes scan-sweep {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(320%); }
+}
+.scan-sweep { animation: scan-sweep 1.8s ease-in-out infinite; }
+
+/* Slow spin for radar / scanner motifs */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+/* Ring pulse for live-status indicators */
+@keyframes ring-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.45); }
+  70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+}
+.animate-ring-pulse { animation: ring-pulse 1.8s ease-out infinite; }
+
+/* Flow-pulse: a token travelling along a pipeline edge (SVG dash) */
+@keyframes flow-dash {
+  to { stroke-dashoffset: -32; }
+}
+.flow-dash { animation: flow-dash 0.9s linear infinite; }
+
+/* Marching token along a path */
+@keyframes node-light {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* Bar grow for charts */
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.bar-grow {
+  transform-origin: left center;
+  animation: bar-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes bar-rise {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+/* Subtle background grid for hero panels */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

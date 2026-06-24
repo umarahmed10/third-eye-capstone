@@ -13,3 +13,7 @@ chromadb==0.5.0
 openpyxl>=3.1.0
 slither-analyzer==0.11.5
 solc-select==1.2.0
+# Optional: retrieval grounding (services/retrieval.py) prefers LanceDB but
+# falls back to an in-memory cosine index if it's absent, so this is not
+# required to run. Uncomment to enable the persistent vector store.
+# lancedb>=0.13.0

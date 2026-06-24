@@ -55,3 +55,24 @@ class EvalItem:
             except OSError:
                 continue
         return "\n\n".join(parts)
+
+    def read_slices(self, in_scope_only: bool = True):
+        """Analyzable units for this item (see eval/slicing.py).
+
+        Single-file items (SmartBugs, the AC slice) return exactly one slice —
+        the whole file — so callers can treat single- and multi-file datasets
+        uniformly. Multi-file projects (Web3Bugs) return one slice per
+        first-party file (and per top-level contract for oversized files),
+        which is what makes them analyzable at all instead of one
+        uncompilable mega-concatenation.
+
+        in_scope_only drops obvious vendored/test files (OpenZeppelin, mocks,
+        forge-std, *.t.sol). For single-file items the filter is never applied
+        (one file == the thing under test)."""
+        from eval.slicing import slice_paths, is_in_scope
+
+        paths = self.code_paths
+        if in_scope_only and len(paths) > 1:
+            scoped = [p for p in paths if is_in_scope(p)]
+            paths = scoped or paths  # never slice down to nothing
+        return slice_paths(paths)

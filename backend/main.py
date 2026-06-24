@@ -149,6 +149,111 @@ async def analyze_council(req: AnalyzeReq):
 
     return result
 
+
+class ArgusReq(BaseModel):
+    code: str
+    session_id: str | None = None
+    user_id: str | None = None
+    use_retrieval: bool = True
+    use_arbitration: bool = True
+    use_dynamic: bool = True
+
+
+@app.post("/api/analyze/argus")
+async def analyze_argus(req: ArgusReq):
+    """Full Argus pipeline: retrieval -> model-diverse council -> evidence-
+    anchored arbitration -> dynamic confirmation. Per-stage toggles let the
+    same endpoint produce any ablation configuration."""
+    code = req.code.strip()
+    if len(code) < 10:
+        raise HTTPException(422, "Code too short")
+
+    from services.pipeline import run_argus
+    if req.session_id:
+        await add_message(req.session_id, "user", code)
+    result = await run_argus(
+        code,
+        use_retrieval=req.use_retrieval,
+        use_arbitration=req.use_arbitration,
+        use_dynamic=req.use_dynamic,
+    )
+    try:
+        code_hash = hashlib.sha256(code.encode()).hexdigest()[:12]
+        store_analysis(code_hash, code, result)
+    except Exception:
+        pass
+    if req.session_id:
+        await add_message(req.session_id, "assistant", json.dumps(result))
+        msgs = await get_messages(req.session_id)
+        if len(msgs) <= 2:
+            await rename_session(req.session_id, _generate_title(code))
+    return result
+
+
+@app.post("/api/analyze/council/stream")
+async def analyze_council_stream(req: AnalyzeReq):
+    """Server-Sent Events stream of the council so the UI shows each specialist
+    resolving live instead of a blind spinner. Emits `start`, one
+    `specialist_done` per specialist as it finishes, then `final` with the full
+    result. Backend tier is taken from LLM_BACKEND (env)."""
+    from fastapi.responses import StreamingResponse
+    from services.council import run_council_stream
+
+    code = req.code.strip()
+    if len(code) < 10:
+        raise HTTPException(422, "Code too short")
+
+    async def event_gen():
+        final_result = None
+        async for ev in run_council_stream(code):
+            if ev.get("event") == "final":
+                final_result = ev["result"]
+            yield f"data: {json.dumps(ev)}\n\n"
+        # Persist the final result the same way the non-streaming endpoint does.
+        if final_result is not None:
+            try:
+                if req.session_id:
+                    await add_message(req.session_id, "user", code)
+                    await add_message(req.session_id, "assistant", json.dumps(final_result))
+                code_hash = hashlib.sha256(code.encode()).hexdigest()[:12]
+                store_analysis(code_hash, code, final_result)
+            except Exception:
+                pass
+
+    return StreamingResponse(event_gen(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.get("/api/stats/benchmark")
+async def benchmark_stats():
+    """Real benchmark/KPI data for the results dashboard: per-stage ablation,
+    dataset vulnerability distributions (the 'most common vulns in the wild'),
+    and the published baselines we compare against. Computed from on-disk eval
+    artifacts + dataset manifests — no mocked numbers. Degrades gracefully if
+    an artifact is missing."""
+    from services.stats import build_benchmark_stats
+    return build_benchmark_stats()
+
+
+@app.get("/api/dynamic/reference-poc")
+async def dynamic_reference_poc():
+    """Run the bundled Foundry reentrancy PoC and return the real exploit
+    witness — powers the 'How It Works' dynamic-confirmation demo. Honest about
+    whether Foundry is installed."""
+    from services.dynamic import run_reference_poc, foundry_available
+    import asyncio as _aio
+    result = await _aio.to_thread(run_reference_poc)
+    result["foundry_installed"] = foundry_available()
+    return result
+
+
+@app.get("/api/retrieval/status")
+async def retrieval_status_endpoint():
+    """Diagnostics for the exploit-corpus retrieval layer (corpus size, which
+    embedding/store backend is active)."""
+    from services.retrieval import retrieval_status
+    return retrieval_status()
+
 # ── Report ──
 class ReportReq(BaseModel):
     code: str

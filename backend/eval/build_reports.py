@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 
 from eval import metrics
-from eval.loaders import etherscan50, smartbugs_curated, web3bugs
+from eval.loaders import etherscan50, smartbugs_curated, web3bugs, access_control_slice
 from eval.schema import REPO_ROOT
 
 CHECKPOINT_ROOT = REPO_ROOT / "backend" / "eval" / "checkpoints"
@@ -24,6 +24,7 @@ RESULTS_ROOT = REPO_ROOT / "backend" / "eval" / "results"
 LOADERS = {
     "smartbugs_curated": smartbugs_curated.load,
     "web3bugs": web3bugs.load,
+    "access_control_slice": access_control_slice.load,
     "etherscan50": etherscan50.load,
 }
 
@@ -94,25 +95,71 @@ def _top_categories(report: dict, n: int = 3) -> str:
 # items fail Slither's own import resolution regardless of LLM backend,
 # and many would also exceed Groq's per-request token budget — both
 # already documented from the prior session, not worth spending time on).
+# Backbone benchmarks (etherscan50 dropped as a headline set — heuristic GT).
+# Rows are only emitted for (baseline, dataset) pairs that actually have
+# checkpoints on this machine (see the all-"missing" skip in main()).
 BASELINE_DATASETS = {
-    "slither": ["smartbugs_curated", "web3bugs", "etherscan50"],
-    "single_llm": ["smartbugs_curated", "etherscan50"],
-    "current_thirdeye": ["smartbugs_curated", "etherscan50"],
+    "slither": ["smartbugs_curated", "web3bugs", "access_control_slice"],
+    "single_llm": ["smartbugs_curated", "web3bugs", "access_control_slice"],
+    "current_thirdeye": ["smartbugs_curated", "access_control_slice"],
+    "council": ["smartbugs_curated", "web3bugs", "access_control_slice"],
+}
+
+# Static model labels for the non-council baselines — necessary so the
+# paper's table can separate model-size effects from architectural effects.
+# Council's models are NOT hardcoded here: they're read back from the actual
+# checkpoints (council_models_used) so the column reflects what really ran.
+STATIC_MODEL_LABELS = {
+    "slither": "Slither (static, no LLM)",
+    "single_llm": "llama3.2:3b",
+    "current_thirdeye": "llama3.2:3b + Slither",
 }
 
 
+def _model_label(baseline: str, dataset_name: str) -> str:
+    """The model(s) that produced a row. For council, derived from the
+    checkpoints' verifiable council_models_used field (distinct provider:model
+    pairs), not asserted — so the column can't claim diversity the run
+    didn't actually have."""
+    if baseline != "council":
+        return STATIC_MODEL_LABELS.get(baseline, "—")
+    checkpoints = _load_checkpoints(baseline, dataset_name)
+    pairs = set()
+    for ckpt in checkpoints.values():
+        for m in ckpt.get("council_models_used", []):
+            pairs.add(f"{m.get('provider')}:{m.get('model')}")
+    return ", ".join(sorted(pairs)) if pairs else "—"
+
+
 def main() -> None:
-    datasets = {name: loader() for name, loader in LOADERS.items()}
-    for name, items in datasets.items():
-        print(f"Loaded {name}: {len(items)} item(s)")
+    # A dataset whose source isn't present on this machine (e.g. the
+    # gitignored web3bugs clone) should be skipped with a warning, not
+    # crash the whole report — its rows simply won't appear in the table.
+    datasets = {}
+    for name, loader in LOADERS.items():
+        try:
+            datasets[name] = loader()
+            print(f"Loaded {name}: {len(datasets[name])} item(s)")
+        except FileNotFoundError as e:
+            print(f"SKIP {name}: source not present on disk ({e})")
 
     all_coverage = []
     table_rows: list[tuple[str, str, dict, dict]] = []  # (baseline, dataset, report, coverage)
 
     for baseline, dataset_names in BASELINE_DATASETS.items():
         for dataset_name in dataset_names:
+            if dataset_name not in datasets:
+                continue
             items = datasets[dataset_name]
             report, coverage = build_baseline_dataset_report(baseline, dataset_name, items)
+            # Don't emit a row we have zero checkpoints for — an all-"missing"
+            # (baseline, dataset) pair would otherwise print as a misleading
+            # 0.000/0.000/0.000 line that looks like the baseline scored zero,
+            # when in fact it was simply never run on this machine. Rows with
+            # real non-ok coverage (no_result/too_large) are kept.
+            if coverage["status_counts"].get("missing", 0) == coverage["n_total"]:
+                print(f"SKIP row {baseline}/{dataset_name}: no checkpoints on this machine")
+                continue
             if baseline == "slither":
                 metrics.print_report(report)
                 metrics.save_report(report, RESULTS_ROOT / f"slither_baseline_{dataset_name}.json")
@@ -153,13 +200,14 @@ def main() -> None:
         "their precision is mechanically 1.000 whenever recall is nonzero — only",
         "Etherscan-50 has real negative-class signal for a meaningful FP rate.",
         "",
-        "| dataset | baseline | n_analyzed/n_total | precision | recall | F1 | top categories detected |",
-        "|---|---|---|---|---|---|---|",
+        "| dataset | baseline | model(s) | n_analyzed/n_total | precision | recall | F1 | top categories detected |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for baseline, dataset_name, report, coverage in table_rows:
         b = report["binary"]
         lines.append(
-            f"| {dataset_name} | {baseline} | {coverage['n_ok']}/{coverage['n_total']} | "
+            f"| {dataset_name} | {baseline} | {_model_label(baseline, dataset_name)} | "
+            f"{coverage['n_ok']}/{coverage['n_total']} | "
             f"{b['precision']:.3f} | {b['recall']:.3f} | {b['f1']:.3f} | {_top_categories(report)} |"
         )
     table_path = RESULTS_ROOT / "baseline_table.md"

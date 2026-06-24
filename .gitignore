@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 venv/
 venv_wsl/
+venv_mac/
 *.db
 .env
 node_modules/
@@ -10,9 +11,19 @@ dist/
 *.tsbuildinfo
 data/
 
+# Foundry build artifacts (the workspace SOURCE is tracked; out/cache are not)
+backend/dynamic_workspace/out/
+backend/dynamic_workspace/cache/
+
 # Large third-party benchmark corpora (cloned by backend/eval/loaders/, not authored here)
 datasets/
 
-# Generated eval run output, not source
-backend/eval/results/
+# Generated eval CHECKPOINTS are large; ignored. The small result tables +
+# the committed benchmark snapshot under results/ ARE tracked (see !lines)
+# so the deployed dashboard has real numbers without the datasets.
 backend/eval/checkpoints/
+backend/eval/results/*
+!backend/eval/results/baseline_table.md
+!backend/eval/results/ablation_ac.md
+!backend/eval/results/ablation_ac.json
+!backend/eval/results/benchmark_stats.json

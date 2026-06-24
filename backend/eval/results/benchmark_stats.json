@@ -1,0 +1,245 @@
+{
+  "kpis": [
+    {
+      "label": "Vulnerability classes",
+      "value": "8",
+      "sub": "OWASP/DASP specialists"
+    },
+    {
+      "label": "Cost per contract",
+      "value": "$0",
+      "sub": "free local + free hosted tiers"
+    },
+    {
+      "label": "Benchmark contracts",
+      "value": "295+",
+      "sub": "SmartBugs 143 \u00b7 Web3Bugs 102 \u00b7 AC slice 160"
+    },
+    {
+      "label": "Council recall (AC)",
+      "value": "0.75",
+      "sub": "vs 0.12 single-LLM",
+      "delta": 0.62
+    },
+    {
+      "label": "Council F1 (AC)",
+      "value": "0.86",
+      "sub": "vs 0.22 single-LLM",
+      "delta": 0.64
+    },
+    {
+      "label": "Council precision (AC)",
+      "value": "1.00",
+      "sub": "0 false positives",
+      "delta": 0.0
+    }
+  ],
+  "ablation": {
+    "available": true,
+    "task": "access-control detection",
+    "sample": {
+      "n": 16,
+      "pos": 8,
+      "neg": 8,
+      "seed": 0
+    },
+    "configs": [
+      {
+        "config": "single_llm",
+        "precision": 1.0,
+        "recall": 0.125,
+        "f1": 0.222,
+        "tp": 1,
+        "fp": 0,
+        "tn": 8,
+        "fn": 7
+      },
+      {
+        "config": "council",
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1": 0.857,
+        "tp": 6,
+        "fp": 0,
+        "tn": 8,
+        "fn": 2
+      },
+      {
+        "config": "council+arbitration",
+        "precision": 1.0,
+        "recall": 0.125,
+        "f1": 0.222,
+        "tp": 1,
+        "fp": 0,
+        "tn": 8,
+        "fn": 7
+      }
+    ]
+  },
+  "vuln_distribution": {
+    "smartbugs_curated": [
+      {
+        "category": "unchecked_low_level_calls",
+        "count": 75,
+        "pct": 36.2
+      },
+      {
+        "category": "reentrancy",
+        "count": 32,
+        "pct": 15.5
+      },
+      {
+        "category": "bad_randomness",
+        "count": 31,
+        "pct": 15.0
+      },
+      {
+        "category": "arithmetic",
+        "count": 23,
+        "pct": 11.1
+      },
+      {
+        "category": "access_control",
+        "count": 21,
+        "pct": 10.1
+      },
+      {
+        "category": "denial_of_service",
+        "count": 7,
+        "pct": 3.4
+      },
+      {
+        "category": "front_running",
+        "count": 7,
+        "pct": 3.4
+      },
+      {
+        "category": "time_manipulation",
+        "count": 7,
+        "pct": 3.4
+      },
+      {
+        "category": "other",
+        "count": 3,
+        "pct": 1.4
+      },
+      {
+        "category": "short_addresses",
+        "count": 1,
+        "pct": 0.5
+      }
+    ],
+    "web3bugs": [
+      {
+        "category": "SC",
+        "count": 65,
+        "pct": 13.2
+      },
+      {
+        "category": "S6-4",
+        "count": 56,
+        "pct": 11.4
+      },
+      {
+        "category": "O1",
+        "count": 28,
+        "pct": 5.7
+      },
+      {
+        "category": "O5",
+        "count": 26,
+        "pct": 5.3
+      },
+      {
+        "category": "S3-1",
+        "count": 22,
+        "pct": 4.5
+      },
+      {
+        "category": "L1",
+        "count": 19,
+        "pct": 3.9
+      },
+      {
+        "category": "S6-3",
+        "count": 18,
+        "pct": 3.7
+      },
+      {
+        "category": "L7",
+        "count": 17,
+        "pct": 3.5
+      },
+      {
+        "category": "O3",
+        "count": 16,
+        "pct": 3.3
+      },
+      {
+        "category": "S1-1",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "SE-1",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "L8",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "O6",
+        "count": 14,
+        "pct": 2.8
+      },
+      {
+        "category": "S2-1",
+        "count": 14,
+        "pct": 2.8
+      },
+      {
+        "category": "SE-4",
+        "count": 13,
+        "pct": 2.6
+      }
+    ]
+  },
+  "published_baselines": [
+    {
+      "tool": "GPTScan (ICSE'24)",
+      "dataset": "Web3Bugs",
+      "recall": 0.833,
+      "f1": 0.678,
+      "cost": "paid GPT",
+      "note": "primary target"
+    },
+    {
+      "tool": "GPTScan (ICSE'24)",
+      "dataset": "DefiHacks",
+      "recall": 0.714,
+      "f1": 0.8,
+      "cost": "paid GPT",
+      "note": "no public source \u2014 not reproduced"
+    },
+    {
+      "tool": "Static tools (Slither/Mythril)",
+      "dataset": "real-world access control",
+      "recall": 0.05,
+      "f1": null,
+      "cost": "free",
+      "note": "3-8% recall (ACToolBench)"
+    },
+    {
+      "tool": "GPT-4o-mini",
+      "dataset": "real-world access control",
+      "recall": 0.9,
+      "f1": null,
+      "cost": "paid",
+      "note": "high recall, ~951 false positives"
+    }
+  ],
+  "thesis": "Match/beat a paid-GPT ICSE'24 baseline on logic-vuln detection using only free models, and add dynamic exploit-confirmation for precision."
+}
