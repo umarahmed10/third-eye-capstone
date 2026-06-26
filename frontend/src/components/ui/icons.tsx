@@ -125,20 +125,29 @@ export const TrendDownIcon = (p: IconProps) => (
   </Svg>
 );
 
-// ─── Argus mark — a hundred-eyed guardian motif (radial eyes around a core) ───
-export function ArgusMark({ size = 28, className = "" }: IconProps) {
-  const eyes = Array.from({ length: 8 }, (_, i) => {
+// ─── Third-Eye mark — a single all-seeing eye inside a guardian ring ───
+export function ThirdEyeMark({ size = 28, className = "" }: IconProps) {
+  // Subtle radial ticks around the eye — the watchful periphery.
+  const ticks = Array.from({ length: 8 }, (_, i) => {
     const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
-    return { x: 12 + Math.cos(a) * 7.6, y: 12 + Math.sin(a) * 7.6 };
+    return { x: 12 + Math.cos(a) * 9.6, y: 12 + Math.sin(a) * 9.6 };
   });
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
-      <circle cx="12" cy="12" r="11" stroke="currentColor" strokeOpacity="0.18" strokeWidth="0.75" />
-      {eyes.map((e, i) => (
-        <circle key={i} cx={e.x} cy={e.y} r="1.05" fill="currentColor" fillOpacity={0.45} />
+      <circle cx="12" cy="12" r="11" stroke="currentColor" strokeOpacity="0.2" strokeWidth="0.75" />
+      {ticks.map((t, i) => (
+        <circle key={i} cx={t.x} cy={t.y} r="0.7" fill="currentColor" fillOpacity={0.4} />
       ))}
-      <circle cx="12" cy="12" r="4.4" stroke="currentColor" strokeWidth="1.4" />
-      <circle cx="12" cy="12" r="1.9" fill="currentColor" />
+      {/* Almond eye outline */}
+      <path
+        d="M3.4 12C5.6 8.4 8.6 6.6 12 6.6S18.4 8.4 20.6 12C18.4 15.6 15.4 17.4 12 17.4S5.6 15.6 3.4 12Z"
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinejoin="round"
+      />
+      {/* Iris + pupil */}
+      <circle cx="12" cy="12" r="3.3" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
     </svg>
   );
 }

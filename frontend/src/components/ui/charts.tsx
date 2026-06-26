@@ -44,7 +44,7 @@ export function GroupedBars({
 // Single-metric horizontal distribution (vuln categories in the wild).
 export function DistributionBars({
   data,
-  color = "#22d3ee",
+  color = "#a855f7",
   max,
 }: {
   data: { category: string; count: number; pct: number }[];
@@ -79,7 +79,7 @@ export function DistributionBars({
 // Vertical comparison bars (e.g. baseline recall/F1).
 export function VerticalBars({
   data,
-  color = "#22d3ee",
+  color = "#a855f7",
   height = 120,
 }: {
   data: { label: string; value: number }[];

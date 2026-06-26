@@ -68,7 +68,7 @@ export function History({ user }: { user: User }) {
         {/* Sessions list */}
         <aside>
           <SectionLabel count={sessions.length}>Sessions</SectionLabel>
-          <div className="rounded-xl border border-white/[0.07] bg-[#0c0f15] divide-y divide-white/[0.04] max-h-[calc(100vh-160px)] overflow-y-auto">
+          <div className="rounded-xl border border-white/[0.07] bg-[#151021] divide-y divide-white/[0.04] max-h-[calc(100vh-160px)] overflow-y-auto">
             {sessions.length === 0 ? (
               <div className="px-4 py-8 text-center text-[12px] text-slate-500">No sessions yet.</div>
             ) : (
@@ -78,18 +78,18 @@ export function History({ user }: { user: User }) {
                   onClick={() => setActive(s.id)}
                   aria-current={active === s.id}
                   className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${
-                    active === s.id ? "bg-cyan-500/[0.08]" : "hover:bg-white/[0.02]"
+                    active === s.id ? "bg-violet-500/[0.08]" : "hover:bg-white/[0.02]"
                   }`}
                 >
                   <span
                     className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      active === s.id ? "bg-cyan-500/15 text-cyan-300" : "bg-white/[0.04] text-slate-500"
+                      active === s.id ? "bg-violet-500/15 text-violet-300" : "bg-white/[0.04] text-slate-500"
                     }`}
                   >
                     <HistoryIcon size={14} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-cyan-200" : "text-slate-200"}`}>
+                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-violet-200" : "text-slate-200"}`}>
                       {s.title || `Session ${s.id}`}
                     </div>
                     <div className="text-[9px] font-mono text-slate-500">{fmtDate(s.created_at)}</div>

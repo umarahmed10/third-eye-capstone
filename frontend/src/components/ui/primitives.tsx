@@ -14,7 +14,7 @@ export function Panel({
 } & React.HTMLAttributes<HTMLElement>) {
   return (
     <As
-      className={`rounded-xl border border-white/[0.07] bg-[#0c0f15] ${className}`}
+      className={`rounded-xl border border-white/[0.07] bg-[#151021] ${className}`}
       {...rest}
     >
       {children}
@@ -42,11 +42,11 @@ export function Eyebrow({ children }: { children: ReactNode }) {
 // ─── Model · provider chip (model-diversity story) ───
 export function ModelChip({ model, provider }: { model: string; provider: string }) {
   return (
-    <span className="inline-flex items-center gap-1 text-[9px] font-mono text-cyan-300/80 bg-cyan-500/[0.08] ring-1 ring-cyan-400/15 px-1.5 py-0.5 rounded-md max-w-full">
-      <ChipIcon size={10} className="text-cyan-300/60 flex-shrink-0" />
+    <span className="inline-flex items-center gap-1 text-[9px] font-mono text-violet-300/80 bg-violet-500/[0.08] ring-1 ring-violet-400/15 px-1.5 py-0.5 rounded-md max-w-full">
+      <ChipIcon size={10} className="text-violet-300/60 flex-shrink-0" />
       <span className="truncate">{model}</span>
-      <span className="text-cyan-300/35">·</span>
-      <span className="text-cyan-300/55">{provider}</span>
+      <span className="text-violet-300/35">·</span>
+      <span className="text-violet-300/55">{provider}</span>
     </span>
   );
 }
@@ -61,7 +61,7 @@ export function ConfidenceMeter({
 }) {
   const pct = Math.round(Math.max(0, Math.min(1, value)) * 100);
   const bar =
-    tone === "danger" ? "bg-rose-400/70" : tone === "safe" ? "bg-emerald-400/65" : "bg-cyan-400/65";
+    tone === "danger" ? "bg-rose-400/70" : tone === "safe" ? "bg-emerald-400/65" : "bg-violet-400/65";
   return (
     <div
       className="flex items-center gap-2"
@@ -98,8 +98,8 @@ export function KpiCard({
     <div
       className={`rounded-xl border px-4 py-3.5 ${
         accent
-          ? "border-cyan-400/25 bg-cyan-500/[0.05]"
-          : "border-white/[0.07] bg-[#0c0f15]"
+          ? "border-violet-400/25 bg-violet-500/[0.05]"
+          : "border-white/[0.07] bg-[#151021]"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
@@ -116,7 +116,7 @@ export function KpiCard({
           </span>
         )}
       </div>
-      <div className={`text-2xl font-bold tabular-nums leading-none mt-2 ${accent ? "text-cyan-300" : "text-white/90"}`}>
+      <div className={`text-2xl font-bold tabular-nums leading-none mt-2 ${accent ? "text-violet-300" : "text-white/90"}`}>
         {value}
       </div>
       {sub && <div className="text-[10px] text-slate-500 mt-1.5">{sub}</div>}
@@ -128,7 +128,7 @@ export function KpiCard({
 export function Spinner({ size = 14 }: { size?: number }) {
   return (
     <span
-      className="inline-block rounded-full border-2 border-white/20 border-t-cyan-300 animate-spin"
+      className="inline-block rounded-full border-2 border-white/20 border-t-violet-300 animate-spin"
       style={{ width: size, height: size }}
     />
   );
@@ -139,7 +139,7 @@ export function Pill({ children, tone = "neutral" }: { children: ReactNode; tone
     <span
       className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
         tone === "accent"
-          ? "text-cyan-300/80 bg-cyan-500/[0.08] ring-1 ring-cyan-400/15"
+          ? "text-violet-300/80 bg-violet-500/[0.08] ring-1 ring-violet-400/15"
           : "text-slate-400 bg-white/[0.05]"
       }`}
     >

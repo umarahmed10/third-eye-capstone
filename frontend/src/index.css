@@ -1,21 +1,24 @@
 @import "tailwindcss";
 
-/* ─── Argus design tokens ─────────────────────────────────────────────
-   Deep graphite base, single cyan/teal accent, semantic severity colors.
-   Security-product aesthetic: sharp, data-dense, trustworthy.            */
+/* ─── Third-Eye design tokens ─────────────────────────────────────────
+   Deep aubergine/plum base, refined violet + soft-lilac accents, with a
+   restrained gold highlight for verdicts. A high-end security boutique:
+   premium, hushed, confident — not a generic SaaS dashboard.            */
 @theme {
   --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
-  /* Base surfaces */
-  --color-base: #07090d;        /* app background */
-  --color-surface: #0c0f15;     /* panels */
-  --color-surface-2: #11151d;   /* raised panels */
-  --color-line: rgba(148, 163, 184, 0.10);
+  /* Base surfaces — near-black with a purple undertone */
+  --color-base: #0e0a14;        /* app background */
+  --color-surface: #151021;     /* panels */
+  --color-surface-2: #1c1530;   /* raised panels */
+  --color-line: rgba(196, 181, 253, 0.10);
 
-  /* Accent — a single confident cyan */
-  --color-accent: #22d3ee;
-  --color-accent-dim: rgba(34, 211, 238, 0.12);
+  /* Accent — refined violet with a soft-lilac partner + gold highlight */
+  --color-accent: #a855f7;
+  --color-accent-soft: #c4b5fd;
+  --color-accent-dim: rgba(168, 85, 247, 0.14);
+  --color-gold: #e8c468;
 }
 
 *,
@@ -26,18 +29,18 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.16) transparent;
+  scrollbar-color: rgba(196, 181, 253, 0.18) transparent;
 }
 *::-webkit-scrollbar {
   width: 9px;
   height: 9px;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.14);
+  background: rgba(196, 181, 253, 0.16);
   border-radius: 8px;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.24);
+  background: rgba(196, 181, 253, 0.28);
 }
 
 html,
@@ -48,8 +51,12 @@ body,
 
 body {
   margin: 0;
-  background: #07090d;
-  color: #d7dce5;
+  background:
+    radial-gradient(1100px 700px at 18% -10%, rgba(124, 58, 237, 0.10), transparent 60%),
+    radial-gradient(900px 600px at 100% 0%, rgba(168, 85, 247, 0.07), transparent 55%),
+    #0e0a14;
+  background-attachment: fixed;
+  color: #ddd6ec;
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv01";
   -webkit-font-smoothing: antialiased;
@@ -64,7 +71,7 @@ pre,
 }
 
 ::selection {
-  background: rgba(34, 211, 238, 0.25);
+  background: rgba(168, 85, 247, 0.32);
   color: #fff;
 }
 
@@ -73,7 +80,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid rgba(34, 211, 238, 0.55);
+  outline: 2px solid rgba(196, 181, 253, 0.6);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -110,9 +117,9 @@ textarea:focus-visible,
 .shimmer {
   background: linear-gradient(
     90deg,
-    rgba(148, 163, 184, 0.04) 25%,
-    rgba(34, 211, 238, 0.12) 50%,
-    rgba(148, 163, 184, 0.04) 75%
+    rgba(196, 181, 253, 0.04) 25%,
+    rgba(168, 85, 247, 0.16) 50%,
+    rgba(196, 181, 253, 0.04) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
@@ -132,9 +139,9 @@ textarea:focus-visible,
 
 /* Ring pulse for live-status indicators */
 @keyframes ring-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.45); }
-  70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(168, 85, 247, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
 }
 .animate-ring-pulse { animation: ring-pulse 1.8s ease-out infinite; }
 
@@ -168,10 +175,17 @@ textarea:focus-visible,
 /* Subtle background grid for hero panels */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    linear-gradient(rgba(196, 181, 253, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 181, 253, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
 }
+
+/* Premium soft glow ring for the verdict + brand mark */
+@keyframes lid-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+.animate-lid-blink { animation: lid-blink 5.5s ease-in-out infinite; transform-origin: center; }
 
 @media (prefers-reduced-motion: reduce) {
   *,

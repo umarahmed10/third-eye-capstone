@@ -11,8 +11,8 @@ export function VerdictBanner({ result }: { result: CouncilResult }) {
       className="animate-scale-in relative overflow-hidden rounded-2xl border"
       style={{
         background: isGo
-          ? "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(7,9,13,0.3))"
-          : "linear-gradient(135deg, rgba(244,63,94,0.13), rgba(7,9,13,0.3))",
+          ? "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(14,10,20,0.35))"
+          : "linear-gradient(135deg, rgba(244,63,94,0.13), rgba(14,10,20,0.35))",
         borderColor: isGo ? "rgba(16,185,129,0.28)" : "rgba(244,63,94,0.3)",
         boxShadow: isGo ? "0 0 60px -28px rgba(16,185,129,0.4)" : "0 0 60px -28px rgba(244,63,94,0.45)",
       }}
@@ -44,7 +44,14 @@ export function VerdictBanner({ result }: { result: CouncilResult }) {
               <span className="text-sm font-mono font-semibold text-slate-200 truncate">{result.contract_name}</span>
             </div>
           )}
-          {result.raven_note && <p className="text-[13px] text-slate-400 leading-relaxed">{result.raven_note}</p>}
+          {result.raven_note && (
+            <div className="flex items-start gap-2.5">
+              <span className="mt-0.5 flex-shrink-0 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 px-2 py-1 rounded-md">
+                Raven's read
+              </span>
+              <p className="text-[13px] text-slate-300 leading-relaxed">{result.raven_note}</p>
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -83,7 +90,7 @@ function Stat({
   tone?: "danger";
 }) {
   return (
-    <div className="rounded-xl bg-[#0c0f15] border border-white/[0.07] px-4 py-3">
+    <div className="rounded-xl bg-[#151021] border border-white/[0.07] px-4 py-3">
       <div className="text-[9px] uppercase tracking-[0.14em] text-slate-500 mb-1">{label}</div>
       <div className={`text-xl font-bold tabular-nums leading-none ${tone === "danger" && Number(value) > 0 ? "text-rose-400" : "text-white/90"}`}>
         {value}
@@ -142,7 +149,7 @@ function VulnRow({ v }: { v: CouncilVuln }) {
       {v.proposed_property && (
         <div>
           <Eyebrow>Proposed Invariant</Eyebrow>
-          <p className="text-[11px] font-mono text-cyan-200/75 bg-cyan-500/[0.06] ring-1 ring-cyan-400/12 rounded-lg px-3 py-2 leading-relaxed">
+          <p className="text-[11px] font-mono text-violet-200/75 bg-violet-500/[0.06] ring-1 ring-violet-400/12 rounded-lg px-3 py-2 leading-relaxed">
             {v.proposed_property}
           </p>
         </div>
@@ -188,7 +195,7 @@ export function PrecedentPanel({ exploits }: { exploits?: SimilarExploit[] }) {
         {exploits.map((e, i) => {
           const s = e.severity ? sevTokens(e.severity) : null;
           return (
-            <article key={i} className="rounded-xl border border-white/[0.07] bg-[#0c0f15] px-4 py-3.5 space-y-2">
+            <article key={i} className="rounded-xl border border-white/[0.07] bg-[#151021] px-4 py-3.5 space-y-2">
               <div className="flex items-center gap-2">
                 {e.category && (
                   <span className="text-[12px] font-semibold text-slate-200 capitalize">

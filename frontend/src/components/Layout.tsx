@@ -1,8 +1,7 @@
 import { useState, type ReactNode } from "react";
 import type { User } from "../lib/api";
 import {
-  ArgusMark,
-  HomeIcon,
+  ThirdEyeMark,
   ScanIcon,
   FlowIcon,
   ChartIcon,
@@ -10,11 +9,10 @@ import {
   LogoutIcon,
 } from "./ui/icons";
 
-export type Tab = "dashboard" | "analyze" | "how" | "benchmarks" | "history";
+export type Tab = "analyze" | "how" | "benchmarks" | "history";
 
 const NAV: { id: Tab; label: string; icon: (p: { size?: number }) => ReactNode }[] = [
-  { id: "dashboard", label: "Overview", icon: HomeIcon },
-  { id: "analyze", label: "Analyze", icon: ScanIcon },
+  { id: "analyze", label: "Scan", icon: ScanIcon },
   { id: "how", label: "How It Works", icon: FlowIcon },
   { id: "benchmarks", label: "Benchmarks", icon: ChartIcon },
   { id: "history", label: "History", icon: HistoryIcon },
@@ -36,21 +34,21 @@ export function Layout({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-[#07090d] text-slate-200">
+    <div className="h-screen flex overflow-hidden bg-[#0e0a14] text-slate-200">
       {/* ─── Sidebar ─── */}
       <aside
-        className={`fixed lg:static z-30 h-full w-[232px] flex-shrink-0 flex flex-col border-r border-white/[0.06] bg-[#0a0c11] transition-transform duration-300 ${
+        className={`fixed lg:static z-30 h-full w-[232px] flex-shrink-0 flex flex-col border-r border-violet-300/[0.08] bg-[#120c1e]/95 backdrop-blur transition-transform duration-300 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Brand */}
-        <div className="px-5 h-[60px] flex items-center gap-2.5 border-b border-white/[0.06]">
-          <div className="text-cyan-300">
-            <ArgusMark size={26} />
+        <div className="px-5 h-[60px] flex items-center gap-2.5 border-b border-violet-300/[0.08]">
+          <div className="text-violet-300">
+            <ThirdEyeMark size={26} />
           </div>
           <div className="leading-none">
-            <div className="text-[15px] font-bold text-white tracking-tight">ARGUS</div>
-            <div className="text-[9px] uppercase tracking-[0.22em] text-slate-500 mt-1">
+            <div className="text-[15px] font-bold text-white tracking-tight">Third-Eye</div>
+            <div className="text-[9px] uppercase tracking-[0.22em] text-violet-300/50 mt-1">
               Contract Security
             </div>
           </div>
@@ -71,11 +69,11 @@ export function Layout({
                 aria-current={active ? "page" : undefined}
                 className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
                   active
-                    ? "bg-cyan-500/[0.10] text-cyan-200 ring-1 ring-cyan-400/20"
+                    ? "bg-violet-500/[0.14] text-violet-100 ring-1 ring-violet-400/25"
                     : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
                 }`}
               >
-                <span className={active ? "text-cyan-300" : "text-slate-500 group-hover:text-slate-300"}>
+                <span className={active ? "text-violet-300" : "text-slate-500 group-hover:text-slate-300"}>
                   <Icon size={17} />
                 </span>
                 {item.label}
@@ -85,14 +83,14 @@ export function Layout({
         </nav>
 
         {/* User footer */}
-        <div className="px-3 py-3 border-t border-white/[0.06]">
+        <div className="px-3 py-3 border-t border-violet-300/[0.08]">
           <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/12 ring-1 ring-cyan-400/20 flex items-center justify-center text-[12px] font-bold text-cyan-300 uppercase">
+            <div className="w-8 h-8 rounded-lg bg-violet-500/15 ring-1 ring-violet-400/25 flex items-center justify-center text-[12px] font-bold text-violet-200 uppercase">
               {user.username.slice(0, 2)}
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-[12px] font-medium text-slate-200 truncate">{user.username}</div>
-              <div className="text-[9px] text-slate-500">authenticated</div>
+              <div className="text-[9px] text-violet-300/45">authenticated</div>
             </div>
             <button
               onClick={onLogout}
@@ -118,7 +116,7 @@ export function Layout({
       {/* ─── Main column ─── */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="flex-shrink-0 h-[60px] flex items-center gap-3 px-4 sm:px-6 border-b border-white/[0.06] bg-[#0a0c11]/80 backdrop-blur">
+        <header className="flex-shrink-0 h-[60px] flex items-center gap-3 px-4 sm:px-6 border-b border-violet-300/[0.08] bg-[#120c1e]/70 backdrop-blur">
           <button
             onClick={() => setMobileOpen(true)}
             className="lg:hidden p-1.5 rounded-md text-slate-400 hover:bg-white/[0.05]"

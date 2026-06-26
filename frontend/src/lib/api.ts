@@ -1,4 +1,4 @@
-// ─── Argus API client + shared types ───────────────────────────────
+// ─── Third-Eye API client + shared types ───────────────────────────
 // Base URL follows the existing VITE_API_URL pattern (defaults to "/api"
 // which the Vite dev server proxies to the FastAPI backend).
 
@@ -72,10 +72,20 @@ export type CouncilResult = {
   council_detail?: CouncilDetail[];
   similar_exploits?: SimilarExploit[];
   mode?: string;
-  // argus pipeline extras (optional)
+  // pipeline extras (optional)
   pipeline?: Record<string, unknown>;
   arbitration?: Record<string, unknown>;
   dynamic?: Record<string, unknown>;
+};
+
+// ─── Sample contracts (GET /api/samples) ───
+export type SampleContract = {
+  id: string;
+  name: string;
+  category: string;
+  expected: "GO" | "NO-GO" | string;
+  blurb: string;
+  code: string;
 };
 
 // ─── SSE stream events ───
@@ -113,17 +123,23 @@ export type AblationConfig = {
   fn: number;
 };
 export type VulnDistEntry = { category: string; count: number; pct: number };
+export type AblationSample = { n?: number; pos?: number; neg?: number; seed?: number };
 export type Baseline = {
   tool: string;
   dataset: string;
   recall: number;
-  f1: number;
+  f1: number | null;
   cost?: string;
   note?: string;
 };
 export type BenchmarkStats = {
   kpis?: Kpi[];
-  ablation?: { configs: AblationConfig[]; sample?: number | string };
+  ablation?: {
+    available?: boolean;
+    task?: string;
+    sample?: AblationSample | number | string;
+    configs?: AblationConfig[];
+  };
   vuln_distribution?: {
     smartbugs_curated?: VulnDistEntry[];
     web3bugs?: VulnDistEntry[];
@@ -184,38 +200,12 @@ export async function getBenchmarkStats(): Promise<BenchmarkStats> {
   return (await r.json()) as BenchmarkStats;
 }
 
-// ─── Standard pipeline (legacy /api/analyze) ───
-export async function analyzeStandard(
-  code: string,
-  sessionId: number,
-  userId: number
-): Promise<CouncilResult> {
-  const r = await fetch(`${API}/analyze`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code, session_id: sessionId, user_id: userId }),
-  });
-  if (!r.ok) throw new Error(await errDetail(r));
-  return (await r.json()) as CouncilResult;
-}
-
-// ─── Full Argus pipeline (POST /api/analyze/argus) ───
-export async function analyzeArgus(
-  code: string,
-  opts: { use_retrieval: boolean; use_arbitration: boolean; use_dynamic: boolean },
-  sessionId?: number
-): Promise<CouncilResult> {
-  const r = await fetch(`${API}/analyze/argus`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      code,
-      session_id: sessionId != null ? String(sessionId) : undefined,
-      ...opts,
-    }),
-  });
-  if (!r.ok) throw new Error(await errDetail(r));
-  return (await r.json()) as CouncilResult;
+// ─── Sample contracts for the "try it" demo flow (GET /api/samples) ───
+export async function getSamples(): Promise<SampleContract[]> {
+  const r = await fetch(`${API}/samples`);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const d = await r.json();
+  return (Array.isArray(d) ? d : []) as SampleContract[];
 }
 
 async function errDetail(r: Response): Promise<string> {
@@ -233,16 +223,18 @@ async function errDetail(r: Response): Promise<string> {
 export async function streamCouncil(
   code: string,
   onEvent: (ev: StreamEvent) => void,
-  opts: { sessionId?: number; signal?: AbortSignal } = {}
+  opts: { sessionId?: number | null; signal?: AbortSignal } = {}
 ): Promise<void> {
+  // AnalyzeReq has session_id + user_id OPTIONAL. We send { code } always and
+  // attach session_id ONLY when the user actually has one — anonymous/trial
+  // scans (no login, no session) work with just { code }. We never send user_id.
+  const payload: { code: string; session_id?: number } = { code };
+  if (opts.sessionId != null) payload.session_id = opts.sessionId;
+
   const r = await fetch(`${API}/analyze/council/stream`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      code,
-      session_id: opts.sessionId,
-      // backend AnalyzeReq requires user_id/session_id; harmless extras ignored
-    }),
+    body: JSON.stringify(payload),
     signal: opts.signal,
   });
   if (!r.ok || !r.body) throw new Error(await errDetail(r));

@@ -37,44 +37,48 @@ export type SevToken = {
   hex: string;
 };
 
+// Severity colors — kept semantically readable but tuned warmer to sit on plum.
 export const SEV: Record<string, SevToken> = {
-  critical: { text: "text-rose-400", bg: "bg-rose-500/10", ring: "ring-rose-500/25", dot: "bg-rose-400", hex: "#fb7185" },
-  high: { text: "text-orange-400", bg: "bg-orange-500/10", ring: "ring-orange-500/25", dot: "bg-orange-400", hex: "#fb923c" },
-  medium: { text: "text-amber-400", bg: "bg-amber-500/10", ring: "ring-amber-500/25", dot: "bg-amber-400", hex: "#fbbf24" },
-  low: { text: "text-sky-400", bg: "bg-sky-500/10", ring: "ring-sky-500/25", dot: "bg-sky-400", hex: "#38bdf8" },
+  critical: { text: "text-rose-300", bg: "bg-rose-500/12", ring: "ring-rose-500/30", dot: "bg-rose-400", hex: "#fb7185" },
+  high: { text: "text-orange-300", bg: "bg-orange-500/12", ring: "ring-orange-500/30", dot: "bg-orange-400", hex: "#fb923c" },
+  medium: { text: "text-amber-300", bg: "bg-amber-500/12", ring: "ring-amber-500/30", dot: "bg-amber-400", hex: "#fbbf24" },
+  low: { text: "text-violet-300", bg: "bg-violet-500/12", ring: "ring-violet-500/30", dot: "bg-violet-400", hex: "#c4b5fd" },
 };
 
 export function sevTokens(sev: string): SevToken {
   return SEV[(sev || "").toLowerCase()] || SEV.medium;
 }
 
-// Accent color for the design system (single confident cyan).
-export const ACCENT = "#22d3ee";
+// Accent colors for the design system — refined violet + soft lilac, gold highlight.
+export const ACCENT = "#a855f7";
+export const ACCENT_SOFT = "#c4b5fd";
+export const GOLD = "#e8c468";
 
-// Stable color per provider for model-diversity visualizations.
+// Stable color per provider for model-diversity visualizations (purple-leaning palette).
 const PROVIDER_HUES: Record<string, string> = {
   openai: "#34d399",
-  anthropic: "#f59e0b",
-  google: "#60a5fa",
-  groq: "#f43f5e",
-  ollama: "#a78bfa",
+  anthropic: "#e8c468",
+  google: "#7dd3fc",
+  groq: "#f472b6",
+  ollama: "#c4b5fd",
+  cerebras: "#f59e0b",
   mistral: "#fb923c",
-  deepseek: "#22d3ee",
+  deepseek: "#a855f7",
   together: "#e879f9",
 };
 
 export function providerColor(provider: string): string {
-  return PROVIDER_HUES[(provider || "").toLowerCase()] || "#94a3b8";
+  return PROVIDER_HUES[(provider || "").toLowerCase()] || "#a78bfa";
 }
 
-// Chart palette (categorical).
+// Chart palette (categorical) — violet-forward.
 export const CHART_COLORS = [
-  "#22d3ee",
+  "#a855f7",
+  "#c4b5fd",
+  "#e8c468",
+  "#f472b6",
+  "#7dd3fc",
   "#34d399",
-  "#fbbf24",
-  "#fb7185",
-  "#a78bfa",
-  "#60a5fa",
   "#fb923c",
   "#e879f9",
 ];

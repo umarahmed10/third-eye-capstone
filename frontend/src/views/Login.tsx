@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { authRequest, type User } from "../lib/api";
-import { ArgusMark, ArrowRightIcon, ShieldCheckIcon, EyeIcon, ChipIcon } from "../components/ui/icons";
+import { ThirdEyeMark, ArrowRightIcon, ShieldCheckIcon, EyeIcon, ChipIcon } from "../components/ui/icons";
 import { Spinner } from "../components/ui/primitives";
 
 const FEATURES = [
   { icon: EyeIcon, title: "Eight model-diverse specialists", body: "A council of distinct base models, each pinned to one vulnerability class — real architectural diversity, not the same weights asked twice." },
-  { icon: ShieldCheckIcon, title: "Evidence-anchored arbitration", body: "A red-team / judge stage discards hallucinated findings and keeps only what is grounded in the source." },
+  { icon: ShieldCheckIcon, title: "Raven arbitrates the evidence", body: "Raven cross-examines every claim against the source and discards anything not grounded in the code — then delivers the verdict." },
   { icon: ChipIcon, title: "Dynamic exploit confirmation", body: "Suspected issues are escalated to Foundry proof-of-concept execution before they're called exploitable." },
 ];
 
@@ -31,22 +31,22 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-[1.05fr_0.95fr] bg-[#07090d]">
+    <div className="min-h-screen grid lg:grid-cols-[1.05fr_0.95fr] bg-[#0e0a14]">
       {/* ─── Left brand panel ─── */}
       <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden border-r border-white/[0.06]">
         <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
         <div
           className="absolute -top-32 -left-24 w-[28rem] h-[28rem] rounded-full blur-3xl"
-          style={{ background: "radial-gradient(circle, rgba(34,211,238,0.10), transparent 70%)" }}
+          style={{ background: "radial-gradient(circle, rgba(168, 85, 247,0.10), transparent 70%)" }}
           aria-hidden="true"
         />
         <div className="relative">
           <div className="flex items-center gap-3">
-            <div className="text-cyan-300 animate-spin-slow" style={{ animationDuration: "30s" }}>
-              <ArgusMark size={38} />
+            <div className="text-violet-300" style={{ animationDuration: "30s" }}>
+              <ThirdEyeMark size={38} />
             </div>
             <div>
-              <div className="text-2xl font-bold text-white tracking-tight leading-none">ARGUS</div>
+              <div className="text-2xl font-bold text-white tracking-tight leading-none">Third-Eye</div>
               <div className="text-[10px] uppercase tracking-[0.24em] text-slate-500 mt-1.5">
                 Smart-Contract Security Auditor
               </div>
@@ -56,12 +56,12 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
 
         <div className="relative max-w-md">
           <h2 className="text-3xl font-bold text-white leading-tight tracking-tight">
-            The hundred-eyed guardian for on-chain code.
+            One unblinking eye on your on-chain code.
           </h2>
           <p className="text-[13px] text-slate-400 leading-relaxed mt-4">
-            Argus convenes a council of model-diverse specialists, grounds them in a corpus of real
-            exploits, arbitrates their findings, and confirms exploitability with dynamic execution —
-            so a verdict means something.
+            Third-Eye convenes a council of model-diverse specialists, grounds them in a corpus of real
+            exploits, and confirms exploitability with dynamic execution. Then Raven arbitrates the
+            evidence and delivers the verdict — so a GO means something.
           </p>
 
           <div className="mt-8 space-y-4">
@@ -69,7 +69,7 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
               const Icon = f.icon;
               return (
                 <div key={f.title} className="flex gap-3">
-                  <div className="mt-0.5 w-8 h-8 rounded-lg bg-cyan-500/[0.10] ring-1 ring-cyan-400/20 flex items-center justify-center text-cyan-300 flex-shrink-0">
+                  <div className="mt-0.5 w-8 h-8 rounded-lg bg-violet-500/[0.10] ring-1 ring-violet-400/20 flex items-center justify-center text-violet-300 flex-shrink-0">
                     <Icon size={15} />
                   </div>
                   <div>
@@ -83,7 +83,7 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
         </div>
 
         <div className="relative text-[10px] font-mono text-slate-600">
-          Argus is a decision-support tool — it does not replace a professional audit.
+          Third-Eye is a decision-support tool — it does not replace a professional audit.
         </div>
       </div>
 
@@ -92,14 +92,14 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
         <div className="w-full max-w-sm animate-fade-in">
           {/* compact brand for mobile */}
           <div className="lg:hidden flex items-center gap-2.5 mb-10">
-            <span className="text-cyan-300">
-              <ArgusMark size={28} />
+            <span className="text-violet-300">
+              <ThirdEyeMark size={28} />
             </span>
-            <span className="text-xl font-bold text-white tracking-tight">ARGUS</span>
+            <span className="text-xl font-bold text-white tracking-tight">Third-Eye</span>
           </div>
 
           <h1 className="text-xl font-bold text-white tracking-tight">
-            {mode === "login" ? "Sign in to Argus" : "Create your account"}
+            {mode === "login" ? "Sign in to Third-Eye" : "Create your account"}
           </h1>
           <p className="text-[12px] text-slate-500 mt-1.5">
             {mode === "login" ? "Access the audit console." : "Minimum 3-char username, 4-char password."}
@@ -130,7 +130,7 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
             <button
               type="submit"
               disabled={loading || !username || !password}
-              className="w-full inline-flex items-center justify-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-[#06181c] font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-[13px]"
+              className="w-full inline-flex items-center justify-center gap-2 bg-violet-500 hover:bg-violet-400 text-white font-semibold py-2.5 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-[13px]"
             >
               {loading ? (
                 <Spinner size={15} />
@@ -150,7 +150,7 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
                 setMode(mode === "login" ? "register" : "login");
                 setError("");
               }}
-              className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
+              className="text-violet-400 hover:text-violet-300 font-medium transition-colors"
             >
               {mode === "login" ? "Register" : "Sign in"}
             </button>
@@ -182,7 +182,7 @@ function Field({
         value={value}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white/[0.03] border border-white/[0.09] rounded-lg px-3.5 py-2.5 text-[13px] text-slate-100 placeholder:text-slate-600 outline-none focus:border-cyan-400/40 focus:bg-white/[0.05] transition-colors"
+        className="w-full bg-white/[0.03] border border-white/[0.09] rounded-lg px-3.5 py-2.5 text-[13px] text-slate-100 placeholder:text-slate-600 outline-none focus:border-violet-400/40 focus:bg-white/[0.05] transition-colors"
       />
     </label>
   );

@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { User } from "./lib/api";
 import { Layout, type Tab } from "./components/Layout";
 import { Login } from "./views/Login";
-import { Dashboard } from "./views/Dashboard";
 import { Analyze } from "./views/Analyze";
 import { HowItWorks } from "./views/HowItWorks";
 import { Benchmarks } from "./views/Benchmarks";
@@ -19,14 +18,15 @@ export default function App() {
       return null;
     }
   });
-  const [tab, setTab] = useState<Tab>("dashboard");
-  // Bump to force History/Dashboard to re-fetch sessions after a scan completes.
+  // Scan is the default landing.
+  const [tab, setTab] = useState<Tab>("analyze");
+  // Bump to force History to re-fetch sessions after a scan completes.
   const [scanNonce, setScanNonce] = useState(0);
 
   function onAuth(u: User) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
     setUser(u);
-    setTab("dashboard");
+    setTab("analyze");
   }
 
   function onLogout() {
@@ -38,11 +38,12 @@ export default function App() {
 
   return (
     <Layout user={user} tab={tab} onTab={setTab} onLogout={onLogout}>
-      {tab === "dashboard" && (
-        <Dashboard key={`dash-${scanNonce}`} user={user} onNavigate={setTab} />
-      )}
       {tab === "analyze" && (
-        <Analyze user={user} onScanComplete={() => setScanNonce((n) => n + 1)} />
+        <Analyze
+          user={user}
+          onNavigate={setTab}
+          onScanComplete={() => setScanNonce((n) => n + 1)}
+        />
       )}
       {tab === "how" && <HowItWorks />}
       {tab === "benchmarks" && <Benchmarks />}

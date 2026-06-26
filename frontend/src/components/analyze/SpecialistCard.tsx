@@ -16,7 +16,7 @@ export type SpecialistState = {
 
 export function SpecialistCard({ s, index }: { s: SpecialistState; index: number }) {
   const { status } = s;
-  const color = s.provider ? providerColor(s.provider) : "#22d3ee";
+  const color = s.provider ? providerColor(s.provider) : "#a855f7";
 
   // Border/background per state.
   const shell =
@@ -27,7 +27,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
         ? "border-rose-500/25 bg-rose-500/[0.05]"
         : "border-emerald-500/20 bg-emerald-500/[0.03]"
       : status === "analyzing"
-      ? "border-cyan-400/30 bg-cyan-500/[0.04]"
+      ? "border-violet-400/30 bg-violet-500/[0.04]"
       : "border-white/[0.07] bg-white/[0.012]";
 
   return (
@@ -39,7 +39,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
       {/* analyzing scan-sweep */}
       {status === "analyzing" && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="scan-sweep absolute left-0 right-0 h-10 bg-gradient-to-b from-transparent via-cyan-400/[0.10] to-transparent" />
+          <div className="scan-sweep absolute left-0 right-0 h-10 bg-gradient-to-b from-transparent via-violet-400/[0.10] to-transparent" />
         </div>
       )}
 
@@ -53,7 +53,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
                   ? "text-rose-400/80"
                   : "text-emerald-400/70"
                 : status === "analyzing"
-                ? "text-cyan-300"
+                ? "text-violet-300"
                 : "text-slate-600"
             }
           >
@@ -111,12 +111,12 @@ function StatusBadge({ s }: { s: SpecialistState }) {
   }
   if (s.status === "analyzing") {
     return (
-      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-cyan-200 bg-cyan-500/15 ring-1 ring-cyan-400/25 flex-shrink-0">
+      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 flex-shrink-0">
         <span className="flex gap-0.5">
           {[0, 0.18, 0.36].map((d) => (
             <span
               key={d}
-              className="w-1 h-1 rounded-full bg-cyan-300 animate-pulse-glow"
+              className="w-1 h-1 rounded-full bg-violet-300 animate-pulse-glow"
               style={{ animationDelay: `${d}s` }}
             />
           ))}
