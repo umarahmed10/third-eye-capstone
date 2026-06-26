@@ -86,8 +86,11 @@ async def session_messages(session_id: int):
 # ── Analysis ──
 class AnalyzeReq(BaseModel):
     code: str
-    session_id: int
-    user_id: int
+    # Optional so the tool works as a zero-friction "paste and scan" flow
+    # (sample contracts, anonymous trial) without forcing a logged-in session.
+    # When present, the analysis is persisted to that session/history.
+    session_id: int | None = None
+    user_id: int | None = None
 
 @app.post("/api/analyze")
 async def analyze(req: AnalyzeReq):
@@ -95,8 +98,8 @@ async def analyze(req: AnalyzeReq):
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
-    # Save user message
-    await add_message(req.session_id, "user", code)
+    if req.session_id:
+        await add_message(req.session_id, "user", code)
 
     # Check ChromaDB for similar past analyses
     similar = find_similar(code)
@@ -111,15 +114,11 @@ async def analyze(req: AnalyzeReq):
     except:
         pass
 
-    # Save assistant response
-    await add_message(req.session_id, "assistant", json.dumps(result))
-
-    # Auto-title the session based on first analysis
-    msgs = await get_messages(req.session_id)
-    if len(msgs) <= 2:  # First exchange
-        # Generate a short title from the contract
-        title = _generate_title(code)
-        await rename_session(req.session_id, title)
+    if req.session_id:
+        await add_message(req.session_id, "assistant", json.dumps(result))
+        msgs = await get_messages(req.session_id)
+        if len(msgs) <= 2:  # First exchange — auto-title
+            await rename_session(req.session_id, _generate_title(code))
 
     return result
 
@@ -129,7 +128,8 @@ async def analyze_council(req: AnalyzeReq):
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
-    await add_message(req.session_id, "user", code)
+    if req.session_id:
+        await add_message(req.session_id, "user", code)
     similar = find_similar(code)
     result = await run_council(code, similar)
     result["mode"] = "council"
@@ -140,12 +140,11 @@ async def analyze_council(req: AnalyzeReq):
     except:
         pass
 
-    await add_message(req.session_id, "assistant", json.dumps(result))
-
-    msgs = await get_messages(req.session_id)
-    if len(msgs) <= 2:
-        title = _generate_title(code)
-        await rename_session(req.session_id, title)
+    if req.session_id:
+        await add_message(req.session_id, "assistant", json.dumps(result))
+        msgs = await get_messages(req.session_id)
+        if len(msgs) <= 2:
+            await rename_session(req.session_id, _generate_title(code))
 
     return result
 
@@ -245,6 +244,14 @@ async def dynamic_reference_poc():
     result = await _aio.to_thread(run_reference_poc)
     result["foundry_installed"] = foundry_available()
     return result
+
+
+@app.get("/api/samples")
+async def list_sample_contracts():
+    """Curated pre-verified sample contracts for the demo/trial section — each
+    with its expected verdict so users can one-click load and scan."""
+    from services.samples import list_samples
+    return list_samples()
 
 
 @app.get("/api/retrieval/status")
