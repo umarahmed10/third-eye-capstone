@@ -19,7 +19,7 @@ UNMAPPED means "this isn't a DASP-10-shaped bug at all" — most commonly
 Web3Bugs' S-category business-logic bugs (missing state updates, broken
 business-flow assumptions, price-oracle manipulation) and out-of-scope
 O-codes. That split is itself a finding, not a gap to paper over: it's
-the same observation the Argus plan's own thesis rests on — most real bugs
+the same observation the ThirdEye plan's own thesis rests on — most real bugs
 are logic bugs a pattern taxonomy like DASP-10 was never built to hold.
 """
 

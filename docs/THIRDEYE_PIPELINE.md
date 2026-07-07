@@ -151,3 +151,68 @@ python -m eval.run_baselines --datasets access_control_slice,smartbugs_curated,w
 # CLI:
 python argus_cli.py scan path/to/Contract.sol --sarif out.sarif
 ```
+
+---
+
+# Session 7 — architecture redesign + real benchmark + rebrand
+
+## New pipeline (services/pipeline.py::run_thirdeye)
+```
+static analysis (Slither, best-effort) + code features
+   -> ROUTER (services/router.py): selects the RELEVANT specialists, not all 8
+   -> model-diverse council over the selected subset only
+   -> per-finding evidence gate (quote must appear in source AND conf >= 0.6)
+   -> adversarial arbitration (strong Cerebras judge) — the precision gate
+   -> verdict: GO / NO-GO / INCONCLUSIVE
+```
+
+**Why the router.** Firing all 8 eager specialists at every contract made safe
+code over-flag → everything went NO-GO. The router uses static/feature signals
+to skip irrelevant pattern-classes, while ALWAYS running the logic classes
+(business_logic etc.) because static tools cannot see logic bugs. A well-audited
+safe contract now triggers few/zero specialists → reaches GO. Verified on the
+new benchmark: `01_oz_access_accesscontrol` → GO (clean); `01_oz_access_ownable`
+→ council over-flagged one business_logic finding, arbitration DROPPED it → GO;
+a reentrancy contract → NO-GO. Safe→GO and vuln→NO-GO both demonstrated.
+
+**Fail-closed verdict (critique #8).** If >50% of the specialists that ran
+errored, the verdict is INCONCLUSIVE, never a green GO. `verdict_reason` and
+`stats.specialists_errored` explain it.
+
+**Per-finding gate, not quorum (critique #7).** The old "≥2 different-class
+specialists = consensus" rule (which conflated two unrelated findings) is gone.
+Each finding stands on its own evidence + confidence; arbitration does the real
+per-finding vetting.
+
+## New benchmark (smartcontract-datasets/, loader: eval/loaders/thirdeye_bench.py)
+2,250 scored contracts, balanced 1,125 safe : 1,125 vulnerable — the first set
+with a real SAFE bucket, so precision/false-positive rate are finally
+measurable and "safe → GO" is a real test. Buckets 03/04/05 (wild/web3bugs/
+DeFiHackLabs) are unscored and not yet wired.
+
+## Rebrand
+Argus → **ThirdEye** across backend strings, SARIF tool driver, CLI
+(argus_cli.py → thirdeye_cli.py), and docs. Agent name: **Raven**.
+
+## Honest status / still deferred (from the 30-item critique)
+- **#1 dynamic auto-harness** still stub for arbitrary contracts (the bundled
+  reentrancy reference PoC is real; general auto-exploit is unsolved). Off by
+  default in the pipeline.
+- **#16/#17/#18 auth/IDOR/client-side login** — NOT fixed. Tokens still not
+  validated, session routes still trust the URL id. Highest-priority security
+  work before any real deploy.
+- **#19 rate limiting / input size cap** — NOT added.
+- **#3/#30 retrieval → prompts** — precedents still surfaced only, not injected
+  into specialist prompts.
+- **#9 shared verdict fn across ablation rows** — single_llm baseline still uses
+  a different decision rule; ablation not yet fully apples-to-apples.
+- **#11 GPTScan head-to-head** — the new web3bugs bucket (04) is imported-ready
+  but the head-to-head run isn't done.
+- **#22 regex false-positive filter** and **#25 Slither severity inflation** —
+  in the OLD run_full_analysis path; not touched this session.
+- **#23 SARIF/PDF download buttons** — endpoints/functions exist; UI buttons TBD.
+
+Reproduce the safe→GO / vuln→NO-GO check:
+```bash
+cd backend && ./venv_mac/bin/python -c "import asyncio;from services.pipeline import run_thirdeye;from eval.loaders import thirdeye_bench as tb;print(asyncio.run(run_thirdeye(tb.load_safe(tier='audited_library')[0].read_code(), backend='ollama'))['final_verdict'])"
+```

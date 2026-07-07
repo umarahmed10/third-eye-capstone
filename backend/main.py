@@ -160,7 +160,7 @@ class ArgusReq(BaseModel):
 
 @app.post("/api/analyze/argus")
 async def analyze_argus(req: ArgusReq):
-    """Full Argus pipeline: retrieval -> model-diverse council -> evidence-
+    """Full ThirdEye pipeline: retrieval -> model-diverse council -> evidence-
     anchored arbitration -> dynamic confirmation. Per-stage toggles let the
     same endpoint produce any ablation configuration."""
     code = req.code.strip()
@@ -197,16 +197,47 @@ async def analyze_council_stream(req: AnalyzeReq):
     result. Backend tier is taken from LLM_BACKEND (env)."""
     from fastapi.responses import StreamingResponse
     from services.council import run_council_stream
+    from services.router import select_specialists
+    from services.llm import preanalyze_code
 
     code = req.code.strip()
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
     async def event_gen():
+        # 1. Static/heuristic ROUTER — stream only the RELEVANT specialists.
+        features = preanalyze_code(code)
+        static = None
+        try:
+            from services.slither import run_slither
+            from services.llm import _parse_slither
+            import asyncio as _a
+            out = await _a.to_thread(run_slither, code)
+            if out.get("status") == "completed":
+                static = _parse_slither(out)
+        except Exception:
+            static = None
+        routed = select_specialists(code, features, static)
+        yield f"data: {json.dumps({'event': 'routing', 'roles': routed['roles'], 'trace': routed['trace'], 'static_used': routed['static_used']})}\n\n"
+
         final_result = None
-        async for ev in run_council_stream(code):
+        async for ev in run_council_stream(code, roles=routed["roles"]):
             if ev.get("event") == "final":
                 final_result = ev["result"]
+                # 2. Precision gate — arbitrate the council's findings with a
+                # strong judge, then emit the arbitrated final (the real pipeline).
+                if final_result.get("vulnerabilities") and final_result.get("final_verdict") != "INCONCLUSIVE":
+                    try:
+                        from services.arbitration import run_arbitration
+                        ab = "cerebras" if os.getenv("CEREBRAS_API_KEY") else None
+                        yield f"data: {json.dumps({'event': 'arbitrating', 'count': len(final_result['vulnerabilities'])})}\n\n"
+                        final_result = await run_arbitration(code, final_result, backend=ab)
+                        survivors = final_result.get("vulnerabilities") or []
+                        final_result["final_verdict"] = "NO-GO" if survivors else "GO"
+                    except Exception:
+                        pass
+                final_result["routing"] = routed
+                ev["result"] = final_result
             yield f"data: {json.dumps(ev)}\n\n"
         # Persist the final result the same way the non-streaming endpoint does.
         if final_result is not None:
@@ -282,6 +313,28 @@ async def download_report(req: ReportReq):
 @app.get("/api/ollama-status")
 async def ollama_status():
     return await check_ollama()
+
+@app.get("/api/health")
+async def health():
+    """Fail-LOUD readiness check — surfaces missing keys so a deploy doesn't
+    silently return INCONCLUSIVE on every scan (critique #2/#20). `ready` is
+    False when the configured tier can't actually run the council."""
+    backend = os.getenv("LLM_BACKEND", "ollama").lower()
+    has_groq = bool(os.getenv("GROQ_API_KEY"))
+    has_cerebras = bool(os.getenv("CEREBRAS_API_KEY"))
+    problems = []
+    if backend in ("groq", "hosted"):
+        # hosted council needs Cerebras (dual) at minimum; Groq is optional.
+        if not has_cerebras:
+            problems.append("CEREBRAS_API_KEY missing — hosted council/judge cannot run")
+    from services.dynamic import foundry_available
+    return {
+        "ready": not problems,
+        "tier": backend,
+        "providers": {"groq": has_groq, "cerebras": has_cerebras},
+        "foundry": foundry_available(),
+        "problems": problems,
+    }
 
 @app.get("/api/similar/{code_hash}")
 async def get_similar(code_hash: str):

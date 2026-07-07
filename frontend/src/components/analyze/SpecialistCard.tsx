@@ -6,17 +6,45 @@ export type SpecialistState = {
   role: string;
   provider?: string;
   model?: string;
-  status: "queued" | "analyzing" | "done";
+  status: "queued" | "analyzing" | "done" | "skipped";
   found?: boolean;
   confidence?: number;
   severity?: string;
   evidence_quote?: string;
   llm_error?: boolean;
+  skip_reason?: string;
 };
 
 export function SpecialistCard({ s, index }: { s: SpecialistState; index: number }) {
   const { status } = s;
   const color = s.provider ? providerColor(s.provider) : "#a855f7";
+
+  // Skipped specialists render greyed-out with their router skip reason.
+  if (status === "skipped") {
+    return (
+      <article
+        className="relative overflow-hidden rounded-xl border border-white/[0.05] bg-white/[0.008] px-3.5 py-3 flex flex-col gap-2 opacity-55"
+        title={s.skip_reason || "Not selected by the static router"}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-slate-600">
+              <EyeIcon size={14} />
+            </span>
+            <span className="text-[12.5px] font-semibold text-slate-500 leading-tight truncate line-through decoration-slate-700/60">
+              {humanizeRole(s.role)}
+            </span>
+          </div>
+          <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-slate-500 bg-white/[0.03] ring-1 ring-white/[0.05] flex-shrink-0">
+            Skipped
+          </span>
+        </div>
+        <p className="text-[9.5px] text-slate-600 leading-snug">
+          {s.skip_reason || "Not selected by the static router."}
+        </p>
+      </article>
+    );
+  }
 
   // Border/background per state.
   const shell =

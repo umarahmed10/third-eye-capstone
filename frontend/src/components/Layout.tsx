@@ -7,6 +7,7 @@ import {
   ChartIcon,
   HistoryIcon,
   LogoutIcon,
+  EyeIcon,
 } from "./ui/icons";
 
 export type Tab = "analyze" | "how" | "benchmarks" | "history";
@@ -24,12 +25,16 @@ export function Layout({
   onTab,
   onLogout,
   children,
+  anonymous = false,
+  onSignIn,
 }: {
   user: User;
   tab: Tab;
   onTab: (t: Tab) => void;
   onLogout: () => void;
   children: ReactNode;
+  anonymous?: boolean;
+  onSignIn?: () => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -47,7 +52,7 @@ export function Layout({
             <ThirdEyeMark size={26} />
           </div>
           <div className="leading-none">
-            <div className="text-[15px] font-bold text-white tracking-tight">Third-Eye</div>
+            <div className="text-[15px] font-bold text-white tracking-tight">ThirdEye</div>
             <div className="text-[9px] uppercase tracking-[0.22em] text-violet-300/50 mt-1">
               Contract Security
             </div>
@@ -84,23 +89,51 @@ export function Layout({
 
         {/* User footer */}
         <div className="px-3 py-3 border-t border-violet-300/[0.08]">
-          <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-            <div className="w-8 h-8 rounded-lg bg-violet-500/15 ring-1 ring-violet-400/25 flex items-center justify-center text-[12px] font-bold text-violet-200 uppercase">
-              {user.username.slice(0, 2)}
+          {anonymous ? (
+            <div className="px-1 py-1 space-y-2">
+              <div className="flex items-center gap-2.5 px-1">
+                <div className="w-8 h-8 rounded-lg bg-white/[0.05] ring-1 ring-white/[0.10] flex items-center justify-center text-violet-300">
+                  <EyeIcon size={15} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[12px] font-medium text-slate-200 truncate">Guest</div>
+                  <div className="text-[9px] text-violet-300/45">anonymous trial</div>
+                </div>
+              </div>
+              {onSignIn && (
+                <button
+                  onClick={onSignIn}
+                  className="w-full inline-flex items-center justify-center gap-1.5 text-[12px] font-semibold bg-violet-500/90 hover:bg-violet-400 text-white py-2 rounded-lg transition-colors"
+                >
+                  Sign in to save history
+                </button>
+              )}
+              <button
+                onClick={onLogout}
+                className="w-full inline-flex items-center justify-center gap-1.5 text-[11px] text-slate-500 hover:text-slate-300 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
+              >
+                <LogoutIcon size={13} /> Exit to home
+              </button>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-[12px] font-medium text-slate-200 truncate">{user.username}</div>
-              <div className="text-[9px] text-violet-300/45">authenticated</div>
+          ) : (
+            <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
+              <div className="w-8 h-8 rounded-lg bg-violet-500/15 ring-1 ring-violet-400/25 flex items-center justify-center text-[12px] font-bold text-violet-200 uppercase">
+                {user.username.slice(0, 2)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-[12px] font-medium text-slate-200 truncate">{user.username}</div>
+                <div className="text-[9px] text-violet-300/45">authenticated</div>
+              </div>
+              <button
+                onClick={onLogout}
+                title="Sign out"
+                aria-label="Sign out"
+                className="p-1.5 rounded-md text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+              >
+                <LogoutIcon size={16} />
+              </button>
             </div>
-            <button
-              onClick={onLogout}
-              title="Sign out"
-              aria-label="Sign out"
-              className="p-1.5 rounded-md text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-            >
-              <LogoutIcon size={16} />
-            </button>
-          </div>
+          )}
         </div>
       </aside>
 

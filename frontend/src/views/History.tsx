@@ -9,7 +9,7 @@ import {
 } from "../lib/api";
 import { SectionLabel, Spinner, Pill } from "../components/ui/primitives";
 import { HistoryIcon, ShieldCheckIcon, AlertIcon } from "../components/ui/icons";
-import { VerdictBanner, StatsStrip, VulnList } from "../components/analyze/ResultPanel";
+import { VerdictBanner, StatsStrip, VulnList, RoutingSummary } from "../components/analyze/ResultPanel";
 
 export function History({ user }: { user: User }) {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -116,7 +116,15 @@ export function History({ user }: { user: User }) {
               {analyses.map((r, i) => (
                 <div key={i} className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className={r.final_verdict === "GO" ? "text-emerald-400" : "text-rose-400"}>
+                    <span
+                      className={
+                        r.final_verdict === "GO"
+                          ? "text-emerald-400"
+                          : r.final_verdict === "INCONCLUSIVE"
+                          ? "text-amber-300"
+                          : "text-rose-400"
+                      }
+                    >
                       {r.final_verdict === "GO" ? <ShieldCheckIcon size={15} /> : <AlertIcon size={15} />}
                     </span>
                     <span className="text-[12px] font-semibold text-slate-200">
@@ -126,7 +134,11 @@ export function History({ user }: { user: User }) {
                   </div>
                   <VerdictBanner result={r} />
                   {r.stats && <StatsStrip stats={r.stats} />}
-                  <VulnList vulnerabilities={r.vulnerabilities || []} />
+                  <VulnList
+                    vulnerabilities={r.vulnerabilities || []}
+                    inconclusive={r.final_verdict === "INCONCLUSIVE"}
+                  />
+                  <RoutingSummary routing={r.routing} />
                 </div>
               ))}
             </div>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Argus CLI — run the smart-contract auditor council from the terminal / CI.
+ThirdEye CLI — run the smart-contract auditor council from the terminal / CI.
 
 Usage:
     python argus_cli.py scan <path> [--sarif OUT.sarif] [--json OUT.json]
@@ -117,7 +117,7 @@ def print_report(result: dict, path: str) -> None:
     vulns = result.get("vulnerabilities", []) or []
 
     print()
-    print(_bold("Argus council report"))
+    print(_bold("ThirdEye council report"))
     print(_dim(f"  target  : {path}"))
     name = result.get("contract_name") or "(unnamed)"
     print(_dim(f"  contract: {name}"))
@@ -217,7 +217,7 @@ def cmd_scan(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="argus_cli.py",
-        description="Argus — model-diverse smart-contract auditor council.",
+        description="ThirdEye — model-diverse smart-contract auditor council.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 

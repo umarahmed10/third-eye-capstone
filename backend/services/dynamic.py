@@ -1,5 +1,5 @@
 """
-Phase 4: dynamic exploitability confirmation — the precision GATE the Argus
+Phase 4: dynamic exploitability confirmation — the precision GATE the ThirdEye
 plan calls "never cut".
 
 A council finding is, by itself, an LLM assertion: weak evidence. This module

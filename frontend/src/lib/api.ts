@@ -52,8 +52,24 @@ export type CouncilStats = {
   specialists_run: number;
   specialists_found: number;
   specialists_confirmed: number;
+  specialists_errored?: number;
   tier: string;
   models_used: string[];
+};
+
+// ─── Static router trace (which specialists were selected + why) ───
+export type RoutingInfo = {
+  roles: string[];
+  trace?: Record<string, string>;
+  static_used?: boolean;
+};
+
+// ─── Arbitration / cross-examination summary ───
+export type ArbitrationSummary = {
+  reviewed?: number;
+  upheld?: number;
+  dropped?: number;
+  dropped_types?: string[];
 };
 
 export type SimilarExploit = {
@@ -62,8 +78,11 @@ export type SimilarExploit = {
   snippet?: string;
 };
 
+export type FinalVerdict = "GO" | "NO-GO" | "INCONCLUSIVE";
+
 export type CouncilResult = {
-  final_verdict: "GO" | "NO-GO";
+  final_verdict: FinalVerdict;
+  verdict_reason?: string;
   vulnerabilities: CouncilVuln[];
   summary: string;
   raven_note?: string;
@@ -72,6 +91,9 @@ export type CouncilResult = {
   council_detail?: CouncilDetail[];
   similar_exploits?: SimilarExploit[];
   mode?: string;
+  // new architecture surfaces
+  routing?: RoutingInfo;
+  arbitration_summary?: ArbitrationSummary;
   // pipeline extras (optional)
   pipeline?: Record<string, unknown>;
   arbitration?: Record<string, unknown>;
@@ -96,6 +118,18 @@ export type StreamStart = {
   tier: string;
   specialists: SpecialistMeta[];
 };
+// Static/heuristic router picked which specialists to run (not always all 8).
+export type StreamRouting = {
+  event: "routing";
+  roles: string[];
+  trace?: Record<string, string>;
+  static_used?: boolean;
+};
+// Arbitration / cross-examination step (after all specialists, before result).
+export type StreamArbitrating = {
+  event: "arbitrating";
+  count: number;
+};
 export type StreamSpecialistDone = {
   event: "specialist_done";
   role: string;
@@ -108,7 +142,13 @@ export type StreamSpecialistDone = {
   llm_error: boolean;
 };
 export type StreamFinal = { event: "final"; result: CouncilResult };
-export type StreamEvent = StreamStart | StreamSpecialistDone | StreamFinal | { event: string; [k: string]: unknown };
+export type StreamEvent =
+  | StreamStart
+  | StreamRouting
+  | StreamArbitrating
+  | StreamSpecialistDone
+  | StreamFinal
+  | { event: string; [k: string]: unknown };
 
 // ─── Benchmark stats schema (GET /api/stats/benchmark) ───
 export type Kpi = { label: string; value: string | number; sub?: string; delta?: number };
@@ -260,6 +300,8 @@ export async function streamCouncil(
       if (!dataLines.length) continue;
       const json = dataLines.join("\n");
       try {
+        // Forward EVERY event through untouched — including newer event types
+        // like "routing" and "arbitrating". No allow-list here on purpose.
         onEvent(JSON.parse(json) as StreamEvent);
       } catch {
         /* skip malformed frame */

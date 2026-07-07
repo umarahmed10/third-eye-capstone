@@ -79,7 +79,12 @@ EVIDENCE RUBRIC (weight evidence, not confidence of assertion):
 - A dynamic exploit witness (a PoC that runs) = decisive proof it is real.
 - Static-tool evidence + a matching known-exploit precedent = strong.
 - An LLM specialist's assertion alone = WEAK — it must survive the rebuttal.
-Default to NOT-A-BUG when the rebuttal raises a credible doubt the proposer's evidence does not clearly overcome. Precision matters more than recall here.
+Judge on the MERITS: rule REAL only if the quoted code genuinely enables the
+described attack given the whole contract (no guard/modifier/version defuses
+it); rule NOT-A-BUG if the rebuttal shows the code is actually safe, guarded,
+unreachable, or the "bug" is a style/informational nit. Do not rubber-stamp,
+but do not reflexively dismiss a well-evidenced finding either — a real bug
+with a real quote should be upheld.
 
 VULNERABILITY CLASS: {vuln_type}
 PROPOSER's finding: {description}
@@ -107,8 +112,10 @@ def _parse_judge(raw: str) -> dict:
             }
     except Exception:
         pass
-    # Unparseable judge output -> drop the finding (precision-first default).
-    return {"verdict": "not_a_bug", "calibrated_confidence": 0.0, "reason": "judge output unparseable; dropped (precision-first default)"}
+    # Unparseable judge output -> KEEP the finding, low confidence (fail-safe:
+    # a security tool shouldn't silently drop a potential bug because the
+    # judge's response didn't parse). It surfaces flagged, not hidden.
+    return {"verdict": "real", "calibrated_confidence": 0.4, "reason": "judge output unparseable; finding kept for safety (unvetted)"}
 
 
 async def _arbitrate_one(finding: dict, code: str, backend: str, seed: int | None) -> dict:

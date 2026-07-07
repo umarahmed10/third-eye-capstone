@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { authRequest, type User } from "../lib/api";
-import { ThirdEyeMark, ArrowRightIcon, ShieldCheckIcon, EyeIcon, ChipIcon } from "../components/ui/icons";
+import { ThirdEyeMark, ArrowRightIcon, ShieldCheckIcon, EyeIcon, ChipIcon, HomeIcon } from "../components/ui/icons";
 import { Spinner } from "../components/ui/primitives";
 
 const FEATURES = [
@@ -9,7 +9,7 @@ const FEATURES = [
   { icon: ChipIcon, title: "Dynamic exploit confirmation", body: "Suspected issues are escalated to Foundry proof-of-concept execution before they're called exploitable." },
 ];
 
-export function Login({ onAuth }: { onAuth: (u: User) => void }) {
+export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: () => void }) {
   const [mode, setMode] = useState<"login" | "register">("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -95,8 +95,17 @@ export function Login({ onAuth }: { onAuth: (u: User) => void }) {
             <span className="text-violet-300">
               <ThirdEyeMark size={28} />
             </span>
-            <span className="text-xl font-bold text-white tracking-tight">Third-Eye</span>
+            <span className="text-xl font-bold text-white tracking-tight">ThirdEye</span>
           </div>
+
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-violet-200 transition-colors mb-6"
+            >
+              <HomeIcon size={13} /> Back to home
+            </button>
+          )}
 
           <h1 className="text-xl font-bold text-white tracking-tight">
             {mode === "login" ? "Sign in to Third-Eye" : "Create your account"}

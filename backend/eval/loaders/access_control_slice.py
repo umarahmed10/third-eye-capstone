@@ -1,5 +1,5 @@
 """
-Access-Control slice — the "hard frontier" benchmark from the Argus plan
+Access-Control slice — the "hard frontier" benchmark from the ThirdEye plan
 (real-world access control: traditional tools get 3-8% recall; GPT-4o-mini
 gets high recall but ~951 false positives; precision+recall together is the
 open problem).

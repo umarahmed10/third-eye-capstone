@@ -347,37 +347,42 @@ async def _run_specialist(spec: dict, provider: str, model: str, code: str, seed
     return result
 
 
+# Per-finding confidence floor for the pre-arbitration gate. Precision is
+# enforced downstream by the strong-judge arbitration; this just drops
+# low-confidence noise and fabricated-evidence findings.
+CONF_MIN = float(os.getenv("COUNCIL_CONF_MIN", "0.6"))
+
+
 def _aggregate(specialist_results: list[dict], code: str) -> list[dict]:
-    """Pure-Python judge (no LLM), evidence-anchored.
+    """Pure-Python evidence gate — PER FINDING, no cross-class quorum.
 
-    STEP 1 — evidence gate (applied to EVERY finding, not just singletons):
-    a specialist that returned found=True but whose evidence_quote does not
-    actually appear in the submitted source is discarded. Its "evidence" is
-    fabricated (commonly the few-shot example leaking back as the quote), so
-    it is not evidence at all. This is the PDF's evidence-anchored principle —
-    the judge weights evidence, not assertion — and it is what stops eager
-    over-flagging from poisoning the agreement vote.
-
-    STEP 2 — agreement gate over the credible findings only:
-      - >=2 credible specialists -> CONFIRMED (cross-model agreement), OR
-      - exactly 1 credible specialist with confidence >= 0.8 -> CONFIRMED.
-
-    With 8 single-class specialists, ">=2 agree" means two DIFFERENT classes
-    were each independently flagged WITH real code evidence on the same
-    contract — a meaningful multi-specialist signal, not two votes on one
-    issue. Per-class identity is preserved in the output."""
-    credible = [
+    Each of the 8 specialists hunts a DIFFERENT bug class, so "two specialists
+    flagged something" is two unrelated findings, NOT corroboration of one
+    claim. The old >=2-agreement rule dressed that up as consensus; it's
+    removed. Instead every finding stands on its OWN evidence:
+      keep a finding iff  found=True  AND  its evidence_quote actually appears
+      in the submitted source  AND  confidence >= CONF_MIN.
+    Genuine precision is then applied by the adversarial arbitration stage
+    (services/arbitration.py), which vets each surviving finding with a strong
+    independent judge — real per-finding review, not a vote count."""
+    return [
         r for r in specialist_results
-        if r["found"] and quote_appears_in_code(r["evidence_quote"], code)
+        if r["found"]
+        and r["confidence"] >= CONF_MIN
+        and quote_appears_in_code(r["evidence_quote"], code)
     ]
-    if len(credible) >= 2:
-        return credible
-    if len(credible) == 1 and credible[0]["confidence"] >= 0.8:
-        return credible
-    return []
 
 
-async def run_council_stream(code: str, backend: str | None = None, seed: int | None = None):
+def _filter_assignments(assignments: dict, roles: list[str] | None) -> dict:
+    """Restrict the specialist set to `roles` (from services/router.py). None =
+    run all. Empty selection falls back to all (never analyze nothing)."""
+    if not roles:
+        return assignments
+    picked = {r: assignments[r] for r in roles if r in assignments}
+    return picked or assignments
+
+
+async def run_council_stream(code: str, backend: str | None = None, seed: int | None = None, roles: list[str] | None = None):
     """Async generator yielding live progress events for the UI, so the user
     sees each specialist resolve instead of staring at a spinner. Event shapes:
       {"event":"start", "specialists":[{role,model,provider}...], "tier":...}
@@ -386,7 +391,7 @@ async def run_council_stream(code: str, backend: str | None = None, seed: int | 
     Runs the same specialists as run_council and assembles an identical final
     result, so the streaming and non-streaming paths never diverge."""
     backend = backend or os.getenv("LLM_BACKEND", "ollama").lower()
-    assignments = specialist_assignments(backend)
+    assignments = _filter_assignments(specialist_assignments(backend), roles)
     features = preanalyze_code(code)
 
     yield {"event": "start", "tier": backend,
@@ -427,26 +432,42 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
         }
         for r in confirmed
     ]
-    verdict = "NO-GO" if confirmed else "GO"
     name = features.get("contract_name") or "this contract"
     n_found = sum(1 for r in specialist_results if r["found"])
+    n_run = len(specialist_results)
+    n_err = sum(1 for r in specialist_results if r["llm_error"])
     models = sorted({r["model"] for r in specialist_results})
-    if verdict == "GO":
-        raven_note = f"The council examined {name} across {len(specialist_results)} vulnerability classes and came back clean — no finding cleared the agreement bar."
+
+    # FAIL-CLOSED verdict (critique #8): a scan where too many specialists
+    # errored (missing key, rate-limited, provider down) must NOT read as a
+    # clean GO — that's the worst failure mode for a security tool. Distinguish
+    # "analyzed and clean" (GO) from "couldn't analyze" (INCONCLUSIVE).
+    if n_run == 0 or (n_run > 0 and n_err / n_run > 0.5):
+        verdict = "INCONCLUSIVE"
+        verdict_reason = f"{n_err}/{n_run} specialists failed to run — result is not trustworthy."
+        raven_note = f"Raven couldn't complete the review of {name}: {n_err} of {n_run} specialists errored (likely a provider/key issue). This is NOT a clean bill of health — re-run once the engine is healthy."
+    elif confirmed:
+        verdict = "NO-GO"
+        flagged = ", ".join(sorted({r["type"].replace('_', ' ') for r in confirmed}))
+        verdict_reason = f"{len(confirmed)} finding(s) survived the evidence gate: {flagged}."
+        raven_note = f"Raven flagged {name} on: {flagged}. Each finding quotes real code from the contract and cleared the confidence bar."
     else:
-        roles = ", ".join(sorted({r["role"].replace('_', ' ') for r in confirmed}))
-        agreed = "Multiple specialists agreed" if len(confirmed) >= 2 else "One specialist found strong, quote-backed evidence"
-        raven_note = f"The council flagged {name} on: {roles}. {agreed} — not a single model's hunch."
-    summary = (f"Council analysis of {name}: {len(specialist_results)} model-diverse specialists "
-               f"({', '.join(models)}) examined the contract, {n_found} raised a finding, "
-               f"{len(confirmed)} were confirmed by the agreement gate.")
+        verdict = "GO"
+        verdict_reason = f"All {n_run} specialists that ran found nothing quote-backed above the confidence bar."
+        raven_note = f"Raven reviewed {name} across {n_run} relevant vulnerability classes and it came back clean — no finding cleared the evidence bar."
+
+    summary = (f"Analysis of {name}: {n_run} model-diverse specialists "
+               f"({', '.join(models)}) ran, {n_found} raised a finding, "
+               f"{len(confirmed)} cleared the evidence gate. Verdict: {verdict}.")
     return {
-        "final_verdict": verdict, "vulnerabilities": vulnerabilities, "summary": summary,
+        "final_verdict": verdict, "verdict_reason": verdict_reason,
+        "vulnerabilities": vulnerabilities, "summary": summary,
         "raven_note": raven_note, "contract_name": features.get("contract_name", ""),
         "features_detected": {k: v for k, v in features.items() if v and k not in ("solidity_version", "contract_name")},
         "stats": {
-            "models_run": len(models), "specialists_run": len(specialist_results),
+            "models_run": len(models), "specialists_run": n_run,
             "specialists_found": n_found, "specialists_confirmed": len(confirmed),
+            "specialists_errored": n_err,
             "similar_in_db": len(similar_exploits) if similar_exploits else 0,
             "llm_error_detected": llm_error_detected, "tier": backend, "models_used": models,
         },
@@ -454,7 +475,7 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
     }
 
 
-async def run_council(code: str, similar_exploits: list | None = None, backend: str | None = None, seed: int | None = None) -> dict:
+async def run_council(code: str, similar_exploits: list | None = None, backend: str | None = None, seed: int | None = None, roles: list[str] | None = None) -> dict:
     """Council entry point. Returns the same top-level schema as
     run_full_analysis() (final_verdict, vulnerabilities, summary, raven_note,
     contract_name, features_detected, stats) so the eval harness and frontend
@@ -467,7 +488,7 @@ async def run_council(code: str, similar_exploits: list | None = None, backend: 
     similar_exploits: optional retrieved precedents (services/retrieval.py);
     surfaced in the output, not yet fed into specialist prompts."""
     backend = backend or os.getenv("LLM_BACKEND", "ollama").lower()
-    assignments = specialist_assignments(backend)
+    assignments = _filter_assignments(specialist_assignments(backend), roles)
     features = preanalyze_code(code)
 
     # Bound concurrency so a hosted free tier isn't hit with 8 simultaneous

@@ -27,3 +27,6 @@ backend/eval/results/*
 !backend/eval/results/ablation_ac.md
 !backend/eval/results/ablation_ac.json
 !backend/eval/results/benchmark_stats.json
+
+# New benchmark buckets (large, gitignored like datasets/)
+smartcontract-datasets/

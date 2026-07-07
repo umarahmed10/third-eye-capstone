@@ -9,8 +9,9 @@ import {
   type User,
 } from "../lib/api";
 import { SPECIALIST_ROLES } from "../lib/theme";
+import type { RoutingInfo } from "../lib/api";
 import { SpecialistCard, type SpecialistState } from "../components/analyze/SpecialistCard";
-import { VerdictBanner, StatsStrip, VulnList, PrecedentPanel } from "../components/analyze/ResultPanel";
+import { VerdictBanner, StatsStrip, VulnList, PrecedentPanel, RoutingSummary } from "../components/analyze/ResultPanel";
 import { SectionLabel, Spinner, Pill } from "../components/ui/primitives";
 import { BoltIcon, UploadIcon, EyeIcon, ScanIcon, FlowIcon, ChartIcon, ArrowRightIcon } from "../components/ui/icons";
 import type { Tab } from "../components/Layout";
@@ -39,6 +40,9 @@ export function Analyze({
   const [specs, setSpecs] = useState<Record<string, SpecialistState>>(initialStates);
   const [result, setResult] = useState<CouncilResult | null>(null);
   const [activeSample, setActiveSample] = useState<string | null>(null);
+  // Static-router selection (which specialists actually run) + arbitration step.
+  const [routing, setRouting] = useState<RoutingInfo | null>(null);
+  const [arbitrating, setArbitrating] = useState<{ count: number } | null>(null);
 
   const [samples, setSamples] = useState<SampleContract[]>([]);
   const [samplesErr, setSamplesErr] = useState(false);
@@ -51,7 +55,11 @@ export function Analyze({
 
   const order = SPECIALIST_ROLES as readonly string[];
   const list = order.map((r) => specs[r]);
-  const doneCount = list.filter((s) => s.status === "done").length;
+  // Progress is driven by the ROUTED subset — the router may pick fewer than 8.
+  const selectedRoles = routing?.roles?.length ? routing.roles : (order as string[]);
+  const activeList = list.filter((s) => s.status !== "skipped");
+  const doneCount = activeList.filter((s) => s.status === "done").length;
+  const totalActive = Math.max(activeList.length, selectedRoles.length, 1);
   const running = phase === "running";
 
   useEffect(() => {
@@ -80,6 +88,8 @@ export function Analyze({
     setResult(null);
     setError("");
     setTier("");
+    setRouting(null);
+    setArbitrating(null);
     setSpecs(initialStates());
   }
 
@@ -110,6 +120,21 @@ export function Analyze({
 
   function applyFinal(r: CouncilResult) {
     setResult(r);
+    setArbitrating(null);
+    // Backfill routing from the result if the stream didn't emit a routing event.
+    if (r.routing?.roles?.length) {
+      setRouting((prev) => prev ?? r.routing!);
+      const selected = new Set(r.routing.roles);
+      setSpecs((prev) => {
+        const next = { ...prev };
+        for (const role of SPECIALIST_ROLES) {
+          if (!selected.has(role) && next[role].status !== "done") {
+            next[role] = { ...next[role], role, status: "skipped", skip_reason: r.routing!.trace?.[role] };
+          }
+        }
+        return next;
+      });
+    }
     if (r.council_detail?.length) {
       setSpecs((prev) => {
         const next = { ...prev };
@@ -136,7 +161,30 @@ export function Analyze({
     await streamCouncil(
       trimmed,
       (ev: StreamEvent) => {
-        if (ev.event === "start") {
+        if (ev.event === "routing") {
+          // Static/heuristic router picked the subset of specialists to run.
+          const r = ev as Extract<StreamEvent, { event: "routing" }>;
+          const selected = new Set(r.roles ?? []);
+          setRouting({ roles: r.roles ?? [], trace: r.trace, static_used: r.static_used });
+          setSpecs((prev) => {
+            const next = { ...prev };
+            for (const role of SPECIALIST_ROLES) {
+              if (!selected.has(role)) {
+                next[role] = {
+                  ...next[role],
+                  role,
+                  status: "skipped",
+                  skip_reason: r.trace?.[role],
+                };
+              }
+            }
+            return next;
+          });
+        } else if (ev.event === "arbitrating") {
+          // Cross-examination / arbitration step in the pipeline.
+          const a = ev as Extract<StreamEvent, { event: "arbitrating" }>;
+          setArbitrating({ count: a.count });
+        } else if (ev.event === "start") {
           const start = ev as Extract<StreamEvent, { event: "start" }>;
           setTier(start.tier);
           setSpecs((prev) => {
@@ -150,6 +198,8 @@ export function Analyze({
                 status: "analyzing",
               };
             }
+            // Any specialist not already skipped by the router and still queued
+            // is now analyzing. Never flip a "skipped" card back on.
             for (const r of SPECIALIST_ROLES) {
               if (next[r].status === "queued") next[r] = { ...next[r], status: "analyzing" };
             }
@@ -330,6 +380,31 @@ export function Analyze({
           </div>
         )}
 
+        {/* Static routing story — the router picked N of 8 specialists */}
+        {(routing || running || phase === "done") && (routing?.roles?.length ?? 0) > 0 && (
+          <div className="rounded-xl border border-violet-300/[0.12] bg-violet-500/[0.04] px-5 py-4 animate-fade-in">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 px-2 py-1 rounded-md">
+                <FlowIcon size={11} /> Static routing
+              </span>
+              <span className="text-[13px] font-medium text-slate-200">
+                Router selected{" "}
+                <span className="text-violet-200 font-semibold tabular-nums">
+                  {routing!.roles.length} of {order.length}
+                </span>{" "}
+                specialists
+                {routing!.static_used === false && (
+                  <span className="text-slate-500"> (fallback — full council)</span>
+                )}
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-500 leading-relaxed mt-1.5">
+              A heuristic pre-scan routes the contract to only the relevant attack-surface specialists —
+              the rest are skipped, shown greyed below.
+            </p>
+          </div>
+        )}
+
         {/* Live progress */}
         {(running || phase === "done") && (
           <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4 animate-fade-in">
@@ -338,25 +413,41 @@ export function Analyze({
                 className={`w-2 h-2 rounded-full ${running ? "bg-violet-400 animate-pulse-glow" : "bg-emerald-400"}`}
               />
               <span className="text-[13px] font-medium text-slate-200">
-                {running ? "Council in session — specialists examining attack surfaces…" : "Council adjourned."}
+                {arbitrating
+                  ? "Arbitration — Raven cross-examining every claim against the source…"
+                  : running
+                  ? "Council in session — specialists examining attack surfaces…"
+                  : "Council adjourned."}
               </span>
               <span className="ml-auto text-[11px] font-mono text-slate-400 tabular-nums">
-                {doneCount} / {order.length}
+                {doneCount} / {totalActive}
               </span>
             </div>
             <div className="mt-3 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-400 rounded-full transition-all duration-500"
-                style={{ width: `${(doneCount / order.length) * 100}%` }}
+                style={{ width: `${Math.min(100, (doneCount / totalActive) * 100)}%` }}
               />
             </div>
+
+            {/* Arbitration / cross-examination step */}
+            {arbitrating && (
+              <div className="mt-3 flex items-center gap-2.5 rounded-lg bg-violet-500/[0.06] ring-1 ring-violet-400/20 px-3 py-2 animate-fade-in">
+                <Spinner size={13} />
+                <span className="text-[11.5px] text-violet-100">
+                  Evidence-anchored arbitration on{" "}
+                  <span className="font-mono font-semibold tabular-nums">{arbitrating.count}</span>{" "}
+                  candidate {arbitrating.count === 1 ? "finding" : "findings"} — dropping anything not grounded in the code.
+                </span>
+              </div>
+            )}
           </div>
         )}
 
         {/* Specialist grid */}
         {(running || phase === "done") && (
           <section aria-label="Specialist council">
-            <SectionLabel count={order.length}>The Council</SectionLabel>
+            <SectionLabel count={routing?.roles?.length ?? order.length}>The Council</SectionLabel>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {list.map((s, i) => (
                 <SpecialistCard key={s.role} s={s} index={i} />
@@ -370,7 +461,11 @@ export function Analyze({
           <div className="space-y-5 animate-fade-in pt-1">
             <VerdictBanner result={result} />
             {result.stats && <StatsStrip stats={result.stats} />}
-            <VulnList vulnerabilities={result.vulnerabilities ?? []} />
+            <RoutingSummary routing={result.routing ?? routing ?? undefined} />
+            <VulnList
+              vulnerabilities={result.vulnerabilities ?? []}
+              inconclusive={result.final_verdict === "INCONCLUSIVE"}
+            />
             <PrecedentPanel exploits={result.similar_exploits} />
             {result.summary && (
               <section className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">

@@ -1,11 +1,11 @@
 """
-Phase F : SARIF export for the Argus council.
+Phase F : SARIF export for the ThirdEye council.
 
 Converts a run_council() result dict (see services/council.py for the exact
 schema) into a SARIF 2.1.0 JSON object — the standard "Static Analysis Results
 Interchange Format" that GitHub code-scanning, VS Code SARIF viewers and most
 security dashboards ingest natively. This is the integration seam between
-Argus and the rest of the world: one council run -> one SARIF "run".
+ThirdEye and the rest of the world: one council run -> one SARIF "run".
 
 SARIF concepts we map onto:
   - tool.driver.rules : one rule per distinct vulnerability *type* seen
@@ -54,7 +54,7 @@ def _rule_for_type(vuln_type: str) -> dict:
         "name": "".join(part.capitalize() for part in (vuln_type or "unknown").split("_")),
         "shortDescription": {"text": f"{title} vulnerability"},
         "fullDescription": {
-            "text": f"A {title} class finding raised by an Argus council specialist."
+            "text": f"A {title} class finding raised by an ThirdEye council specialist."
         },
         # helpUri lets a viewer deep-link to docs for this rule class.
         "helpUri": f"{ARGUS_INFO_URI}#{vuln_type or 'unknown'}",
@@ -90,7 +90,7 @@ def _result_for_vuln(vuln: dict, source_path: str) -> dict:
         "partialFingerprints": {
             "argus/source-type": f"{source}:{vuln_type}",
         },
-        # Property bag: Argus-specific metadata SARIF has no first-class slot for.
+        # Property bag: ThirdEye-specific metadata SARIF has no first-class slot for.
         "properties": {
             "confidence": vuln.get("confidence"),
             "severity": severity,
@@ -160,7 +160,7 @@ def to_sarif(result: dict, source_path: str = "contract.sol") -> dict:
             {
                 "tool": {
                     "driver": {
-                        "name": "Argus",
+                        "name": "ThirdEye",
                         "informationUri": ARGUS_INFO_URI,
                         "rules": rules,
                     }
