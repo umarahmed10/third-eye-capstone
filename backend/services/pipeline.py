@@ -86,7 +86,15 @@ async def run_thirdeye(
     # 4. Arbitration — skip if the scan was inconclusive (don't vet a broken run)
     if use_arbitration and result.get("vulnerabilities") and result.get("final_verdict") != "INCONCLUSIVE":
         from services.arbitration import run_arbitration
-        ab = arbitration_backend or ("cerebras" if os.getenv("CEREBRAS_API_KEY") else backend)
+        # Arbitration follows the RUN's backend unless explicitly overridden.
+        # It used to default to Cerebras whenever a key existed, which meant a
+        # run invoked as backend="ollama" silently made hosted 120B calls for
+        # its precision gate — the "local tier" was not local, an unreportable
+        # confound. It also meant a drained hosted quota cost ~125s/contract
+        # sleeping in retry backoff while the judge failed open anyway.
+        # Pass arbitration_backend="cerebras" explicitly to get the strong
+        # hosted judge back.
+        ab = arbitration_backend or backend
         result = await run_arbitration(code, result, backend=ab, seed=seed)
         stages["arbitration"] = True
         stages["arbitration_backend"] = ab

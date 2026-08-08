@@ -1,0 +1,431 @@
+{
+  "council_only": {
+    "tau": null,
+    "tp": 100,
+    "fp": 79,
+    "tn": 45,
+    "fn": 8,
+    "precision": 0.559,
+    "recall": 0.926,
+    "f1": 0.697,
+    "fpr_safe": 0.637
+  },
+  "sweep": [
+    {
+      "tau": 0.0,
+      "tp": 100,
+      "fp": 76,
+      "tn": 48,
+      "fn": 8,
+      "precision": 0.568,
+      "recall": 0.926,
+      "f1": 0.704,
+      "fpr_safe": 0.613
+    },
+    {
+      "tau": 0.05,
+      "tp": 100,
+      "fp": 76,
+      "tn": 48,
+      "fn": 8,
+      "precision": 0.568,
+      "recall": 0.926,
+      "f1": 0.704,
+      "fpr_safe": 0.613
+    },
+    {
+      "tau": 0.1,
+      "tp": 92,
+      "fp": 60,
+      "tn": 64,
+      "fn": 16,
+      "precision": 0.605,
+      "recall": 0.852,
+      "f1": 0.708,
+      "fpr_safe": 0.484
+    },
+    {
+      "tau": 0.15,
+      "tp": 90,
+      "fp": 56,
+      "tn": 68,
+      "fn": 18,
+      "precision": 0.616,
+      "recall": 0.833,
+      "f1": 0.709,
+      "fpr_safe": 0.452
+    },
+    {
+      "tau": 0.2,
+      "tp": 78,
+      "fp": 47,
+      "tn": 77,
+      "fn": 30,
+      "precision": 0.624,
+      "recall": 0.722,
+      "f1": 0.67,
+      "fpr_safe": 0.379
+    },
+    {
+      "tau": 0.25,
+      "tp": 76,
+      "fp": 43,
+      "tn": 81,
+      "fn": 32,
+      "precision": 0.639,
+      "recall": 0.704,
+      "f1": 0.67,
+      "fpr_safe": 0.347
+    },
+    {
+      "tau": 0.3,
+      "tp": 73,
+      "fp": 41,
+      "tn": 83,
+      "fn": 35,
+      "precision": 0.64,
+      "recall": 0.676,
+      "f1": 0.658,
+      "fpr_safe": 0.331
+    },
+    {
+      "tau": 0.35,
+      "tp": 73,
+      "fp": 40,
+      "tn": 84,
+      "fn": 35,
+      "precision": 0.646,
+      "recall": 0.676,
+      "f1": 0.661,
+      "fpr_safe": 0.323
+    },
+    {
+      "tau": 0.4,
+      "tp": 72,
+      "fp": 40,
+      "tn": 84,
+      "fn": 36,
+      "precision": 0.643,
+      "recall": 0.667,
+      "f1": 0.655,
+      "fpr_safe": 0.323
+    },
+    {
+      "tau": 0.45,
+      "tp": 72,
+      "fp": 39,
+      "tn": 85,
+      "fn": 36,
+      "precision": 0.649,
+      "recall": 0.667,
+      "f1": 0.658,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.5,
+      "tp": 72,
+      "fp": 39,
+      "tn": 85,
+      "fn": 36,
+      "precision": 0.649,
+      "recall": 0.667,
+      "f1": 0.658,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.55,
+      "tp": 72,
+      "fp": 39,
+      "tn": 85,
+      "fn": 36,
+      "precision": 0.649,
+      "recall": 0.667,
+      "f1": 0.658,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.6,
+      "tp": 72,
+      "fp": 39,
+      "tn": 85,
+      "fn": 36,
+      "precision": 0.649,
+      "recall": 0.667,
+      "f1": 0.658,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.65,
+      "tp": 72,
+      "fp": 39,
+      "tn": 85,
+      "fn": 36,
+      "precision": 0.649,
+      "recall": 0.667,
+      "f1": 0.658,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.7,
+      "tp": 71,
+      "fp": 39,
+      "tn": 85,
+      "fn": 37,
+      "precision": 0.645,
+      "recall": 0.657,
+      "f1": 0.651,
+      "fpr_safe": 0.315
+    },
+    {
+      "tau": 0.75,
+      "tp": 69,
+      "fp": 38,
+      "tn": 86,
+      "fn": 39,
+      "precision": 0.645,
+      "recall": 0.639,
+      "f1": 0.642,
+      "fpr_safe": 0.306
+    },
+    {
+      "tau": 0.8,
+      "tp": 64,
+      "fp": 38,
+      "tn": 86,
+      "fn": 44,
+      "precision": 0.627,
+      "recall": 0.593,
+      "f1": 0.61,
+      "fpr_safe": 0.306
+    },
+    {
+      "tau": 0.85,
+      "tp": 64,
+      "fp": 37,
+      "tn": 87,
+      "fn": 44,
+      "precision": 0.634,
+      "recall": 0.593,
+      "f1": 0.612,
+      "fpr_safe": 0.298
+    },
+    {
+      "tau": 0.9,
+      "tp": 56,
+      "fp": 35,
+      "tn": 89,
+      "fn": 52,
+      "precision": 0.615,
+      "recall": 0.519,
+      "f1": 0.563,
+      "fpr_safe": 0.282
+    },
+    {
+      "tau": 0.95,
+      "tp": 52,
+      "fp": 35,
+      "tn": 89,
+      "fn": 56,
+      "precision": 0.598,
+      "recall": 0.481,
+      "f1": 0.533,
+      "fpr_safe": 0.282
+    },
+    {
+      "tau": 1.0,
+      "tp": 50,
+      "fp": 35,
+      "tn": 89,
+      "fn": 58,
+      "precision": 0.588,
+      "recall": 0.463,
+      "f1": 0.518,
+      "fpr_safe": 0.282
+    }
+  ],
+  "best_in_sample_NOT_reportable": {
+    "tau": 0.15,
+    "tp": 90,
+    "fp": 56,
+    "tn": 68,
+    "fn": 18,
+    "precision": 0.616,
+    "recall": 0.833,
+    "f1": 0.709,
+    "fpr_safe": 0.452
+  },
+  "held_out": [
+    {
+      "split": 0,
+      "tau": 0.15,
+      "test": {
+        "precision": 0.587,
+        "recall": 0.815,
+        "f1": 0.682,
+        "fpr_safe": 0.5
+      },
+      "test_baseline": {
+        "precision": 0.543,
+        "recall": 0.926,
+        "f1": 0.685,
+        "fpr_safe": 0.677
+      }
+    },
+    {
+      "split": 1,
+      "tau": 0.0,
+      "test": {
+        "precision": 0.562,
+        "recall": 0.926,
+        "f1": 0.699,
+        "fpr_safe": 0.629
+      },
+      "test_baseline": {
+        "precision": 0.549,
+        "recall": 0.926,
+        "f1": 0.69,
+        "fpr_safe": 0.661
+      }
+    },
+    {
+      "split": 2,
+      "tau": 0.0,
+      "test": {
+        "precision": 0.578,
+        "recall": 0.963,
+        "f1": 0.722,
+        "fpr_safe": 0.613
+      },
+      "test_baseline": {
+        "precision": 0.565,
+        "recall": 0.963,
+        "f1": 0.712,
+        "fpr_safe": 0.645
+      }
+    },
+    {
+      "split": 3,
+      "tau": 0.1,
+      "test": {
+        "precision": 0.587,
+        "recall": 0.815,
+        "f1": 0.682,
+        "fpr_safe": 0.5
+      },
+      "test_baseline": {
+        "precision": 0.563,
+        "recall": 0.907,
+        "f1": 0.695,
+        "fpr_safe": 0.613
+      }
+    },
+    {
+      "split": 4,
+      "tau": 0.15,
+      "test": {
+        "precision": 0.589,
+        "recall": 0.796,
+        "f1": 0.677,
+        "fpr_safe": 0.484
+      },
+      "test_baseline": {
+        "precision": 0.543,
+        "recall": 0.944,
+        "f1": 0.689,
+        "fpr_safe": 0.694
+      }
+    },
+    {
+      "split": 5,
+      "tau": 0.0,
+      "test": {
+        "precision": 0.6,
+        "recall": 0.944,
+        "f1": 0.734,
+        "fpr_safe": 0.548
+      },
+      "test_baseline": {
+        "precision": 0.586,
+        "recall": 0.944,
+        "f1": 0.723,
+        "fpr_safe": 0.581
+      }
+    },
+    {
+      "split": 6,
+      "tau": 0.15,
+      "test": {
+        "precision": 0.632,
+        "recall": 0.889,
+        "f1": 0.738,
+        "fpr_safe": 0.452
+      },
+      "test_baseline": {
+        "precision": 0.578,
+        "recall": 0.963,
+        "f1": 0.722,
+        "fpr_safe": 0.613
+      }
+    },
+    {
+      "split": 7,
+      "tau": 0.0,
+      "test": {
+        "precision": 0.544,
+        "recall": 0.907,
+        "f1": 0.681,
+        "fpr_safe": 0.661
+      },
+      "test_baseline": {
+        "precision": 0.538,
+        "recall": 0.907,
+        "f1": 0.676,
+        "fpr_safe": 0.677
+      }
+    },
+    {
+      "split": 8,
+      "tau": 0.15,
+      "test": {
+        "precision": 0.597,
+        "recall": 0.796,
+        "f1": 0.683,
+        "fpr_safe": 0.468
+      },
+      "test_baseline": {
+        "precision": 0.549,
+        "recall": 0.926,
+        "f1": 0.69,
+        "fpr_safe": 0.661
+      }
+    },
+    {
+      "split": 9,
+      "tau": 0.0,
+      "test": {
+        "precision": 0.58,
+        "recall": 0.944,
+        "f1": 0.718,
+        "fpr_safe": 0.597
+      },
+      "test_baseline": {
+        "precision": 0.567,
+        "recall": 0.944,
+        "f1": 0.708,
+        "fpr_safe": 0.629
+      }
+    }
+  ],
+  "held_out_summary": {
+    "n_splits": 10,
+    "wins": 6,
+    "baseline_f1": 0.699,
+    "tuned_f1": 0.702,
+    "tuned_f1_std": 0.024,
+    "baseline_fpr": 0.645,
+    "tuned_fpr": 0.545
+  },
+  "n_arbitrated": 185,
+  "n_scored": 232,
+  "note": "p_real = conf if judge said real else 1-conf. A contract is NO-GO iff any finding scores >= tau. Scored over the whole benchmark; council-GO contracts are unaffected by tau."
+}

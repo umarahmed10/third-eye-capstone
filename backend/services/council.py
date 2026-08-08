@@ -119,14 +119,24 @@ _SPECIALIST_BY_ROLE = {s["role"]: s for s in SPECIALISTS}
 # general reasoner — diversity by design, not arbitrary. ───
 
 # Local tier: 3 distinct model families on Ollama.
+# The llama-family slot is env-overridable because model SIZE, not quality, is
+# the binding constraint on a 4GB GPU. llama3.1:8b (4.9GB) does not fit in VRAM:
+# measured ~190s per call for a 3-word prompt, and under run-time memory
+# pressure the load fails outright — it sat on business_logic, which the router
+# ALWAYS runs, so every contract paid it and 33% of them abstained. llama3.2:3b
+# (2.0GB) fits entirely in VRAM. Three distinct families (qwen/llama/gemma) are
+# preserved either way, so the model-diversity claim is unaffected.
+# Set OLLAMA_LOGIC_MODEL=llama3.1:8b on a bigger GPU to restore the 8B.
+LOGIC_MODEL = os.getenv("OLLAMA_LOGIC_MODEL", "llama3.2:3b")
+
 OLLAMA_ASSIGNMENTS = {
     "reentrancy": "qwen2.5-coder:7b",
     "access_control": "qwen2.5-coder:7b",
     "arithmetic": "qwen2.5-coder:7b",
     "proxy_upgradeability": "qwen2.5-coder:7b",
-    "business_logic": "llama3.1:8b",
-    "oracle_price_manipulation": "llama3.1:8b",
-    "flashloan_mev": "llama3.1:8b",
+    "business_logic": LOGIC_MODEL,
+    "oracle_price_manipulation": LOGIC_MODEL,
+    "flashloan_mev": LOGIC_MODEL,
     "dos_gas": "gemma3:4b",
 }
 
@@ -238,7 +248,27 @@ async def _query_openai_compatible(url: str, api_key: str, model: str, prompt: s
     return f"[{provider_label} retries exhausted]"
 
 
+# ─── API-call accounting ──────────────────────────────────────────────
+# Every LLM request in the whole pipeline (council specialists, red-team,
+# judge) flows through _query(), so this is the one honest choke point to
+# count calls. The counter feeds two things: the benchmark's calls-per-
+# contract stat (which sizes a sensible per-user rate limit) and any future
+# per-request budgeting. Zero overhead when unused.
+_API_CALL_COUNT = {"total": 0, "by_provider": {}}
+
+
+def reset_api_call_count() -> None:
+    _API_CALL_COUNT["total"] = 0
+    _API_CALL_COUNT["by_provider"] = {}
+
+
+def get_api_call_count() -> dict:
+    return {"total": _API_CALL_COUNT["total"], "by_provider": dict(_API_CALL_COUNT["by_provider"])}
+
+
 async def _query(provider: str, model: str, prompt: str, timeout: int | None = None, seed: int | None = None) -> str:
+    _API_CALL_COUNT["total"] += 1
+    _API_CALL_COUNT["by_provider"][provider] = _API_CALL_COUNT["by_provider"].get(provider, 0) + 1
     if provider == "ollama":
         return await _query_ollama_model(model, prompt, timeout, seed)
     if provider == "groq":
@@ -297,7 +327,15 @@ def _build_prompt(spec: dict, code: str) -> str:
 def _parse_specialist_json(raw: str, role: str) -> dict:
     """Extract the specialist's JSON. Any parse failure or error marker is
     treated as found=False — a specialist that can't produce valid output
-    contributes nothing rather than a hallucinated finding."""
+    contributes nothing rather than a hallucinated finding.
+
+    A response that yields NO parseable JSON object is treated as a call
+    FAILURE (`_error` set), not a clean found=False. This is critical for the
+    fail-closed verdict: a degraded-but-alive backend (e.g. Ollama returning
+    HTTP 200 with an empty/garbage body under load) does NOT emit an error
+    marker, so without this it would silently read as "specialist ran, found
+    nothing" and drive a false GO. An empty/unparseable body means the
+    specialist effectively didn't run."""
     default = {"type": role, "severity": "low", "confidence": 0.0, "evidence_quote": "", "property": "", "found": False}
     if _is_error_response(raw):
         return {**default, "_error": raw}
@@ -316,7 +354,8 @@ def _parse_specialist_json(raw: str, role: str) -> dict:
             }
     except Exception:
         pass
-    return default
+    # No usable JSON came back — this is a failed call, not a clean negative.
+    return {**default, "_error": f"[unparseable specialist output: {raw[:80]!r}]"}
 
 
 def _normalize_for_quote_check(s: str) -> str:
@@ -343,7 +382,10 @@ async def _run_specialist(spec: dict, provider: str, model: str, code: str, seed
     result["role"] = spec["role"]
     result["provider"] = provider
     result["model"] = model
-    result["llm_error"] = _is_error_response(raw)
+    # A call is failed if it returned an error MARKER or produced no usable
+    # JSON (`_error` set by _parse_specialist_json). Both must count toward the
+    # fail-closed threshold, else a degraded backend reads as a clean GO.
+    result["llm_error"] = _is_error_response(raw) or ("_error" in result)
     return result
 
 
@@ -404,15 +446,18 @@ async def run_council_stream(code: str, backend: str | None = None, seed: int | 
         async with sem:
             return await _run_specialist(_SPECIALIST_BY_ROLE[role], provider, model, code, seed)
 
-    tasks = [asyncio.create_task(_bounded(role, p, m)) for role, (p, m) in assignments.items()]
+    # Same model-grouped scheduling as run_council, so the streaming and
+    # non-streaming paths never diverge (see _schedule_groups).
     specialist_results = []
-    for coro in asyncio.as_completed(tasks):
-        r = await coro
-        specialist_results.append(r)
-        yield {"event": "specialist_done", "role": r["role"], "model": r["model"],
-               "provider": r["provider"], "found": r["found"], "confidence": r["confidence"],
-               "severity": r["severity"], "evidence_quote": r["evidence_quote"][:200],
-               "llm_error": r["llm_error"]}
+    for group in _schedule_groups(assignments, backend):
+        tasks = [asyncio.create_task(_bounded(role, p, m)) for role, p, m in group]
+        for coro in asyncio.as_completed(tasks):
+            r = await coro
+            specialist_results.append(r)
+            yield {"event": "specialist_done", "role": r["role"], "model": r["model"],
+                   "provider": r["provider"], "found": r["found"], "confidence": r["confidence"],
+                   "severity": r["severity"], "evidence_quote": r["evidence_quote"][:200],
+                   "llm_error": r["llm_error"]}
 
     final = _assemble_result(code, features, specialist_results, backend, None)
     yield {"event": "final", "result": final}
@@ -442,7 +487,7 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
     # errored (missing key, rate-limited, provider down) must NOT read as a
     # clean GO — that's the worst failure mode for a security tool. Distinguish
     # "analyzed and clean" (GO) from "couldn't analyze" (INCONCLUSIVE).
-    if n_run == 0 or (n_run > 0 and n_err / n_run > 0.5):
+    if n_run == 0 or (n_run > 0 and n_err / n_run >= 0.5):
         verdict = "INCONCLUSIVE"
         verdict_reason = f"{n_err}/{n_run} specialists failed to run — result is not trustworthy."
         raven_note = f"Raven couldn't complete the review of {name}: {n_err} of {n_run} specialists errored (likely a provider/key issue). This is NOT a clean bill of health — re-run once the engine is healthy."
@@ -475,6 +520,32 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
     }
 
 
+def _schedule_groups(assignments: dict, backend: str) -> list[list[tuple]]:
+    """Order specialist execution into groups that run concurrently.
+
+    Hosted backends: one group — the providers are remote, models cost nothing
+    to "switch", and full fan-out is fastest.
+
+    Local Ollama: ONE GROUP PER MODEL, run in sequence. On a 4GB GPU only one
+    of these models is resident at a time, so an interleaved fan-out pays a
+    model evict+reload on nearly every call. Measured on the RTX 3050 laptop:
+    warm same-model call 13-53s, switch to another model 72-229s. Grouping
+    drops a contract from N reloads to exactly one per distinct model.
+
+    This is a SCHEDULING change only — identical models, prompts, seeds and
+    aggregation, so verdicts are unaffected. Order of specialist_results does
+    change; _assemble_result is order-independent (it counts and filters, never
+    positionally indexes), so that is safe.
+    """
+    items = [(role, provider, model) for role, (provider, model) in assignments.items()]
+    if backend == "ollama":
+        by_model: dict[str, list[tuple]] = {}
+        for role, provider, model in items:
+            by_model.setdefault(model, []).append((role, provider, model))
+        return list(by_model.values())
+    return [items]
+
+
 async def run_council(code: str, similar_exploits: list | None = None, backend: str | None = None, seed: int | None = None, roles: list[str] | None = None) -> dict:
     """Council entry point. Returns the same top-level schema as
     run_full_analysis() (final_verdict, vulnerabilities, summary, raven_note,
@@ -501,9 +572,10 @@ async def run_council(code: str, similar_exploits: list | None = None, backend: 
         async with sem:
             return await _run_specialist(_SPECIALIST_BY_ROLE[role], provider, model, code, seed)
 
-    specialist_results = await asyncio.gather(*[
-        _bounded(role, provider, model)
-        for role, (provider, model) in assignments.items()
-    ])
+    specialist_results: list[dict] = []
+    for group in _schedule_groups(assignments, backend):
+        specialist_results.extend(await asyncio.gather(*[
+            _bounded(role, provider, model) for role, provider, model in group
+        ]))
 
     return _assemble_result(code, features, specialist_results, backend, similar_exploits)

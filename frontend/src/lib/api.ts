@@ -172,6 +172,51 @@ export type Baseline = {
   cost?: string;
   note?: string;
 };
+export type TierResult = {
+  tier?: string;
+  label?: string;
+  expected?: "safe" | "vulnerable" | string;
+  bucket?: string;
+  n?: number;
+  scored?: number;
+  inconclusive?: number;
+  errored?: number;
+  tp?: number;
+  fp?: number;
+  tn?: number;
+  fn?: number;
+  precision?: number | null;
+  recall?: number | null;
+  f1?: number | null;
+  accuracy?: number | null;
+  correct_go_rate_on_safe?: number | null;
+  detection_rate_on_vuln?: number | null;
+};
+export type ApiAccounting = {
+  available?: boolean;
+  contracts?: number;
+  total_api_calls?: number;
+  calls_per_contract?: { min?: number; max?: number; mean?: number; median?: number; p95?: number };
+  latency_s_per_contract?: { min?: number; max?: number; mean?: number; median?: number } | null;
+  rate_limit_note?: string;
+};
+export type TierBenchmark = {
+  available?: boolean;
+  note?: string;
+  backend?: string;
+  n_total?: number;
+  tiers?: TierResult[];
+  safe_aggregate?: TierResult;
+  vuln_aggregate?: TierResult;
+  overall?: TierResult;
+  api_accounting?: ApiAccounting;
+  verdict_note?: string;
+};
+export type H2HScore = {
+  tp?: number; fp?: number; tn?: number; fn?: number;
+  precision?: number; recall?: number; f1?: number; fpr?: number;
+};
+
 export type BenchmarkStats = {
   kpis?: Kpi[];
   ablation?: {
@@ -179,6 +224,61 @@ export type BenchmarkStats = {
     task?: string;
     sample?: AblationSample | number | string;
     configs?: AblationConfig[];
+  };
+  tier_benchmark?: TierBenchmark;
+  // Arbitration precision-gate experiment: council NO-GO verdicts re-adjudicated
+  // by an adversarial red-team/judge pair, split by ground truth. Counts, not
+  // rates — the sample is small.
+  arbitration_ablation?: {
+    available?: boolean;
+    note?: string;
+    judge?: string;
+    n_adjudicated?: number;
+    false_positives_seen?: number;
+    false_positives_corrected?: number;
+    true_positives_seen?: number;
+    true_positives_destroyed?: number;
+  };
+  // Council vs Slither on IDENTICAL contracts — the only genuine head-to-head.
+  // Published-baseline rows are other papers on other datasets (context only).
+  head_to_head?: {
+    available?: boolean;
+    n_common?: number;
+    note?: string;
+    council?: H2HScore;
+    slither?: H2HScore;
+    coverage?: { council_scored?: number; slither_scored?: number };
+  };
+  // The two fixes for the council's OR-gate. Both are reported held-out
+  // (weights/threshold fit on dev, scored on a disjoint test split, averaged
+  // over random splits).
+  proposed_methods?: {
+    available?: boolean;
+    note?: string;
+    weighted?: {
+      or_gate?: H2HScore; or_gate_std?: H2HScore;
+      tuned?: H2HScore; tuned_std?: H2HScore;
+      wins?: number; n_splits?: number; median_tau?: number;
+      n_rows?: number; extra_llm_calls?: number | string;
+      weights?: Record<string, number>;
+      // The per-class-weighted variant, kept as the ablation that justifies
+      // NOT using it: it lost to the plain threshold on most splits.
+      weighted_variant?: H2HScore;
+      weighting_wins?: number;
+    };
+    calibrated_arbitration?: {
+      baseline_f1?: number; tuned_f1?: number; tuned_f1_std?: number;
+      baseline_fpr?: number; tuned_fpr?: number;
+      wins?: number; n_splits?: number; extra_llm_calls?: number | string;
+    };
+  };
+  // Derived series for the narrative charts: the OR-gate compounding curve and
+  // per-specialist reliability. Computed from checkpoints, not hand-entered.
+  story?: {
+    available?: boolean;
+    n_rows?: number;
+    compounding?: { specialists: number; n: number; fpr: number }[];
+    reliability?: { cls: string; tp: number; fp: number; precision: number }[];
   };
   vuln_distribution?: {
     smartbugs_curated?: VulnDistEntry[];

@@ -38,8 +38,15 @@ from services.council import _query, GROQ_MODEL, CEREBRAS_MODEL, CEREBRAS_API_KE
 #           reasoner).
 #   hosted: proposer is Llama-3.3-70B (Groq) or gpt-oss-120b (Cerebras) ->
 #           red-team and judge on the OTHER family from the proposer.
+# Local judge is overridable so the strongest model that FITS can be swapped in
+# without a code change. Hardware ceiling on the dev box (4GB VRAM / 15.7GB RAM)
+# is the 8B class: a 14B judge (~9GB) does not fit alongside the council's
+# working set and pages against disk. qwen3:8b is a newer generation than
+# llama3.1:8b at the same footprint, so it replaces rather than adds.
+LOCAL_JUDGE_MODEL = os.getenv("LOCAL_JUDGE_MODEL", "qwen3:8b")
+
 _ARBITER_MODELS = {
-    "ollama": {"red_team": ("ollama", "gemma3:4b"), "judge": ("ollama", "llama3.1:8b")},
+    "ollama": {"red_team": ("ollama", "gemma3:4b"), "judge": ("ollama", LOCAL_JUDGE_MODEL)},
     "groq": {"red_team": ("cerebras", CEREBRAS_MODEL), "judge": ("groq", GROQ_MODEL)},
     # cerebras: judge AND red-team on the strong hosted reasoner (gpt-oss-120b).
     # Use this even when the COUNCIL ran locally — a measured result here is
@@ -49,6 +56,13 @@ _ARBITER_MODELS = {
     # (qwen/llama/gemma), so the review remains genuinely adversarial.
     "cerebras": {"red_team": ("cerebras", CEREBRAS_MODEL), "judge": ("cerebras", CEREBRAS_MODEL)},
 }
+
+# The council's backend names ("hosted", "hosted_fast") are NOT arbiter-config
+# keys, so a .get() on them silently fell back to the LOCAL arbiters — a hosted
+# run was adjudicated by a local 8B judge without anything in the output saying
+# so. Map them explicitly.
+_ARBITER_MODELS["hosted"] = _ARBITER_MODELS["cerebras"]
+_ARBITER_MODELS["hosted_fast"] = _ARBITER_MODELS["cerebras"]
 
 
 def _pick_arbiters(backend: str, proposer_model: str) -> dict:
