@@ -334,7 +334,62 @@ is the separation the sweep needs.
 - If some τ beats 0.694, arbitration is salvageable as a *calibrated* gate and
   Framing A returns. If not, §4.4 stands as a clean negative result.
 
-### 4.4 Hardware feasibility (negative result, worth reporting)
+### 4.8 Deployment gap: the measured rule must be the shipped rule
+
+An independent precision review found that the result in Sec 4.5 was not
+implemented in the tool. The threshold rule existed only in the evaluation
+harness; `council.py` shipped a per-finding confidence floor followed by an
+OR over survivors, which is that rule at tau -> 0. The reported false-positive
+reduction was therefore a property of an offline script, not of the artefact.
+
+We ported it and verified faithfulness by replaying every scored checkpoint
+through the production function:
+
+| rule | FPR | recall | F1 |
+|---|--:|--:|--:|
+| OR-gate (previously shipped) | 63.7% | 0.927 | 0.699 |
+| pooled risk >= tau=0.925 (now shipped) | 28.2% | 0.844 | 0.780 |
+
+We flag this as a general hazard for work of this kind: when the evaluation
+harness re-implements the decision rule rather than calling the product's own,
+the two can diverge silently and the paper measures something the system does
+not do. Our mitigation is that the shipped `_contract_risk` mirrors the offline
+`risk()` exactly, including its handling of a missing confidence, so any future
+divergence is a code change rather than an oversight.
+
+### 4.9 Suppression levers: overlap, and a scoring artefact
+
+The same review proposed structural suppressions (stateless-library gating,
+per-class preconditions) and a severity policy as further "recall-safe" wins,
+each sized against the 64% baseline. Measured individually on top of the
+threshold, they are not free:
+
+| lever | FPR | recall | F1 |
+|---|--:|--:|--:|
+| threshold only | 28.2% | 0.844 | 0.780 |
+| + stateless/library gate | 27.4% | 0.835 | 0.778 |
+| + reentrancy / proxy preconditions | 28.2% | 0.844 | 0.780 |
+| + dos_gas precondition | 27.4% | 0.807 | 0.762 |
+| + severity policy | 25.0% | 0.789 | 0.761 |
+
+Two lessons. First, **precision levers overlap**: the threshold already removes
+44 of the 79 false alarms, including most of the pure-library cases the
+stateless gate targets, so per-lever estimates made against the original
+baseline substantially overstate their marginal value. Sizing interventions
+against the *current* baseline, not the original one, is the correct practice.
+
+Second, a **scoring artefact**: the `dos_gas` precondition cost four true
+positives to remove one false alarm. The contracts it silenced are genuinely
+vulnerable, but not to denial-of-service — the finding had been counted correct
+because scoring is contract-level. Contract-level scoring credits
+right-verdict/wrong-reason detections, which inflates any per-class reliability
+analysis derived from it, including our own Sec 4.5 weights. This is a limitation
+of the standard evaluation protocol in this area, not only of our system.
+
+Final shipped configuration (n=233): FPR **26.6%**, recall **0.835**, F1
+**0.781**, against 63.7% / 0.927 / 0.699 before.
+
+### 4.10 Hardware feasibility (negative result, worth reporting)
 
 A model-diverse council is not deployable on consumer hardware. On an RTX 3050
 laptop (4GB VRAM, 15.7GB RAM):

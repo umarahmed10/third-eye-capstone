@@ -415,6 +415,44 @@ def _aggregate(specialist_results: list[dict], code: str) -> list[dict]:
     ]
 
 
+# Contract-level risk threshold. THIS is the rule the paper's headline result
+# measures, and until now it lived only in eval/weighted_aggregation.py while
+# the live tool shipped the OR-gate (= this rule at tau -> 0).
+#
+#   risk = 1 - PROD_i (1 - conf_i)        NO-GO iff risk >= RISK_TAU
+#
+# tau=0.925 was tuned on dev splits and re-picked identically in 8 of 10 random
+# splits (the other two chose 0.975), so it is a stable operating point rather
+# than one lucky partition. Measured on n=233, held out:
+#
+#   OR-gate (any survivor blocks)  FPR 0.648  recall 0.938  F1 0.703
+#   risk >= 0.925                  FPR 0.268  recall 0.851  F1 0.790
+#
+# Per-class weights are deliberately NOT applied: the control in
+# weighted_aggregation.py showed they lose to the plain threshold (4/10 splits)
+# and roughly double its variance.
+RISK_TAU = float(os.getenv("COUNCIL_RISK_TAU", "0.925"))
+
+
+def _contract_risk(confirmed: list[dict]) -> float:
+    """Noisy-OR over the confidences of findings that cleared the evidence gate.
+
+    Pooling matters: one medium-confidence finding no longer blocks a contract
+    on its own, but several do, and one near-certain finding still does. That is
+    the whole difference between this and the OR-gate.
+
+    Mirrors eval/weighted_aggregation.py::risk with all weights = 1, including
+    its treatment of a missing confidence as 1.0, so the live verdict and the
+    offline measurement cannot drift apart.
+    """
+    p = 1.0
+    for r in confirmed:
+        conf = r.get("confidence")
+        conf = 1.0 if conf is None else max(0.0, min(1.0, float(conf)))
+        p *= 1.0 - conf
+    return 1.0 - p
+
+
 def _filter_assignments(assignments: dict, roles: list[str] | None) -> dict:
     """Restrict the specialist set to `roles` (from services/router.py). None =
     run all. Empty selection falls back to all (never analyze nothing)."""
@@ -467,6 +505,12 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
     """Shared result assembly for run_council and run_council_stream."""
     llm_error_detected = any(r["llm_error"] for r in specialist_results)
     confirmed = _aggregate(specialist_results, code)
+    # Context-aware suppression (services/suppression.py) runs BETWEEN the
+    # evidence gate and the risk pooling, so a structurally-impossible finding
+    # cannot inflate the noisy-OR product. Suppressed findings are still
+    # reported — they are only barred from driving the block decision.
+    from services.suppression import suppress as _suppress
+    confirmed, suppressed = _suppress(confirmed, code, features)
     vulnerabilities = [
         {
             "type": r["type"], "line": None, "severity": r["severity"], "confidence": r["confidence"],
@@ -491,11 +535,24 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
         verdict = "INCONCLUSIVE"
         verdict_reason = f"{n_err}/{n_run} specialists failed to run — result is not trustworthy."
         raven_note = f"Raven couldn't complete the review of {name}: {n_err} of {n_run} specialists errored (likely a provider/key issue). This is NOT a clean bill of health — re-run once the engine is healthy."
-    elif confirmed:
+    elif confirmed and _contract_risk(confirmed) >= RISK_TAU:
         verdict = "NO-GO"
         flagged = ", ".join(sorted({r["type"].replace('_', ' ') for r in confirmed}))
-        verdict_reason = f"{len(confirmed)} finding(s) survived the evidence gate: {flagged}."
-        raven_note = f"Raven flagged {name} on: {flagged}. Each finding quotes real code from the contract and cleared the confidence bar."
+        verdict_reason = (f"{len(confirmed)} finding(s) cleared the evidence gate and their combined "
+                          f"risk {_contract_risk(confirmed):.3f} is at or above the {RISK_TAU:.3f} bar: {flagged}.")
+        raven_note = f"Raven flagged {name} on: {flagged}. Each finding quotes real code from the contract, and together they clear the confidence bar."
+    elif confirmed:
+        # Findings exist and are quote-backed, but pooled they do not reach the
+        # bar. Under the old OR-gate this was an automatic NO-GO, and it is
+        # where most false alarms came from. They are still reported — the
+        # contract is not silently cleared — the verdict just is not a block.
+        verdict = "GO"
+        flagged = ", ".join(sorted({r["type"].replace('_', ' ') for r in confirmed}))
+        verdict_reason = (f"{len(confirmed)} finding(s) quoted real code but their combined risk "
+                          f"{_contract_risk(confirmed):.3f} is below the {RISK_TAU:.3f} bar: {flagged}. "
+                          f"Reported for review, not blocking.")
+        raven_note = (f"Raven noted {len(confirmed)} low-confidence observation(s) on {name} ({flagged}) "
+                      f"that did not meet the bar to block. Worth a human read, not a stop-ship.")
     else:
         verdict = "GO"
         verdict_reason = f"All {n_run} specialists that ran found nothing quote-backed above the confidence bar."
@@ -513,6 +570,9 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
             "models_run": len(models), "specialists_run": n_run,
             "specialists_found": n_found, "specialists_confirmed": len(confirmed),
             "specialists_errored": n_err,
+            "contract_risk": round(_contract_risk(confirmed), 4),
+            "risk_tau": RISK_TAU,
+            "findings_suppressed": len(suppressed),
             "similar_in_db": len(similar_exploits) if similar_exploits else 0,
             "llm_error_detected": llm_error_detected, "tier": backend, "models_used": models,
         },

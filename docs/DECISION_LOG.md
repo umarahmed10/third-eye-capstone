@@ -240,6 +240,82 @@ difference between an ablation and a retraction.
 
 ---
 
+---
+
+## Phase 8 — Shipping the fix, and re-measuring the rest (2026-08-08)
+
+An independent precision review (`ThirdEye_FPR_Reduction_Critique`) raised 33
+recall-safe levers for cutting FPR. Its headline was the important one.
+
+### The headline was correct and severe
+
+**The fix that works was not the fix that was running.** The paper's result
+(threshold-only on pooled noisy-OR risk) lived exclusively in
+`eval/weighted_aggregation.py`. `council.py::_aggregate` shipped a per-finding
+0.6 floor followed by `if any finding survived -> NO-GO` — which is that same
+rule at tau -> 0. We were reporting 28% FPR from a rule the product did not
+implement.
+
+**Decision: ported it.** `_contract_risk()` computes `1 - PROD(1 - conf_i)`
+over findings that clear the evidence gate; the verdict blocks iff
+`risk >= RISK_TAU`. tau = 0.925, chosen identically in 8 of 10 dev splits.
+The port is faithful by construction — it mirrors the offline `risk()` with all
+weights = 1, including its treatment of a missing confidence as 1.0, so the live
+verdict and the offline measurement cannot drift.
+
+Verified by replaying all 233 checkpoints through the LIVE function:
+
+| rule | FPR | recall | F1 | false alarms |
+|---|--:|--:|--:|--:|
+| OR-gate (was shipping) | 63.7% | 0.927 | 0.699 | 79 |
+| risk >= 0.925 (now shipping) | 28.2% | 0.844 | 0.780 | 35 |
+
+Per-class weights remain excluded — the earlier control disproved them.
+
+### The other levers did NOT survive measurement
+
+The review described structural suppression (stateless libraries, per-class
+preconditions) and severity policy as "free wins, recall-safe by construction".
+Measured individually on top of the threshold:
+
+| lever | FPR | recall | F1 | verdict |
+|---|--:|--:|--:|---|
+| threshold only | 28.2% | 0.844 | 0.780 | the win |
+| + stateless/library gate | 27.4% | 0.835 | 0.778 | ~neutral |
+| + reentrancy precondition | 28.2% | 0.844 | 0.780 | no effect |
+| + proxy precondition | 28.2% | 0.844 | 0.780 | no effect |
+| + dos_gas precondition | 27.4% | 0.807 | 0.762 | **harmful** |
+| + severity policy | 25.0% | 0.789 | 0.761 | **harmful** |
+
+**Why the estimates were wrong: the levers overlap.** The review sized each
+against the OLD 64% baseline ("12 of 79 false positives were pure libraries").
+But the threshold fix already removes 44 of those 79 — including most of the
+library cases — so the residual 35 is a smaller and harder population with far
+less headroom than the item-by-item arithmetic suggests.
+
+**Instructive failure.** The `dos_gas` precondition cost 4 true positives to
+remove 1 false alarm. The contracts it silenced (`dvl_dirtybytes`,
+`dvl_privatedata`) ARE vulnerable — but not to DoS. The finding had been scoring
+as a true positive *for the wrong reason*, because scoring is contract-level
+rather than class-level. Worth stating in the paper: contract-level scoring
+credits right-verdict/wrong-reason findings, which flatters any per-class
+analysis built on top of it.
+
+**Decision: ship the threshold plus only the two preconditions that measured
+non-harmful; drop the dos_gas precondition and the severity policy.** Final
+shipped configuration, n=233:
+
+| | FPR | recall | F1 | FP | FN |
+|---|--:|--:|--:|--:|--:|
+| before | 63.7% | 0.927 | 0.699 | 79 | 8 |
+| **after** | **26.6%** | 0.835 | **0.781** | **33** | 18 |
+
+Per safe tier, the residual now tracks label trust — 19% on audited libraries,
+25% audit-reviewed-clean, 34% real-world-no-bug-reported — which is the ordering
+expected if the weakest-labelled tier carries unreported real bugs.
+
+---
+
 ## Standing decisions (things deliberately NOT done)
 
 - **No larger dataset.** 2,250 labelled contracts exist; 121 have been used.
