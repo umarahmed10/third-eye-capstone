@@ -196,3 +196,14 @@ textarea:focus-visible,
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* ── Exhibit (light) ──────────────────────────────────────────────────
+   The app shell is dark; the exhibit is deliberately light so it survives a
+   projector in a lit room. Without this the dark body shows through on
+   overscroll and around the page edges. Applied by Exhibit.tsx on mount. */
+body.exhibit-mode {
+  background: #F7F5F0 !important;
+  color: #16150F;
+}
+body.exhibit-mode ::selection { background: #F6E7E2; }

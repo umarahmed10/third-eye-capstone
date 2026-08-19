@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { User } from "./lib/api";
 import { Layout, type Tab } from "./components/Layout";
 import { Landing } from "./views/Landing";
+import { Exhibit } from "./views/Exhibit";
 import { Login } from "./views/Login";
 import { Analyze } from "./views/Analyze";
 import { HowItWorks } from "./views/HowItWorks";
@@ -47,6 +48,9 @@ export default function App() {
 
   // ─── Unauthenticated flow: Landing → Login or an anonymous Scan trial ───
   if (!user) {
+    if (screen === "landing") {
+      return <Exhibit onOpenApp={() => setScreen("trial")} />;
+    }
     if (screen === "login") {
       return <Login onAuth={onAuth} onBack={() => setScreen("landing")} />;
     }
