@@ -37,12 +37,15 @@ export type SevToken = {
   hex: string;
 };
 
-// Severity colors — kept semantically readable but tuned warmer to sit on plum.
+// Severity, re-tuned for the bone surface. The previous steps were chosen to sit
+// on dark plum and dropped to ~2:1 once the surface went light. Each text colour
+// here clears 4.5:1 on #F7F5F0, and severity is always rendered with its label,
+// so it never depends on hue alone.
 export const SEV: Record<string, SevToken> = {
-  critical: { text: "text-rose-300", bg: "bg-rose-500/12", ring: "ring-rose-500/30", dot: "bg-rose-400", hex: "#fb7185" },
-  high: { text: "text-orange-300", bg: "bg-orange-500/12", ring: "ring-orange-500/30", dot: "bg-orange-400", hex: "#fb923c" },
-  medium: { text: "text-amber-300", bg: "bg-amber-500/12", ring: "ring-amber-500/30", dot: "bg-amber-400", hex: "#fbbf24" },
-  low: { text: "text-violet-300", bg: "bg-violet-500/12", ring: "ring-violet-500/30", dot: "bg-violet-400", hex: "#c4b5fd" },
+  critical: { text: "text-[#8E2417]", bg: "bg-[#F6E7E2]", ring: "ring-[#B4351F]/40", dot: "bg-[#B4351F]", hex: "#8E2417" },
+  high: { text: "text-[#8A4A12]", bg: "bg-[#F6EBDD]", ring: "ring-[#B4711F]/40", dot: "bg-[#B4711F]", hex: "#8A4A12" },
+  medium: { text: "text-[#6B5A1E]", bg: "bg-[#F3EEDC]", ring: "ring-[#8A7626]/40", dot: "bg-[#8A7626]", hex: "#6B5A1E" },
+  low: { text: "text-[#3E5772]", bg: "bg-[#E9EDF2]", ring: "ring-[#2C4A6B]/35", dot: "bg-[#2C4A6B]", hex: "#3E5772" },
 };
 
 export function sevTokens(sev: string): SevToken {
@@ -50,9 +53,9 @@ export function sevTokens(sev: string): SevToken {
 }
 
 // Accent colors for the design system — refined violet + soft lilac, gold highlight.
-export const ACCENT = "#a855f7";
-export const ACCENT_SOFT = "#c4b5fd";
-export const GOLD = "#e8c468";
+export const ACCENT = "#2C4A6B";
+export const ACCENT_SOFT = "#5C7C9E";
+export const GOLD = "#B4351F";
 
 // Stable color per provider for model-diversity visualizations (purple-leaning palette).
 const PROVIDER_HUES: Record<string, string> = {

@@ -35,22 +35,18 @@ export default function App() {
   // laptop with a leftover login means the panel would never see the exhibit at
   // all. It is now a separate gate above the auth split, dismissed per tab
   // (sessionStorage) so returning within a session does not re-show it.
-  const [showExhibit, setShowExhibit] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem("te_seen_exhibit") !== "1";
-    } catch {
-      return true;
-    }
-  });
+  // The exhibit IS the site — one URL, one scroll, one design system. The tool
+  // is embedded in it, so entering the app shell is now an explicit opt-in for
+  // the product-only features (sign-in, history, PDF export) rather than the
+  // default destination.
+  const [showExhibit, setShowExhibit] = useState<boolean>(true);
 
   function enterApp() {
-    try { sessionStorage.setItem("te_seen_exhibit", "1"); } catch { /* private mode */ }
     setShowExhibit(false);
     if (!user) setScreen("trial");
   }
 
   function backToExhibit() {
-    try { sessionStorage.removeItem("te_seen_exhibit"); } catch { /* private mode */ }
     setShowExhibit(true);
   }
   // Scan is the default landing tab inside the authenticated shell.

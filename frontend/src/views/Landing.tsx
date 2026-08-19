@@ -21,29 +21,29 @@ export function Landing({
   onSignIn: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-[#0e0a14] text-slate-200 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F7F5F0] text-[#16150F] overflow-x-hidden">
       {/* ─── Top nav ─── */}
-      <header className="sticky top-0 z-30 border-b border-violet-300/[0.08] bg-[#0e0a14]/80 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-[#D8D3C7] bg-[#F7F5F0]/80 backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          <span className="text-violet-300">
+          <span className="text-[#2C4A6B]">
             <ThirdEyeMark size={24} />
           </span>
           <div className="leading-none">
-            <span className="text-[15px] font-bold text-white tracking-tight">ThirdEye</span>
-            <span className="ml-2 text-[9px] uppercase tracking-[0.22em] text-violet-300/45 align-middle">
+            <span className="text-[15px] font-bold text-[#16150F] tracking-tight">ThirdEye</span>
+            <span className="ml-2 text-[9px] uppercase tracking-[0.22em] text-[#6B675C] align-middle">
               Contract Security
             </span>
           </div>
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={onSignIn}
-              className="text-[12.5px] font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
+              className="text-[12.5px] font-medium text-[#3A372E] hover:text-[#16150F] px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
             >
               Sign in
             </button>
             <button
               onClick={onTryScan}
-              className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-violet-500 hover:bg-violet-400 text-white px-3.5 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] px-3.5 py-1.5 rounded-lg transition-colors"
             >
               Try a scan <ArrowRightIcon size={13} />
             </button>
@@ -56,7 +56,7 @@ export function Landing({
         <div className="absolute inset-0 bg-grid opacity-[0.35]" aria-hidden="true" />
         <div
           className="absolute -top-40 left-1/2 -translate-x-1/2 w-[52rem] h-[52rem] rounded-full blur-3xl pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(168,85,247,0.14), transparent 65%)" }}
+          style={{ background: "radial-gradient(circle, rgba(44,74,107,0.08), transparent 65%)" }}
           aria-hidden="true"
         />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
@@ -65,41 +65,41 @@ export function Landing({
             <span className="relative">
               <span
                 className="absolute inset-0 rounded-full blur-2xl"
-                style={{ background: "radial-gradient(circle, rgba(168,85,247,0.5), transparent 70%)" }}
+                style={{ background: "radial-gradient(circle, rgba(44,74,107,0.08), transparent 70%)" }}
                 aria-hidden="true"
               />
-              <span className="relative inline-flex w-20 h-20 rounded-2xl bg-[#151021] ring-1 ring-violet-400/25 items-center justify-center text-violet-300">
+              <span className="relative inline-flex w-20 h-20 rounded-2xl bg-[#FFFFFF] ring-1 ring-[#D8D3C7] items-center justify-center text-[#2C4A6B]">
                 <ThirdEyeMark size={44} className="animate-lid-blink" />
               </span>
             </span>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-violet-300/70 bg-violet-500/[0.08] ring-1 ring-violet-400/20 px-3 py-1 rounded-full mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse-glow" />
+          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-3 py-1 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#16150F] animate-pulse-glow" />
             Meet Raven
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-bold text-white tracking-tight leading-[1.05]">
+          <h1 className="text-4xl sm:text-6xl font-bold text-[#16150F] tracking-tight leading-[1.05]">
             ThirdEye
           </h1>
-          <p className="mt-5 text-[15px] sm:text-lg text-violet-100/70 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-5 text-[15px] sm:text-lg text-[#2C4A6B]/70 leading-relaxed max-w-2xl mx-auto">
             A model-diverse council of LLM specialists that audits your smart contracts and returns a
-            single <span className="text-emerald-300 font-semibold">GO</span> /{" "}
-            <span className="text-rose-300 font-semibold">NO-GO</span> verdict — grounded in real evidence,
+            single <span className="text-[#16150F] font-semibold">GO</span> /{" "}
+            <span className="text-[#B4351F] font-semibold">NO-GO</span> verdict — grounded in real evidence,
             not vibes.
           </p>
 
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={onTryScan}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-white shadow-[0_10px_30px_-12px_rgba(168,85,247,0.85)] transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
             >
               <ScanIcon size={16} /> Try a scan
-              <span className="text-[10px] font-mono font-normal text-violet-200/70">no login</span>
+              <span className="text-[10px] font-mono font-normal text-[#6B675C]">no login</span>
             </button>
             <button
               onClick={onSignIn}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-slate-200 hover:bg-white/[0.04] transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-[#16150F] hover:bg-white/[0.04] transition-colors"
             >
               Sign in <ArrowRightIcon size={15} />
             </button>
@@ -113,7 +113,7 @@ export function Landing({
       {/* ─── How it works strip ─── */}
       <section className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <SectionEyebrow icon={<FlowIcon size={12} />}>How it works</SectionEyebrow>
-        <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-3 max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#16150F] tracking-tight mt-3 max-w-2xl">
           One pipeline, four defensible stages.
         </h2>
 
@@ -121,21 +121,21 @@ export function Landing({
           {PIPELINE.map((step, i) => (
             <div
               key={step.title}
-              className="relative rounded-2xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5"
+              className="relative rounded-2xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-9 h-9 rounded-xl bg-violet-500/12 ring-1 ring-violet-400/20 flex items-center justify-center text-violet-300 flex-shrink-0">
+                <span className="w-9 h-9 rounded-xl bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#2C4A6B] flex-shrink-0">
                   {step.icon}
                 </span>
-                <span className="text-[10px] font-mono text-violet-300/45">
+                <span className="text-[10px] font-mono text-[#6B675C]">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <div className="mt-3.5 text-[14px] font-semibold text-white">{step.title}</div>
-              <p className="mt-1.5 text-[12px] text-slate-400 leading-relaxed">{step.body}</p>
+              <div className="mt-3.5 text-[14px] font-semibold text-[#16150F]">{step.title}</div>
+              <p className="mt-1.5 text-[12px] text-[#6B675C] leading-relaxed">{step.body}</p>
               {i < PIPELINE.length - 1 && (
                 <span
-                  className="hidden lg:block absolute -right-2 top-1/2 -translate-y-1/2 text-violet-300/30 z-10"
+                  className="hidden lg:block absolute -right-2 top-1/2 -translate-y-1/2 text-[#6B675C] z-10"
                   aria-hidden="true"
                 >
                   <ArrowRightIcon size={16} />
@@ -162,10 +162,10 @@ export function Landing({
       <section className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-300/[0.12] to-transparent" />
         <SectionEyebrow icon={<EyeIcon size={12} />}>What it catches</SectionEyebrow>
-        <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-3 max-w-2xl">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#16150F] tracking-tight mt-3 max-w-2xl">
           Eight specialists, each pinned to a different attack surface.
         </h2>
-        <p className="mt-3 text-[13px] text-slate-400 max-w-2xl leading-relaxed">
+        <p className="mt-3 text-[13px] text-[#6B675C] max-w-2xl leading-relaxed">
           Real architectural diversity — distinct base models, not the same weights asked twice. A static
           router picks the ones that matter for your contract.
         </p>
@@ -174,13 +174,13 @@ export function Landing({
           {CATCHES.map((c) => (
             <div
               key={c.title}
-              className="group rounded-xl border border-violet-300/[0.10] bg-[#151021] px-4 py-4 hover:border-violet-400/30 hover:bg-violet-500/[0.04] transition-colors"
+              className="group rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-4 py-4 hover:border-[#D8D3C7] hover:bg-[#EDE9DF] transition-colors"
             >
-              <div className="flex items-center gap-2 text-violet-300">
+              <div className="flex items-center gap-2 text-[#2C4A6B]">
                 <EyeIcon size={14} />
-                <span className="text-[13px] font-semibold text-white">{c.title}</span>
+                <span className="text-[13px] font-semibold text-[#16150F]">{c.title}</span>
               </div>
-              <p className="mt-1.5 text-[11.5px] text-slate-500 leading-relaxed">{c.body}</p>
+              <p className="mt-1.5 text-[11.5px] text-[#7A8794] leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
@@ -188,31 +188,31 @@ export function Landing({
 
       {/* ─── CTA band ─── */}
       <section className="relative max-w-6xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="relative overflow-hidden rounded-3xl border border-violet-300/[0.12] bg-[#151021] px-6 sm:px-10 py-10 sm:py-12 text-center">
+        <div className="relative overflow-hidden rounded-3xl border border-[#D8D3C7] bg-[#FFFFFF] px-6 sm:px-10 py-10 sm:py-12 text-center">
           <div className="absolute inset-0 bg-grid opacity-[0.3]" aria-hidden="true" />
           <div
             className="absolute -right-24 -top-24 w-80 h-80 rounded-full blur-3xl pointer-events-none"
-            style={{ background: "radial-gradient(circle, rgba(168,85,247,0.18), transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(44,74,107,0.08), transparent 70%)" }}
             aria-hidden="true"
           />
           <div className="relative">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#16150F] tracking-tight">
               Point ThirdEye at your contract.
             </h2>
-            <p className="mt-3 text-[13.5px] text-slate-400 max-w-xl mx-auto leading-relaxed">
-              Paste Solidity, upload a <code className="text-violet-200/80">.sol</code>, or pick a sample.
+            <p className="mt-3 text-[13.5px] text-[#6B675C] max-w-xl mx-auto leading-relaxed">
+              Paste Solidity, upload a <code className="text-[#6B675C]">.sol</code>, or pick a sample.
               Watch every specialist land its verdict live — then Raven arbitrates.
             </p>
             <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={onTryScan}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-white shadow-[0_10px_30px_-12px_rgba(168,85,247,0.85)] transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
               >
                 <ScanIcon size={16} /> Try a scan
               </button>
               <button
                 onClick={onSignIn}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-slate-200 hover:bg-white/[0.04] transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-[#16150F] hover:bg-white/[0.04] transition-colors"
               >
                 Sign in
               </button>
@@ -266,7 +266,7 @@ const CATCHES: { title: string; body: string }[] = [
 
 function SectionEyebrow({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) {
   return (
-    <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-violet-300/70 bg-violet-500/[0.06] ring-1 ring-violet-400/15 px-2.5 py-1 rounded-md">
+    <div className="inline-flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2.5 py-1 rounded-md">
       {icon}
       {children}
     </div>
@@ -294,7 +294,7 @@ function VerdictChip({
     <span className={`inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg ring-1 ${cls}`}>
       {icon}
       <span className="font-mono font-bold uppercase tracking-wide">{label}</span>
-      <span className="text-slate-400/80 font-normal normal-case tracking-normal">— {note}</span>
+      <span className="text-[#6B675C]/80 font-normal normal-case tracking-normal">— {note}</span>
     </span>
   );
 }

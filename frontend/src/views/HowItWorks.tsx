@@ -93,15 +93,15 @@ export function HowItWorks() {
     <div className="px-4 sm:px-6 py-6">
       <div className="max-w-5xl mx-auto space-y-6">
         <div>
-          <h2 className="text-lg font-bold text-white tracking-tight">How Third-Eye Works</h2>
-          <p className="text-[12px] text-slate-500 mt-0.5">
+          <h2 className="text-lg font-bold text-[#16150F] tracking-tight">How Third-Eye Works</h2>
+          <p className="text-[12px] text-[#7A8794] mt-0.5">
             Seven stages, from raw source to a verdict Raven can defend. Click a stage to inspect it.
           </p>
         </div>
 
         {/* Flowchart */}
         <div
-          className="relative rounded-2xl border border-white/[0.07] bg-[#151021] overflow-hidden"
+          className="relative rounded-2xl border border-white/[0.07] bg-[#FFFFFF] overflow-hidden"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
@@ -119,24 +119,24 @@ export function HowItWorks() {
                       aria-pressed={isSelected}
                       className={`group relative w-[112px] rounded-xl border px-2.5 py-3 text-center transition-all duration-300 ${
                         isSelected
-                          ? "border-violet-400/55 bg-violet-500/[0.12]"
+                          ? "border-[#D8D3C7] bg-[#EDE9DF]"
                           : lit
-                          ? "border-violet-400/30 bg-violet-500/[0.06]"
+                          ? "border-[#D8D3C7] bg-[#EDE9DF]"
                           : "border-white/[0.08] bg-white/[0.015] hover:border-white/20"
                       }`}
                     >
                       <span
                         className={`mx-auto mb-2 flex w-9 h-9 items-center justify-center rounded-lg text-[10px] font-bold transition-colors ${
-                          lit ? "bg-violet-500/20 text-violet-200 ring-1 ring-violet-400/30" : "bg-white/[0.05] text-slate-400"
+                          lit ? "bg-[#EDE9DF] text-[#2C4A6B] ring-1 ring-[#D8D3C7]" : "bg-white/[0.05] text-[#6B675C]"
                         }`}
-                        style={lit ? { boxShadow: "0 0 16px -4px rgba(168,85,247,0.55)" } : undefined}
+                        style={lit ? { boxShadow: "0 0 16px -4px rgba(44,74,107,0.08)" } : undefined}
                       >
                         {i + 1}
                       </span>
-                      <div className={`text-[11px] font-semibold leading-tight ${lit ? "text-white" : "text-slate-300"}`}>
+                      <div className={`text-[11px] font-semibold leading-tight ${lit ? "text-[#16150F]" : "text-[#3A372E]"}`}>
                         {s.title}
                       </div>
-                      <div className="text-[9px] text-slate-500 mt-0.5">{s.short}</div>
+                      <div className="text-[9px] text-[#7A8794] mt-0.5">{s.short}</div>
                     </button>
 
                     {/* Connector with travelling token */}
@@ -148,13 +148,13 @@ export function HowItWorks() {
                           y1="7"
                           x2="34"
                           y2="7"
-                          stroke="#a855f7"
+                          stroke="#2C4A6B"
                           strokeWidth="1.8"
                           strokeDasharray="5 27"
                           className="flow-dash"
                           style={{ opacity: active >= i ? 0.9 : 0.25 }}
                         />
-                        <polygon points="30,3 34,7 30,11" fill={active >= i ? "#a855f7" : "rgba(196,181,253,0.3)"} />
+                        <polygon points="30,3 34,7 30,11" fill={active >= i ? "#2C4A6B" : "rgba(196,181,253,0.3)"} />
                       </svg>
                     )}
                   </div>
@@ -172,23 +172,23 @@ export function HowItWorks() {
 
         {/* Selected stage detail */}
         <div className="grid lg:grid-cols-[1.4fr_1fr] gap-4">
-          <section className="rounded-xl border border-violet-400/20 bg-violet-500/[0.04] px-5 py-5 animate-fade-in" key={sel.id}>
+          <section className="rounded-xl border border-[#D8D3C7] bg-[#EDE9DF] px-5 py-5 animate-fade-in" key={sel.id}>
             <div className="flex items-center gap-2.5 mb-2.5">
-              <span className="w-8 h-8 rounded-lg bg-violet-500/20 ring-1 ring-violet-400/30 flex items-center justify-center text-[11px] font-bold text-violet-200">
+              <span className="w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[11px] font-bold text-[#2C4A6B]">
                 {STAGES.findIndex((x) => x.id === sel.id) + 1}
               </span>
-              <h3 className="text-[15px] font-bold text-white">{sel.title}</h3>
+              <h3 className="text-[15px] font-bold text-[#16150F]">{sel.title}</h3>
               <Pill tone="accent">{sel.tag}</Pill>
             </div>
-            <p className="text-[13px] text-slate-300 leading-relaxed">{sel.detail}</p>
+            <p className="text-[13px] text-[#3A372E] leading-relaxed">{sel.detail}</p>
             {sel.models && (
               <div className="mt-4">
-                <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500 mb-2">Model diversity</div>
+                <div className="text-[10px] uppercase tracking-[0.16em] text-[#7A8794] mb-2">Model diversity</div>
                 <div className="flex flex-wrap gap-1.5">
                   {sel.models.map((m) => (
                     <span
                       key={m}
-                      className="text-[10px] font-mono text-violet-300/80 bg-violet-500/[0.08] ring-1 ring-violet-400/15 px-2 py-0.5 rounded"
+                      className="text-[10px] font-mono text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-0.5 rounded"
                     >
                       {m}
                     </span>
@@ -199,7 +199,7 @@ export function HowItWorks() {
           </section>
 
           {/* The 8 specialists map (only meaningful but always informative) */}
-          <section className="rounded-xl border border-white/[0.07] bg-[#151021] px-5 py-5">
+          <section className="rounded-xl border border-white/[0.07] bg-[#FFFFFF] px-5 py-5">
             <SectionLabel>The 8 Specialists</SectionLabel>
             <div className="grid grid-cols-2 gap-2">
               {[
@@ -214,14 +214,14 @@ export function HowItWorks() {
               ].map((r, i) => (
                 <div
                   key={r}
-                  className="flex items-center gap-2 text-[11px] text-slate-300 bg-white/[0.02] rounded-lg px-2.5 py-2"
+                  className="flex items-center gap-2 text-[11px] text-[#3A372E] bg-white/[0.02] rounded-lg px-2.5 py-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-violet-400/70" style={{ animationDelay: `${i * 0.2}s` }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#16150F]/70" style={{ animationDelay: `${i * 0.2}s` }} />
                   {r}
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-slate-500 mt-3 leading-relaxed">
+            <p className="text-[10px] text-[#7A8794] mt-3 leading-relaxed">
               Each pinned to a different base model — diversity by construction.
             </p>
           </section>

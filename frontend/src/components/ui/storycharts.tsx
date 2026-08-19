@@ -1,11 +1,13 @@
 /** Narrative chart primitives for the Benchmarks story.
  *
- * Palette is validated, not eyeballed (dataviz six-checks, dark surface
- * #151021): violet #a855f7 + gold #bf8a2a pass lightness band, chroma floor,
- * CVD separation (deutan ΔE 32.0), normal-vision floor and contrast. An earlier
- * emerald/rose "good vs bad" pair FAILED at deutan ΔE 4.6 — the classic
- * red/green trap — so status meaning is carried by labels and position, never
- * by hue alone.
+ * Re-tuned for the BONE surface (#F7F5F0) when the app moved off the dark theme.
+ * The previous steps were selected against a dark plum background and inverted
+ * badly here — chart ink was near-white (#e2e8f0), i.e. invisible on paper.
+ *
+ * Contrast against #F7F5F0, computed: ink 16.8:1, inkDim 5.2:1, inkFaint 5.0:1,
+ * accent 8.4:1. Status meaning is never carried by hue alone — an earlier
+ * emerald/rose "good vs bad" pair failed at deutan ΔE 4.6, the classic red/green
+ * trap — so labels and position carry it and only one hue encodes state.
  *
  * Forms follow the data's job: magnitude → sequential single hue; before/after
  * → one hue in two shades; "one series is the point" → emphasis (accent + gray).
@@ -13,17 +15,17 @@
  */
 
 export const VIZ = {
-  accent: "#a855f7",       // series 1 / magnitude
-  accent2: "#bf8a2a",      // series 2 (validated pair with accent)
-  muted: "#4b3f63",        // de-emphasised marks (chroma-free by intent)
-  grid: "rgba(196,181,253,0.10)",
-  ink: "#e2e8f0",
-  inkDim: "#94a3b8",
-  inkFaint: "#64748b",
+  accent: "#2C4A6B",       // series 1 / magnitude (ink-blue)
+  accent2: "#B4351F",      // series 2 — the signal vermillion
+  muted: "#A8A294",        // de-emphasised marks
+  grid: "rgba(22,21,15,0.10)",
+  ink: "#16150F",
+  inkDim: "#6B675C",
+  inkFaint: "#5E6B78",
 } as const;
 
 const card =
-  "rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5";
+  "rounded-xl border border-[#D8D3C7] bg-white px-5 py-5";
 
 export function ChartFrame({
   title, subtitle, children, footnote,
@@ -32,13 +34,13 @@ export function ChartFrame({
 }) {
   return (
     <div className={card}>
-      <div className="text-sm font-semibold text-slate-100">{title}</div>
+      <div className="text-sm font-semibold text-[#16150F]">{title}</div>
       {subtitle && (
-        <p className="mt-1 text-xs text-slate-400 leading-relaxed">{subtitle}</p>
+        <p className="mt-1 text-xs text-[#6B675C] leading-relaxed">{subtitle}</p>
       )}
       <div className="mt-4">{children}</div>
       {footnote && (
-        <p className="mt-3 text-[11px] text-slate-500 leading-relaxed">{footnote}</p>
+        <p className="mt-3 text-[11px] text-[#7A8794] leading-relaxed">{footnote}</p>
       )}
     </div>
   );
@@ -49,14 +51,14 @@ export function HeroStat({
   value, label, sub, tone = "accent",
 }: { value: string; label: string; sub?: string; tone?: "accent" | "warn" | "plain" }) {
   const color =
-    tone === "accent" ? VIZ.accent : tone === "warn" ? "#e0803f" : VIZ.ink;
+    tone === "accent" ? VIZ.accent : tone === "warn" ? VIZ.accent2 : VIZ.ink;
   return (
     <div className={card}>
-      <div className="text-[11px] uppercase tracking-[0.14em] text-slate-400">{label}</div>
+      <div className="text-[11px] uppercase tracking-[0.14em] text-[#6B675C]">{label}</div>
       <div className="mt-2 font-mono leading-none" style={{ fontSize: 48, color }}>
         {value}
       </div>
-      {sub && <div className="mt-2 text-xs text-slate-400 leading-relaxed">{sub}</div>}
+      {sub && <div className="mt-2 text-xs text-[#6B675C] leading-relaxed">{sub}</div>}
     </div>
   );
 }
@@ -79,8 +81,8 @@ export function BarList({
         const pct = Math.max(0, Math.min(1, r.value / max)) * 100;
         return (
           <div key={r.label} className="flex items-center gap-3">
-            <div className="w-40 shrink-0 text-xs text-slate-300 text-right">{r.label}</div>
-            <div className="flex-1 h-5 rounded-[3px] relative" style={{ background: "rgba(255,255,255,0.035)" }}>
+            <div className="w-40 shrink-0 text-xs text-[#3A372E] text-right">{r.label}</div>
+            <div className="flex-1 h-5 rounded-[3px] relative" style={{ background: "rgba(22,21,15,0.06)" }}>
               <div
                 className="h-full rounded-[3px]"
                 style={{ width: `${pct}%`, background: on ? VIZ.accent : VIZ.muted }}
@@ -191,8 +193,8 @@ export function Dumbbell({
               <line x1={x(r.before)} x2={x(r.after)} y1={y} y2={y}
                     stroke={improved ? VIZ.accent : VIZ.muted} strokeWidth={2} opacity={0.55} />
               {/* 2px surface ring so overlapping marks stay separable */}
-              <circle cx={x(r.before)} cy={y} r={5.5} fill={VIZ.muted} stroke="#151021" strokeWidth={2} />
-              <circle cx={x(r.after)} cy={y} r={5.5} fill={VIZ.accent} stroke="#151021" strokeWidth={2} />
+              <circle cx={x(r.before)} cy={y} r={5.5} fill={VIZ.muted} stroke="#F7F5F0" strokeWidth={2} />
+              <circle cx={x(r.after)} cy={y} r={5.5} fill={VIZ.accent} stroke="#F7F5F0" strokeWidth={2} />
               <text x={padL + plotW + 10} y={y + 4} fontSize={11} className="font-mono" fill={VIZ.ink}>
                 {Math.round(r.before * 100)}→{Math.round(r.after * 100)}%
               </text>
@@ -221,10 +223,10 @@ export function CoverageSplit({
                 {r.scored}/{r.total} · {Math.round(pct * 100)}%
               </span>
             </div>
-            <div className="h-6 rounded-[3px] overflow-hidden flex" style={{ background: "rgba(255,255,255,0.035)" }}>
+            <div className="h-6 rounded-[3px] overflow-hidden flex" style={{ background: "rgba(22,21,15,0.06)" }}>
               <div style={{ width: `${pct * 100}%`, background: i === 0 ? VIZ.accent : VIZ.accent2 }} />
               {/* 2px surface gap between adjacent fills */}
-              <div style={{ width: 2, background: "#151021" }} />
+              <div style={{ width: 2, background: "#FFFFFF" }} />
             </div>
             {r.note && <div className="mt-1 text-[11px]" style={{ color: VIZ.inkFaint }}>{r.note}</div>}
           </div>

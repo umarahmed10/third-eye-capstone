@@ -98,12 +98,12 @@ export function Benchmarks() {
       <div className="max-w-6xl mx-auto space-y-7">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-white tracking-tight">Benchmarks &amp; Results</h2>
+            <h2 className="text-lg font-bold text-[#16150F] tracking-tight">Benchmarks &amp; Results</h2>
             {/* The old header carried an aspirational thesis ("match/beat a
                 paid-GPT baseline") as though it were a finding. It states what
                 we measured instead — the page should not claim in its first
                 line something its own tables do not support. */}
-            <p className="text-[12px] text-violet-200/55 mt-1 max-w-3xl leading-relaxed">
+            <p className="text-[12px] text-[#6B675C] mt-1 max-w-3xl leading-relaxed">
               Every number below is measured on a balanced benchmark of safe and vulnerable
               contracts — never estimated, never carried over from another dataset. Runs are
               checkpointed and still in progress, so counts grow over time.
@@ -183,13 +183,13 @@ export function Benchmarks() {
           <section>
             <SectionLabel>2 — But it cries wolf, and here is exactly why</SectionLabel>
             <div className="grid lg:grid-cols-[1fr_1.25fr] gap-4">
-              <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5">
-                <p className="text-sm text-slate-200 leading-relaxed">
-                  A contract is blocked if <span className="text-violet-300">any single specialist</span>{" "}
+              <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5">
+                <p className="text-sm text-[#16150F] leading-relaxed">
+                  A contract is blocked if <span className="text-[#2C4A6B]">any single specialist</span>{" "}
                   raises a concern. Consult more specialists and you get more detections — but also
                   more false alarms, and they stack up.
                 </p>
-                <p className="mt-3 text-xs text-slate-400 leading-relaxed">
+                <p className="mt-3 text-xs text-[#6B675C] leading-relaxed">
                   This is not a bad prompt or a tuning problem. It is arithmetic: eight independent
                   chances to object, and one objection blocks the contract. The model diversity that
                   makes the tool sensitive is the same thing that makes it noisy.
@@ -251,11 +251,11 @@ export function Benchmarks() {
                   highlight={(r) => r.label.startsWith("False")}
                 />
               </ChartFrame>
-              <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5">
-                <p className="text-sm text-slate-200 leading-relaxed">
+              <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5">
+                <p className="text-sm text-[#16150F] leading-relaxed">
                   It removed most false alarms — and threw away most of the real findings with them.
                 </p>
-                <p className="mt-3 text-xs text-slate-400 leading-relaxed">
+                <p className="mt-3 text-xs text-[#6B675C] leading-relaxed">
                   Reported rather than buried. A fix that fails for a legible reason is itself a
                   result: it showed the judge was suppressing indiscriminately, which is what
                   pointed at the combining rule as the thing that actually needed to change.
@@ -345,13 +345,13 @@ export function Benchmarks() {
             measured sections above is what made the page read as though other
             papers' numbers were ours.
             ───────────────────────────────────────────────────────────── */}
-        <div className="pt-3 border-t border-violet-300/[0.12]">
+        <div className="pt-3 border-t border-[#D8D3C7]">
           <div className="text-[11px] uppercase tracking-[0.16em] text-amber-200/70">
             Reference material — not ThirdEye results
           </div>
-          <p className="text-xs text-slate-500 mt-1 max-w-3xl leading-relaxed">
+          <p className="text-xs text-[#7A8794] mt-1 max-w-3xl leading-relaxed">
             Corpus composition and figures reported by other papers, on other datasets, under
-            their own protocols. Useful for context; <span className="text-slate-400">not
+            their own protocols. Useful for context; <span className="text-[#6B675C]">not
             comparable</span> to the measured sections above. The one genuine like-for-like
             comparison is the Slither head-to-head.
           </p>
@@ -362,8 +362,8 @@ export function Benchmarks() {
           <section>
             <SectionLabel>Most common vulnerabilities in the wild</SectionLabel>
             <div className="grid lg:grid-cols-2 gap-4">
-              <DistCard title="SmartBugs Curated" color="#a855f7" data={smartbugs} />
-              <DistCard title="Web3Bugs" color="#e8c468" data={web3bugs} />
+              <DistCard title="SmartBugs Curated" color="#2C4A6B" data={smartbugs} />
+              <DistCard title="Web3Bugs" color="#B4351F" data={web3bugs} />
             </div>
           </section>
         )}
@@ -373,10 +373,10 @@ export function Benchmarks() {
           <section>
             <SectionLabel count={baselines.length}>Published baselines — to be reproduced</SectionLabel>
             <div className="grid lg:grid-cols-[1.3fr_1fr] gap-4">
-              <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] overflow-x-auto">
+              <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] overflow-x-auto">
                 <table className="w-full text-[11px] min-w-[440px]">
                   <thead>
-                    <tr className="border-b border-violet-300/[0.08] bg-white/[0.02] text-slate-500">
+                    <tr className="border-b border-[#D8D3C7] bg-white/[0.02] text-[#7A8794]">
                       <th className="text-left px-3 py-2 font-medium">Tool</th>
                       <th className="text-left px-3 py-2 font-medium">Dataset</th>
                       <th className="text-right px-2 py-2 font-medium">Recall</th>
@@ -388,24 +388,24 @@ export function Benchmarks() {
                     {baselines.map((b, i) => (
                       <tr key={`${b.tool}-${i}`} className="border-b border-white/[0.03] last:border-0 align-top">
                         <td className="px-3 py-2.5">
-                          <div className="text-slate-200 font-medium">{b.tool}</div>
-                          {b.note && <div className="text-[9px] text-slate-500 mt-0.5 max-w-[200px]">{b.note}</div>}
+                          <div className="text-[#16150F] font-medium">{b.tool}</div>
+                          {b.note && <div className="text-[9px] text-[#7A8794] mt-0.5 max-w-[200px]">{b.note}</div>}
                         </td>
-                        <td className="px-3 py-2.5 text-slate-400">{b.dataset}</td>
-                        <td className="px-2 py-2.5 text-right font-mono text-slate-300 tabular-nums">{ratio(b.recall)}</td>
-                        <td className="px-2 py-2.5 text-right font-mono text-violet-200 tabular-nums">{ratio(b.f1)}</td>
-                        <td className="px-3 py-2.5 text-right font-mono text-slate-400">{b.cost ?? "—"}</td>
+                        <td className="px-3 py-2.5 text-[#6B675C]">{b.dataset}</td>
+                        <td className="px-2 py-2.5 text-right font-mono text-[#3A372E] tabular-nums">{ratio(b.recall)}</td>
+                        <td className="px-2 py-2.5 text-right font-mono text-[#2C4A6B] tabular-nums">{ratio(b.f1)}</td>
+                        <td className="px-3 py-2.5 text-right font-mono text-[#6B675C]">{b.cost ?? "—"}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                <div className="px-3 py-2 border-t border-violet-300/[0.08] flex flex-wrap items-center gap-2">
+                <div className="px-3 py-2 border-t border-[#D8D3C7] flex flex-wrap items-center gap-2">
                   <Pill>published — to be reproduced</Pill>
-                  <span className="text-[10px] text-slate-500">Figures from published literature — NOT Third-Eye's own results.</span>
+                  <span className="text-[10px] text-[#7A8794]">Figures from published literature — NOT Third-Eye's own results.</span>
                 </div>
               </div>
-              <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5">
-                <div className="text-[11px] uppercase tracking-[0.16em] text-violet-300/55 mb-3">Published F1 comparison</div>
+              <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5">
+                <div className="text-[11px] uppercase tracking-[0.16em] text-[#6B675C] mb-3">Published F1 comparison</div>
                 <VerticalBars
                   data={baselines.filter((b) => b.f1 != null).slice(0, 6).map((b) => ({ label: b.tool, value: num(b.f1) }))}
                   color={CHART_COLORS[0]}
@@ -443,24 +443,24 @@ function TierBenchmarkSection({ tb }: { tb: TierBenchmark }) {
           unexplained: a reader saw six cards of confusion matrices with no way
           to know that the top three SHOULD come back clean and the bottom three
           SHOULD come back blocked. */}
-      <div className="mb-3 rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">
-        <p className="text-xs text-slate-300 leading-relaxed">
+      <div className="mb-3 rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4">
+        <p className="text-xs text-[#3A372E] leading-relaxed">
           Contracts are split into six tiers by how trustworthy their label is, and each is
           scored separately so a weakness is pinpointable instead of averaged away.
         </p>
         <div className="mt-3 grid sm:grid-cols-2 gap-3 text-xs">
           <div>
-            <div className="text-emerald-300 font-medium mb-1">Three SAFE tiers — should return GO</div>
-            <p className="text-slate-400 leading-relaxed">
+            <div className="text-[#16150F] font-medium mb-1">Three SAFE tiers — should return GO</div>
+            <p className="text-[#6B675C] leading-relaxed">
               Audited libraries (OpenZeppelin/Solady), audit-reviewed clean code, and deployed
               real-world contracts with no reported bug. Every NO-GO here is a{" "}
-              <span className="text-rose-300">false alarm</span>. Most benchmarks in this field
+              <span className="text-[#B4351F]">false alarm</span>. Most benchmarks in this field
               have no safe bucket at all, which makes their precision meaningless.
             </p>
           </div>
           <div>
             <div className="text-amber-300 font-medium mb-1">Three VULNERABLE tiers — should return NO-GO</div>
-            <p className="text-slate-400 leading-relaxed">
+            <p className="text-[#6B675C] leading-relaxed">
               Curated known-vulnerable contracts, synthetically injected bugs, and real
               audit-report findings. Every GO here is a <span className="text-amber-300">miss</span>.
               Difficulty rises left to right — injected bugs are the easiest, real audit findings
@@ -468,7 +468,7 @@ function TierBenchmarkSection({ tb }: { tb: TierBenchmark }) {
             </p>
           </div>
         </div>
-        <p className="mt-3 text-[11px] text-slate-500 leading-relaxed">
+        <p className="mt-3 text-[11px] text-[#7A8794] leading-relaxed">
           &ldquo;Safe&rdquo; means <em>no bug has been reported</em>, not <em>formally proven
           correct</em> — so a flagged safe contract is occasionally a real unreported bug rather
           than a tool error.
@@ -490,33 +490,33 @@ function TierBenchmarkSection({ tb }: { tb: TierBenchmark }) {
 
       {/* API-call accounting → rate-limit sizing */}
       {api?.available && (
-        <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4 mt-3">
-          <div className="text-[11px] uppercase tracking-[0.16em] text-violet-300/55 mb-3">
+        <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4 mt-3">
+          <div className="text-[11px] uppercase tracking-[0.16em] text-[#6B675C] mb-3">
             API-call accounting — per-user rate-limit sizing
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
             {api.calls_per_contract &&
               (["min", "median", "mean", "p95", "max"] as const).map((k) => (
                 <div key={k} className="rounded-lg bg-white/[0.02] py-2.5">
-                  <div className="text-[15px] font-mono font-semibold text-violet-200 tabular-nums">
+                  <div className="text-[15px] font-mono font-semibold text-[#2C4A6B] tabular-nums">
                     {api.calls_per_contract?.[k] ?? "—"}
                   </div>
-                  <div className="text-[9px] uppercase tracking-wider text-slate-500 mt-0.5">{k}</div>
+                  <div className="text-[9px] uppercase tracking-wider text-[#7A8794] mt-0.5">{k}</div>
                 </div>
               ))}
           </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-[10px] text-slate-500">
-            <span>Total LLM calls: <span className="text-slate-300 font-mono">{api.total_api_calls}</span> over {api.contracts} contracts</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-[10px] text-[#7A8794]">
+            <span>Total LLM calls: <span className="text-[#3A372E] font-mono">{api.total_api_calls}</span> over {api.contracts} contracts</span>
             {api.latency_s_per_contract?.mean != null && (
-              <span>Mean latency: <span className="text-slate-300 font-mono">{api.latency_s_per_contract.mean}s</span>/scan</span>
+              <span>Mean latency: <span className="text-[#3A372E] font-mono">{api.latency_s_per_contract.mean}s</span>/scan</span>
             )}
           </div>
           {api.rate_limit_note && (
-            <p className="text-[10px] text-violet-200/50 mt-2 leading-relaxed">{api.rate_limit_note}</p>
+            <p className="text-[10px] text-[#6B675C] mt-2 leading-relaxed">{api.rate_limit_note}</p>
           )}
         </div>
       )}
-      {tb.verdict_note && <p className="text-[10px] text-slate-500 mt-2">{tb.verdict_note}</p>}
+      {tb.verdict_note && <p className="text-[10px] text-[#7A8794] mt-2">{tb.verdict_note}</p>}
     </section>
   );
 }
@@ -538,20 +538,20 @@ function ProposedMethodsSection({ p }: { p: NonNullable<BenchmarkStats["proposed
     <section>
       <SectionLabel>The fix — replacing the council&rsquo;s OR-gate</SectionLabel>
 
-      <div className="mb-3 rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">
-        <p className="text-xs text-slate-300 leading-relaxed">
+      <div className="mb-3 rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4">
+        <p className="text-xs text-[#3A372E] leading-relaxed">
           A contract is blocked if <em>any</em> specialist raises a finding — a logical OR. So the
-          false-alarm rate <span className="text-rose-300">grows with the number of specialists
+          false-alarm rate <span className="text-[#B4351F]">grows with the number of specialists
           consulted</span> (measured: 50% → 61% → 71% → 73% for 1→4 specialists). The very model
           diversity that buys detection is what destroys precision. Two fixes were tested against
           that, both validated on held-out data.
         </p>
       </div>
 
-      <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] overflow-x-auto">
+      <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
+            <tr className="text-[10px] uppercase tracking-[0.14em] text-[#6B675C]">
               <th className="px-3 py-2 text-left font-normal">method</th>
               <th className="px-3 py-2 text-right font-normal">false alarms</th>
               <th className="px-3 py-2 text-right font-normal">recall</th>
@@ -560,10 +560,10 @@ function ProposedMethodsSection({ p }: { p: NonNullable<BenchmarkStats["proposed
               <th className="px-3 py-2 text-right font-normal">wins</th>
             </tr>
           </thead>
-          <tbody className="text-slate-200">
+          <tbody className="text-[#16150F]">
             {w && (
               <>
-                <tr className="border-t border-violet-300/[0.07] text-slate-400">
+                <tr className="border-t border-[#D8D3C7] text-[#6B675C]">
                   <td className="px-3 py-2 text-left">OR-gate (current)</td>
                   <td className={cell}>{pct(w.or_gate?.fpr)}</td>
                   <td className={cell}>{f3(w.or_gate?.recall)}</td>
@@ -571,7 +571,7 @@ function ProposedMethodsSection({ p }: { p: NonNullable<BenchmarkStats["proposed
                   <td className={cell}>0</td>
                   <td className={cell}>—</td>
                 </tr>
-                <tr className="border-t border-violet-300/[0.07]">
+                <tr className="border-t border-[#D8D3C7]">
                   <td className="px-3 py-2 text-left text-emerald-200">Weighted noisy-OR</td>
                   <td className={cell} style={{ color: "rgb(110,231,183)" }}>{pct(w.tuned?.fpr)}</td>
                   <td className={cell}>{f3(w.tuned?.recall)}</td>
@@ -582,7 +582,7 @@ function ProposedMethodsSection({ p }: { p: NonNullable<BenchmarkStats["proposed
               </>
             )}
             {c && (
-              <tr className="border-t border-violet-300/[0.07]">
+              <tr className="border-t border-[#D8D3C7]">
                 <td className="px-3 py-2 text-left">Calibrated arbitration</td>
                 <td className={cell}>{pct(c.tuned_fpr)}</td>
                 <td className={cell}>—</td>
@@ -595,14 +595,14 @@ function ProposedMethodsSection({ p }: { p: NonNullable<BenchmarkStats["proposed
         </table>
       </div>
 
-      <p className="mt-3 text-xs text-slate-400 leading-relaxed">
-        <span className="text-slate-200 font-medium">Reading this:</span> weighting the council&rsquo;s
+      <p className="mt-3 text-xs text-[#6B675C] leading-relaxed">
+        <span className="text-[#16150F] font-medium">Reading this:</span> weighting the council&rsquo;s
         own findings by how reliable each specialist has proven cuts false alarms roughly in half
-        and costs <span className="text-emerald-300">nothing at inference time</span>. Adversarial
+        and costs <span className="text-[#2C4A6B]">nothing at inference time</span>. Adversarial
         arbitration also works, but needs two extra large-model calls per finding to do less. The
         cheap fix beats the expensive one.
       </p>
-      <p className="mt-2 text-xs text-slate-500 leading-relaxed">{p.note}</p>
+      <p className="mt-2 text-xs text-[#7A8794] leading-relaxed">{p.note}</p>
     </section>
   );
 }
@@ -626,10 +626,10 @@ function HeadToHeadSection({ h }: { h: NonNullable<BenchmarkStats["head_to_head"
       <SectionLabel count={h.n_common}>
         Head-to-head vs Slither — identical contracts, identical ground truth
       </SectionLabel>
-      <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] overflow-x-auto">
+      <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-[10px] uppercase tracking-[0.14em] text-slate-400">
+            <tr className="text-[10px] uppercase tracking-[0.14em] text-[#6B675C]">
               <th className="px-3 py-2 text-left font-normal">tool</th>
               <th className="px-3 py-2 text-right font-normal">precision</th>
               <th className="px-3 py-2 text-right font-normal">recall</th>
@@ -638,8 +638,8 @@ function HeadToHeadSection({ h }: { h: NonNullable<BenchmarkStats["head_to_head"
               <th className="px-3 py-2 text-right font-normal">contracts scored</th>
             </tr>
           </thead>
-          <tbody className="text-slate-200">
-            <tr className="border-t border-violet-300/[0.07]">
+          <tbody className="text-[#16150F]">
+            <tr className="border-t border-[#D8D3C7]">
               <td className="px-3 py-2 text-left">ThirdEye council</td>
               <td className={cell}>{c.precision?.toFixed(3)}</td>
               <td className={cell} style={better(c.recall, s.recall) ? win : undefined}>{c.recall?.toFixed(3)}</td>
@@ -647,7 +647,7 @@ function HeadToHeadSection({ h }: { h: NonNullable<BenchmarkStats["head_to_head"
               <td className={cell}>{c.fpr?.toFixed(3)}</td>
               <td className={cell} style={win}>{cov.council_scored}</td>
             </tr>
-            <tr className="border-t border-violet-300/[0.07]">
+            <tr className="border-t border-[#D8D3C7]">
               <td className="px-3 py-2 text-left">Slither (static)</td>
               <td className={cell} style={better(s.precision, c.precision) ? win : undefined}>{s.precision?.toFixed(3)}</td>
               <td className={cell}>{s.recall?.toFixed(3)}</td>
@@ -658,15 +658,15 @@ function HeadToHeadSection({ h }: { h: NonNullable<BenchmarkStats["head_to_head"
           </tbody>
         </table>
       </div>
-      <p className="mt-3 text-xs text-slate-400 leading-relaxed">
-        <span className="text-slate-200 font-medium">Reading this:</span> neither tool wins — F1 is
+      <p className="mt-3 text-xs text-[#6B675C] leading-relaxed">
+        <span className="text-[#16150F] font-medium">Reading this:</span> neither tool wins — F1 is
         effectively tied. ThirdEye buys recall with precision; Slither does the reverse. The
         decisive column is the last one: Slither can only analyse contracts that <em>compile</em>,
         and it abstained on most of them, disproportionately on large modern code. ThirdEye reads
         source directly, so it scores everything. A static analyser&rsquo;s headline accuracy is
         therefore measured on a subset selected for being easy.
       </p>
-      <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+      <p className="mt-2 text-xs text-[#7A8794] leading-relaxed">
         Metrics computed on the {h.n_common} contracts BOTH tools scored. {h.note}
       </p>
     </section>
@@ -685,7 +685,7 @@ function ArbitrationSection({ a }: { a: NonNullable<BenchmarkStats["arbitration_
   const fpFixed = a.false_positives_corrected ?? 0;
   const tpSeen = a.true_positives_seen ?? 0;
   const tpLost = a.true_positives_destroyed ?? 0;
-  const cell = "rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5";
+  const cell = "rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5";
   return (
     <section>
       <SectionLabel count={a.n_adjudicated}>
@@ -693,33 +693,33 @@ function ArbitrationSection({ a }: { a: NonNullable<BenchmarkStats["arbitration_
       </SectionLabel>
       <div className="grid sm:grid-cols-2 gap-4">
         <div className={cell}>
-          <div className="text-[11px] uppercase tracking-[0.14em] text-slate-400">False positives corrected</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-[#6B675C]">False positives corrected</div>
           <div className="mt-2 text-3xl font-mono" style={{ color: "rgb(110,231,183)" }}>
-            {fpFixed}<span className="text-slate-500 text-xl">/{fpSeen}</span>
+            {fpFixed}<span className="text-[#7A8794] text-xl">/{fpSeen}</span>
           </div>
-          <div className="mt-1 text-xs text-slate-400">
+          <div className="mt-1 text-xs text-[#6B675C]">
             Safe contracts the council wrongly blocked, released to GO by the judge.
           </div>
         </div>
         <div className={cell}>
-          <div className="text-[11px] uppercase tracking-[0.14em] text-slate-400">True positives destroyed</div>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-[#6B675C]">True positives destroyed</div>
           <div className="mt-2 text-3xl font-mono" style={{ color: tpLost > 0 ? "rgb(248,113,113)" : "rgb(110,231,183)" }}>
-            {tpLost}<span className="text-slate-500 text-xl">/{tpSeen}</span>
+            {tpLost}<span className="text-[#7A8794] text-xl">/{tpSeen}</span>
           </div>
-          <div className="mt-1 text-xs text-slate-400">
+          <div className="mt-1 text-xs text-[#6B675C]">
             Real vulnerabilities wrongly cleared. The cost side of the gate.
           </div>
         </div>
       </div>
-      <p className="mt-3 text-xs text-slate-400 leading-relaxed">
-        <span className="text-slate-200 font-medium">Reading this:</span> a working precision gate
+      <p className="mt-3 text-xs text-[#6B675C] leading-relaxed">
+        <span className="text-[#16150F] font-medium">Reading this:</span> a working precision gate
         would show a high number on the left and a low one on the right. Dropping true and false
         findings at similar rates means the judge is suppressing indiscriminately rather than
         discriminating — so as a binary keep/drop gate it costs more recall than the precision it
         buys. Work in progress: the judge also emits a confidence score, and sweeping a threshold
         over it may recover a usable operating point.
       </p>
-      <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+      <p className="mt-2 text-xs text-[#7A8794] leading-relaxed">
         Judge: {a.judge ?? "—"}. {a.note}
       </p>
     </section>
@@ -733,25 +733,25 @@ function TierCard({ t }: { t: TierResult }) {
   //  - vuln tier  → detection rate (recall): how often a real bug is caught.
   const headline = safe ? t.correct_go_rate_on_safe : t.detection_rate_on_vuln;
   const headlineLabel = safe ? "Correctly cleared (GO)" : "Bugs caught (NO-GO)";
-  const badColor = safe ? "text-rose-300" : "text-amber-300";
+  const badColor = safe ? "text-[#B4351F]" : "text-amber-300";
   const wrong = safe ? t.fp ?? 0 : t.fn ?? 0;
   const wrongLabel = safe ? "false alarms" : "missed";
 
   return (
-    <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">
+    <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="text-[12px] font-semibold text-slate-200 truncate">{t.label}</div>
-          <div className="text-[9px] uppercase tracking-wider text-slate-500 mt-0.5">
+          <div className="text-[12px] font-semibold text-[#16150F] truncate">{t.label}</div>
+          <div className="text-[9px] uppercase tracking-wider text-[#7A8794] mt-0.5">
             {safe ? "expected GO" : "expected NO-GO"} · n={t.n}
           </div>
         </div>
         <div className="text-right shrink-0">
-          <div className="text-[20px] font-mono font-bold text-emerald-300 tabular-nums leading-none">{pct(headline)}</div>
-          <div className="text-[9px] text-slate-500 mt-1">{headlineLabel}</div>
+          <div className="text-[20px] font-mono font-bold text-[#2C4A6B] tabular-nums leading-none">{pct(headline)}</div>
+          <div className="text-[9px] text-[#7A8794] mt-1">{headlineLabel}</div>
         </div>
       </div>
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10px] font-mono text-slate-400 tabular-nums">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10px] font-mono text-[#6B675C] tabular-nums">
         <span>TP {intg(t.tp)}</span>
         <span>FP {intg(t.fp)}</span>
         <span>TN {intg(t.tn)}</span>
@@ -769,13 +769,13 @@ function AggCard({ title, t, kind }: { title: string; t?: TierResult; kind: "saf
     kind === "safe" ? t.accuracy : kind === "vuln" ? t.recall : t.f1;
   const primaryLabel = kind === "safe" ? "Accuracy" : kind === "vuln" ? "Recall (detection)" : "F1";
   return (
-    <div className="rounded-xl border border-violet-300/[0.14] bg-gradient-to-br from-violet-500/[0.06] to-transparent px-5 py-4">
-      <div className="text-[10px] uppercase tracking-[0.14em] text-violet-300/55">{title}</div>
+    <div className="rounded-xl border border-[#D8D3C7] bg-gradient-to-br from-violet-500/[0.06] to-transparent px-5 py-4">
+      <div className="text-[10px] uppercase tracking-[0.14em] text-[#6B675C]">{title}</div>
       <div className="flex items-baseline gap-2 mt-1.5">
-        <span className="text-[24px] font-mono font-bold text-white tabular-nums leading-none">{pct(primary)}</span>
-        <span className="text-[10px] text-slate-500">{primaryLabel}</span>
+        <span className="text-[24px] font-mono font-bold text-[#16150F] tabular-nums leading-none">{pct(primary)}</span>
+        <span className="text-[10px] text-[#7A8794]">{primaryLabel}</span>
       </div>
-      <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[10px] font-mono text-slate-500 tabular-nums">
+      <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-2 text-[10px] font-mono text-[#7A8794] tabular-nums">
         <span>P {ratio(t.precision)}</span>
         <span>R {ratio(t.recall)}</span>
         <span>F1 {ratio(t.f1)}</span>
@@ -789,11 +789,11 @@ function AggCard({ title, t, kind }: { title: string; t?: TierResult; kind: "saf
 function DistCard({ title, data, color }: { title: string; data: VulnDistEntry[]; color: string }) {
   if (!data || data.length === 0) return null;
   return (
-    <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-5">
+    <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5">
       <div className="flex items-center gap-2 mb-4">
         <span className="w-2 h-2 rounded-full" style={{ background: color }} />
-        <span className="text-[12px] font-semibold text-slate-200">{title}</span>
-        <span className="ml-auto text-[10px] font-mono text-slate-500">{data.length} categories</span>
+        <span className="text-[12px] font-semibold text-[#16150F]">{title}</span>
+        <span className="ml-auto text-[10px] font-mono text-[#7A8794]">{data.length} categories</span>
       </div>
       <DistributionBars data={data.slice(0, 10)} color={color} />
     </div>

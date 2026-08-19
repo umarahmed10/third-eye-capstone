@@ -30,8 +30,8 @@ function verdictTone(v: FinalVerdict): VerdictTone {
     return {
       verdict: v,
       label: "Cleared by Council",
-      fg: "text-emerald-400",
-      ringBg: "bg-emerald-500/12 ring-emerald-400/30",
+      fg: "text-[#16150F]",
+      ringBg: "bg-[#ECEFE9] ring-[#16150F]/25",
       panelBg: "linear-gradient(135deg, rgba(16,185,129,0.12), rgba(14,10,20,0.35))",
       border: "rgba(16,185,129,0.28)",
       shadow: "0 0 60px -28px rgba(16,185,129,0.4)",
@@ -55,8 +55,8 @@ function verdictTone(v: FinalVerdict): VerdictTone {
   return {
     verdict: v,
     label: "Deployment Blocked",
-    fg: "text-rose-400",
-    ringBg: "bg-rose-500/12 ring-rose-400/30",
+    fg: "text-[#B4351F]",
+    ringBg: "bg-[#F6E7E2] ring-[#B4351F]/35",
     panelBg: "linear-gradient(135deg, rgba(244,63,94,0.13), rgba(14,10,20,0.35))",
     border: "rgba(244,63,94,0.3)",
     shadow: "0 0 60px -28px rgba(244,63,94,0.45)",
@@ -89,14 +89,14 @@ export function VerdictBanner({ result }: { result: CouncilResult }) {
             <div className={`text-2xl font-bold tracking-tight leading-none ${t.fg}`}>
               {result.final_verdict}
             </div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-slate-400 mt-1">{t.label}</div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-[#6B675C] mt-1">{t.label}</div>
           </div>
         </div>
         <div className="min-w-0 flex-1">
           {result.contract_name && (
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] uppercase tracking-[0.18em] text-slate-500">Contract</span>
-              <span className="text-sm font-mono font-semibold text-slate-200 truncate">{result.contract_name}</span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-[#7A8794]">Contract</span>
+              <span className="text-sm font-mono font-semibold text-[#16150F] truncate">{result.contract_name}</span>
             </div>
           )}
 
@@ -124,7 +124,7 @@ export function VerdictBanner({ result }: { result: CouncilResult }) {
           {result.verdict_reason && (
             <p
               className={`text-[12px] leading-relaxed mb-2 ${
-                result.final_verdict === "INCONCLUSIVE" ? "text-amber-200/90" : "text-slate-300"
+                result.final_verdict === "INCONCLUSIVE" ? "text-amber-200/90" : "text-[#3A372E]"
               }`}
             >
               {result.verdict_reason}
@@ -133,19 +133,19 @@ export function VerdictBanner({ result }: { result: CouncilResult }) {
 
           {result.raven_note && (
             <div className="flex items-start gap-2.5">
-              <span className="mt-0.5 flex-shrink-0 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 px-2 py-1 rounded-md">
+              <span className="mt-0.5 flex-shrink-0 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-[#2C4A6B] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-1 rounded-md">
                 Raven's read
               </span>
-              <p className="text-[13px] text-slate-300 leading-relaxed">{result.raven_note}</p>
+              <p className="text-[13px] text-[#3A372E] leading-relaxed">{result.raven_note}</p>
             </div>
           )}
 
           {/* Precision story — arbitration upheld X, dropped Y false positives. */}
           {arb && (arb.upheld != null || arb.dropped != null) && (
-            <p className="text-[11px] text-violet-200/70 mt-2">
+            <p className="text-[11px] text-[#6B675C] mt-2">
               Arbitration upheld{" "}
-              <span className="font-semibold text-violet-100 tabular-nums">{arb.upheld ?? 0}</span>, dropped{" "}
-              <span className="font-semibold text-violet-100 tabular-nums">{arb.dropped ?? 0}</span>{" "}
+              <span className="font-semibold text-[#2C4A6B] tabular-nums">{arb.upheld ?? 0}</span>, dropped{" "}
+              <span className="font-semibold text-[#2C4A6B] tabular-nums">{arb.dropped ?? 0}</span>{" "}
               {arb.dropped === 1 ? "false positive" : "false positives"}
               {arb.dropped_types?.length ? ` (${arb.dropped_types.join(", ")})` : ""}.
             </p>
@@ -162,13 +162,13 @@ export function RoutingSummary({ routing }: { routing?: RoutingInfo }) {
   if (!routing || !routing.roles?.length) return null;
   const trace = routing.trace ?? {};
   return (
-    <section aria-label="Static routing" className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">
+    <section aria-label="Static routing" className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4">
       <SectionLabel count={routing.roles.length}>
         <span className="inline-flex items-center gap-1.5">
           <FlowIcon size={12} /> Static routing
         </span>
       </SectionLabel>
-      <p className="text-[12px] text-slate-400 leading-relaxed mb-3">
+      <p className="text-[12px] text-[#6B675C] leading-relaxed mb-3">
         {routing.static_used === false
           ? "The heuristic router could not narrow the surface, so the full council was convened."
           : "A heuristic pre-scan routed the contract to only the relevant specialists — the rest were skipped."}
@@ -177,7 +177,7 @@ export function RoutingSummary({ routing }: { routing?: RoutingInfo }) {
         {routing.roles.map((r) => (
           <span
             key={r}
-            className="inline-flex items-center gap-1 text-[10px] font-mono text-violet-200/85 bg-violet-500/[0.08] ring-1 ring-violet-400/20 px-2 py-0.5 rounded-md"
+            className="inline-flex items-center gap-1 text-[10px] font-mono text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-0.5 rounded-md"
             title={trace[r]}
           >
             {humanizeRole(r)}
@@ -218,12 +218,12 @@ function Stat({
 }) {
   const hot = Number(value) > 0;
   const valColor =
-    tone === "danger" && hot ? "text-rose-400" : tone === "warn" && hot ? "text-amber-300" : "text-white/90";
+    tone === "danger" && hot ? "text-rose-400" : tone === "warn" && hot ? "text-amber-300" : "text-[#16150F]/90";
   return (
-    <div className="rounded-xl bg-[#151021] border border-white/[0.07] px-4 py-3">
-      <div className="text-[9px] uppercase tracking-[0.14em] text-slate-500 mb-1">{label}</div>
+    <div className="rounded-xl bg-[#FFFFFF] border border-white/[0.07] px-4 py-3">
+      <div className="text-[9px] uppercase tracking-[0.14em] text-[#7A8794] mb-1">{label}</div>
       <div className={`text-xl font-bold tabular-nums leading-none ${valColor}`}>{value}</div>
-      {sub && <div className="text-[9px] font-mono text-slate-500 mt-1">{sub}</div>}
+      {sub && <div className="text-[9px] font-mono text-[#7A8794] mt-1">{sub}</div>}
     </div>
   );
 }
@@ -250,7 +250,7 @@ function VulnRow({ v }: { v: CouncilVuln }) {
     <article className={`rounded-xl ring-1 ${s.ring} ${s.bg} px-4 py-3.5 space-y-3`}>
       <div className="flex flex-wrap items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${s.dot}`} aria-hidden="true" />
-        <span className="text-[14px] font-semibold text-white/90 capitalize">{humanizeRole(v.type)}</span>
+        <span className="text-[14px] font-semibold text-[#16150F]/90 capitalize">{humanizeRole(v.type)}</span>
         <span className={`text-[9px] font-mono font-bold uppercase ${s.text}`}>{v.severity}</span>
         <div className="ml-auto">
           <DynamicStatusBadge status={v.dynamic_status} />
@@ -259,13 +259,13 @@ function VulnRow({ v }: { v: CouncilVuln }) {
       <div className="flex flex-wrap items-center gap-3">
         <ModelChip model={v.model} provider={v.provider} />
         {v.source && (
-          <span className="text-[9px] font-mono text-slate-400 bg-white/[0.05] px-1.5 py-0.5 rounded">via {v.source}</span>
+          <span className="text-[9px] font-mono text-[#6B675C] bg-white/[0.05] px-1.5 py-0.5 rounded">via {v.source}</span>
         )}
         <div className="flex-1 min-w-[120px]">
           <ConfidenceMeter value={v.confidence} tone="danger" />
         </div>
       </div>
-      {v.description && <p className="text-[12px] text-slate-400 leading-relaxed">{v.description}</p>}
+      {v.description && <p className="text-[12px] text-[#6B675C] leading-relaxed">{v.description}</p>}
       {v.evidence_quote && (
         <div>
           <Eyebrow>Evidence</Eyebrow>
@@ -277,7 +277,7 @@ function VulnRow({ v }: { v: CouncilVuln }) {
       {v.proposed_property && (
         <div>
           <Eyebrow>Proposed Invariant</Eyebrow>
-          <p className="text-[11px] font-mono text-violet-200/75 bg-violet-500/[0.06] ring-1 ring-violet-400/12 rounded-lg px-3 py-2 leading-relaxed">
+          <p className="text-[11px] font-mono text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] rounded-lg px-3 py-2 leading-relaxed">
             {v.proposed_property}
           </p>
         </div>
@@ -338,10 +338,10 @@ export function PrecedentPanel({ exploits }: { exploits?: SimilarExploit[] }) {
         {exploits.map((e, i) => {
           const s = e.severity ? sevTokens(e.severity) : null;
           return (
-            <article key={i} className="rounded-xl border border-white/[0.07] bg-[#151021] px-4 py-3.5 space-y-2">
+            <article key={i} className="rounded-xl border border-white/[0.07] bg-[#FFFFFF] px-4 py-3.5 space-y-2">
               <div className="flex items-center gap-2">
                 {e.category && (
-                  <span className="text-[12px] font-semibold text-slate-200 capitalize">
+                  <span className="text-[12px] font-semibold text-[#16150F] capitalize">
                     {e.category.replace(/_/g, " ")}
                   </span>
                 )}
@@ -350,7 +350,7 @@ export function PrecedentPanel({ exploits }: { exploits?: SimilarExploit[] }) {
                 )}
               </div>
               {e.snippet && (
-                <pre className="text-[10px] font-mono text-slate-400 bg-black/35 ring-1 ring-white/[0.05] rounded-lg px-3 py-2 leading-relaxed whitespace-pre-wrap break-words max-h-36 overflow-auto">
+                <pre className="text-[10px] font-mono text-[#6B675C] bg-black/35 ring-1 ring-white/[0.05] rounded-lg px-3 py-2 leading-relaxed whitespace-pre-wrap break-words max-h-36 overflow-auto">
                   {e.snippet}
                 </pre>
               )}

@@ -6,7 +6,7 @@
  *    out and low-contrast text is unreadable from the back
  *
  * Contrast against the bone surface is computed, not eyeballed (WCAG 2.1):
- *   ink 16.8:1 · muted 5.2:1 · signal 5.5:1 · data 8.4:1 · slate 3.4:1
+ *   ink 16.8:1 · muted 5.2:1 · signal 5.5:1 · data 8.4:1 · slate 5.0:1
  * The hairline is 1.37:1 by intent — it is a rule, never information.
  *
  * Status is never colour alone: BLOCKED/CLEARED always ship with a word and a
@@ -23,7 +23,7 @@ export const EX = {
   signalWash: "#F6E7E2",   // vermillion at low weight
   data: "#2C4A6B",         // charts, single sequential hue
   dataMid: "#5C7C9E",
-  slate: "#7A8794",        // de-emphasised marks
+  slate: "#5E6B78",        // de-emphasised text AND marks — 5.0:1 on bone
 } as const;
 
 /** Monospace for every number. Data should look measured, not typeset. */

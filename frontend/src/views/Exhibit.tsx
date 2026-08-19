@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { EX, MONO, SERIF, SANS } from "../lib/exhibit-theme";
-import { ScanReplay, type Replay } from "../components/exhibit/ScanReplay";
-import { LiveScan } from "../components/exhibit/LiveScan";
+import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
-import safeReplay from "../data/replays/safe.json";
-import vulnReplay from "../data/replays/vulnerable.json";
 
 /** The exhibit, framed as a PAPER rather than a product.
  *
@@ -377,42 +374,13 @@ function Contribution4() {
 /* ─── artifact ─────────────────────────────────────────────────────── */
 
 function Artifact({ onOpenApp }: { onOpenApp?: () => void }) {
-  const [which, setWhich] = useState<"safe" | "vulnerable">("vulnerable");
-  const [mode, setMode] = useState<"replay" | "live">("replay");
-  const replay = (which === "safe" ? safeReplay : vulnReplay) as unknown as Replay;
   return (
     <Section
       n="A" kicker="Artifact" tint
-      title="The system is real, and so is the evidence."
-      lede="Reproducibility is a reviewer's first question. Below is a recording of an actual scan — same code path, true timings — and a button to run one live against the backend."
+      title="Run it here."
+      lede="Reproducibility is a reviewer's first question, so the system is embedded in the page rather than behind a link. Pick a contract whose answer is already known and watch the specialists resolve — or paste your own and run it live."
     >
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 18 }}>
-        <div style={{ display: "flex", border: `1px solid ${EX.ink}` }}>
-          {(["vulnerable", "safe"] as const).map((k) => (
-            <button key={k} onClick={() => setWhich(k)}
-              style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".05em", padding: "7px 14px", cursor: "pointer", border: "none",
-                       background: which === k ? EX.ink : "transparent", color: which === k ? EX.surface : EX.ink }}>
-              {k === "vulnerable" ? "KNOWN VULNERABLE" : "KNOWN SAFE"}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: "flex", border: `1px solid ${EX.hairline}` }}>
-          {(["replay", "live"] as const).map((m) => (
-            <button key={m} onClick={() => setMode(m)}
-              style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".05em", padding: "7px 14px", cursor: "pointer", border: "none",
-                       background: mode === m ? EX.ink : "transparent", color: mode === m ? EX.surface : EX.inkMuted }}>
-              {m === "replay" ? "RECORDED" : "RUN LIVE"}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ background: EX.surface, border: `1px solid ${EX.hairline}`, padding: "20px 22px" }}>
-        <div style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, marginBottom: 14 }}>{replay.contract_id}</div>
-        {mode === "replay"
-          ? <ScanReplay key={which} replay={replay} speed={7} />
-          : <LiveScan key={which} code={replay.code} contractId={replay.contract_id} />}
-      </div>
+      <TryIt />
 
       <Evidence items={[
         { k: "Benchmark", v: "2,250 labelled contracts from 11 pinned sources, balanced 1,125 safe : 1,125 vulnerable, across six trust tiers." },
@@ -420,12 +388,15 @@ function Artifact({ onOpenApp }: { onOpenApp?: () => void }) {
         { k: "Sampling", v: "Seeded and nested, so a larger run is a strict superset of a smaller one and the population never silently changes." },
       ]} />
 
-      <div style={{ marginTop: 22 }}>
-        <button onClick={onOpenApp}
-          style={{ fontFamily: MONO, fontSize: 12, letterSpacing: ".06em", padding: "11px 18px", background: EX.ink, color: EX.surface, border: "none", cursor: "pointer" }}>
-          OPEN THE WORKING TOOL →
+      <p style={{ fontSize: 13.5, color: EX.inkMuted, lineHeight: 1.6, marginTop: 18, maxWidth: "70ch" }}>
+        Recordings are captured from the same streaming code path the live button uses, with true
+        wall-clock timings — a scan that happened, replayed, not an animation. Sign-in, scan history
+        and PDF export exist in the{" "}
+        <button onClick={onOpenApp} style={{ background: "none", border: "none", padding: 0, font: "inherit", color: EX.data, textDecoration: "underline", cursor: "pointer" }}>
+          full application
         </button>
-      </div>
+        ; they are product features and play no part in the results above.
+      </p>
     </Section>
   );
 }
@@ -502,6 +473,29 @@ function Status() {
         measured in months and outside anyone&rsquo;s control, so we describe this as{" "}
         <em>submission-ready</em>, never as published.
       </p>
+
+      {/* What is actually running right now. Kept deliberately short and dated —
+          a panel asking "what are you doing this week?" should get a specific
+          answer, not a roadmap. */}
+      <div style={{ marginTop: 34, border: `1px solid ${EX.ink}`, background: EX.surface, padding: "20px 24px" }}>
+        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".14em", color: EX.signal, marginBottom: 12 }}>
+          CURRENTLY WORKING TOWARDS
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "0 40px" }}>
+          {([
+            ["Bucket 04 — Web3Bugs", "Running now. Real Code4rena audit contests: 300 confirmed semantic bugs across 91 protocol codebases. This is the set GPTScan reports against."],
+            ["Related-work survey", "Positioning nine surveyed papers against each contribution. The one item blocking submission."],
+            ["Scaling the evidence", "Extending beyond 233 scored contracts and completing the multi-seed runs to tighten every interval."],
+          ] as [string, string][]).map(([t, d]) => (
+            <div key={t} style={{ padding: "9px 0" }}>
+              <div style={{ display: "flex", gap: 9, fontSize: 14.5 }}>
+                <span style={{ fontFamily: MONO, color: EX.signal }}>▸</span>{t}
+              </div>
+              <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.55, marginTop: 4, marginLeft: 20 }}>{d}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </Section>
   );
 }

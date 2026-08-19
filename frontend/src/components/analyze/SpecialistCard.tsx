@@ -17,7 +17,7 @@ export type SpecialistState = {
 
 export function SpecialistCard({ s, index }: { s: SpecialistState; index: number }) {
   const { status } = s;
-  const color = s.provider ? providerColor(s.provider) : "#a855f7";
+  const color = s.provider ? providerColor(s.provider) : "#2C4A6B";
 
   // Skipped specialists render greyed-out with their router skip reason.
   if (status === "skipped") {
@@ -31,11 +31,11 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
             <span className="text-slate-600">
               <EyeIcon size={14} />
             </span>
-            <span className="text-[12.5px] font-semibold text-slate-500 leading-tight truncate line-through decoration-slate-700/60">
+            <span className="text-[12.5px] font-semibold text-[#7A8794] leading-tight truncate line-through decoration-slate-700/60">
               {humanizeRole(s.role)}
             </span>
           </div>
-          <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-slate-500 bg-white/[0.03] ring-1 ring-white/[0.05] flex-shrink-0">
+          <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#7A8794] bg-white/[0.03] ring-1 ring-white/[0.05] flex-shrink-0">
             Skipped
           </span>
         </div>
@@ -55,7 +55,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
         ? "border-rose-500/25 bg-rose-500/[0.05]"
         : "border-emerald-500/20 bg-emerald-500/[0.03]"
       : status === "analyzing"
-      ? "border-violet-400/30 bg-violet-500/[0.04]"
+      ? "border-[#D8D3C7] bg-[#EDE9DF]"
       : "border-white/[0.07] bg-white/[0.012]";
 
   return (
@@ -81,13 +81,13 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
                   ? "text-rose-400/80"
                   : "text-emerald-400/70"
                 : status === "analyzing"
-                ? "text-violet-300"
+                ? "text-[#2C4A6B]"
                 : "text-slate-600"
             }
           >
             <EyeIcon size={14} />
           </span>
-          <span className="text-[12.5px] font-semibold text-white/85 leading-tight truncate">
+          <span className="text-[12.5px] font-semibold text-[#16150F]/85 leading-tight truncate">
             {humanizeRole(s.role)}
           </span>
         </div>
@@ -132,19 +132,19 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
 function StatusBadge({ s }: { s: SpecialistState }) {
   if (s.status === "queued") {
     return (
-      <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-slate-500 bg-white/[0.04] flex-shrink-0">
+      <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#7A8794] bg-white/[0.04] flex-shrink-0">
         Queued
       </span>
     );
   }
   if (s.status === "analyzing") {
     return (
-      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 flex-shrink-0">
+      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#2C4A6B] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex-shrink-0">
         <span className="flex gap-0.5">
           {[0, 0.18, 0.36].map((d) => (
             <span
               key={d}
-              className="w-1 h-1 rounded-full bg-violet-300 animate-pulse-glow"
+              className="w-1 h-1 rounded-full bg-[#16150F] animate-pulse-glow"
               style={{ animationDelay: `${d}s` }}
             />
           ))}

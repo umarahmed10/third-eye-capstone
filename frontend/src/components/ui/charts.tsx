@@ -12,14 +12,14 @@ export function GroupedBars({
     <div className="space-y-4">
       {rows.map((row) => (
         <div key={row.label}>
-          <div className="text-[12px] font-medium text-white/80 mb-2">{row.label}</div>
+          <div className="text-[12px] font-medium text-[#16150F]/80 mb-2">{row.label}</div>
           <div className="space-y-1.5">
             {metrics.map((m) => {
               const v = row.values[m.key] ?? 0;
               const pct = Math.round(v * 100);
               return (
                 <div key={m.key} className="flex items-center gap-2.5">
-                  <span className="w-16 text-[9px] uppercase tracking-wide text-slate-500 flex-shrink-0">
+                  <span className="w-16 text-[9px] uppercase tracking-wide text-[#7A8794] flex-shrink-0">
                     {m.label}
                   </span>
                   <div className="flex-1 h-3 rounded bg-white/[0.05] overflow-hidden">
@@ -28,7 +28,7 @@ export function GroupedBars({
                       style={{ width: `${pct}%`, background: m.color }}
                     />
                   </div>
-                  <span className="w-9 text-right text-[10px] font-mono tabular-nums text-slate-300 flex-shrink-0">
+                  <span className="w-9 text-right text-[10px] font-mono tabular-nums text-[#3A372E] flex-shrink-0">
                     {pct}%
                   </span>
                 </div>
@@ -44,7 +44,7 @@ export function GroupedBars({
 // Single-metric horizontal distribution (vuln categories in the wild).
 export function DistributionBars({
   data,
-  color = "#a855f7",
+  color = "#2C4A6B",
   max,
 }: {
   data: { category: string; count: number; pct: number }[];
@@ -56,7 +56,7 @@ export function DistributionBars({
     <div className="space-y-2">
       {data.map((d) => (
         <div key={d.category} className="flex items-center gap-2.5">
-          <span className="w-32 truncate text-[11px] text-slate-300 capitalize flex-shrink-0" title={d.category}>
+          <span className="w-32 truncate text-[11px] text-[#3A372E] capitalize flex-shrink-0" title={d.category}>
             {d.category.replace(/_/g, " ")}
           </span>
           <div className="flex-1 h-4 rounded bg-white/[0.04] overflow-hidden">
@@ -67,7 +67,7 @@ export function DistributionBars({
               <span className="text-[8px] font-mono text-black/70 font-bold">{d.pct}%</span>
             </div>
           </div>
-          <span className="w-8 text-right text-[10px] font-mono tabular-nums text-slate-500 flex-shrink-0">
+          <span className="w-8 text-right text-[10px] font-mono tabular-nums text-[#7A8794] flex-shrink-0">
             {d.count}
           </span>
         </div>
@@ -79,7 +79,7 @@ export function DistributionBars({
 // Vertical comparison bars (e.g. baseline recall/F1).
 export function VerticalBars({
   data,
-  color = "#a855f7",
+  color = "#2C4A6B",
   height = 120,
 }: {
   data: { label: string; value: number }[];
@@ -93,7 +93,7 @@ export function VerticalBars({
         const h = Math.round((d.value / peak) * (height - 22));
         return (
           <div key={d.label} className="flex-1 flex flex-col items-center justify-end gap-1.5 min-w-0">
-            <span className="text-[9px] font-mono tabular-nums text-slate-400">{d.value.toFixed(2)}</span>
+            <span className="text-[9px] font-mono tabular-nums text-[#6B675C]">{d.value.toFixed(2)}</span>
             <div
               className="w-full rounded-t"
               style={{
@@ -103,7 +103,7 @@ export function VerticalBars({
                 animation: "bar-rise 0.7s cubic-bezier(0.16,1,0.3,1) both",
               }}
             />
-            <span className="text-[8px] text-slate-500 truncate w-full text-center" title={d.label}>
+            <span className="text-[8px] text-[#7A8794] truncate w-full text-center" title={d.label}>
               {d.label}
             </span>
           </div>

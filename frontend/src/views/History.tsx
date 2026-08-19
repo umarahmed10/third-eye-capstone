@@ -56,7 +56,7 @@ export function History({ user }: { user: User }) {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center gap-2 text-slate-500 text-[13px]">
+      <div className="h-full flex items-center justify-center gap-2 text-[#7A8794] text-[13px]">
         <Spinner /> Loading history…
       </div>
     );
@@ -68,9 +68,9 @@ export function History({ user }: { user: User }) {
         {/* Sessions list */}
         <aside>
           <SectionLabel count={sessions.length}>Sessions</SectionLabel>
-          <div className="rounded-xl border border-white/[0.07] bg-[#151021] divide-y divide-white/[0.04] max-h-[calc(100vh-160px)] overflow-y-auto">
+          <div className="rounded-xl border border-white/[0.07] bg-[#FFFFFF] divide-y divide-white/[0.04] max-h-[calc(100vh-160px)] overflow-y-auto">
             {sessions.length === 0 ? (
-              <div className="px-4 py-8 text-center text-[12px] text-slate-500">No sessions yet.</div>
+              <div className="px-4 py-8 text-center text-[12px] text-[#7A8794]">No sessions yet.</div>
             ) : (
               sessions.map((s) => (
                 <button
@@ -78,21 +78,21 @@ export function History({ user }: { user: User }) {
                   onClick={() => setActive(s.id)}
                   aria-current={active === s.id}
                   className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${
-                    active === s.id ? "bg-violet-500/[0.08]" : "hover:bg-white/[0.02]"
+                    active === s.id ? "bg-[#EDE9DF]" : "hover:bg-white/[0.02]"
                   }`}
                 >
                   <span
                     className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      active === s.id ? "bg-violet-500/15 text-violet-300" : "bg-white/[0.04] text-slate-500"
+                      active === s.id ? "bg-[#EDE9DF] text-[#2C4A6B]" : "bg-white/[0.04] text-[#7A8794]"
                     }`}
                   >
                     <HistoryIcon size={14} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-violet-200" : "text-slate-200"}`}>
+                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-[#2C4A6B]" : "text-[#16150F]"}`}>
                       {s.title || `Session ${s.id}`}
                     </div>
-                    <div className="text-[9px] font-mono text-slate-500">{fmtDate(s.created_at)}</div>
+                    <div className="text-[9px] font-mono text-[#7A8794]">{fmtDate(s.created_at)}</div>
                   </div>
                 </button>
               ))
@@ -106,7 +106,7 @@ export function History({ user }: { user: User }) {
           {active == null ? (
             <Empty text="Select a session to view its analyses." />
           ) : loadingMsgs ? (
-            <div className="flex items-center gap-2 text-slate-500 text-[13px] py-8">
+            <div className="flex items-center gap-2 text-[#7A8794] text-[13px] py-8">
               <Spinner /> Loading…
             </div>
           ) : analyses.length === 0 ? (
@@ -127,7 +127,7 @@ export function History({ user }: { user: User }) {
                     >
                       {r.final_verdict === "GO" ? <ShieldCheckIcon size={15} /> : <AlertIcon size={15} />}
                     </span>
-                    <span className="text-[12px] font-semibold text-slate-200">
+                    <span className="text-[12px] font-semibold text-[#16150F]">
                       {r.contract_name || "Contract"}
                     </span>
                     {r.mode && <Pill>{r.mode}</Pill>}
@@ -151,7 +151,7 @@ export function History({ user }: { user: User }) {
 
 function Empty({ text }: { text: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] px-6 py-12 text-center text-[13px] text-slate-500">
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] px-6 py-12 text-center text-[13px] text-[#7A8794]">
       {text}
     </div>
   );

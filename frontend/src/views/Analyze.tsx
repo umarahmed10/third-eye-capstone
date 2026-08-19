@@ -259,24 +259,24 @@ export function Analyze({
     <div className="px-4 sm:px-6 py-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Hero header */}
-        <header className="relative overflow-hidden rounded-2xl border border-violet-300/[0.10] bg-[#151021]">
+        <header className="relative overflow-hidden rounded-2xl border border-[#D8D3C7] bg-[#FFFFFF]">
           <div className="bg-grid opacity-40 absolute inset-0" aria-hidden="true" />
           <div
             className="absolute -right-24 -top-28 w-96 h-96 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(circle, rgba(168,85,247,0.16), transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(44,74,107,0.08), transparent 70%)" }}
             aria-hidden="true"
           />
           <div className="relative px-6 sm:px-8 py-7 flex items-center gap-5">
-            <div className="text-violet-300 flex-shrink-0">
+            <div className="text-[#2C4A6B] flex-shrink-0">
               <ScanIcon size={34} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl font-bold text-white tracking-tight leading-tight">
+              <h2 className="text-xl font-bold text-[#16150F] tracking-tight leading-tight">
                 Audit a contract with the Third-Eye council.
               </h2>
-              <p className="text-[13px] text-violet-200/60 mt-1.5 max-w-2xl leading-relaxed">
+              <p className="text-[13px] text-[#6B675C] mt-1.5 max-w-2xl leading-relaxed">
                 Eight model-diverse specialists examine your Solidity live. When they finish,
-                <span className="text-violet-200/90"> Raven </span>
+                <span className="text-[#6B675C]"> Raven </span>
                 delivers a single, defensible verdict.
               </p>
             </div>
@@ -310,10 +310,10 @@ export function Analyze({
         {/* Code editor */}
         <section
           ref={editorRef}
-          className="rounded-xl border border-violet-300/[0.10] bg-[#151021] overflow-hidden focus-within:border-violet-400/40 transition-colors scroll-mt-4"
+          className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] overflow-hidden focus-within:border-[#D8D3C7] transition-colors scroll-mt-4"
         >
-          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-violet-300/[0.08]">
-            <span className="text-[10px] uppercase tracking-[0.16em] text-violet-300/55">Solidity Source</span>
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#D8D3C7]">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-[#6B675C]">Solidity Source</span>
             {activeSample && <Pill tone="accent">sample loaded</Pill>}
             <input ref={fileRef} type="file" className="hidden" accept=".sol,.vy,.txt" onChange={handleFile} />
             <div className="ml-auto flex items-center gap-3">
@@ -324,7 +324,7 @@ export function Analyze({
                     setCode("");
                     setActiveSample(null);
                   }}
-                  className="text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
+                  className="text-[10px] text-[#7A8794] hover:text-[#3A372E] transition-colors"
                 >
                   Clear
                 </button>
@@ -332,7 +332,7 @@ export function Analyze({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="text-[10px] text-violet-300/70 hover:text-violet-200 transition-colors flex items-center gap-1"
+                className="text-[10px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors flex items-center gap-1"
               >
                 <UploadIcon size={12} /> Upload .sol
               </button>
@@ -349,15 +349,15 @@ export function Analyze({
             spellCheck={false}
             rows={12}
             placeholder={"// Paste your Solidity contract here\npragma solidity ^0.8.0;\n\ncontract MyContract {\n  ...\n}"}
-            className="w-full bg-transparent outline-none resize-y text-[12px] font-mono leading-relaxed text-slate-300 placeholder:text-slate-600 px-4 py-3 min-h-[220px]"
+            className="w-full bg-transparent outline-none resize-y text-[12px] font-mono leading-relaxed text-[#3A372E] placeholder:text-slate-600 px-4 py-3 min-h-[220px]"
           />
-          <div className="flex items-center gap-3 px-4 py-3 border-t border-violet-300/[0.08]">
-            <span className="text-[10px] font-mono text-slate-500">{code.length} chars</span>
+          <div className="flex items-center gap-3 px-4 py-3 border-t border-[#D8D3C7]">
+            <span className="text-[10px] font-mono text-[#7A8794]">{code.length} chars</span>
             {tier && <Pill tone="accent">{tier} tier</Pill>}
             {running ? (
               <button
                 onClick={cancel}
-                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold border border-white/[0.12] text-slate-300 hover:bg-white/[0.04] transition-colors"
+                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold border border-white/[0.12] text-[#3A372E] hover:bg-white/[0.04] transition-colors"
               >
                 <Spinner size={13} /> Cancel
               </button>
@@ -365,7 +365,7 @@ export function Analyze({
               <button
                 onClick={() => run()}
                 disabled={code.trim().length < 10}
-                className="ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12.5px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-white shadow-[0_8px_24px_-10px_rgba(168,85,247,0.8)] transition-colors disabled:opacity-25 disabled:cursor-not-allowed disabled:shadow-none"
+                className="ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12.5px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_8px_24px_-10px_rgba(44,74,107,0.08)] transition-colors disabled:opacity-25 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 <BoltIcon size={14} />
                 Run Third-Eye
@@ -382,23 +382,23 @@ export function Analyze({
 
         {/* Static routing story — the router picked N of 8 specialists */}
         {(routing || running || phase === "done") && (routing?.roles?.length ?? 0) > 0 && (
-          <div className="rounded-xl border border-violet-300/[0.12] bg-violet-500/[0.04] px-5 py-4 animate-fade-in">
+          <div className="rounded-xl border border-[#D8D3C7] bg-[#EDE9DF] px-5 py-4 animate-fade-in">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-violet-200 bg-violet-500/15 ring-1 ring-violet-400/25 px-2 py-1 rounded-md">
+              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-[#2C4A6B] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-1 rounded-md">
                 <FlowIcon size={11} /> Static routing
               </span>
-              <span className="text-[13px] font-medium text-slate-200">
+              <span className="text-[13px] font-medium text-[#16150F]">
                 Router selected{" "}
-                <span className="text-violet-200 font-semibold tabular-nums">
+                <span className="text-[#2C4A6B] font-semibold tabular-nums">
                   {routing!.roles.length} of {order.length}
                 </span>{" "}
                 specialists
                 {routing!.static_used === false && (
-                  <span className="text-slate-500"> (fallback — full council)</span>
+                  <span className="text-[#7A8794]"> (fallback — full council)</span>
                 )}
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed mt-1.5">
+            <p className="text-[11px] text-[#7A8794] leading-relaxed mt-1.5">
               A heuristic pre-scan routes the contract to only the relevant attack-surface specialists —
               the rest are skipped, shown greyed below.
             </p>
@@ -407,19 +407,19 @@ export function Analyze({
 
         {/* Live progress */}
         {(running || phase === "done") && (
-          <div className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4 animate-fade-in">
+          <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4 animate-fade-in">
             <div className="flex items-center gap-3">
               <span
-                className={`w-2 h-2 rounded-full ${running ? "bg-violet-400 animate-pulse-glow" : "bg-emerald-400"}`}
+                className={`w-2 h-2 rounded-full ${running ? "bg-[#16150F] animate-pulse-glow" : "bg-emerald-400"}`}
               />
-              <span className="text-[13px] font-medium text-slate-200">
+              <span className="text-[13px] font-medium text-[#16150F]">
                 {arbitrating
                   ? "Arbitration — Raven cross-examining every claim against the source…"
                   : running
                   ? "Council in session — specialists examining attack surfaces…"
                   : "Council adjourned."}
               </span>
-              <span className="ml-auto text-[11px] font-mono text-slate-400 tabular-nums">
+              <span className="ml-auto text-[11px] font-mono text-[#6B675C] tabular-nums">
                 {doneCount} / {totalActive}
               </span>
             </div>
@@ -432,9 +432,9 @@ export function Analyze({
 
             {/* Arbitration / cross-examination step */}
             {arbitrating && (
-              <div className="mt-3 flex items-center gap-2.5 rounded-lg bg-violet-500/[0.06] ring-1 ring-violet-400/20 px-3 py-2 animate-fade-in">
+              <div className="mt-3 flex items-center gap-2.5 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-3 py-2 animate-fade-in">
                 <Spinner size={13} />
-                <span className="text-[11.5px] text-violet-100">
+                <span className="text-[11.5px] text-[#2C4A6B]">
                   Evidence-anchored arbitration on{" "}
                   <span className="font-mono font-semibold tabular-nums">{arbitrating.count}</span>{" "}
                   candidate {arbitrating.count === 1 ? "finding" : "findings"} — dropping anything not grounded in the code.
@@ -468,9 +468,9 @@ export function Analyze({
             />
             <PrecedentPanel exploits={result.similar_exploits} />
             {result.summary && (
-              <section className="rounded-xl border border-violet-300/[0.10] bg-[#151021] px-5 py-4">
+              <section className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-4">
                 <SectionLabel>Summary</SectionLabel>
-                <p className="text-[13px] text-slate-400 leading-relaxed">{result.summary}</p>
+                <p className="text-[13px] text-[#6B675C] leading-relaxed">{result.summary}</p>
               </section>
             )}
           </div>
@@ -480,11 +480,11 @@ export function Analyze({
         <section id="samples" className="scroll-mt-4 pt-1">
           <SectionLabel count={samples.length || undefined}>Sample contracts — try it instantly</SectionLabel>
           {samplesErr ? (
-            <div className="rounded-xl border border-violet-300/[0.08] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-slate-500">
+            <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-[#7A8794]">
               Couldn't load samples right now — paste or upload a contract above to get started.
             </div>
           ) : samples.length === 0 ? (
-            <div className="rounded-xl border border-violet-300/[0.08] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-slate-500">
+            <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-[#7A8794]">
               <Spinner /> <span className="ml-2 align-middle">Loading samples…</span>
             </div>
           ) : (
@@ -510,19 +510,19 @@ export function Analyze({
 
         {/* Idle explainer (only before first run) */}
         {phase === "idle" && (
-          <div className="rounded-xl border border-violet-300/[0.08] bg-white/[0.01] px-6 py-8 text-center">
-            <div className="inline-flex w-12 h-12 rounded-2xl bg-violet-500/12 ring-1 ring-violet-400/20 items-center justify-center text-violet-300/80 mb-3">
+          <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-6 py-8 text-center">
+            <div className="inline-flex w-12 h-12 rounded-2xl bg-[#EDE9DF] ring-1 ring-[#D8D3C7] items-center justify-center text-[#6B675C] mb-3">
               <EyeIcon size={22} />
             </div>
-            <p className="text-[13px] text-slate-300 mb-1">Eight specialists, each pinned to a different base model.</p>
-            <p className="text-[12px] text-slate-500 max-w-md mx-auto">
+            <p className="text-[13px] text-[#3A372E] mb-1">Eight specialists, each pinned to a different base model.</p>
+            <p className="text-[12px] text-[#7A8794] max-w-md mx-auto">
               You'll watch every verdict land live as it arrives — then Raven sums it up.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4">
               {SPECIALIST_ROLES.map((r) => (
                 <span
                   key={r}
-                  className="inline-flex items-center gap-1 text-[9px] font-mono text-violet-300/55 bg-violet-500/[0.06] px-2 py-1 rounded"
+                  className="inline-flex items-center gap-1 text-[9px] font-mono text-[#6B675C] bg-[#EDE9DF] px-2 py-1 rounded"
                 >
                   <EyeIcon size={9} />
                   {r.replace(/_/g, " ")}
@@ -533,14 +533,14 @@ export function Analyze({
               <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
                 <button
                   onClick={() => onNavigate("how")}
-                  className="inline-flex items-center gap-1.5 text-[11px] text-violet-300/80 hover:text-violet-200 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors"
                 >
                   <FlowIcon size={13} /> How it works
                 </button>
                 <span className="text-slate-700">·</span>
                 <button
                   onClick={() => onNavigate("benchmarks")}
-                  className="inline-flex items-center gap-1.5 text-[11px] text-violet-300/80 hover:text-violet-200 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-[11px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors"
                 >
                   <ChartIcon size={13} /> Benchmarks
                 </button>
@@ -567,14 +567,14 @@ function ProvideCard({
   return (
     <button
       onClick={onClick}
-      className="group flex items-start gap-3 rounded-xl border border-violet-300/[0.10] bg-[#151021] px-4 py-3.5 text-left hover:border-violet-400/35 hover:bg-violet-500/[0.05] transition-colors"
+      className="group flex items-start gap-3 rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-4 py-3.5 text-left hover:border-[#D8D3C7] hover:bg-[#EDE9DF] transition-colors"
     >
-      <span className="mt-0.5 w-8 h-8 rounded-lg bg-violet-500/12 ring-1 ring-violet-400/20 flex items-center justify-center text-violet-300 flex-shrink-0 transition-colors">
+      <span className="mt-0.5 w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#2C4A6B] flex-shrink-0 transition-colors">
         {icon}
       </span>
       <div className="min-w-0">
-        <div className="text-[12.5px] font-semibold text-slate-200">{title}</div>
-        <div className="text-[10.5px] text-slate-500 leading-snug mt-0.5">{body}</div>
+        <div className="text-[12.5px] font-semibold text-[#16150F]">{title}</div>
+        <div className="text-[10.5px] text-[#7A8794] leading-snug mt-0.5">{body}</div>
       </div>
     </button>
   );
@@ -597,13 +597,13 @@ function SampleCard({
   return (
     <article
       className={`flex flex-col rounded-xl border px-4 py-3.5 transition-colors ${
-        active ? "border-violet-400/45 bg-violet-500/[0.07]" : "border-violet-300/[0.10] bg-[#151021] hover:border-violet-400/25"
+        active ? "border-[#D8D3C7] bg-[#EDE9DF]" : "border-[#D8D3C7] bg-[#FFFFFF] hover:border-[#D8D3C7]"
       }`}
     >
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-semibold text-slate-100 truncate">{s.name}</div>
-          <div className="text-[9.5px] uppercase tracking-[0.14em] text-violet-300/50 mt-0.5">{s.category}</div>
+          <div className="text-[13px] font-semibold text-[#16150F] truncate">{s.name}</div>
+          <div className="text-[9.5px] uppercase tracking-[0.14em] text-[#6B675C] mt-0.5">{s.category}</div>
         </div>
         <span
           className={`flex-shrink-0 text-[9px] font-mono font-bold uppercase tracking-wide px-2 py-0.5 rounded-md ring-1 ${
@@ -616,19 +616,19 @@ function SampleCard({
           {s.expected}
         </span>
       </div>
-      <p className="text-[11px] text-slate-500 leading-relaxed mt-2 flex-1">{s.blurb}</p>
+      <p className="text-[11px] text-[#7A8794] leading-relaxed mt-2 flex-1">{s.blurb}</p>
       <div className="flex items-center gap-2 mt-3">
         <button
           onClick={onRun}
           disabled={disabled}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-violet-500/90 hover:bg-violet-400 text-white transition-colors disabled:opacity-30"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-[#EDE9DF] hover:bg-[#3A372E] text-[#16150F] transition-colors disabled:opacity-30"
         >
           <BoltIcon size={12} /> Analyze
         </button>
         <button
           onClick={onLoad}
           disabled={disabled}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-violet-300/80 hover:text-violet-200 hover:bg-white/[0.04] transition-colors disabled:opacity-30"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-[#6B675C] hover:text-[#2C4A6B] hover:bg-white/[0.04] transition-colors disabled:opacity-30"
         >
           Load <ArrowRightIcon size={12} />
         </button>
