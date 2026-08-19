@@ -280,6 +280,13 @@ export type BenchmarkStats = {
     compounding?: { specialists: number; n: number; fpr: number }[];
     reliability?: { cls: string; tp: number; fp: number; precision: number }[];
   };
+  // What the PRODUCTION verdict rule scores right now, obtained by replaying
+  // checkpoints through the live functions rather than re-deriving the rule.
+  shipped_rule?: {
+    available?: boolean; n?: number; tau?: number; note?: string;
+    before?: H2HScore; after?: H2HScore;
+    per_tier?: Record<string, { n: number; fpr_before: number; fpr_after: number }>;
+  };
   vuln_distribution?: {
     smartbugs_curated?: VulnDistEntry[];
     web3bugs?: VulnDistEntry[];

@@ -44,6 +44,7 @@ export function Benchmarks() {
           head_to_head: prefSnap("head_to_head") as BenchmarkStats["head_to_head"],
           arbitration_ablation: prefSnap("arbitration_ablation") as BenchmarkStats["arbitration_ablation"],
           proposed_methods: prefSnap("proposed_methods") as BenchmarkStats["proposed_methods"],
+          shipped_rule: prefSnap("shipped_rule") as BenchmarkStats["shipped_rule"],
           ablation: snap.ablation?.available ? snap.ablation : d.ablation,
         });
         setLive(true);
@@ -69,6 +70,7 @@ export function Benchmarks() {
   const safeAgg = tierBench?.safe_aggregate;
   const vulnAgg = tierBench?.vuln_aggregate;
   const compounding = d.story?.compounding ?? [];
+  const shipped = d.shipped_rule;
   // Humanised bar rows for the vulnerable tiers, hardest last so the chart
   // reads left-to-right as increasing difficulty.
   const VULN_ORDER = ["injected", "curated", "audit_report"];
@@ -135,14 +137,30 @@ export function Benchmarks() {
           />
           <HeroStat
             label="Real bugs caught"
-            value={vulnAgg?.recall != null ? `${Math.round(vulnAgg.recall * 100)}%` : "—"}
-            sub={`${vulnAgg?.tp ?? 0} of ${(vulnAgg?.tp ?? 0) + (vulnAgg?.fn ?? 0)} vulnerable contracts correctly blocked.`}
+            value={
+              shipped?.after?.recall != null
+                ? `${Math.round(shipped.after.recall * 100)}%`
+                : vulnAgg?.recall != null ? `${Math.round(vulnAgg.recall * 100)}%` : "—"
+            }
+            sub={
+              shipped?.after
+                ? `${shipped.after.tp} of ${(shipped.after.tp ?? 0) + (shipped.after.fn ?? 0)} vulnerable contracts correctly blocked.`
+                : `${vulnAgg?.tp ?? 0} of ${(vulnAgg?.tp ?? 0) + (vulnAgg?.fn ?? 0)} vulnerable contracts correctly blocked.`
+            }
           />
           <HeroStat
             label="False alarms"
             tone="warn"
-            value={safeAgg && safeAgg.scored ? `${Math.round(((safeAgg.fp ?? 0) / safeAgg.scored) * 100)}%` : "—"}
-            sub={`${safeAgg?.fp ?? 0} of ${safeAgg?.scored ?? 0} audited-safe contracts blocked anyway. This is the problem the project set out to solve.`}
+            value={
+              shipped?.after?.fpr != null
+                ? `${Math.round(shipped.after.fpr * 100)}%`
+                : safeAgg && safeAgg.scored ? `${Math.round(((safeAgg.fp ?? 0) / safeAgg.scored) * 100)}%` : "—"
+            }
+            sub={
+              shipped?.after && shipped?.before
+                ? `${shipped.after.fp} of ${(shipped.after.fp ?? 0) + (shipped.after.tn ?? 0)} audited-safe contracts still blocked — down from ${Math.round((shipped.before.fpr ?? 0) * 100)}% before the combining rule was fixed.`
+                : `${safeAgg?.fp ?? 0} of ${safeAgg?.scored ?? 0} audited-safe contracts blocked anyway.`
+            }
           />
         </section>
 
@@ -250,19 +268,25 @@ export function Benchmarks() {
         {/* ── Act 5: the fix that worked ── */}
         {pm?.weighted?.tuned && pm?.weighted?.or_gate && (
           <section>
-            <SectionLabel>5 — The fix that worked, and it is free</SectionLabel>
+            <SectionLabel>5 — The fix, now shipped in the tool</SectionLabel>
             <ChartFrame
-              title="Requiring confidence, instead of accepting any objection"
+              title="Requiring combined confidence, instead of accepting any single objection"
               subtitle="Same models, same findings, same contracts. Only the rule that turns them into a verdict changes: block when the combined evidence passes a confidence bar, rather than on any single objection."
               footnote={`Validated on held-out data: the bar is chosen on one half of the contracts and tested on the other, repeated over ${pm.weighted.n_splits ?? 10} random splits. Improves in ${pm.weighted.wins ?? "—"}/${pm.weighted.n_splits ?? 10}, costs zero extra AI calls, and adds no per-specialist tuning. A more elaborate variant that also weights each specialist by its track record was tested and did NOT do better (${pm.weighted.weighting_wins ?? "—"}/${pm.weighted.n_splits ?? 10} splits) — so the simpler rule is the one reported.`}
             >
               <Dumbbell
-                beforeLabel="Current rule (any objection blocks)"
-                afterLabel="Confidence-threshold rule"
+                beforeLabel="Old rule (any objection blocks)"
+                afterLabel="Shipped rule (combined confidence)"
                 rows={[
-                  { label: "False alarms", before: pm.weighted.or_gate.fpr ?? 0, after: pm.weighted.tuned.fpr ?? 0, better: "down" },
-                  { label: "Bugs caught", before: pm.weighted.or_gate.recall ?? 0, after: pm.weighted.tuned.recall ?? 0, better: "up" },
-                  { label: "Overall accuracy (F1)", before: pm.weighted.or_gate.f1 ?? 0, after: pm.weighted.tuned.f1 ?? 0, better: "up" },
+                  { label: "False alarms",
+                    before: shipped?.before?.fpr ?? pm.weighted.or_gate.fpr ?? 0,
+                    after: shipped?.after?.fpr ?? pm.weighted.tuned.fpr ?? 0, better: "down" },
+                  { label: "Bugs caught",
+                    before: shipped?.before?.recall ?? pm.weighted.or_gate.recall ?? 0,
+                    after: shipped?.after?.recall ?? pm.weighted.tuned.recall ?? 0, better: "up" },
+                  { label: "Overall accuracy (F1)",
+                    before: shipped?.before?.f1 ?? pm.weighted.or_gate.f1 ?? 0,
+                    after: shipped?.after?.f1 ?? pm.weighted.tuned.f1 ?? 0, better: "up" },
                 ]}
               />
             </ChartFrame>

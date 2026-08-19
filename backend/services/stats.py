@@ -322,7 +322,8 @@ def _story_data() -> dict:
             "n_rows": len(rows)}
 
 
-def _headline_kpis(ablation: dict, tier: dict | None = None, arb: dict | None = None) -> list[dict]:
+def _headline_kpis(ablation: dict, tier: dict | None = None, arb: dict | None = None,
+                   shipped: dict | None = None) -> list[dict]:
     """The KPI cards.
 
     Sourced from the REAL per-tier benchmark, not the old n=16 access-control
@@ -341,11 +342,23 @@ def _headline_kpis(ablation: dict, tier: dict | None = None, arb: dict | None = 
         n_total = tier.get("n_total")
         kpis.append({"label": "Benchmark contracts", "value": str(n_total or "—"),
                      "sub": f"scored, {tier.get('backend','')} · balanced safe/vulnerable"})
-        if va.get("recall") is not None and va.get("scored"):
+        sh_r = (shipped or {}).get("after") if (shipped or {}).get("available") else None
+        if sh_r:
+            kpis.append({"label": "Recall (vulnerable)", "value": f"{sh_r['recall']:.2f}",
+                         "sub": f"{sh_r['tp']}/{sh_r['tp']+sh_r['fn']} caught · GPTScan 0.83"})
+        elif va.get("recall") is not None and va.get("scored"):
             kpis.append({"label": "Recall (vulnerable)", "value": f"{va['recall']:.2f}",
                          "sub": f"{va.get('tp',0)}/{va.get('scored',0)} caught · GPTScan 0.83"})
         # The honest headline: how often audited-safe code gets wrongly blocked.
-        if sa.get("scored"):
+        # Sourced from the SHIPPED rule when available — the tier aggregate is
+        # historical (it was scored under the old OR-gate) and quoting it here
+        # would advertise a false-alarm rate the tool no longer has.
+        sh = (shipped or {}).get("after") if (shipped or {}).get("available") else None
+        if sh:
+            kpis.append({"label": "False-positive rate (safe)", "value": f"{sh['fpr']:.0%}",
+                         "sub": f"{sh['fp']}/{sh['fp']+sh['tn']} audited-safe wrongly flagged · was "
+                                f"{(shipped or {}).get('before',{}).get('fpr',0):.0%} before the fix"})
+        elif sa.get("scored"):
             fp, n = sa.get("fp", 0), sa.get("scored", 0)
             kpis.append({"label": "False-positive rate (safe)", "value": f"{fp/n:.0%}" if n else "—",
                          "sub": f"{fp}/{n} audited-safe contracts wrongly flagged"})
@@ -407,14 +420,16 @@ def build_benchmark_stats(use_snapshot: bool = True) -> dict:
     _tier, _arb, _h2h = _tier_benchmark(), _arbitration_ablation(), _head_to_head()
     _prop = _proposed_methods()
     _story = _story_data()
+    _shipped = _shipped_rule()
     live = {
-        "kpis": _headline_kpis(_ablation(), _tier, _arb),
+        "kpis": _headline_kpis(_ablation(), _tier, _arb, _shipped),
         "ablation": _ablation(),
         "tier_benchmark": _tier,
         "arbitration_ablation": _arb,
         "head_to_head": _h2h,
         "proposed_methods": _prop,
         "story": _story,
+        "shipped_rule": _shipped,
         "vuln_distribution": {
             "smartbugs_curated": _smartbugs_distribution(),
             "web3bugs": _web3bugs_distribution(),
@@ -478,3 +493,97 @@ def write_snapshot() -> str:
     )
     FRONTEND_STATIC.write_text(ts)
     return f"{SNAPSHOT} + {FRONTEND_STATIC}"
+
+
+def _shipped_rule() -> dict:
+    """What the PRODUCTION verdict rule scores on the benchmark, right now.
+
+    Computed by replaying every scored checkpoint through the live functions
+    (council._contract_risk + suppression.suppress) rather than re-deriving the
+    rule here. That is deliberate: the whole reason this section exists is that
+    the paper once reported a threshold rule the product did not implement, and
+    a dashboard that re-implements the rule a third time could drift the same
+    way. If the shipped rule changes, this number changes with it.
+
+    No re-run is needed to keep this honest. The shipped change only alters how
+    a verdict is computed FROM findings; the findings themselves (which
+    specialists ran, what they quoted, their confidences) are unchanged, so
+    replaying checkpoints is equivalent to re-running the benchmark.
+    """
+    try:
+        from services.council import _contract_risk, RISK_TAU
+        from services.suppression import suppress
+        from services.llm import preanalyze_code
+        from eval.loaders import thirdeye_bench as tb
+    except Exception as e:
+        return {"available": False, "note": f"live rule unavailable: {e}"}
+
+    rows = []
+    if COUNCIL_CKPT.exists():
+        for f in COUNCIL_CKPT.glob("*.json"):
+            try:
+                r = json.load(open(f))
+            except Exception:
+                continue
+            if r.get("schema", 1) >= 2 and r.get("verdict") in ("GO", "NO-GO"):
+                rows.append(r)
+    if not rows:
+        return {"available": False, "note": "no schema-2 checkpoints"}
+
+    paths, tiers = {}, {}
+    try:
+        for it in tb.load():
+            paths[it.contract_id] = it.code_paths[0] if it.code_paths else None
+            tiers[it.contract_id] = (it.meta or {}).get("tier")
+    except Exception:
+        pass
+
+    def blocked_now(r) -> bool:
+        p = paths.get(r["contract_id"])
+        src = ""
+        if p is not None:
+            try:
+                src = p.read_text(encoding="utf-8", errors="ignore")
+            except Exception:
+                src = ""
+        kept, _ = suppress(r.get("findings", []), src, preanalyze_code(src) if src else {})
+        return _contract_risk(kept) >= RISK_TAU
+
+    def score(pred) -> dict:
+        tp = fp = tn = fn = 0
+        for r in rows:
+            v = pred(r)
+            if r.get("ground_truth") == "vulnerable":
+                tp += v; fn += not v
+            else:
+                fp += v; tn += not v
+        p = tp / (tp + fp) if tp + fp else 0.0
+        rc = tp / (tp + fn) if tp + fn else 0.0
+        return {"tp": tp, "fp": fp, "tn": tn, "fn": fn,
+                "precision": round(p, 3), "recall": round(rc, 3),
+                "f1": round(2 * p * rc / (p + rc), 3) if p + rc else 0.0,
+                "fpr": round(fp / (fp + tn), 3) if fp + tn else 0.0}
+
+    before = score(lambda r: len(r.get("findings", [])) > 0)   # the OR-gate
+    after = score(blocked_now)
+
+    per_tier = {}
+    for r in rows:
+        if r.get("ground_truth") == "vulnerable":
+            continue
+        t = tiers.get(r["contract_id"]) or "unknown"
+        d = per_tier.setdefault(t, {"n": 0, "before": 0, "after": 0})
+        d["n"] += 1
+        d["before"] += len(r.get("findings", [])) > 0
+        d["after"] += blocked_now(r)
+    for t, d in per_tier.items():
+        d["fpr_before"] = round(d["before"] / d["n"], 3) if d["n"] else 0.0
+        d["fpr_after"] = round(d["after"] / d["n"], 3) if d["n"] else 0.0
+
+    return {
+        "available": True, "n": len(rows), "tau": RISK_TAU,
+        "before": before, "after": after, "per_tier": per_tier,
+        "note": ("Replayed through the production verdict functions. The shipped rule pools "
+                 "finding confidences as 1 - PROD(1 - conf) and blocks at tau; the previous rule "
+                 "blocked on any surviving finding, which is the same rule at tau -> 0."),
+    }
