@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { EX, MONO, SERIF, SANS } from "../lib/exhibit-theme";
 import { ScanReplay, type Replay } from "../components/exhibit/ScanReplay";
+import { LiveScan } from "../components/exhibit/LiveScan";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
 import safeReplay from "../data/replays/safe.json";
 import vulnReplay from "../data/replays/vulnerable.json";
@@ -178,6 +179,7 @@ function Screen1() {
 
 function Screen2() {
   const [which, setWhich] = useState<"safe" | "vulnerable">("vulnerable");
+  const [mode, setMode] = useState<"replay" | "live">("replay");
   const replay = (which === "safe" ? safeReplay : vulnReplay) as unknown as Replay;
   return (
     <Section n="01" kicker="Watch it work" title="Eight specialists, one verdict." tint>
@@ -210,10 +212,26 @@ function Screen2() {
       </div>
 
       <div style={{ background: EX.surface, border: `1px solid ${EX.hairline}`, padding: "22px 24px" }}>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate, marginBottom: 16 }}>
-          {replay.contract_id}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline",
+                      flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
+          <div style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate }}>{replay.contract_id}</div>
+          {/* "Is that just a video?" is the first thing a skeptic asks. It is not,
+              and this button proves it against the real backend. */}
+          <div style={{ display: "flex", border: `1px solid ${EX.hairline}` }}>
+            {(["replay", "live"] as const).map((m) => (
+              <button key={m} onClick={() => setMode(m)}
+                style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".05em", padding: "6px 12px",
+                         cursor: "pointer", border: "none",
+                         background: mode === m ? EX.ink : "transparent",
+                         color: mode === m ? EX.surface : EX.inkMuted }}>
+                {m === "replay" ? "RECORDED" : "RUN LIVE"}
+              </button>
+            ))}
+          </div>
         </div>
-        <ScanReplay key={which} replay={replay} speed={7} />
+        {mode === "replay"
+          ? <ScanReplay key={which} replay={replay} speed={7} />
+          : <LiveScan key={which} code={replay.code} contractId={replay.contract_id} />}
       </div>
     </Section>
   );
