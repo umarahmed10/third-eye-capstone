@@ -27,6 +27,7 @@ export function Layout({
   children,
   anonymous = false,
   onSignIn,
+  onHome,
 }: {
   user: User;
   tab: Tab;
@@ -34,6 +35,9 @@ export function Layout({
   onLogout: () => void;
   children: ReactNode;
   anonymous?: boolean;
+  /** Return to the exhibit. Without a way back, a visitor who clicks into the
+      tool can never reach the case for the project again. */
+  onHome?: () => void;
   onSignIn?: () => void;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -47,14 +51,20 @@ export function Layout({
         }`}
       >
         {/* Brand */}
-        <div className="px-5 h-[60px] flex items-center gap-2.5 border-b border-violet-300/[0.08]">
+        <div
+          onClick={onHome}
+          role={onHome ? "button" : undefined}
+          title={onHome ? "Back to the overview" : undefined}
+          className="px-5 h-[60px] flex items-center gap-2.5 border-b border-violet-300/[0.08]"
+          style={onHome ? { cursor: "pointer" } : undefined}
+        >
           <div className="text-violet-300">
             <ThirdEyeMark size={26} />
           </div>
           <div className="leading-none">
             <div className="text-[15px] font-bold text-white tracking-tight">ThirdEye</div>
             <div className="text-[9px] uppercase tracking-[0.22em] text-violet-300/50 mt-1">
-              Contract Security
+              {onHome ? "← Overview" : "Contract Security"}
             </div>
           </div>
         </div>

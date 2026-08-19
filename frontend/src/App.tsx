@@ -29,6 +29,30 @@ export default function App() {
     }
   });
   const [screen, setScreen] = useState<PublicScreen>("landing");
+  // The exhibit is the front door for EVERY visitor, not just logged-out ones.
+  // It used to live inside the `if (!user)` branch, so anyone with a stored
+  // session went straight to the app shell and never saw it — which on a review
+  // laptop with a leftover login means the panel would never see the exhibit at
+  // all. It is now a separate gate above the auth split, dismissed per tab
+  // (sessionStorage) so returning within a session does not re-show it.
+  const [showExhibit, setShowExhibit] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem("te_seen_exhibit") !== "1";
+    } catch {
+      return true;
+    }
+  });
+
+  function enterApp() {
+    try { sessionStorage.setItem("te_seen_exhibit", "1"); } catch { /* private mode */ }
+    setShowExhibit(false);
+    if (!user) setScreen("trial");
+  }
+
+  function backToExhibit() {
+    try { sessionStorage.removeItem("te_seen_exhibit"); } catch { /* private mode */ }
+    setShowExhibit(true);
+  }
   // Scan is the default landing tab inside the authenticated shell.
   const [tab, setTab] = useState<Tab>("analyze");
   // Bump to force History to re-fetch sessions after a scan completes.
@@ -46,11 +70,14 @@ export default function App() {
     setScreen("landing");
   }
 
-  // ─── Unauthenticated flow: Landing → Login or an anonymous Scan trial ───
+  // The exhibit outranks the auth split — it is the case for the project, and
+  // every visitor should land on it.
+  if (showExhibit) {
+    return <Exhibit onOpenApp={enterApp} />;
+  }
+
+  // ─── Unauthenticated flow: Login or an anonymous Scan trial ───
   if (!user) {
-    if (screen === "landing") {
-      return <Exhibit onOpenApp={() => setScreen("trial")} />;
-    }
     if (screen === "login") {
       return <Login onAuth={onAuth} onBack={() => setScreen("landing")} />;
     }
@@ -62,9 +89,10 @@ export default function App() {
           user={ANON_USER}
           tab={tab}
           onTab={setTab}
-          onLogout={() => setScreen("landing")}
+          onLogout={backToExhibit}
           anonymous
           onSignIn={() => setScreen("login")}
+          onHome={backToExhibit}
         >
           {tab === "analyze" && <Analyze user={ANON_USER} onNavigate={setTab} />}
           {tab === "how" && <HowItWorks />}
@@ -79,7 +107,7 @@ export default function App() {
   }
 
   return (
-    <Layout user={user} tab={tab} onTab={setTab} onLogout={onLogout}>
+    <Layout user={user} tab={tab} onTab={setTab} onLogout={onLogout} onHome={backToExhibit}>
       {tab === "analyze" && (
         <Analyze
           user={user}
