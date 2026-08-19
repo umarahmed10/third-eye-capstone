@@ -68,7 +68,7 @@ to be flaky), set these up manually in the dashboard instead:
    - `ALLOWED_ORIGINS=<your Vercel URL>` — **you won't know this until after Step 2 below.
      Deploy the backend first with a placeholder, then come back and fix it.**
 
-Once deployed, note the Render URL (e.g. `https://thirdeye-backend.onrender.com`).
+Once deployed, note the Render URL (e.g. `https://third-eye-capstone.onrender.com`).
 
 ## Vercel (frontend)
 
@@ -79,7 +79,7 @@ switching, so there are no SPA-fallback rewrites to configure).
 1. **New Project** → connect this repo → set **Root Directory** to `frontend`.
 2. Vercel auto-fills build command (`npm run build` → runs `tsc -b && vite build`) and output
    directory (`dist`). Leave as detected.
-3. **Environment variable:** `VITE_API_URL=https://thirdeye-backend.onrender.com/api`
+3. **Environment variable:** `VITE_API_URL=https://third-eye-capstone.onrender.com/api`
    (use the Render URL from the previous section, with the `/api` suffix).
 4. Deploy. Note the resulting Vercel URL (e.g. `https://thirdeye.vercel.app`).
 

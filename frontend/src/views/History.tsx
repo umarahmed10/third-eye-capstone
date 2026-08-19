@@ -20,7 +20,7 @@ export function History({ user }: { user: User }) {
 
   useEffect(() => {
     let alive = true;
-    listSessions(user.user_id)
+    listSessions(user.token)
       .then((s) => alive && setSessions(s))
       .catch(() => {})
       .finally(() => alive && setLoading(false));
@@ -35,7 +35,7 @@ export function History({ user }: { user: User }) {
       return;
     }
     setLoadingMsgs(true);
-    getMessages(active)
+    getMessages(active, user.token)
       .then(setMessages)
       .catch(() => setMessages([]))
       .finally(() => setLoadingMsgs(false));

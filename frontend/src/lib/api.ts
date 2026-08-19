@@ -319,26 +319,42 @@ export async function authRequest(
   return (await r.json()) as User;
 }
 
-export async function listSessions(userId: number): Promise<Session[]> {
-  const r = await fetch(`${API}/sessions/${userId}`);
+// The token is now VERIFIED server-side, so it has to actually be sent. It
+// previously sat unused in localStorage while every session route trusted a
+// user id taken from the URL — anyone could read anyone's scans by changing a
+// number. The server derives the user from this header instead.
+function authHeaders(token?: string): HeadersInit {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export async function listSessions(token: string): Promise<Session[]> {
+  // Note the route: /sessions (the caller's own), not /sessions/{id}.
+  const r = await fetch(`${API}/sessions`, { headers: authHeaders(token) });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return (await r.json()) as Session[];
 }
 
-export async function createSession(userId: number): Promise<Session> {
+export async function createSession(token: string): Promise<Session> {
   const r = await fetch(`${API}/sessions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id: userId }),
+    headers: { "Content-Type": "application/json", ...authHeaders(token) },
   });
   if (!r.ok) throw new Error(`Could not start session (HTTP ${r.status})`);
   return (await r.json()) as Session;
 }
 
-export async function getMessages(sessionId: number): Promise<Message[]> {
-  const r = await fetch(`${API}/sessions/${sessionId}/messages`);
+export async function getMessages(sessionId: number, token: string): Promise<Message[]> {
+  const r = await fetch(`${API}/sessions/${sessionId}/messages`, { headers: authHeaders(token) });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
   return (await r.json()) as Message[];
+}
+
+export async function logout(token: string): Promise<void> {
+  try {
+    await fetch(`${API}/logout`, { method: "POST", headers: authHeaders(token) });
+  } catch {
+    /* best effort: local sign-out proceeds regardless */
+  }
 }
 
 export async function getBenchmarkStats(): Promise<BenchmarkStats> {

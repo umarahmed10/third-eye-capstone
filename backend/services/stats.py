@@ -438,17 +438,34 @@ def build_benchmark_stats(use_snapshot: bool = True) -> dict:
         "thesis": "Match/beat a paid-GPT ICSE'24 baseline on logic-vuln detection using only free models, "
                   "and add dynamic exploit-confirmation for precision.",
     }
-    # If datasets are absent (production) but a snapshot exists, use the
-    # snapshot's distributions so the dashboard still has real numbers.
-    if use_snapshot and not live["vuln_distribution"]["smartbugs_curated"] and SNAPSHOT.exists():
+    # Per-section fallback to the committed snapshot. This used to be gated on
+    # the vuln_distribution being empty, which coupled two unrelated things: if
+    # the datasets happened to be present, NO section could fall back — even the
+    # eval sections, which depend on checkpoints rather than datasets and are
+    # therefore unavailable in production regardless. That is what left the API
+    # serving a 64% false-positive rate after the fix shipped.
+    if use_snapshot and SNAPSHOT.exists():
         try:
             snap = json.load(open(SNAPSHOT))
             if not live["ablation"].get("available") and snap.get("ablation", {}).get("available"):
                 live["ablation"] = snap["ablation"]
                 live["kpis"] = snap.get("kpis", live["kpis"])
-            if not live.get("tier_benchmark", {}).get("available") and snap.get("tier_benchmark", {}).get("available"):
-                live["tier_benchmark"] = snap["tier_benchmark"]
-            live["vuln_distribution"] = snap.get("vuln_distribution", live["vuln_distribution"])
+            # Fall back for EVERY eval-derived section, not just tier_benchmark.
+            # These are computed from checkpoints, which are deliberately not
+            # deployed (thousands of files), so in production they are always
+            # unavailable and the API served stale KPIs while the committed
+            # snapshot held the correct ones. The dashboard hid this because it
+            # prefers the snapshot; anything calling the API directly did not.
+            for _k in ("tier_benchmark", "shipped_rule", "story",
+                       "head_to_head", "proposed_methods", "arbitration_ablation"):
+                if not (live.get(_k) or {}).get("available") and (snap.get(_k) or {}).get("available"):
+                    live[_k] = snap[_k]
+            # KPIs are derived from those sections, so if any of them came from
+            # the snapshot the KPIs must too, or the cards contradict the tables.
+            if snap.get("kpis"):
+                live["kpis"] = snap["kpis"]
+            if not live["vuln_distribution"].get("smartbugs_curated"):
+                live["vuln_distribution"] = snap.get("vuln_distribution", live["vuln_distribution"])
         except Exception:
             pass
     return live

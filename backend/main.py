@@ -13,7 +13,9 @@ from db import (
     init_db, create_user, authenticate_user, create_session,
     get_sessions, add_message, get_messages, rename_session,
     get_session_analyses,
+    init_auth_tables, issue_token, user_for_token, revoke_token, session_owner,
 )
+from fastapi import Header, Request
 from services.llm import check_ollama
 import hashlib, json, os, secrets
 from pathlib import Path
@@ -34,6 +36,68 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     await init_db()
+    await init_auth_tables()
+
+
+# ── Authentication ──────────────────────────────────────────────────────
+# The previous build minted a token at login, returned it, and stored nothing,
+# so no endpoint could verify it — and every session route trusted an id taken
+# straight from the URL. Both are fixed here.
+
+async def current_user(authorization: str | None = Header(default=None)) -> int:
+    """Require a valid Bearer token. Raises 401 otherwise."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(401, "Missing bearer token")
+    uid = await user_for_token(authorization.split(" ", 1)[1].strip())
+    if uid is None:
+        raise HTTPException(401, "Invalid or expired token")
+    return uid
+
+
+async def optional_user(authorization: str | None = Header(default=None)) -> int | None:
+    """Identify the caller if they are signed in, without requiring it —
+    anonymous scanning is a deliberate product feature."""
+    if not authorization or not authorization.lower().startswith("bearer "):
+        return None
+    return await user_for_token(authorization.split(" ", 1)[1].strip())
+
+
+async def owned_session(session_id: int, user_id: int) -> None:
+    """Refuse to touch a session the caller does not own."""
+    owner = await session_owner(session_id)
+    if owner is None:
+        raise HTTPException(404, "Session not found")
+    if owner != user_id:
+        raise HTTPException(403, "Not your session")
+
+
+# ── Rate limiting ───────────────────────────────────────────────────────
+# A scan costs real inference; unlimited anonymous scans are both a cost and an
+# abuse problem. Fixed-window counter keyed by user id when signed in, client
+# IP otherwise. In-process by design: this is a single-instance research
+# deployment, and a shared store (Redis) would be the answer for a real one.
+import time as _time
+from collections import defaultdict as _dd
+
+RATE_LIMIT_SCANS = int(os.getenv("RATE_LIMIT_SCANS_PER_HOUR", "30"))
+_rate_buckets: dict[str, list] = _dd(list)
+
+
+def _rate_key(request: Request, user_id: int | None) -> str:
+    if user_id is not None:
+        return f"user:{user_id}"
+    return f"ip:{request.client.host if request.client else 'unknown'}"
+
+
+def enforce_rate_limit(request: Request, user_id: int | None, limit: int | None = None) -> None:
+    limit = limit or RATE_LIMIT_SCANS
+    key = _rate_key(request, user_id)
+    now = _time.time()
+    window = _rate_buckets[key]
+    window[:] = [t for t in window if now - t < 3600]
+    if len(window) >= limit:
+        raise HTTPException(429, f"Rate limit reached ({limit} scans/hour). Try again later.")
+    window.append(now)
 
 # ── Auth ──
 class AuthReq(BaseModel):
@@ -47,7 +111,7 @@ async def register(req: AuthReq):
     user = await create_user(req.username, req.password)
     if not user:
         raise HTTPException(409, "Username taken")
-    token = secrets.token_hex(32)
+    token = await issue_token(user["id"])
     return {"token": token, "user_id": user["id"], "username": user["username"]}
 
 @app.post("/api/login")
@@ -55,32 +119,41 @@ async def login(req: AuthReq):
     user = await authenticate_user(req.username, req.password)
     if not user:
         raise HTTPException(401, "Invalid credentials")
-    token = secrets.token_hex(32)
+    token = await issue_token(user["id"])
     return {"token": token, "user_id": user["id"], "username": user["username"]}
 
+
+@app.post("/api/logout")
+async def logout(authorization: str | None = Header(default=None)):
+    if authorization and authorization.lower().startswith("bearer "):
+        await revoke_token(authorization.split(" ", 1)[1].strip())
+    return {"ok": True}
+
 # ── Sessions (chats) ──
-class SessionReq(BaseModel):
-    user_id: int
-
 @app.post("/api/sessions")
-async def new_session(req: SessionReq):
-    s = await create_session(req.user_id)
-    return s
+async def new_session(user_id: int = Depends(current_user)):
+    # user_id comes from the verified token, not from the request body.
+    return await create_session(user_id)
 
-@app.get("/api/sessions/{user_id}")
-async def list_sessions(user_id: int):
+
+@app.get("/api/sessions")
+async def list_sessions(user_id: int = Depends(current_user)):
+    """Lists the CALLER's sessions. The old route was
+    GET /api/sessions/{user_id} and returned whatever id you asked for."""
     return await get_sessions(user_id)
 
 class RenameReq(BaseModel):
     title: str
 
 @app.patch("/api/sessions/{session_id}")
-async def patch_session(session_id: int, req: RenameReq):
+async def patch_session(session_id: int, req: RenameReq, user_id: int = Depends(current_user)):
+    await owned_session(session_id, user_id)
     await rename_session(session_id, req.title)
     return {"ok": True}
 
 @app.get("/api/sessions/{session_id}/messages")
-async def session_messages(session_id: int):
+async def session_messages(session_id: int, user_id: int = Depends(current_user)):
+    await owned_session(session_id, user_id)
     return await get_messages(session_id)
 
 # ── Analysis ──
@@ -93,12 +166,16 @@ class AnalyzeReq(BaseModel):
     user_id: int | None = None
 
 @app.post("/api/analyze")
-async def analyze(req: AnalyzeReq):
+async def analyze(req: AnalyzeReq, request: Request, uid: int | None = Depends(optional_user)):
+    enforce_rate_limit(request, uid)
     code = req.code.strip()
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
     if req.session_id:
+        if uid is None:
+            raise HTTPException(401, "Sign in to write to a session")
+        await owned_session(int(req.session_id), uid)
         await add_message(req.session_id, "user", code)
 
     # Check ChromaDB for similar past analyses
@@ -123,12 +200,16 @@ async def analyze(req: AnalyzeReq):
     return result
 
 @app.post("/api/analyze/council")
-async def analyze_council(req: AnalyzeReq):
+async def analyze_council(req: AnalyzeReq, request: Request, uid: int | None = Depends(optional_user)):
+    enforce_rate_limit(request, uid)
     code = req.code.strip()
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
     if req.session_id:
+        if uid is None:
+            raise HTTPException(401, "Sign in to write to a session")
+        await owned_session(int(req.session_id), uid)
         await add_message(req.session_id, "user", code)
     similar = find_similar(code)
     result = await run_council(code, similar)
@@ -159,7 +240,8 @@ class ArgusReq(BaseModel):
 
 
 @app.post("/api/analyze/argus")
-async def analyze_argus(req: ArgusReq):
+async def analyze_argus(req: ArgusReq, request: Request, uid: int | None = Depends(optional_user)):
+    enforce_rate_limit(request, uid)
     """Full ThirdEye pipeline: retrieval -> model-diverse council -> evidence-
     anchored arbitration -> dynamic confirmation. Per-stage toggles let the
     same endpoint produce any ablation configuration."""
@@ -169,6 +251,9 @@ async def analyze_argus(req: ArgusReq):
 
     from services.pipeline import run_argus
     if req.session_id:
+        if uid is None:
+            raise HTTPException(401, "Sign in to write to a session")
+        await owned_session(int(req.session_id), uid)
         await add_message(req.session_id, "user", code)
     result = await run_argus(
         code,
@@ -190,7 +275,8 @@ async def analyze_argus(req: ArgusReq):
 
 
 @app.post("/api/analyze/council/stream")
-async def analyze_council_stream(req: AnalyzeReq):
+async def analyze_council_stream(req: AnalyzeReq, request: Request, uid: int | None = Depends(optional_user)):
+    enforce_rate_limit(request, uid)
     """Server-Sent Events stream of the council so the UI shows each specialist
     resolving live instead of a blind spinner. Emits `start`, one
     `specialist_done` per specialist as it finishes, then `final` with the full

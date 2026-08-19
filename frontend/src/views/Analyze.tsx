@@ -76,7 +76,7 @@ export function Analyze({
   async function ensureSession(): Promise<number | null> {
     if (sessionRef.current != null) return sessionRef.current;
     try {
-      const s = await createSession(user.user_id);
+      const s = await createSession(user.token);
       sessionRef.current = s.id;
       return s.id;
     } catch {

@@ -228,3 +228,128 @@ async def get_session_analyses(session_id: int) -> list[dict]:
             except:
                 pass
     return analyses
+
+
+# ── Auth tokens ─────────────────────────────────────────────────────────
+# Previously /api/login minted a random token, returned it, and threw it away:
+# nothing was stored, so nothing could be validated, and every "protected"
+# endpoint trusted an id supplied by the caller. Tokens are now persisted and
+# checked. Only the SHA-256 of a token is stored, so a database leak does not
+# hand out live sessions.
+
+import hashlib
+import secrets
+from datetime import datetime, timedelta, timezone
+
+TOKEN_TTL_HOURS = int(os.getenv("AUTH_TOKEN_TTL_HOURS", "72"))
+
+
+def _hash_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+async def init_auth_tables():
+    """Idempotent; safe to call on every startup alongside init_db()."""
+    if USE_POSTGRES:
+        pool = await _get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS auth_tokens (
+                    token_hash TEXT PRIMARY KEY,
+                    user_id INTEGER NOT NULL,
+                    expires_at TIMESTAMP NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+    else:
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("""
+                CREATE TABLE IF NOT EXISTS auth_tokens (
+                    token_hash TEXT PRIMARY KEY,
+                    user_id INTEGER NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            await db.commit()
+
+
+async def issue_token(user_id: int) -> str:
+    """Mint a token, store only its hash, return the plaintext once."""
+    token = secrets.token_urlsafe(32)
+    expires = datetime.now(timezone.utc) + timedelta(hours=TOKEN_TTL_HOURS)
+    if USE_POSTGRES:
+        pool = await _get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute(
+                "INSERT INTO auth_tokens (token_hash, user_id, expires_at) VALUES ($1, $2, $3)",
+                _hash_token(token), user_id, expires,
+            )
+    else:
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute(
+                "INSERT INTO auth_tokens (token_hash, user_id, expires_at) VALUES (?, ?, ?)",
+                (_hash_token(token), user_id, expires.isoformat()),
+            )
+            await db.commit()
+    return token
+
+
+async def user_for_token(token: str) -> int | None:
+    """-> user_id, or None if the token is unknown or expired."""
+    if not token:
+        return None
+    th = _hash_token(token)
+    now = datetime.now(timezone.utc)
+    if USE_POSTGRES:
+        pool = await _get_pool()
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT user_id, expires_at FROM auth_tokens WHERE token_hash = $1", th)
+            if not row:
+                return None
+            exp = row["expires_at"]
+            if exp.tzinfo is None:
+                exp = exp.replace(tzinfo=timezone.utc)
+            return row["user_id"] if exp > now else None
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cur = await db.execute(
+            "SELECT user_id, expires_at FROM auth_tokens WHERE token_hash = ?", (th,))
+        row = await cur.fetchone()
+        if not row:
+            return None
+        try:
+            exp = datetime.fromisoformat(row["expires_at"])
+            if exp.tzinfo is None:
+                exp = exp.replace(tzinfo=timezone.utc)
+        except Exception:
+            return None
+        return row["user_id"] if exp > now else None
+
+
+async def revoke_token(token: str) -> None:
+    th = _hash_token(token)
+    if USE_POSTGRES:
+        pool = await _get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute("DELETE FROM auth_tokens WHERE token_hash = $1", th)
+    else:
+        async with aiosqlite.connect(DB_PATH) as db:
+            await db.execute("DELETE FROM auth_tokens WHERE token_hash = ?", (th,))
+            await db.commit()
+
+
+async def session_owner(session_id: int) -> int | None:
+    """Who owns this chat session? Used to stop one account reading another's
+    scans by guessing an id (the IDOR the review flagged)."""
+    if USE_POSTGRES:
+        pool = await _get_pool()
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow("SELECT user_id FROM sessions WHERE id = $1", session_id)
+            return row["user_id"] if row else None
+    async with aiosqlite.connect(DB_PATH) as db:
+        db.row_factory = aiosqlite.Row
+        cur = await db.execute("SELECT user_id FROM sessions WHERE id = ?", (session_id,))
+        row = await cur.fetchone()
+        return row["user_id"] if row else None
