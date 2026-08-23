@@ -328,3 +328,85 @@ expected if the weakest-labelled tier carries unreported real bugs.
   retrieval does not affect verdicts. Stated rather than implied.
 - **No tuning on test data.** Thresholds are to be fit on a dev split and
   reported with curves.
+
+---
+
+## Cross-hardware reproducibility (2026-08-21, campus NVIDIA GB10)
+
+Campus GPU access (DGX Spark, GB10, 119 GB unified) let us ask a question the
+project had never been able to ask: **does the same contract get the same
+verdict on different hardware?** The shipped n=233 was measured entirely on one
+4 GB laptop GPU. If it does not reproduce, every headline number is partly a
+property of that laptop rather than of the method.
+
+Method: the same 233 contract ids, the same seed, the same no-arbitration
+config, replayed on the GB10. Throughput 28.8 min vs 4.8 h on the laptop (~10x).
+
+**Two comparison traps had to be closed before the numbers meant anything.**
+
+1. **The stored `verdict` field is the OLD OR-gate rule.** The shipped noisy-OR
+   result is produced by replaying checkpoints through `stats._shipped_rule`
+   (`_contract_risk` + `suppress`), not by reading `verdict`. A first pass
+   compared stored-laptop against live-DGX and "found" a 0.75 agreement with all
+   flips running one direction — that was measuring our own rule change. Both
+   sides must be replayed through one rule. `eval/parity_rescore.py` does this by
+   importing the live functions rather than reimplementing them a fourth time.
+
+2. **`num_ctx` is never set by the application.** It inherits the Ollama server
+   default: 4096 on the laptop's 0.24.0, but the model maximum (131072) on
+   current builds — which would silently stop truncating long contracts. Pinned
+   to 4096 on both sides. (It also inflates the KV cache to ~62 GB for a 3B
+   model and evicts the rest of the council.)
+
+Result, n=230 scored, one identical rule:
+
+| | agreement | FPR | recall |
+|---|--:|--:|--:|
+| laptop (replayed) | — | 27.3% | 0.835 |
+| GB10 | **0.813** (95% CI 0.763–0.863) | **40.5%** | 0.862 |
+
+The laptop's 27.3% reproduces the shipped 26.6%, which validates the replay.
+But the same code on other hardware moves the headline false-alarm rate by 13
+points, and the 43 disagreements are asymmetric — 31 GO→NO-GO against 12 the
+other way. That is a systematic shift, not symmetric kernel jitter.
+
+**This is NOT yet reportable as hardware nondeterminism.** Three variables moved
+together: GPU, Ollama build (0.24.0 → 0.32.15), and batch parallelism
+(`OLLAMA_NUM_PARALLEL` 1 → 4, which we set). Model digests are byte-identical on
+both machines (`a80c4f17acd5`, `46e0c10c039e`, `dae161e27b0e`, `a2af6cc3eb7f`),
+so weights and their sampling defaults are excluded. Batching is the leading
+suspect precisely because it predicts a *directional* skew: batched inference
+changes GEMM shapes and reduction order, so logits shift and a fixed seed no
+longer pins the sampled token.
+
+**Open, and blocking any claim here:** a `NUM_PARALLEL=1`, one-contract-in-flight
+arm reproducing the laptop's serving config exactly. If agreement jumps, the
+finding is "batched serving perturbs verdicts" — narrower, more actionable, and
+still novel. If it holds near 0.81, the reproducibility problem is real. Not
+separable in general: Ollama 0.24.0's CUDA build has no arch for compute 12.1
+and will likely not run on a GB10 at all.
+
+### Capacity ablation (llama3.1:8b), n=24 pilot
+
+`council.py` pins business_logic / oracle_price_manipulation / flashloan_mev to
+`llama3.2:3b` solely because `llama3.1:8b` (4.9 GB) does not fit in 4 GB of
+VRAM — a hardware compromise sitting on the three *semantic* roles. Restoring
+the 8B is a one-variable change the GB10 makes possible.
+
+Pilot result (n=24, 12 safe / 12 vulnerable, same seed, same rule):
+
+| arm | misses | false alarms | accuracy |
+|---|--:|--:|--:|
+| llama3.2:3b | 2 | 6 | 0.667 |
+| **llama3.1:8b** | **0** | **9** | 0.625 |
+
+The 8B caught every bug it had been missing and raised three more false alarms.
+All five differing verdicts moved the same direction (GO→NO-GO). Median latency
+was unchanged (24.1 s vs 24.4 s).
+
+If it holds at n=233, this is direct evidence for the paper's thesis: **more
+model capability made the crying-wolf worse, not better.** It answers the
+obvious reviewer objection — "why not just use a bigger model?" — with our own
+data, and it argues the lever is aggregation, not capability. The n=233 arm is
+~223/233 computed and resumes on next campus access.
+
