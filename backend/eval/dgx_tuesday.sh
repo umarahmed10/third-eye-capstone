@@ -1,41 +1,100 @@
 #!/bin/bash
-# ONE COMMAND for the next campus session. Everything below is resumable:
-# every stage checkpoints per contract, so a shutdown costs one contract.
+# ============================================================================
+# ThirdEye — campus GPU session. Runs ON the DGX. Launched by tuesday_start.sh.
 #
-# Order is by what needs THIS machine most:
-#   1. finish the 8B ablation  (~223/233 already computed, minutes to close out)
-#   2. the NUM_PARALLEL=1 control (decides whether the parity finding is real)
-#   3. web3bugs (only if the laptop has not already finished it)
+# Budget-aware: each stage gets a slice of TOTAL_MINUTES and stops cleanly at
+# its deadline rather than being killed, so every stage writes its report.
+# Everything checkpoints per contract, so re-running resumes rather than redoes.
+#
+# Stage order is value-per-minute to the paper:
+#   A  finish the 8B ablation   ~223/233 already computed, minutes to close
+#   B  full-scale benchmark     the run that fixes the per-tier CIs
+#   C  NUM_PARALLEL=1 control   decides whether the parity finding is real
+#   D  web3bugs                 whatever time remains
+# ============================================================================
 set -u
+TOTAL_MINUTES="${TOTAL_MINUTES:-210}"
 cd ~/thirdeye/backend
 PY=~/thirdeye/venv/bin/python
-M=~/thirdeye/backend/eval/parity_manifest_full.json
-export OLLAMA_URL=http://127.0.0.1:11434 LLM_TIMEOUT=300
+MAN=~/thirdeye/backend/eval/parity_manifest_full.json
+export OLLAMA_URL=http://127.0.0.1:11434
+export LLM_TIMEOUT=600
+export OLLAMA_MODELS=
 
-start_ollama () {   # $1 = num_parallel
-  pkill -f "olla""ma serve" 2>/dev/null || true; sleep 4
+log () { echo "[$(date +%H:%M:%S)] $*"; }
+T0=$(date +%s)
+left () { echo $(( TOTAL_MINUTES - ( ($(date +%s) - T0) / 60 ) )); }
+
+start_ollama () {  # $1 = num_parallel
+  # NOT "pkill -f 'ollama serve'": over ssh that pattern matches the invoking
+  # shell's own command line, and the script kills itself. Bracket the match.
+  pkill -f "olla[m]a serve" 2>/dev/null || true
+  sleep 4
   OLLAMA_HOST=127.0.0.1:11434 OLLAMA_CONTEXT_LENGTH=4096 \
-  OLLAMA_NUM_PARALLEL="$1" OLLAMA_MAX_LOADED_MODELS=6 OLLAMA_KEEP_ALIVE=2h \
+  OLLAMA_NUM_PARALLEL="$1" OLLAMA_MAX_LOADED_MODELS=6 OLLAMA_KEEP_ALIVE=4h \
   setsid nohup ~/.local/bin/ollama serve > ~/ollama.log 2>&1 < /dev/null &
-  sleep 12
-  echo "ollama up: $(curl -s http://127.0.0.1:11434/api/version)  parallel=$1"
+  for _ in $(seq 1 30); do
+    sleep 2
+    curl -sf http://127.0.0.1:11434/api/version >/dev/null 2>&1 && break
+  done
+  log "ollama up $(curl -s http://127.0.0.1:11434/api/version) parallel=$1"
 }
 
-echo "##### 1/3  finish 8B ablation, n=233  $(date) #####"
-start_ollama 4
-export OLLAMA_LOGIC_MODEL=llama3.1:8b
-$PY -u -m eval.run_parity --arm full8b --seed 0 --concurrency 4 --manifest "$M"
-unset OLLAMA_LOGIC_MODEL
+warm () {  # pay each cold model load once, before anything is timed
+  for m in qwen2.5-coder:7b gemma3:4b llama3.2:3b "$@"; do
+    [ -n "$m" ] || continue
+    curl -s -o /dev/null -m 900 http://127.0.0.1:11434/api/generate \
+      -d "{\"model\":\"$m\",\"prompt\":\"ok\",\"stream\":false,\"options\":{\"num_predict\":2}}"
+    log "warmed $m"
+  done
+}
 
-echo "##### 2/3  CONTROL: num_parallel=1, serial  $(date) #####"
-# Reproduces the laptop's serving config exactly, leaving GPU + Ollama build as
-# the only remaining differences. Serial on purpose -- concurrency here would
-# reintroduce the very batching effect being tested.
+log "=== SESSION START — budget ${TOTAL_MINUTES} min ==="
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null | head -1
+
+# ------------------------------------------------------------------ A. 8B arm
+start_ollama 4
+warm llama3.1:8b
+log "### A. finish 8B ablation (n=233) — $(left) min left"
+OLLAMA_LOGIC_MODEL=llama3.1:8b $PY -u -m eval.run_parity \
+  --arm full8b --seed 0 --concurrency 4 --manifest "$MAN" || log "A failed, continuing"
+
+# -------------------------------------------------------- B. full-scale bench
+B_BUDGET=$(( $(left) - 75 ))          # reserve 75 min for C and D
+[ "$B_BUDGET" -lt 20 ] && B_BUDGET=20
+log "### B. full-scale benchmark — budget ${B_BUDGET} min"
+# --limit-per-tier 0 still shuffles now, and the task list is interleaved across
+# tiers, so stopping at the deadline leaves a BALANCED, scorable sample.
+# --max-minutes stops STARTING work at the deadline but lets in-flight
+# contracts finish, so B can overrun by up to one LLM_TIMEOUT. The outer
+# timeout is a backstop for --max-minutes failing outright; it sits well past
+# the clean stop so it never pre-empts the report B writes for itself.
+timeout $(( B_BUDGET + 20 ))m $PY -u -m eval.run_benchmark --backend ollama --seed 0 --no-arbitration \
+  --limit-per-tier 0 --sample-seed 0 --concurrency 4 \
+  --max-minutes "$B_BUDGET" || log "B stopped (budget or backstop)"
+# Always leave a scored report, even if the backstop fired mid-write.
+$PY -u -m eval.run_benchmark --backend ollama --seed 0 --no-arbitration --report-only || true
+
+# --------------------------------------------------------- C. NUM_PARALLEL=1
+log "### C. NUM_PARALLEL=1 control — $(left) min left"
 start_ollama 1
-$PY -u -m eval.run_parity --arm full3b_np1 --seed 0 --concurrency 1 --manifest "$M"
+warm ""
+C_BUDGET=$(( $(left) - 30 ))
+[ "$C_BUDGET" -lt 10 ] && C_BUDGET=10
+timeout "${C_BUDGET}m" $PY -u -m eval.run_parity \
+  --arm full3b_np1 --seed 0 --concurrency 1 --manifest "$MAN" || log "C stopped at budget"
 
-echo "##### 3/3  web3bugs, 102 contests  $(date) #####"
+# ----------------------------------------------------------------- D. web3bugs
+log "### D. web3bugs — $(left) min left"
 start_ollama 4
-$PY -u -m eval.run_web3bugs --contests 0 --max-slices 25 --backend ollama --seed 0
+warm ""
+D_BUDGET=$(left)
+if [ "$D_BUDGET" -gt 10 ]; then
+  timeout "${D_BUDGET}m" $PY -u -m eval.run_web3bugs \
+    --contests 0 --max-slices 25 --backend ollama --seed 0 || log "D stopped at budget"
+  $PY -u -m eval.run_web3bugs --report-only || true   # always leave a report
+else
+  log "skipping D — no time left"
+fi
 
-echo "##### ALL DONE $(date) #####"
+log "=== SESSION DONE — $(( ($(date +%s) - T0) / 60 )) min used ==="

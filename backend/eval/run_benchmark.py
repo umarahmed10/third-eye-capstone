@@ -262,7 +262,7 @@ def _api_stats(all_rows: list[dict]) -> dict:
     }
 
 
-async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True) -> dict:
+async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True, max_minutes: int = 0) -> dict:
     from services import council
 
     # ── Pre-flight: the backend must be able to GENERATE, or every scan
@@ -283,6 +283,14 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
     for bucket, tier, expected in TIERS:
         items = thirdeye_bench.load(buckets={bucket}, tier=tier)
         items = [it for it in items if it.code_paths and it.code_paths[0].exists()]
+        # ALWAYS shuffle, even when taking every contract. limit_per_tier=0
+        # used to skip this, which left items in filename order; a run stopped
+        # early (time budget, crash, Ctrl-C) then covered an alphabetical prefix
+        # that clusters by source project, and no CI computed from it is valid.
+        # Shuffling unconditionally makes ANY prefix of the run a valid sample.
+        rng = random.Random(f"{sample_seed}:{bucket}:{tier}")
+        items = list(items)
+        rng.shuffle(items)
         if limit_per_tier > 0:
             # Stratified RANDOM sample, not the first N. Filename order clusters
             # by source project (all the OZ-upgradeable files land together), so
@@ -296,9 +304,6 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
             # one. (rng.sample(items, k) does NOT have this property: different
             # k draws a different set, so extending would discard the earlier
             # work and silently change which contracts the table covers.)
-            rng = random.Random(f"{sample_seed}:{bucket}:{tier}")
-            items = list(items)
-            rng.shuffle(items)
             items = items[:limit_per_tier]
         tier_items[(bucket, tier, expected)] = items
 
@@ -312,6 +317,12 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
     lock = asyncio.Lock()
     consecutive_inconclusive = 0
     aborted = {"flag": False}
+    # Wall-clock budget. A campus session is a hard time box; being killed
+    # mid-run loses the report (though not the checkpoints). Past the budget we
+    # stop STARTING work and let in-flight contracts finish, so the run always
+    # exits through its own scoring path.
+    _deadline = (time.time() + max_minutes * 60) if max_minutes else None
+    budget_hit = {"flag": False}
 
     async def process(item, bucket, tier, expected) -> dict:
         nonlocal done, consecutive_inconclusive
@@ -324,6 +335,12 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
                 return row
             except Exception:
                 pass  # corrupt checkpoint -> re-run
+        if _deadline is not None and time.time() > _deadline and not cp.exists():
+            if not budget_hit["flag"]:
+                budget_hit["flag"] = True
+                print(f"[benchmark] wall-clock budget of {max_minutes} min reached — "
+                      f"letting in-flight contracts finish, then scoring what is done.")
+            return None
         if aborted["flag"]:
             return {"contract_id": item.contract_id, "bucket": bucket, "tier": tier,
                     "expected": expected, "verdict": "SKIPPED", "predicted": None,
@@ -386,11 +403,29 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
         return row
 
     # One flat task list; the semaphore bounds real concurrency.
+    #
+    # INTERLEAVED round-robin across tiers, not tier-by-tier. gather() acquires
+    # the semaphore in submission order, so a tier-major list means a run that
+    # stops early (time budget, crash) completes the safe tiers and starves the
+    # vulnerable ones — yielding an FPR with no recall to pair it with. Taking
+    # one contract from each tier in turn keeps every tier growing together, so
+    # a partial run is still a balanced, scorable benchmark.
     tasks = []
-    for (bucket, tier, expected), items in tier_items.items():
-        for it in items:
-            tasks.append(process(it, bucket, tier, expected))
+    _queues = [[(it, b, t, e) for it in items]
+               for (b, t, e), items in tier_items.items()]
+    for i in range(max((len(q) for q in _queues), default=0)):
+        for q in _queues:
+            if i < len(q):
+                tasks.append(process(*q[i]))
     all_rows = await asyncio.gather(*tasks)
+    # Contracts skipped by the wall-clock budget return None; they were never
+    # started, so they are absent from the sample rather than an abstention.
+    _skipped = sum(1 for r in all_rows if r is None)
+    all_rows = [r for r in all_rows if r is not None]
+    if _skipped:
+        print(f"[benchmark] {_skipped} contracts not started (time budget); "
+              f"scoring the {len(all_rows)} that ran. Re-run to resume — the "
+              f"seeded order is stable, so this extends rather than reshuffles.")
 
     # ── Score each tier separately, then roll up safe / vuln / overall. ──
     per_tier = {}
@@ -526,11 +561,19 @@ async def main():
     ap.add_argument("--no-arbitration", action="store_true", help="council-only ablation row (skip the arbitration precision gate)")
     ap.add_argument("--concurrency", type=int, default=2, help="contracts in flight at once")
     ap.add_argument("--report-only", action="store_true", help="score existing checkpoints; run nothing")
+    ap.add_argument("--max-minutes", type=int, default=0, help="wall-clock budget; 0 = unlimited. Past it, stop starting new contracts and score what finished.")
     args = ap.parse_args()
     if args.report_only:
-        report = report_from_checkpoints(args.backend, args.seed)
+        # Honour --no-arbitration here too. It used to be ignored, so
+        # "--backend ollama --no-arbitration --report-only" silently scored the
+        # ARBITRATED checkpoint tree and overwrote the arbitrated report -- two
+        # different systems, one filename. The tag must be derived identically
+        # in both branches.
+        tag = args.backend if not args.no_arbitration else (
+            args.backend if args.backend.endswith("_noarb") else f"{args.backend}_noarb")
+        report = report_from_checkpoints(tag, args.seed)
     else:
-        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration)
+        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes)
     _write_reports(report)
 
 
