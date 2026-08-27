@@ -67,7 +67,7 @@ def s_class_by_contest() -> dict[str, list[dict]]:
     return out
 
 
-async def scan_contest(item, max_slices: int, backend: str, seed: int) -> dict:
+async def scan_contest(item, max_slices: int, backend: str, seed: int, concurrency: int = 1) -> dict:
     """Run the pipeline over a contest's slices; contest is detected if ANY
     slice comes back NO-GO."""
     from services.pipeline import run_thirdeye
@@ -84,23 +84,28 @@ async def scan_contest(item, max_slices: int, backend: str, seed: int) -> dict:
     t0 = time.time()
     before = council.get_api_call_count()["total"]
     flagged, errored, per_slice = [], 0, []
-    for sl in slices:
-        try:
-            res = await run_thirdeye(
-                sl.code, backend=backend, seed=seed,
-                use_static_router=True, use_retrieval=False,
-                use_arbitration=False, use_dynamic=False,
-            )
-            v = res.get("final_verdict")
-            types = sorted({(x or {}).get("type") for x in (res.get("vulnerabilities") or [])} - {None})
-            per_slice.append({"slice": sl.name, "verdict": v, "types": types})
-            if v == "NO-GO":
-                flagged.append({"slice": sl.name, "types": types})
-            elif v == "INCONCLUSIVE":
-                errored += 1
-        except Exception as e:  # one bad slice must not kill a contest
+    sem = asyncio.Semaphore(max(1, concurrency))
+
+    async def one(sl):
+        async with sem:
+            try:
+                res = await run_thirdeye(
+                    sl.code, backend=backend, seed=seed,
+                    use_static_router=True, use_retrieval=False,
+                    use_arbitration=False, use_dynamic=False,
+                )
+                v = res.get("final_verdict")
+                types = sorted({(x or {}).get("type") for x in (res.get("vulnerabilities") or [])} - {None})
+                return {"slice": sl.name, "verdict": v, "types": types}
+            except Exception as e:  # one bad slice must not kill a contest
+                return {"slice": sl.name, "verdict": "ERROR", "error": str(e)[:160]}
+
+    per_slice = list(await asyncio.gather(*[one(sl) for sl in slices]))
+    for r in per_slice:
+        if r["verdict"] == "NO-GO":
+            flagged.append({"slice": r["slice"], "types": r.get("types", [])})
+        elif r["verdict"] in ("INCONCLUSIVE", "ERROR"):
             errored += 1
-            per_slice.append({"slice": sl.name, "verdict": "ERROR", "error": str(e)[:160]})
 
     return {
         "contest_id": item.contract_id,
@@ -146,6 +151,9 @@ async def main() -> None:
     ap.add_argument("--max-slices", type=int, default=25, help="cap per contest; 0 = no cap")
     ap.add_argument("--backend", default="ollama")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--concurrency", type=int, default=1, help="slices in flight per contest")
+    ap.add_argument("--gptscan-set", action="store_true",
+                    help="restrict to the 72 contests GPTScan published results for")
     ap.add_argument("--report-only", action="store_true")
     a = ap.parse_args()
 
@@ -153,6 +161,16 @@ async def main() -> None:
     items = [it for it in web3bugs.load() if str(it.contract_id) in sclass]
     # Nested seeded sample, same discipline as run_benchmark: shuffle once, take
     # a prefix, so a bigger run reuses everything a smaller one computed.
+    if a.gptscan_set:
+        # GPTScan's authors published per-project TP/TN/FP/FN for 72 Web3Bugs
+        # projects (MetaTrustLabs/GPTScan-Web3Bugs). Scoring OUR tool on exactly
+        # those contests turns "our recall on some Web3Bugs subset" into a real
+        # head-to-head. Their aggregate recomputes to recall 0.833 / F1 0.678,
+        # matching the published figures, so the file is the right artifact.
+        gs = json.load(open(REPO_ROOT / "datasets" / "gptscan" / "comparison_set.json", encoding="utf-8"))
+        keep = set(gs["runnable"])
+        items = [it for it in items if str(it.contract_id) in keep]
+        print(f"[web3bugs] GPTScan comparison set: {len(items)} contests")
     rng = random.Random(f"web3bugs:{a.seed}")
     items = list(items); rng.shuffle(items)
     if a.contests:
@@ -168,7 +186,7 @@ async def main() -> None:
             if cp.exists():
                 rows.append(json.load(open(cp)))
                 continue
-            row = await scan_contest(it, a.max_slices, a.backend, a.seed)
+            row = await scan_contest(it, a.max_slices, a.backend, a.seed, a.concurrency)
             json.dump(row, open(cp, "w"), indent=1)
             rows.append(row)
             n_bugs = len(sclass.get(str(it.contract_id), []))

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { EX, MONO, SERIF, SANS } from "../lib/exhibit-theme";
 import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
-import { PARITY, CAPACITY } from "../data/newfindings";
+import { PARITY, CAPACITY, SLITHER, GPTSCAN } from "../data/newfindings";
 import { fmtCI, ci95, separated } from "../lib/stats";
 
 /** The exhibit, framed as a MEASUREMENT paper rather than a product.
@@ -55,6 +55,7 @@ export function Exhibit({ onOpenApp }: { onOpenApp?: () => void }) {
       <MakingItVisible />
       <WhatItRevealed />
       <BaselineAbstains />
+      <PriorWork />
       <NotReproducible />
       <CapabilityDoesntFix />
       <Invariants />
@@ -387,8 +388,6 @@ function WhatItRevealed() {
 /* ─── 04 the baseline abstains ─────────────────────────────────────── */
 
 function BaselineAbstains() {
-  const cScored = cov.council_scored ?? 0, sScored = cov.slither_scored ?? 0;
-  const pct = cScored ? (sScored / cScored) * 100 : 0;
   return (
     <Section
       n="04" kicker="Coverage bias"
@@ -397,34 +396,38 @@ function BaselineAbstains() {
     >
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 44, alignItems: "start" }}>
         <div style={{ border: `1px solid ${EX.hairline}`, padding: "22px 24px", background: EX.surface }}>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 18 }}>
-            CONTRACTS EACH TOOL COULD ACTUALLY SCORE
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 16 }}>
+            SLITHER: CONTRACTS SCORED, BY PROVENANCE
           </div>
-          {[
-            { label: "ThirdEye council", v: cScored, c: EX.data },
-            { label: "Slither", v: sScored, c: EX.signal },
-          ].map((r) => (
-            <div key={r.label} style={{ marginBottom: 18 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                <span style={{ fontSize: 13.5 }}>{r.label}</span>
-                <span style={{ fontFamily: MONO, fontSize: 13 }}>{r.v}</span>
+          {/* The per-tier split is the argument. A single aggregate hides the
+              selection effect; this shows it directly — the baseline handles
+              synthetic code and abstains on almost everything real. */}
+          {SLITHER.by_tier.map((r) => (
+            <div key={r.tier} style={{ marginBottom: 13 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, gap: 10 }}>
+                <span style={{ fontSize: 12.5 }}>{r.tier}</span>
+                <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate }}>{r.scored}/{r.n}</span>
               </div>
-              <div style={{ height: 22, background: "rgba(0,0,0,0.045)" }}>
-                <div style={{ height: "100%", width: `${cScored ? (r.v / cScored) * 100 : 0}%`, background: r.c }} />
+              <div style={{ height: 14, background: "rgba(0,0,0,0.045)" }}>
+                <div style={{ height: "100%", width: `${(r.scored / r.n) * 100}%`,
+                              background: r.scored / r.n > 0.4 ? EX.data : EX.signal }} />
               </div>
             </div>
           ))}
-          <div style={{ fontFamily: MONO, fontSize: 30, color: EX.signal, marginTop: 22 }}>{pct.toFixed(1)}%</div>
+          <div style={{ fontFamily: MONO, fontSize: 30, color: EX.signal, marginTop: 20 }}>
+            {(SLITHER.coverage * 100).toFixed(1)}%
+          </div>
           <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.5, marginTop: 5 }}>
-            of the benchmark was analysable by the static baseline at all.
+            overall — {SLITHER.scored} of {SLITHER.attempted} contracts compiled well enough to analyse.
           </div>
         </div>
         <div>
           <Evidence items={[
-            { k: "Why it matters", v: "An abstention is not a wrong answer, so it never appears as an error. A tool that answers only the easy questions posts excellent precision and recall on the subset it chose." },
-            { k: "The asymmetry", v: "The filter is not random. It removes exactly the contracts with complex dependency graphs — which are also the contracts where a semantic bug is most likely to hide." },
-            { k: "How we report it", v: `The head-to-head is computed only on the ${h2h.n_common ?? 0} contracts BOTH tools scored, and coverage is reported alongside it rather than folded into the averages.` },
+            { k: "The selection effect", v: `Slither scored ${SLITHER.by_tier[0].scored}/25 synthetic-injected contracts but only ${SLITHER.by_tier[5].scored}/25 audit-reviewed real code. It is not failing on hard contracts — it never sees them.` },
+            { k: "Why it matters", v: "An abstention is not a wrong answer, so it never appears as an error. A tool that answers only the questions it can parse posts excellent precision and recall on the subset it chose." },
+            { k: "How we report it", v: `The head-to-head is computed only on the ${h2h.n_common ?? 0} contracts BOTH tools scored, and coverage is reported beside it rather than folded into the averages.` },
           ]} />
+          <Pilot n={SLITHER.attempted}>{SLITHER.caveat}</Pilot>
           <Novelty>
             Published comparisons against static analysers rarely state coverage. Without it, the
             comparison is between one tool&rsquo;s performance on all contracts and another
@@ -436,12 +439,76 @@ function BaselineAbstains() {
   );
 }
 
-/* ─── 05 reproducibility ───────────────────────────────────────────── */
+/* ─── 05 prior work ────────────────────────────────────────────────── */
+
+function PriorWork() {
+  const rows: [string, string, string][] = [
+    ["Recall", GPTSCAN.recall.toFixed(3), (after.recall ?? 0).toFixed(3)],
+    ["Precision", GPTSCAN.precision.toFixed(3), (after.precision ?? 0).toFixed(3)],
+    ["F1", GPTSCAN.f1.toFixed(3), (after.f1 ?? 0).toFixed(3)],
+    ["False-alarm rate", `${(GPTSCAN.fpr * 100).toFixed(1)}%`, `${((after.fpr ?? 0) * 100).toFixed(1)}%`],
+  ];
+  return (
+    <Section
+      n="05" kicker="Against prior work"
+      title="GPTScan's own published results contain a precision number their paper does not lead with."
+      lede="The GPTScan authors ship per-project true/false positives and negatives for the 72 Web3Bugs projects they evaluated. Aggregating that file reproduces their published recall and F1 exactly — and also yields a precision of 0.571: thirty false positives against forty true ones."
+    >
+      <div style={{ overflowX: "auto", maxWidth: "100%", minWidth: 0 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480, fontSize: 14 }}>
+          <thead>
+            <tr style={{ borderBottom: `2px solid ${EX.ink}` }}>
+              {["", "GPTScan (ICSE'24)", "ThirdEye"].map((h, i) => (
+                <th key={h || i} style={{ textAlign: i ? "right" : "left", padding: "10px 8px", fontFamily: MONO, fontSize: 10.5, letterSpacing: ".1em", color: EX.inkMuted, textTransform: "uppercase", fontWeight: 400 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([k, g, t]) => (
+              <tr key={k} style={{ borderBottom: `1px solid ${EX.hairline}` }}>
+                <td style={{ padding: "11px 8px" }}>{k}</td>
+                <td style={{ padding: "11px 8px", textAlign: "right", fontFamily: MONO }}>{g}</td>
+                <td style={{ padding: "11px 8px", textAlign: "right", fontFamily: MONO }}>{t}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div style={{ marginTop: 18, border: `1px solid ${EX.signal}`, padding: "14px 16px", background: EX.signalWash }}>
+        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.signal, marginBottom: 7 }}>
+          NOT YET A LIKE-FOR-LIKE COMPARISON
+        </div>
+        <p style={{ fontSize: 13.5, lineHeight: 1.6, color: EX.inkMuted, margin: 0, maxWidth: "74ch" }}>
+          GPTScan&rsquo;s unit is a {GPTSCAN.unit}; ours is a whole contract, and the two sets differ.
+          Placing the columns side by side is context, not a result, and we say so rather than
+          letting the table imply otherwise. The fix is running our tool on their exact evaluated
+          set — {GPTSCAN.runnable_here} of their {GPTSCAN.projects} projects are reproducible here,
+          and that run is queued.
+        </p>
+      </div>
+
+      <Evidence items={[
+        { k: "What this shows", v: `A paid-GPT system at ICSE'24 carries a false-discovery rate of ${(100 - GPTSCAN.precision * 100).toFixed(0)}% on its own numbers. The false-alarm problem is not peculiar to our council — it is a property of the approach.` },
+        { k: "An honest narrowing", v: "GPTScan CAN compute a false-alarm rate, because their evaluation includes negatives by construction. Our blind-spot claim is about the benchmark datasets being all-positive, not about every paper failing to count false alarms. We state the narrower claim." },
+        { k: "Their coverage too", v: `${GPTSCAN.static_failures} of their ${GPTSCAN.projects} projects are marked as static-analysis failures in their own results — the same abstention effect measured in section 04, in a published system.` },
+      ]} />
+      <Novelty>
+        The comparison that matters is not whose recall is higher. It is that two independently
+        built LLM auditors — one paid and peer-reviewed, one local and free — land in the same
+        place on precision. That is evidence the false-alarm problem is structural rather than an
+        implementation defect, which is the paper&rsquo;s central claim.
+      </Novelty>
+    </Section>
+  );
+}
+
+/* ─── 06 reproducibility ───────────────────────────────────────────── */
 
 function NotReproducible() {
   return (
     <Section
-      n="05" kicker="Reproducibility" tint
+      n="06" kicker="Reproducibility" tint
       title="The same contract, the same seed, a different machine — and roughly one verdict in five changes."
       lede="Every number this field publishes is produced on one machine and reported as a property of the method. We ran an identical contract set on a second GPU, under one identical decision rule, and compared verdict by verdict."
     >
@@ -495,7 +562,7 @@ function CapabilityDoesntFix() {
   const { small, large } = CAPACITY;
   return (
     <Section
-      n="06" kicker="Negative result"
+      n="07" kicker="Negative result"
       title="The obvious fix — a bigger model — made the false alarms worse."
       lede="Three of the eight specialists were pinned to a small model purely because a larger one did not fit in 4GB of VRAM. Those three are the semantic roles. A larger card let us restore the bigger model and change exactly one variable."
     >
@@ -559,7 +626,7 @@ const INVARIANTS: [string, string][] = [
 function Invariants() {
   return (
     <Section
-      n="07" kicker="The output" tint
+      n="08" kicker="The output" tint
       title="Five invariants that turn each silent failure into a loud one."
       lede="Every defect above was found by hitting it, and each produced plausible-looking metrics from a broken pipeline. These are the checks that make them fail visibly instead."
     >
@@ -583,7 +650,7 @@ function Invariants() {
 function Instrument() {
   return (
     <Section
-      n="08" kicker="The instrument"
+      n="09" kicker="The instrument"
       title="Run it on a contract whose answer is already known."
       lede="The tool is evidence that the measurements above came from a working system rather than a spreadsheet. Pick a contract with a known verdict and watch a recorded run, or paste your own and run it live against the backend."
     >
@@ -604,9 +671,9 @@ const NEXT: [string, string][] = [
 function Status() {
   return (
     <Section
-      n="09" kicker="Status"
+      n="10" kicker="Status"
       title="Where the manuscript stands."
-      lede={`Findings 01 through 04 are measured at full scale on ${N} contracts and are stable. Findings 05 and 06 are pilots: the direction is established, the magnitude is still moving.`}
+      lede={`Findings 01 through 05 are measured at full scale on ${N} contracts and are stable. Findings 06 and 07 are pilots: the direction is established, the magnitude is still moving.`}
     >
       <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.signal, letterSpacing: ".14em", marginBottom: 14 }}>
         CURRENTLY WORKING TOWARDS

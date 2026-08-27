@@ -80,9 +80,25 @@ start_ollama 4
 warm ""
 D_BUDGET=$(( $(left) - 25 ))   # leave 25 min for the bench top-up
 if [ "$D_BUDGET" -gt 10 ]; then
-  timeout "${D_BUDGET}m" $PY -u -m eval.run_web3bugs \
-    --contests 0 --max-slices 25 --backend ollama --seed 0 || log "D stopped at budget"
-  $PY -u -m eval.run_web3bugs --report-only || true   # always leave a report
+  # HEAD-TO-HEAD FIRST. GPTScan's authors published per-project TP/TN/FP/FN for
+  # 72 Web3Bugs projects; 63 of them carry S-class bugs and are runnable here.
+  # Scoring our tool on exactly that set converts "our recall on some Web3Bugs
+  # subset" into a direct comparison on identical data -- the single biggest gap
+  # in the paper. It runs BEFORE the open-ended sweep so a budget overrun costs
+  # the sweep, never the comparison.
+  #
+  # concurrency 8: 120GB holds every council model resident, so the sequential
+  # slice loop left the card mostly idle. Scheduling only -- OLLAMA_NUM_PARALLEL
+  # is unchanged, so no verdict numerics move.
+  timeout $(( D_BUDGET * 2 / 3 ))m $PY -u -m eval.run_web3bugs \
+    --gptscan-set --contests 0 --max-slices 25 --backend ollama --seed 0 --concurrency 8 \
+    || log "D1 (gptscan head-to-head) stopped at budget"
+  $PY -u -m eval.run_web3bugs --gptscan-set --report-only || true
+
+  timeout $(( D_BUDGET / 3 ))m $PY -u -m eval.run_web3bugs \
+    --contests 0 --max-slices 25 --backend ollama --seed 0 --concurrency 8 \
+    || log "D2 (full sweep) stopped at budget"
+  $PY -u -m eval.run_web3bugs --report-only || true
 else
   log "skipping D — no time left"
 fi
