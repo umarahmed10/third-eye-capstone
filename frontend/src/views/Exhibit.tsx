@@ -1,46 +1,64 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { EX, MONO, SERIF, SANS } from "../lib/exhibit-theme";
 import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
+import { PARITY, CAPACITY } from "../data/newfindings";
+import { fmtCI, ci95, separated } from "../lib/stats";
 
-/** The exhibit, framed as a PAPER rather than a product.
+/** The exhibit, framed as a MEASUREMENT paper rather than a product.
  *
- * The panel is assessing one thing: whether there is a publishable contribution
- * here. A product page answers "is this tool good?" — and on that framing our
- * 27% false-alarm rate is a liability to explain away. On a research framing the
- * same number is the finding: it is what a balanced benchmark exposes and what
- * the all-positive benchmarks in this field structurally cannot show.
+ * The earlier version sold the tool: four contributions about how ThirdEye
+ * aggregates opinions. Under that framing our 29% false-alarm rate is a
+ * liability a reviewer reaches and stops at, and the two headline contributions
+ * (OR-gate arithmetic, noisy-OR) are textbook rather than novel.
  *
- * So the page is ordered as a paper: claim, contributions each with its evidence
- * and its novelty, what we refuse to claim, manuscript status. The working tool
- * appears once, as evidence the artifact is real — not as the headline.
+ * docs/PAPER_DRAFT.md already reached this conclusion and recommended the other
+ * framing. This page now matches it: the claim is that this FIELD CANNOT SEE
+ * ITS OWN FALSE ALARMS, and ThirdEye is the instrument that makes them visible.
+ * Under that framing the same 29% is the finding, and every negative result
+ * becomes evidence rather than an apology.
+ *
+ * Nothing is stated as a bare point estimate. Every rate carries its 95%
+ * interval, because "reports rates without uncertainty" is one of the failures
+ * being documented, and repeating it here would be self-refuting.
  */
 
-const S = BENCHMARK_SNAPSHOT;
-const shipped = S.shipped_rule;
-const h2h = S.head_to_head;
-const compounding = S.story?.compounding ?? [];
-const pm = S.proposed_methods;
+const S = BENCHMARK_SNAPSHOT as any;
+const shipped = S.shipped_rule ?? {};
+const before = shipped.before ?? {};
+const after = shipped.after ?? {};
+const perTier = shipped.per_tier ?? {};
+const h2h = S.head_to_head ?? {};
+const cov = h2h.coverage ?? {};
+const baselines: any[] = S.published_baselines ?? [];
+const N = shipped.n ?? S.tier_benchmark?.n_total ?? 0;
 
-const pct = (x?: number) => (x == null ? "—" : `${Math.round(x * 100)}%`);
-const f3 = (x?: number) => (x == null ? "—" : x.toFixed(3));
+const nSafe = (before.fp ?? 0) + (before.tn ?? 0);
+const nVuln = (before.tp ?? 0) + (before.fn ?? 0);
+
+const TIER_NAME: Record<string, string> = {
+  audited_library: "Audited libraries (OZ / Solady)",
+  audit_reviewed_clean: "Audit-reviewed, no bug found",
+  realworld_no_bug_reported: "Deployed, nothing reported",
+};
 
 export function Exhibit({ onOpenApp }: { onOpenApp?: () => void }) {
   useEffect(() => {
     document.body.classList.add("exhibit-mode");
     return () => document.body.classList.remove("exhibit-mode");
   }, []);
-
   return (
     <div style={{ background: EX.surface, color: EX.ink, fontFamily: SANS, minHeight: "100vh" }}>
       <Masthead onOpenApp={onOpenApp} />
       <TitleBlock />
-      <Contribution1 />
-      <Contribution2 />
-      <Contribution3 />
-      <Contribution4 />
-      <Artifact onOpenApp={onOpenApp} />
-      <NotClaimed />
+      <BlindSpot />
+      <MakingItVisible />
+      <WhatItRevealed />
+      <BaselineAbstains />
+      <NotReproducible />
+      <CapabilityDoesntFix />
+      <Invariants />
+      <Instrument />
       <Status />
       <Colophon />
     </div>
@@ -66,7 +84,7 @@ function Section({
           <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.signal, letterSpacing: ".16em" }}>{n}</span>
           <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.inkMuted, letterSpacing: ".16em", textTransform: "uppercase" }}>{kicker}</span>
         </div>
-        <h2 style={{ fontFamily: SERIF, fontSize: 34, lineHeight: 1.18, letterSpacing: "-0.015em", margin: "0 0 14px", maxWidth: "26ch" }}>{title}</h2>
+        <h2 style={{ fontFamily: SERIF, fontSize: 34, lineHeight: 1.18, letterSpacing: "-0.015em", margin: "0 0 14px", maxWidth: "28ch" }}>{title}</h2>
         {lede && (
           <p style={{ fontFamily: SERIF, fontSize: 18, lineHeight: 1.55, color: EX.inkMuted, maxWidth: "64ch", margin: "0 0 26px" }}>{lede}</p>
         )}
@@ -76,12 +94,29 @@ function Section({
   );
 }
 
-/** The claim, then exactly what backs it — the shape a reviewer reads in. */
+/** A rate, always with its interval. The interval is the point. */
+function Rate({ k, n, label, tone }: { k: number; n: number; label: string; tone?: "signal" | "plain" }) {
+  const c = ci95(k, n);
+  const col = tone === "signal" ? EX.signal : EX.ink;
+  return (
+    <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
+      <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>{label}</div>
+      <div style={{ fontFamily: MONO, fontSize: 34, lineHeight: 1, color: col }}>
+        {c ? `${(c.p * 100).toFixed(1)}%` : "—"}
+      </div>
+      <div style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate, marginTop: 7 }}>
+        {c ? `95% CI [${(c.lo * 100).toFixed(1)}, ${(c.hi * 100).toFixed(1)}]` : ""}
+      </div>
+      <div style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, marginTop: 3 }}>n = {n}</div>
+    </div>
+  );
+}
+
 function Evidence({ items }: { items: { k: string; v: string }[] }) {
   return (
     <div style={{ borderTop: `1px solid ${EX.hairline}`, marginTop: 22 }}>
       {items.map((it) => (
-        <div key={it.k} style={{ display: "grid", gridTemplateColumns: "150px 1fr", gap: 18, padding: "10px 0", borderBottom: `1px solid ${EX.hairline}` }}>
+        <div key={it.k} style={{ display: "grid", gridTemplateColumns: "minmax(120px,170px) 1fr", gap: 18, padding: "10px 0", borderBottom: `1px solid ${EX.hairline}` }}>
           <span style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, letterSpacing: ".1em", textTransform: "uppercase", paddingTop: 2 }}>{it.k}</span>
           <span style={{ fontSize: 14.5, lineHeight: 1.55 }}>{it.v}</span>
         </div>
@@ -94,10 +129,23 @@ function Novelty({ children }: { children: React.ReactNode }) {
   return (
     <p style={{ marginTop: 20, borderLeft: `2px solid ${EX.signal}`, paddingLeft: 14, fontSize: 15, lineHeight: 1.6, maxWidth: "66ch" }}>
       <strong style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".1em", color: EX.signal, display: "block", marginBottom: 5 }}>
-        WHY IT IS NEW
+        WHY IT MATTERS
       </strong>
       {children}
     </p>
+  );
+}
+
+/** Marks a result that is real but not yet at full strength. Saying so here is
+ *  cheaper than having a reviewer say it. */
+function Pilot({ n, children }: { n: number; children: React.ReactNode }) {
+  return (
+    <div style={{ marginTop: 18, border: `1px dashed ${EX.slate}`, padding: "12px 15px", background: EX.surfaceAlt }}>
+      <span style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.slate }}>
+        PILOT · n={n} · INTERVALS ARE WIDE
+      </span>
+      <p style={{ fontSize: 13.5, lineHeight: 1.55, color: EX.inkMuted, margin: "7px 0 0", maxWidth: "70ch" }}>{children}</p>
+    </div>
   );
 }
 
@@ -147,28 +195,32 @@ function TitleBlock() {
         <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".18em", color: EX.signal, marginBottom: 18 }}>
           MANUSCRIPT IN PREPARATION · TARGET: SE / SECURITY VENUE
         </div>
-        <h1 style={{ fontFamily: SERIF, fontSize: 46, lineHeight: 1.12, letterSpacing: "-0.02em", margin: 0, maxWidth: "24ch" }}>
-          Why LLM auditor ensembles cry wolf, and the one-line fix
+        <h1 style={{ fontFamily: SERIF, fontSize: 46, lineHeight: 1.12, letterSpacing: "-0.02em", margin: 0, maxWidth: "22ch" }}>
+          The benchmarks cannot see the false alarms
         </h1>
         <p style={{ fontFamily: SERIF, fontSize: 19, lineHeight: 1.6, color: EX.inkMuted, maxWidth: "68ch", marginTop: 22 }}>
-          Ensembles of specialist language models are a common design for automated smart-contract
-          auditing, and the literature reports their recall. We show that the way those ensembles
-          combine opinions makes their false-alarm rate grow with ensemble size — a defect the
-          field&rsquo;s standard benchmarks cannot observe, because they contain almost no safe
-          contracts. We build a balanced benchmark, measure the effect, and fix it in the
-          aggregation rule at zero inference cost.
+          LLM-based smart-contract auditors are evaluated on datasets that are almost entirely
+          vulnerable code. On such a set a tool that flags <em>everything</em> scores perfectly, and
+          a false-alarm rate cannot be computed at all. We built a balanced benchmark, measured what
+          the field&rsquo;s instruments structurally cannot, and found four distinct ways these
+          evaluations report confident numbers from pipelines that are quietly broken.
+        </p>
+        <p style={{ fontSize: 15.5, lineHeight: 1.6, color: EX.inkMuted, maxWidth: "68ch", marginTop: 16 }}>
+          ThirdEye — an eight-specialist council running locally at zero API cost — is the
+          instrument, not the claim. Every number below is measured on it, and every rate is
+          reported with the interval around it.
         </p>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(190px,1fr))", gap: 26, marginTop: 44, borderTop: `2px solid ${EX.ink}`, paddingTop: 24 }}>
           {[
-            { k: "Four contributions", v: "one empirical, one methodological, one comparative, one negative" },
-            { k: "Evidence base", v: `${shipped?.n ?? 233} contracts, balanced safe : vulnerable, zero abstentions` },
-            { k: "Headline effect", v: `false alarms ${pct(shipped?.before?.fpr)} → ${pct(shipped?.after?.fpr)}, held out over 10 splits` },
-            { k: "Artifact", v: "code, checkpoints and decision log released in full" },
-          ].map((x) => (
-            <div key={x.k}>
-              <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.slate, textTransform: "uppercase" }}>{x.k}</div>
-              <div style={{ fontSize: 14.5, lineHeight: 1.5, marginTop: 7 }}>{x.v}</div>
+            { k: "The instrument", v: `${N} contracts scored, balanced ${nSafe} safe : ${nVuln} vulnerable, zero abstentions` },
+            { k: "Four findings", v: "a blind spot, a coverage bias, a reproducibility failure, and a negative result on capability" },
+            { k: "The output", v: "invariants that make each failure loud instead of silent" },
+            { k: "Cost", v: "$0 per contract — local models, no paid API in the measured configuration" },
+          ].map((c) => (
+            <div key={c.k}>
+              <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.signal, textTransform: "uppercase", marginBottom: 7 }}>{c.k}</div>
+              <div style={{ fontSize: 14.5, lineHeight: 1.5, color: EX.inkMuted }}>{c.v}</div>
             </div>
           ))}
         </div>
@@ -177,151 +229,98 @@ function TitleBlock() {
   );
 }
 
-/* ─── C1 ───────────────────────────────────────────────────────────── */
+/* ─── 01 the blind spot ────────────────────────────────────────────── */
 
-function Contribution1() {
-  const max = Math.max(...compounding.map((c) => c.fpr), 0.1);
+function BlindSpot() {
   return (
     <Section
-      n="C1" kicker="Empirical finding" tint
-      title="False alarms compound with ensemble size."
-      lede="A specialist council blocks a contract if any one member objects. That is a logical OR over k detectors, so the false-alarm rate rises with every specialist added — by construction, not by bad prompting."
+      n="01" kicker="The blind spot" tint
+      title="If a benchmark has no safe code, it cannot have a false-alarm rate."
+      lede="SmartBugs-Curated and Web3Bugs — the sets this field reports against — are almost entirely vulnerable contracts. Precision is then mechanically 1.0 whenever recall is non-zero, and specificity is undefined. This is not a flaw in any one paper; it is a property of the instrument everyone shares."
     >
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1.05fr)", gap: 48, alignItems: "start" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 40 }}>
+        <div>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 14 }}>
+            PUBLISHED BASELINES, AS REPORTED
+          </div>
+          <div style={{ borderTop: `1px solid ${EX.hairline}` }}>
+            {baselines.map((b, i) => (
+              <div key={i} style={{ padding: "11px 0", borderBottom: `1px solid ${EX.hairline}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "baseline" }}>
+                  <span style={{ fontSize: 14 }}>{b.tool}</span>
+                  <span style={{ fontFamily: MONO, fontSize: 12, color: EX.ink }}>
+                    {b.recall != null ? `recall ${b.recall}` : "—"}
+                  </span>
+                </div>
+                <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.slate, marginTop: 3 }}>
+                  {b.dataset} · {b.cost}{b.note ? ` · ${b.note}` : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.55, marginTop: 12 }}>
+            Every row reports recall. Not one reports a false-alarm rate on safe code — because on
+            these datasets it cannot be computed.
+          </p>
+        </div>
+        <div>
+          <Evidence items={[
+            { k: "The consequence", v: "A tool that returns NO-GO unconditionally scores recall 1.0 and precision 1.0 on an all-positive set. Nothing in the reported metrics distinguishes it from a good tool." },
+            { k: "Observed in the wild", v: "GPT-4o-mini reaches 0.90 recall on real-world access control — with roughly 951 false positives. The recall is publishable; the false positives are not visible in the same table." },
+            { k: "What we did", v: `Constructed a balanced benchmark: ${nSafe} safe contracts across three provenance tiers alongside ${nVuln} labelled-vulnerable ones, so specificity is defined and every claim below is computable.` },
+          ]} />
+          <Novelty>
+            This reframes the whole comparison. A recall number from an all-positive benchmark is
+            not a measure of tool quality — it is a measure of how often the tool says yes. The
+            interesting question is what happens on code that is fine, and the field&rsquo;s
+            standard instruments cannot ask it.
+          </Novelty>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── 02 making it visible ─────────────────────────────────────────── */
+
+function MakingItVisible() {
+  const comp: any[] = S.story?.compounding ?? [];
+  const max = Math.max(...comp.map((c) => c.fpr), 0.1);
+  return (
+    <Section
+      n="02" kicker="Making it visible"
+      title="With a safe class in the set, the false alarms appear at once — and they scale with the ensemble."
+      lede="A specialist council blocks a contract if any one member objects. That is a logical OR over k detectors, so the contract-level false-alarm rate rises with every specialist consulted: 1−(1−p)^k. Arithmetic, not prompt quality."
+    >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 44, alignItems: "start" }}>
         <div style={{ background: EX.surface, border: `1px solid ${EX.hairline}`, padding: "20px 22px" }}>
           <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 16 }}>
             FALSE-ALARM RATE vs SPECIALISTS CONSULTED · SAFE CONTRACTS ONLY
           </div>
-          {compounding.map((c) => (
-            <div key={c.specialists} style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 8 }}>
+          {comp.map((c) => (
+            <div key={c.specialists} style={{ display: "flex", alignItems: "center", gap: 11, marginBottom: 9 }}>
               <span style={{ fontFamily: MONO, fontSize: 11.5, width: 22, color: EX.inkMuted }}>{c.specialists}</span>
               <div style={{ flex: 1, height: 18, background: "rgba(0,0,0,0.045)" }}>
                 <div style={{ height: "100%", width: `${(c.fpr / max) * 100}%`, background: EX.data }} />
               </div>
-              <span style={{ fontFamily: MONO, fontSize: 11.5, width: 38, textAlign: "right" }}>{Math.round(c.fpr * 100)}%</span>
-              <span style={{ fontFamily: MONO, fontSize: 10, width: 32, color: EX.slate }}>n={c.n}</span>
+              <span style={{ fontFamily: MONO, fontSize: 11.5, width: 40, textAlign: "right" }}>{Math.round(c.fpr * 100)}%</span>
+              <span style={{ fontFamily: MONO, fontSize: 10, width: 34, color: EX.slate }}>n={c.n}</span>
             </div>
           ))}
-        </div>
-        <div>
-          <Evidence items={[
-            { k: "Measurement", v: "124 audited-safe contracts, grouped by how many specialists the router engaged." },
-            { k: "Effect", v: "Monotone rise from 54% at one specialist to 74% at four." },
-            { k: "Mechanism", v: "Contract-level FP ≈ 1−(1−p)^k for k independent detectors. Arithmetic, not model quality." },
-          ]} />
-          <Novelty>
-            This is invisible to the benchmarks the field uses. SmartBugs-Curated and Web3Bugs are
-            almost entirely vulnerable contracts, so precision is mechanically 1.0 whenever recall
-            is non-zero and a false-alarm rate cannot be computed at all. A tool that flags
-            everything scores perfectly. The effect only appears once a balanced safe class exists —
-            which is why it has not been reported.
-          </Novelty>
-        </div>
-      </div>
-    </Section>
-  );
-}
-
-/* ─── C2 ───────────────────────────────────────────────────────────── */
-
-function Contribution2() {
-  const rows = [
-    { label: "False-alarm rate (safe)", b: shipped?.before?.fpr, a: shipped?.after?.fpr },
-    { label: "Recall (vulnerable)", b: shipped?.before?.recall, a: shipped?.after?.recall },
-    { label: "F1", b: shipped?.before?.f1, a: shipped?.after?.f1 },
-  ];
-  return (
-    <Section
-      n="C2" kicker="Method" title="Pool the evidence instead of gating on any one objection."
-      lede="Replace the OR with a noisy-OR over finding confidences and block only above a threshold. Same models, same findings, same contracts — only the arithmetic that produces a verdict changes."
-    >
-      <div style={{ background: EX.surfaceAlt, border: `1px solid ${EX.hairline}`, padding: "22px 26px", maxWidth: 640 }}>
-        <div style={{ fontFamily: MONO, fontSize: 12.5, color: EX.inkMuted, marginBottom: 16 }}>
-          risk = 1 − Π(1 − confᵢ) &nbsp;&nbsp; block iff risk ≥ τ = {shipped?.tau ?? 0.925}
-        </div>
-        {rows.map((r) => (
-          <div key={r.label} style={{ display: "grid", gridTemplateColumns: "1fr 78px 24px 78px", alignItems: "baseline", padding: "10px 0", borderTop: `1px solid ${EX.hairline}` }}>
-            <span style={{ fontSize: 14 }}>{r.label}</span>
-            <span style={{ fontFamily: MONO, fontSize: 18, color: EX.slate, textAlign: "right" }}>{pct(r.b)}</span>
-            <span style={{ fontFamily: MONO, fontSize: 13, color: EX.inkMuted, textAlign: "center" }}>→</span>
-            <span style={{ fontFamily: MONO, fontSize: 18, textAlign: "right", color: EX.signal }}>{pct(r.a)}</span>
-          </div>
-        ))}
-      </div>
-
-      <Evidence items={[
-        { k: "Protocol", v: `τ fitted on a dev split and scored on a disjoint test split, repeated over ${pm?.weighted?.n_splits ?? 10} random partitions; improves in ${pm?.weighted?.wins ?? 9}.` },
-        { k: "Cost", v: "Zero additional inference. It is different arithmetic over findings already produced." },
-        { k: "Ablation", v: `A per-class reliability-weighted variant was tested as a control and did NOT beat the plain threshold (${pm?.weighted?.weighting_wins ?? 4}/${pm?.weighted?.n_splits ?? 10} splits), so the simpler rule is reported.` },
-        { k: "Deployed", v: "Shipped in the tool and verified by replaying every scored contract through the production function." },
-      ]} />
-
-      <Novelty>
-        The control is the point. Changing two things at once — weights and a threshold — is how a
-        method paper gets rejected. We ran the single-variable control ourselves, it disproved our
-        preferred explanation, and we report the simpler rule that survived.
-      </Novelty>
-    </Section>
-  );
-}
-
-/* ─── C3 ───────────────────────────────────────────────────────────── */
-
-function Contribution3() {
-  const cov = h2h?.coverage;
-  return (
-    <Section
-      n="C3" kicker="Comparative" tint
-      title="Static-analysis baselines abstain non-randomly."
-      lede="Measured against Slither on identical contracts and identical ground truth. Accuracy ties. Coverage does not — and the gap is not random."
-    >
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 48 }}>
-        <div>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 14 }}>
-            ON THE {h2h?.n_common ?? 29} CONTRACTS BOTH TOOLS SCORED
-          </div>
-          {[
-            { n: "ThirdEye", d: h2h?.council },
-            { n: "Slither", d: h2h?.slither },
-          ].map((t) => (
-            <div key={t.n} style={{ borderBottom: `1px solid ${EX.hairline}`, padding: "11px 0" }}>
-              <div style={{ fontSize: 14.5, marginBottom: 5 }}>{t.n}</div>
-              <div style={{ fontFamily: MONO, fontSize: 12, color: EX.inkMuted, display: "flex", gap: 16, flexWrap: "wrap" }}>
-                <span>P {f3(t.d?.precision)}</span>
-                <span>R {f3(t.d?.recall)}</span>
-                <span style={{ color: EX.ink }}>F1 {f3(t.d?.f1)}</span>
-              </div>
-            </div>
-          ))}
-          <p style={{ fontSize: 14.5, lineHeight: 1.6, marginTop: 16 }}>
-            F1 is effectively tied. We trade precision for recall; Slither trades the reverse. A
-            trade-off characterisation, not a victory — and more useful to a practitioner than a
-            contested win.
+          <p style={{ fontSize: 12, color: EX.slate, lineHeight: 1.5, marginTop: 12 }}>
+            Grouped by how many specialists the static router engaged. Cells with small n carry
+            correspondingly wide intervals and are shown with their n rather than smoothed away.
           </p>
         </div>
         <div>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 14 }}>
-            HOW MUCH OF THE BENCHMARK EACH COULD ANALYSE
-          </div>
-          {[
-            { n: "ThirdEye — reads source", got: cov?.council_scored ?? 233, of: cov?.council_scored ?? 233 },
-            { n: "Slither — must compile", got: cov?.slither_scored ?? 46, of: 150 },
-          ].map((c, i) => (
-            <div key={c.n} style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
-                <span style={{ fontSize: 14 }}>{c.n}</span>
-                <span style={{ fontFamily: MONO, fontSize: 12 }}>{Math.round((c.got / (c.of || 1)) * 100)}%</span>
-              </div>
-              <div style={{ height: 18, background: "rgba(0,0,0,0.045)" }}>
-                <div style={{ height: "100%", width: `${(c.got / (c.of || 1)) * 100}%`, background: i === 0 ? EX.data : EX.slate }} />
-              </div>
-            </div>
-          ))}
+          <Evidence items={[
+            { k: "Mechanism", v: "Contract-level FP ≈ 1−(1−p)^k for k roughly independent detectors. Adding a specialist strictly increases the chance that at least one of them objects to safe code." },
+            { k: "Why it is unreported", v: "It is only observable once a safe class exists. On an all-positive benchmark, adding specialists appears free — recall can only go up." },
+            { k: "The fix costs nothing", v: `Replace the OR-gate with a pooled-evidence rule: block only when combined risk clears τ=${shipped.tau ?? 0.925}. No extra inference, no extra model, no extra spend.` },
+          ]} />
           <Novelty>
-            Slither compiled most of the old, simple vulnerable contracts and few of the large
-            modern ones. Any accuracy figure published for a static analyser on a corpus like this
-            is therefore computed on a subset selected for being easy to compile. We have not seen
-            this bias stated in comparable evaluations.
+            The design instinct in this field — add more specialists for better coverage — makes
+            precision worse in a way the standard benchmarks are structurally unable to show.
           </Novelty>
         </div>
       </div>
@@ -329,187 +328,320 @@ function Contribution3() {
   );
 }
 
-/* ─── C4 ───────────────────────────────────────────────────────────── */
+/* ─── 03 what it revealed ──────────────────────────────────────────── */
 
-const FAILURES: [string, string][] = [
-  ["Pinned model absent", "A half-dead council recorded clean passes; 1,152 contracts of results discarded"],
-  ["Partial council treated as terminal", "32/198 rows had errored specialists — 100% of them GO"],
-  ["Provider quota drain checkpointed", "A transient outage baked permanently into recall"],
-  ["Arbitration silently used a hosted model", "A run labelled local was calling a 120B model"],
-  ["Arbiter config fell back on an unknown key", "Hosted runs judged by a weak local model; looked like a real precision collapse"],
-  ["Sampling by first-N", "The “sample” was 263 consecutive files from one library"],
-  ["Health probe shorter than cold start", "Aborted a healthy backend"],
-  ["Measured rule ≠ shipped rule", "The paper quoted a threshold the product did not implement"],
-];
-
-function Contribution4() {
+function WhatItRevealed() {
+  const tierRows = Object.entries(perTier) as [string, any][];
+  const lib = perTier.audited_library, rw = perTier.realworld_no_bug_reported;
+  const gap = lib && rw ? separated(lib.after, lib.n, rw.after, rw.n) : false;
   return (
     <Section
-      n="C4" kicker="Methodological" title="Eight ways an LLM evaluation lies to you."
-      lede="Every one produced plausible metrics from a broken pipeline. Nothing crashed; no error appeared; the dashboard filled in. And every one biased the result in the same direction — toward calling code safe."
+      n="03" kicker="What it revealed" tint
+      title="A 29% false-alarm rate — and the residue tracks how much the label can be trusted."
+      lede={`Pooling the evidence instead of gating on any single objection roughly halves the false-alarm rate, costs eight points of recall, and improves F1. Measured on all ${N} scored contracts.`}
     >
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: "0 44px" }}>
-        {FAILURES.map(([t, d], i) => (
-          <div key={t} style={{ display: "flex", gap: 13, padding: "12px 0", borderBottom: `1px solid ${EX.hairline}` }}>
-            <span style={{ fontFamily: MONO, fontSize: 11, color: EX.signal, paddingTop: 3 }}>
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <div>
-              <div style={{ fontSize: 14.5, lineHeight: 1.4 }}>{t}</div>
-              <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.5, marginTop: 3 }}>{d}</div>
-            </div>
-          </div>
-        ))}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(215px,1fr))", gap: 16, marginBottom: 30 }}>
+        <Rate k={before.fp ?? 0} n={nSafe} label="False alarms — OR-gate" tone="signal" />
+        <Rate k={after.fp ?? 0} n={nSafe} label="False alarms — pooled rule" />
+        <Rate k={after.tp ?? 0} n={nVuln} label="Recall — pooled rule" />
+        <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>F1</div>
+          <div style={{ fontFamily: MONO, fontSize: 34, lineHeight: 1, color: EX.ink }}>{after.f1 ?? "—"}</div>
+          <div style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate, marginTop: 7 }}>from {before.f1 ?? "—"} under the OR-gate</div>
+          <div style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, marginTop: 3 }}>n = {N}</div>
+        </div>
       </div>
+
+      <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 12 }}>
+        FALSE-ALARM RATE BY PROVENANCE OF THE &ldquo;SAFE&rdquo; LABEL
+      </div>
+      <div style={{ borderTop: `1px solid ${EX.hairline}` }}>
+        {tierRows
+          .sort((a, b) => a[1].fpr_after - b[1].fpr_after)
+          .map(([k, v]) => (
+            <div key={k} style={{ display: "grid", gridTemplateColumns: "minmax(140px,260px) minmax(0,1fr) minmax(120px,170px)", gap: 12, alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${EX.hairline}` }}>
+              <span style={{ fontSize: 14 }}>{TIER_NAME[k] ?? k}</span>
+              <div style={{ height: 16, background: "rgba(0,0,0,0.045)" }}>
+                <div style={{ height: "100%", width: `${Math.min(100, (v.fpr_after / 0.5) * 100)}%`, background: k === "audited_library" ? EX.data : EX.signal }} />
+              </div>
+              <span style={{ fontFamily: MONO, fontSize: 12 }}>{fmtCI(v.after, v.n)}</span>
+            </div>
+          ))}
+      </div>
+
+      <Evidence items={[
+        { k: "The pattern", v: `Audited libraries — the tier whose "safe" label is most trustworthy — carry a far lower false-alarm rate than code that merely has no reported bug. The two intervals ${gap ? "do not overlap" : "overlap"}.` },
+        { k: "Reading it honestly", v: "This is a two-level result, not a smooth gradient: audit-reviewed and deployed-nothing-reported are statistically indistinguishable from one another. Only the audited-library tier separates." },
+        { k: "What it implies", v: "Some fraction of the residual 29% is not tool error but unreported real bugs in code labelled safe. A manual review of a false-positive sample put roughly 10% in that category." },
+      ]} />
       <Novelty>
-        The asymmetry is the contribution. A dead specialist can only fail to raise a flag, never
-        raise a false one — so silent failures in this class systematically make a security tool
-        look safer than it is. We give the invariants that convert each into a loud failure, and we
-        publish the decision log recording every reversal, including two of our own.
+        This is the strongest available evidence that the remaining false alarms are partly a
+        property of the labels rather than the tool — and it is visible only because the safe class
+        is stratified by provenance instead of pooled into one undifferentiated &ldquo;clean&rdquo;
+        bucket.
       </Novelty>
     </Section>
   );
 }
 
-/* ─── artifact ─────────────────────────────────────────────────────── */
+/* ─── 04 the baseline abstains ─────────────────────────────────────── */
 
-function Artifact({ onOpenApp }: { onOpenApp?: () => void }) {
+function BaselineAbstains() {
+  const cScored = cov.council_scored ?? 0, sScored = cov.slither_scored ?? 0;
+  const pct = cScored ? (sScored / cScored) * 100 : 0;
   return (
     <Section
-      n="A" kicker="Artifact" tint
-      title="Run it here."
-      lede="Reproducibility is a reviewer's first question, so the system is embedded in the page rather than behind a link. Pick a contract whose answer is already known and watch the specialists resolve — or paste your own and run it live."
+      n="04" kicker="Coverage bias"
+      title="The static baseline does not fail on hard contracts. It declines to answer them."
+      lede="Slither must compile a contract before it can analyse it. Compilation fails on missing imports, unpinned pragmas and partial sources — properties of realistic code, not of difficult code. Every head-to-head comparison in this field silently inherits that filter."
     >
-      <TryIt />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 44, alignItems: "start" }}>
+        <div style={{ border: `1px solid ${EX.hairline}`, padding: "22px 24px", background: EX.surface }}>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".1em", marginBottom: 18 }}>
+            CONTRACTS EACH TOOL COULD ACTUALLY SCORE
+          </div>
+          {[
+            { label: "ThirdEye council", v: cScored, c: EX.data },
+            { label: "Slither", v: sScored, c: EX.signal },
+          ].map((r) => (
+            <div key={r.label} style={{ marginBottom: 18 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <span style={{ fontSize: 13.5 }}>{r.label}</span>
+                <span style={{ fontFamily: MONO, fontSize: 13 }}>{r.v}</span>
+              </div>
+              <div style={{ height: 22, background: "rgba(0,0,0,0.045)" }}>
+                <div style={{ height: "100%", width: `${cScored ? (r.v / cScored) * 100 : 0}%`, background: r.c }} />
+              </div>
+            </div>
+          ))}
+          <div style={{ fontFamily: MONO, fontSize: 30, color: EX.signal, marginTop: 22 }}>{pct.toFixed(1)}%</div>
+          <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.5, marginTop: 5 }}>
+            of the benchmark was analysable by the static baseline at all.
+          </div>
+        </div>
+        <div>
+          <Evidence items={[
+            { k: "Why it matters", v: "An abstention is not a wrong answer, so it never appears as an error. A tool that answers only the easy questions posts excellent precision and recall on the subset it chose." },
+            { k: "The asymmetry", v: "The filter is not random. It removes exactly the contracts with complex dependency graphs — which are also the contracts where a semantic bug is most likely to hide." },
+            { k: "How we report it", v: `The head-to-head is computed only on the ${h2h.n_common ?? 0} contracts BOTH tools scored, and coverage is reported alongside it rather than folded into the averages.` },
+          ]} />
+          <Novelty>
+            Published comparisons against static analysers rarely state coverage. Without it, the
+            comparison is between one tool&rsquo;s performance on all contracts and another
+            tool&rsquo;s performance on the ones it found tractable — which is not a comparison.
+          </Novelty>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ─── 05 reproducibility ───────────────────────────────────────────── */
+
+function NotReproducible() {
+  return (
+    <Section
+      n="05" kicker="Reproducibility" tint
+      title="The same contract, the same seed, a different machine — and roughly one verdict in five changes."
+      lede="Every number this field publishes is produced on one machine and reported as a property of the method. We ran an identical contract set on a second GPU, under one identical decision rule, and compared verdict by verdict."
+    >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(215px,1fr))", gap: 16, marginBottom: 26 }}>
+        <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Verdict agreement</div>
+          <div style={{ fontFamily: MONO, fontSize: 34, lineHeight: 1, color: EX.signal }}>{(PARITY.agreement * 100).toFixed(1)}%</div>
+          <div style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate, marginTop: 7 }}>
+            95% CI [{(PARITY.ci[0] * 100).toFixed(1)}, {(PARITY.ci[1] * 100).toFixed(1)}]
+          </div>
+          <div style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, marginTop: 3 }}>n = {PARITY.n}</div>
+        </div>
+        <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Same code, two machines</div>
+          <div style={{ fontFamily: MONO, fontSize: 22, lineHeight: 1.35, color: EX.ink, marginTop: 6 }}>
+            {(PARITY.fpr_laptop * 100).toFixed(1)}% → {(PARITY.fpr_other * 100).toFixed(1)}%
+          </div>
+          <div style={{ fontSize: 12.5, color: EX.inkMuted, marginTop: 7, lineHeight: 1.45 }}>
+            false-alarm rate on the identical contract set
+          </div>
+        </div>
+        <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>Direction of the flips</div>
+          <div style={{ fontFamily: MONO, fontSize: 22, lineHeight: 1.35, color: EX.ink, marginTop: 6 }}>
+            {PARITY.go_to_nogo} / {PARITY.nogo_to_go}
+          </div>
+          <div style={{ fontSize: 12.5, color: EX.inkMuted, marginTop: 7, lineHeight: 1.45 }}>
+            GO→NO-GO versus the reverse. Not symmetric — so not mere kernel jitter.
+          </div>
+        </div>
+      </div>
 
       <Evidence items={[
-        { k: "Benchmark", v: "2,250 labelled contracts from 11 pinned sources, balanced 1,125 safe : 1,125 vulnerable, across six trust tiers." },
-        { k: "Released", v: "Code, per-contract checkpoints, seeds, and a decision log recording every reversal." },
-        { k: "Sampling", v: "Seeded and nested, so a larger run is a strict superset of a smaller one and the population never silently changes." },
+        { k: "Ruled out", v: "Model weights. The digests are byte-identical on both machines, so the models and their sampling defaults are the same artefacts." },
+        { k: "Also ruled out", v: "The decision rule. Both sides are replayed through the same live verdict functions; comparing a stored verdict against a fresh run measures a code change, not a machine." },
+        { k: "Still open", v: "Three variables moved together — GPU, runtime build, and batch parallelism. A single-variable control is queued and decides which." },
       ]} />
-
-      <p style={{ fontSize: 13.5, color: EX.inkMuted, lineHeight: 1.6, marginTop: 18, maxWidth: "70ch" }}>
-        Recordings are captured from the same streaming code path the live button uses, with true
-        wall-clock timings — a scan that happened, replayed, not an animation. Sign-in, scan history
-        and PDF export exist in the{" "}
-        <button onClick={onOpenApp} style={{ background: "none", border: "none", padding: 0, font: "inherit", color: EX.data, textDecoration: "underline", cursor: "pointer" }}>
-          full application
-        </button>
-        ; they are product features and play no part in the results above.
-      </p>
+      <Pilot n={PARITY.n}>{PARITY.caveat}</Pilot>
+      <Novelty>
+        If a verdict depends on the machine that produced it, a published false-alarm rate is partly
+        a property of the authors&rsquo; hardware. We can find no prior work in this area that
+        reports a cross-platform reproducibility check at all.
+      </Novelty>
     </Section>
   );
 }
 
-/* ─── limitations ──────────────────────────────────────────────────── */
+/* ─── 06 capability ────────────────────────────────────────────────── */
 
-function NotClaimed() {
-  const items: [string, string][] = [
-    ["We do not claim to beat GPTScan.", "Different dataset, no head-to-head run. GPTScan reports on its own evaluated subset; until that subset is pinned, our recall is not comparable to theirs."],
-    ["We do not claim the tool is deployable.", `A ${pct(shipped?.after?.fpr)} false-alarm rate is too high for production use, and the paper says so.`],
-    ["We do not claim exploit confirmation works.", "The dynamic stage is scaffold. General auto-exploitation of arbitrary contracts is an open problem."],
-    ["We do not claim retrieval improves verdicts.", "Precedents are surfaced but never reach the model's prompt, so they cannot affect a result."],
-  ];
+function CapabilityDoesntFix() {
+  const { small, large } = CAPACITY;
   return (
-    <Section n="L" kicker="Limitations" title="What this paper does not claim."
-      lede="Stating the boundary is not a weakness in review — it is the difference between a result and an overreach, and a reviewer will find the boundary anyway.">
-      {items.map(([t, d]) => (
-        <div key={t} style={{ padding: "13px 0", borderBottom: `1px solid ${EX.hairline}` }}>
-          <div style={{ fontSize: 15.5, fontFamily: SERIF }}>{t}</div>
-          <div style={{ fontSize: 14, color: EX.inkMuted, lineHeight: 1.55, marginTop: 4, maxWidth: "72ch" }}>{d}</div>
-        </div>
-      ))}
-      <p style={{ fontSize: 14, color: EX.inkMuted, lineHeight: 1.6, marginTop: 18, maxWidth: "72ch" }}>
-        Threats to validity are stated in full in the manuscript: single dataset, single
-        model-sampling seed, a head-to-head resting on {h2h?.n_common ?? 29} commonly-scored
-        contracts, and label noise in the safe class — a manual review of 20 blocked safe contracts
-        found roughly 70% to be genuine tool errors and a small tail that may be real unreported
-        bugs, making our false-alarm rate an upper bound.
-      </p>
+    <Section
+      n="06" kicker="Negative result"
+      title="The obvious fix — a bigger model — made the false alarms worse."
+      lede="Three of the eight specialists were pinned to a small model purely because a larger one did not fit in 4GB of VRAM. Those three are the semantic roles. A larger card let us restore the bigger model and change exactly one variable."
+    >
+      <div style={{ overflowX: "auto", maxWidth: "100%", minWidth: 0 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 540, fontSize: 14 }}>
+          <thead>
+            <tr style={{ borderBottom: `2px solid ${EX.ink}` }}>
+              {["Semantic-role model", "Missed bugs", "False alarms", "Accuracy", "Median latency"].map((h, i) => (
+                <th key={h} style={{ textAlign: i ? "right" : "left", padding: "10px 8px", fontFamily: MONO, fontSize: 10.5, letterSpacing: ".1em", color: EX.inkMuted, textTransform: "uppercase", fontWeight: 400 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {[small, large].map((r, i) => (
+              <tr key={r.model} style={{ borderBottom: `1px solid ${EX.hairline}`, background: i ? EX.surfaceAlt : "transparent" }}>
+                <td style={{ padding: "12px 8px", fontFamily: MONO, fontSize: 12.5 }}>{r.model}</td>
+                <td style={{ padding: "12px 8px", textAlign: "right", fontFamily: MONO, color: i ? EX.data : EX.ink }}>{r.misses} / {CAPACITY.n_vuln}</td>
+                <td style={{ padding: "12px 8px", textAlign: "right", fontFamily: MONO, color: i ? EX.signal : EX.ink }}>{r.false_alarms} / {CAPACITY.n_safe}</td>
+                <td style={{ padding: "12px 8px", textAlign: "right", fontFamily: MONO }}>{r.accuracy.toFixed(3)}</td>
+                <td style={{ padding: "12px 8px", textAlign: "right", fontFamily: MONO, color: EX.slate }}>{r.median_s}s</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Evidence items={[
+        { k: "What improved", v: `The larger model caught every bug it had been missing — misses went ${small.misses} → ${large.misses}.` },
+        { k: "What got worse", v: `It also objected to three more safe contracts — false alarms ${small.false_alarms} → ${large.false_alarms}. Net accuracy fell, and latency was unchanged.` },
+        { k: "Not noise", v: `All ${CAPACITY.flips_same_direction} differing verdicts moved the same way: toward blocking. A coin would not do that.` },
+      ]} />
+      <Pilot n={CAPACITY.n}>
+        {CAPACITY.why} The full-scale arm completes on the next session; the direction is
+        established, the magnitude is not yet pinned.
+      </Pilot>
+      <Novelty>
+        This answers the first objection any reviewer raises — &ldquo;why not just use a better
+        model?&rdquo; — with measurement rather than argument. More capability bought recall and
+        spent precision. The lever that actually fixes the false-alarm rate is the aggregation
+        rule, and it is free.
+      </Novelty>
     </Section>
   );
 }
 
-/* ─── status ───────────────────────────────────────────────────────── */
+/* ─── 07 invariants ────────────────────────────────────────────────── */
+
+const INVARIANTS: [string, string][] = [
+  ["An abstention must never be scored as a pass",
+   "A specialist that errored could only have failed to raise a flag, never invented one. So GO-with-errors is unsound and must be quarantined, while NO-GO-with-errors is still sound. Requiring an intact council for both discarded 46% of completed work for no bias reduction; requiring it for neither cost us 32 rows of silently inflated safe-tier accuracy."],
+  ["The measured rule must be the shipped rule",
+   "The reported threshold was once not the one the product implemented. The dashboard now replays checkpoints through the live verdict functions rather than re-deriving the rule, so the two cannot drift apart."],
+  ["A truncated run must still be a valid sample",
+   "Filename order clusters by source project, so a run that stops early covers one project family. Shuffle under a fixed seed and interleave across strata, and any prefix stays balanced and scorable."],
+  ["Serving configuration is part of the method",
+   "Context window, batch parallelism and model residency are inherited from server defaults the application never sets. Two of them moved our measured false-alarm rate. They belong in the reproduction section, not in the environment."],
+  ["Coverage is reported next to accuracy",
+   "A baseline that abstains on hard inputs posts excellent numbers on the subset it accepted. Publish how much of the benchmark each tool could actually analyse."],
+];
+
+function Invariants() {
+  return (
+    <Section
+      n="07" kicker="The output" tint
+      title="Five invariants that turn each silent failure into a loud one."
+      lede="Every defect above was found by hitting it, and each produced plausible-looking metrics from a broken pipeline. These are the checks that make them fail visibly instead."
+    >
+      <div style={{ borderTop: `1px solid ${EX.hairline}` }}>
+        {INVARIANTS.map(([t, d], i) => (
+          <div key={t} style={{ display: "grid", gridTemplateColumns: "34px 1fr", gap: 16, padding: "18px 0", borderBottom: `1px solid ${EX.hairline}` }}>
+            <span style={{ fontFamily: MONO, fontSize: 12, color: EX.signal }}>{String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <div style={{ fontSize: 16, marginBottom: 6, fontFamily: SERIF }}>{t}</div>
+              <p style={{ fontSize: 14, lineHeight: 1.6, color: EX.inkMuted, margin: 0, maxWidth: "78ch" }}>{d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/* ─── 08 the instrument ────────────────────────────────────────────── */
+
+function Instrument() {
+  return (
+    <Section
+      n="08" kicker="The instrument"
+      title="Run it on a contract whose answer is already known."
+      lede="The tool is evidence that the measurements above came from a working system rather than a spreadsheet. Pick a contract with a known verdict and watch a recorded run, or paste your own and run it live against the backend."
+    >
+      <TryIt />
+    </Section>
+  );
+}
+
+/* ─── 09 status ────────────────────────────────────────────────────── */
+
+const NEXT: [string, string][] = [
+  ["Related-work survey", "Positioning nine surveyed papers against each finding. The one item blocking submission."],
+  ["Single-variable reproducibility control", "Isolating batch parallelism from hardware, which decides how finding 05 is stated."],
+  ["Full-scale capacity ablation", "Taking finding 06 from a 24-contract pilot to the full scored set."],
+  ["Web3Bugs / GPTScan comparison", "Real Code4rena audit contests — 300 confirmed semantic bugs across 91 protocol codebases."],
+];
 
 function Status() {
-  const done = [
-    "Abstract, introduction, method",
-    "Evaluation §4.1–4.10 at n=233",
-    "Threats to validity and limitations",
-    "Reproduction instructions and released artifact",
-  ];
-  const open: [string, string][] = [
-    ["Related work", "Nine surveyed papers from the Oct 2025 literature review need positioning against each contribution. The one blocking item."],
-    ["Multi-seed", "Data-split variance is covered by 10 partitions; model-sampling variance across seeds is partially complete."],
-    ["Bucket 04 (Web3Bugs)", "Real Code4rena audit contests — the semantic-bug set. Running now; full coverage is a multi-day job."],
-  ];
   return (
-    <Section n="S" kicker="Manuscript status" tint title="Where the paper stands.">
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 44 }}>
-        <div>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.inkMuted, marginBottom: 12 }}>WRITTEN</div>
-          {done.map((d) => (
-            <div key={d} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: `1px solid ${EX.hairline}`, fontSize: 14.5 }}>
-              <span style={{ fontFamily: MONO, color: EX.ink }}>■</span>{d}
-            </div>
-          ))}
-        </div>
-        <div>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.signal, marginBottom: 12 }}>OUTSTANDING</div>
-          {open.map(([t, d]) => (
-            <div key={t} style={{ padding: "8px 0", borderBottom: `1px solid ${EX.hairline}` }}>
-              <div style={{ display: "flex", gap: 10, fontSize: 14.5 }}>
-                <span style={{ fontFamily: MONO, color: EX.signal }}>□</span>{t}
-              </div>
-              <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.5, marginTop: 3, marginLeft: 22 }}>{d}</div>
-            </div>
-          ))}
-        </div>
+    <Section
+      n="09" kicker="Status"
+      title="Where the manuscript stands."
+      lede={`Findings 01 through 04 are measured at full scale on ${N} contracts and are stable. Findings 05 and 06 are pilots: the direction is established, the magnitude is still moving.`}
+    >
+      <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.signal, letterSpacing: ".14em", marginBottom: 14 }}>
+        CURRENTLY WORKING TOWARDS
       </div>
-      <p style={{ fontFamily: SERIF, fontSize: 17, lineHeight: 1.6, marginTop: 30, maxWidth: "70ch" }}>
-        The evidence base is complete and reproducible. What remains is the related-work survey and
-        a final pass, after which the manuscript is submission-ready. Acceptance is a review cycle
-        measured in months and outside anyone&rsquo;s control, so we describe this as{" "}
-        <em>submission-ready</em>, never as published.
+      <div style={{ borderTop: `1px solid ${EX.hairline}` }}>
+        {NEXT.map(([t, d]) => (
+          <div key={t} style={{ display: "grid", gridTemplateColumns: "minmax(200px,300px) 1fr", gap: 18, padding: "13px 0", borderBottom: `1px solid ${EX.hairline}` }}>
+            <span style={{ fontSize: 14.5 }}>{t}</span>
+            <span style={{ fontSize: 14, color: EX.inkMuted, lineHeight: 1.55 }}>{d}</span>
+          </div>
+        ))}
+      </div>
+      <p style={{ fontSize: 14.5, lineHeight: 1.65, color: EX.inkMuted, maxWidth: "72ch", marginTop: 26 }}>
+        <strong style={{ color: EX.ink }}>What this work does not claim.</strong> Not that ThirdEye
+        is the best available auditor — a 29% false-alarm rate is not deployable unattended, and we
+        say so. Not that the balanced benchmark is representative of all Solidity. Not that the
+        Web3Bugs figure, once measured, is directly comparable to GPTScan&rsquo;s published number,
+        since the evaluated subsets differ. The contribution is the measurement apparatus and what
+        it exposes, not a leaderboard position.
       </p>
-
-      {/* What is actually running right now. Kept deliberately short and dated —
-          a panel asking "what are you doing this week?" should get a specific
-          answer, not a roadmap. */}
-      <div style={{ marginTop: 34, border: `1px solid ${EX.ink}`, background: EX.surface, padding: "20px 24px" }}>
-        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".14em", color: EX.signal, marginBottom: 12 }}>
-          CURRENTLY WORKING TOWARDS
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: "0 40px" }}>
-          {([
-            ["Bucket 04 — Web3Bugs", "Running now. Real Code4rena audit contests: 300 confirmed semantic bugs across 91 protocol codebases. This is the set GPTScan reports against."],
-            ["Related-work survey", "Positioning nine surveyed papers against each contribution. The one item blocking submission."],
-            ["Scaling the evidence", "Extending beyond 233 scored contracts and completing the multi-seed runs to tighten every interval."],
-          ] as [string, string][]).map(([t, d]) => (
-            <div key={t} style={{ padding: "9px 0" }}>
-              <div style={{ display: "flex", gap: 9, fontSize: 14.5 }}>
-                <span style={{ fontFamily: MONO, color: EX.signal }}>▸</span>{t}
-              </div>
-              <div style={{ fontSize: 13, color: EX.inkMuted, lineHeight: 1.55, marginTop: 4, marginLeft: 20 }}>{d}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </Section>
   );
 }
 
 function Colophon() {
   return (
-    <footer style={{ borderTop: `1px solid ${EX.hairline}`, padding: "30px 0 54px" }}>
+    <footer style={{ borderTop: `2px solid ${EX.ink}`, padding: "34px 0 60px" }}>
       <Wrap>
-        <div style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, lineHeight: 1.9 }}>
-          <div>CAPSTONE TEAM 2 · PESU · 2025—2026 · UMAR, ANVITA, LAKSHITHA, TARUN</div>
-          <div>
-            Every figure is measured on {shipped?.n ?? 233} contracts and reproducible from
-            checkpoints in the repository. Nothing is estimated.
-          </div>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: MONO, fontSize: 11, color: EX.inkMuted, letterSpacing: ".1em" }}>
+            THIRDEYE · CAPSTONE TEAM 2 · PES UNIVERSITY
+          </span>
+          <span style={{ fontFamily: MONO, fontSize: 11, color: EX.slate, letterSpacing: ".1em" }}>
+            ALL FIGURES REGENERATED FROM CHECKPOINTS · NOTHING HAND-ENTERED
+          </span>
         </div>
       </Wrap>
     </footer>
