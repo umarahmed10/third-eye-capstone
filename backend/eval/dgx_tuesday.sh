@@ -8,9 +8,12 @@
 #
 # Stage order is value-per-minute to the paper:
 #   A  finish the 8B ablation   ~223/233 already computed, minutes to close
-#   B  full-scale benchmark     the run that fixes the per-tier CIs
-#   C  NUM_PARALLEL=1 control   decides whether the parity finding is real
-#   D  web3bugs                 whatever time remains
+#   B  NUM_PARALLEL=1 control   decides whether the parity finding is real
+#   C  web3bugs                 the GPTScan comparison -- the biggest remaining
+#                               gap in the paper, and the one a reviewer asks
+#                               about first. Given the large middle slot.
+#   D  full-scale benchmark     the laptop already reached n=1089 unaided and
+#                               is still running, so this is now top-up only.
 # ============================================================================
 set -u
 TOTAL_MINUTES="${TOTAL_MINUTES:-210}"
@@ -59,8 +62,33 @@ log "### A. finish 8B ablation (n=233) — $(left) min left"
 OLLAMA_LOGIC_MODEL=llama3.1:8b $PY -u -m eval.run_parity \
   --arm full8b --seed 0 --concurrency 4 --manifest "$MAN" || log "A failed, continuing"
 
+# --------------------------------------------------------- C. NUM_PARALLEL=1
+log "### C. NUM_PARALLEL=1 control — $(left) min left"
+start_ollama 1
+warm ""
+# 45 min is enough for the control to detect a large batching effect;
+# it does not need all 233 to answer the question.
+C_BUDGET=45
+[ "$(left)" -lt 70 ] && C_BUDGET=$(( $(left) - 25 ))
+[ "$C_BUDGET" -lt 10 ] && C_BUDGET=10
+timeout "${C_BUDGET}m" $PY -u -m eval.run_parity \
+  --arm full3b_np1 --seed 0 --concurrency 1 --manifest "$MAN" || log "C stopped at budget"
+
+# ----------------------------------------------------------------- D. web3bugs
+log "### D. web3bugs — $(left) min left"
+start_ollama 4
+warm ""
+D_BUDGET=$(( $(left) - 25 ))   # leave 25 min for the bench top-up
+if [ "$D_BUDGET" -gt 10 ]; then
+  timeout "${D_BUDGET}m" $PY -u -m eval.run_web3bugs \
+    --contests 0 --max-slices 25 --backend ollama --seed 0 || log "D stopped at budget"
+  $PY -u -m eval.run_web3bugs --report-only || true   # always leave a report
+else
+  log "skipping D — no time left"
+fi
+
 # -------------------------------------------------------- B. full-scale bench
-B_BUDGET=$(( $(left) - 75 ))          # reserve 75 min for C and D
+B_BUDGET=$(( $(left) - 20 ))          # bench takes what is left AFTER C and D
 [ "$B_BUDGET" -lt 20 ] && B_BUDGET=20
 log "### B. full-scale benchmark — budget ${B_BUDGET} min"
 # --limit-per-tier 0 still shuffles now, and the task list is interleaved across
@@ -74,27 +102,5 @@ timeout $(( B_BUDGET + 20 ))m $PY -u -m eval.run_benchmark --backend ollama --se
   --max-minutes "$B_BUDGET" || log "B stopped (budget or backstop)"
 # Always leave a scored report, even if the backstop fired mid-write.
 $PY -u -m eval.run_benchmark --backend ollama --seed 0 --no-arbitration --report-only || true
-
-# --------------------------------------------------------- C. NUM_PARALLEL=1
-log "### C. NUM_PARALLEL=1 control — $(left) min left"
-start_ollama 1
-warm ""
-C_BUDGET=$(( $(left) - 30 ))
-[ "$C_BUDGET" -lt 10 ] && C_BUDGET=10
-timeout "${C_BUDGET}m" $PY -u -m eval.run_parity \
-  --arm full3b_np1 --seed 0 --concurrency 1 --manifest "$MAN" || log "C stopped at budget"
-
-# ----------------------------------------------------------------- D. web3bugs
-log "### D. web3bugs — $(left) min left"
-start_ollama 4
-warm ""
-D_BUDGET=$(left)
-if [ "$D_BUDGET" -gt 10 ]; then
-  timeout "${D_BUDGET}m" $PY -u -m eval.run_web3bugs \
-    --contests 0 --max-slices 25 --backend ollama --seed 0 || log "D stopped at budget"
-  $PY -u -m eval.run_web3bugs --report-only || true   # always leave a report
-else
-  log "skipping D — no time left"
-fi
 
 log "=== SESSION DONE — $(( ($(date +%s) - T0) / 60 )) min used ==="

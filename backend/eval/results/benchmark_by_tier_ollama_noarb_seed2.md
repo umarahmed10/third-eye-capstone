@@ -7,9 +7,9 @@
 | tier | expected | n | scored | inconcl. | TP | FP | TN | FN | precision | recall | F1 | accuracy |
 |---|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | Audited libraries (OZ/Solady) | safe | 15 | 10 | 5 | 0 | 3 | 7 | 0 | 0.000 | — | 0.000 | 0.700 |
-| Audit-reviewed, clean | safe | 15 | 14 | 1 | 0 | 5 | 9 | 0 | 0.000 | — | 0.000 | 0.643 |
-| Real-world, no bug reported | safe | 15 | 15 | 0 | 0 | 5 | 10 | 0 | 0.000 | — | 0.000 | 0.667 |
-| Curated vulnerable (SmartBugs-style) | vulnerable | 15 | 14 | 1 | 14 | 0 | 0 | 0 | 1.000 | 1.000 | 1.000 | 1.000 |
+| Audit-reviewed, clean | safe | 15 | 15 | 0 | 0 | 5 | 10 | 0 | 0.000 | — | 0.000 | 0.667 |
+| Real-world, no bug reported | safe | 15 | 14 | 1 | 0 | 5 | 9 | 0 | 0.000 | — | 0.000 | 0.643 |
+| Curated vulnerable (SmartBugs-style) | vulnerable | 15 | 15 | 0 | 14 | 0 | 0 | 1 | 1.000 | 0.933 | 0.966 | 0.933 |
 | Injected vulnerability | vulnerable | 15 | 15 | 0 | 10 | 0 | 0 | 5 | 1.000 | 0.667 | 0.800 | 0.667 |
 | Real audit-report findings | vulnerable | 15 | 12 | 3 | 8 | 0 | 0 | 4 | 1.000 | 0.667 | 0.800 | 0.667 |
 
@@ -18,8 +18,8 @@
 | slice | n | scored | inconcl. | TP | FP | TN | FN | precision | recall | F1 | accuracy |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | SAFE (all safe tiers) | 45 | 39 | 6 | 0 | 13 | 26 | 0 | 0.000 | — | 0.000 | 0.667 |
-| VULN (all vuln tiers) | 45 | 41 | 4 | 32 | 0 | 0 | 9 | 1.000 | 0.780 | 0.877 | 0.780 |
-| OVERALL | 90 | 80 | 10 | 32 | 13 | 26 | 9 | 0.711 | 0.780 | 0.744 | 0.725 |
+| VULN (all vuln tiers) | 45 | 42 | 3 | 32 | 0 | 0 | 10 | 1.000 | 0.762 | 0.865 | 0.762 |
+| OVERALL | 90 | 81 | 9 | 32 | 13 | 26 | 10 | 0.711 | 0.762 | 0.736 | 0.716 |
 
 ## API-call accounting (per-user rate-limit sizing)
 

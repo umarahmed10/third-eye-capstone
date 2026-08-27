@@ -12,18 +12,18 @@
     },
     {
       "label": "Benchmark contracts",
-      "value": "233",
+      "value": "1089",
       "sub": "scored, ollama_noarb \u00b7 balanced safe/vulnerable"
     },
     {
       "label": "Recall (vulnerable)",
-      "value": "0.83",
-      "sub": "91/109 caught \u00b7 GPTScan 0.83"
+      "value": "0.81",
+      "sub": "421/518 caught \u00b7 GPTScan 0.83"
     },
     {
       "label": "False-positive rate (safe)",
-      "value": "27%",
-      "sub": "33/124 audited-safe wrongly flagged \u00b7 was 64% before the fix"
+      "value": "29%",
+      "sub": "168/571 audited-safe wrongly flagged \u00b7 was 59% before the fix"
     },
     {
       "label": "Arbitration: FPs corrected",
@@ -76,178 +76,178 @@
   "tier_benchmark": {
     "available": true,
     "backend": "ollama_noarb",
-    "n_total": 233,
+    "n_total": 1089,
     "tiers": [
       {
         "label": "Audited libraries (OZ/Solady)",
         "expected": "safe",
         "bucket": "01_safe",
-        "n": 37,
-        "scored": 37,
+        "n": 166,
+        "scored": 166,
         "inconclusive": 0,
         "errored": 0,
         "tp": 0,
-        "fp": 20,
-        "tn": 17,
+        "fp": 39,
+        "tn": 127,
         "fn": 0,
         "precision": 0.0,
         "recall": null,
         "f1": 0.0,
-        "accuracy": 0.4594594594594595,
-        "correct_go_rate_on_safe": 0.4594594594594595,
+        "accuracy": 0.7650602409638554,
+        "correct_go_rate_on_safe": 0.7650602409638554,
         "detection_rate_on_vuln": null
       },
       {
         "label": "Audit-reviewed, clean",
         "expected": "safe",
         "bucket": "01_safe",
-        "n": 40,
-        "scored": 40,
+        "n": 214,
+        "scored": 214,
         "inconclusive": 0,
         "errored": 0,
         "tp": 0,
-        "fp": 26,
-        "tn": 14,
+        "fp": 95,
+        "tn": 119,
         "fn": 0,
         "precision": 0.0,
         "recall": null,
         "f1": 0.0,
-        "accuracy": 0.35,
-        "correct_go_rate_on_safe": 0.35,
+        "accuracy": 0.5560747663551402,
+        "correct_go_rate_on_safe": 0.5560747663551402,
         "detection_rate_on_vuln": null
       },
       {
         "label": "Real-world, no bug reported",
         "expected": "safe",
         "bucket": "01_safe",
-        "n": 47,
-        "scored": 47,
+        "n": 191,
+        "scored": 191,
         "inconclusive": 0,
         "errored": 0,
         "tp": 0,
-        "fp": 33,
-        "tn": 14,
+        "fp": 80,
+        "tn": 111,
         "fn": 0,
         "precision": 0.0,
         "recall": null,
         "f1": 0.0,
-        "accuracy": 0.2978723404255319,
-        "correct_go_rate_on_safe": 0.2978723404255319,
+        "accuracy": 0.581151832460733,
+        "correct_go_rate_on_safe": 0.581151832460733,
         "detection_rate_on_vuln": null
       },
       {
         "label": "Curated vulnerable (SmartBugs-style)",
         "expected": "vulnerable",
         "bucket": "02_vuln_labelled",
-        "n": 47,
-        "scored": 47,
+        "n": 214,
+        "scored": 214,
         "inconclusive": 0,
         "errored": 0,
-        "tp": 44,
+        "tp": 185,
         "fp": 0,
         "tn": 0,
-        "fn": 3,
+        "fn": 29,
         "precision": 1.0,
-        "recall": 0.9361702127659575,
-        "f1": 0.967032967032967,
-        "accuracy": 0.9361702127659575,
+        "recall": 0.8644859813084113,
+        "f1": 0.9273182957393484,
+        "accuracy": 0.8644859813084113,
         "correct_go_rate_on_safe": null,
-        "detection_rate_on_vuln": 0.9361702127659575
+        "detection_rate_on_vuln": 0.8644859813084113
       },
       {
         "label": "Injected vulnerability",
         "expected": "vulnerable",
         "bucket": "02_vuln_labelled",
-        "n": 32,
-        "scored": 32,
+        "n": 153,
+        "scored": 153,
         "inconclusive": 0,
         "errored": 0,
-        "tp": 31,
+        "tp": 137,
         "fp": 0,
         "tn": 0,
-        "fn": 1,
+        "fn": 16,
         "precision": 1.0,
-        "recall": 0.96875,
-        "f1": 0.9841269841269841,
-        "accuracy": 0.96875,
+        "recall": 0.8954248366013072,
+        "f1": 0.9448275862068967,
+        "accuracy": 0.8954248366013072,
         "correct_go_rate_on_safe": null,
-        "detection_rate_on_vuln": 0.96875
+        "detection_rate_on_vuln": 0.8954248366013072
       },
       {
         "label": "Real audit-report findings",
         "expected": "vulnerable",
         "bucket": "02_vuln_labelled",
-        "n": 30,
-        "scored": 30,
+        "n": 151,
+        "scored": 151,
         "inconclusive": 0,
         "errored": 0,
-        "tp": 26,
+        "tp": 109,
         "fp": 0,
         "tn": 0,
-        "fn": 4,
+        "fn": 42,
         "precision": 1.0,
-        "recall": 0.8666666666666667,
-        "f1": 0.9285714285714286,
-        "accuracy": 0.8666666666666667,
+        "recall": 0.7218543046357616,
+        "f1": 0.8384615384615385,
+        "accuracy": 0.7218543046357616,
         "correct_go_rate_on_safe": null,
-        "detection_rate_on_vuln": 0.8666666666666667
+        "detection_rate_on_vuln": 0.7218543046357616
       }
     ],
     "safe_aggregate": {
-      "n": 124,
-      "scored": 124,
+      "n": 571,
+      "scored": 571,
       "inconclusive": 0,
       "errored": 0,
       "tp": 0,
-      "fp": 79,
-      "tn": 45,
+      "fp": 214,
+      "tn": 357,
       "fn": 0,
       "precision": 0.0,
       "recall": null,
       "f1": 0.0,
-      "accuracy": 0.3629032258064516,
-      "correct_go_rate_on_safe": 0.3629032258064516,
+      "accuracy": 0.6252189141856392,
+      "correct_go_rate_on_safe": 0.6252189141856392,
       "detection_rate_on_vuln": null
     },
     "vuln_aggregate": {
-      "n": 109,
-      "scored": 109,
+      "n": 518,
+      "scored": 518,
       "inconclusive": 0,
       "errored": 0,
-      "tp": 101,
+      "tp": 431,
       "fp": 0,
       "tn": 0,
-      "fn": 8,
+      "fn": 87,
       "precision": 1.0,
-      "recall": 0.926605504587156,
-      "f1": 0.9619047619047619,
-      "accuracy": 0.926605504587156,
+      "recall": 0.832046332046332,
+      "f1": 0.9083245521601686,
+      "accuracy": 0.832046332046332,
       "correct_go_rate_on_safe": null,
-      "detection_rate_on_vuln": 0.926605504587156
+      "detection_rate_on_vuln": 0.832046332046332
     },
     "overall": {
-      "n": 233,
-      "scored": 233,
+      "n": 1089,
+      "scored": 1089,
       "inconclusive": 0,
       "errored": 0,
-      "tp": 101,
-      "fp": 79,
-      "tn": 45,
-      "fn": 8,
-      "precision": 0.5611111111111111,
-      "recall": 0.926605504587156,
-      "f1": 0.6989619377162629,
-      "accuracy": 0.6266094420600858,
+      "tp": 431,
+      "fp": 214,
+      "tn": 357,
+      "fn": 87,
+      "precision": 0.6682170542635659,
+      "recall": 0.832046332046332,
+      "f1": 0.7411865864144453,
+      "accuracy": 0.7235996326905417,
       "correct_go_rate_on_safe": null,
       "detection_rate_on_vuln": null
     },
     "api_accounting": {
       "available": true,
-      "contracts": 233,
-      "total_api_calls": 884,
+      "contracts": 1089,
+      "total_api_calls": 4125,
       "calls_per_contract": {
         "min": 1,
-        "max": 7,
+        "max": 8,
         "mean": 3.79,
         "median": 4,
         "p95": 6
@@ -255,8 +255,8 @@
       "latency_s_per_contract": {
         "min": 2.6,
         "max": 350.3,
-        "mean": 74.7,
-        "median": 60.6
+        "mean": 60.2,
+        "median": 52.9
       },
       "rate_limit_note": "A single scan makes up to this many LLM calls. Size a per-user limit as (acceptable concurrent scans) x (p95 calls/contract). e.g. p95=6 calls/scan -> allowing 2 scans/user/min ~= 12 calls/user/min."
     },
@@ -274,29 +274,29 @@
   },
   "head_to_head": {
     "available": true,
-    "n_common": 31,
+    "n_common": 32,
     "council": {
       "tp": 23,
       "fp": 4,
       "tn": 4,
-      "fn": 0,
+      "fn": 1,
       "precision": 0.852,
-      "recall": 1.0,
-      "f1": 0.92,
+      "recall": 0.958,
+      "f1": 0.902,
       "fpr": 0.5
     },
     "slither": {
-      "tp": 20,
+      "tp": 21,
       "fp": 1,
       "tn": 7,
       "fn": 3,
-      "precision": 0.952,
-      "recall": 0.87,
-      "f1": 0.909,
+      "precision": 0.955,
+      "recall": 0.875,
+      "f1": 0.913,
       "fpr": 0.125
     },
     "coverage": {
-      "council_scored": 233,
+      "council_scored": 1089,
       "slither_scored": 46
     },
     "note": "Same contracts, same ground truth. Coverage is the bigger story: the council scores every contract, while a static analyser abstains on anything that will not compile \u2014 and those abstentions skew toward modern, complex code."
@@ -368,132 +368,132 @@
     "compounding": [
       {
         "specialists": 1,
-        "n": 13,
-        "fpr": 0.538
+        "n": 56,
+        "fpr": 0.143
       },
       {
         "specialists": 2,
-        "n": 29,
-        "fpr": 0.517
+        "n": 171,
+        "fpr": 0.164
       },
       {
         "specialists": 3,
-        "n": 38,
-        "fpr": 0.632
+        "n": 159,
+        "fpr": 0.371
       },
       {
         "specialists": 4,
-        "n": 27,
-        "fpr": 0.741
+        "n": 107,
+        "fpr": 0.542
       },
       {
         "specialists": 5,
-        "n": 12,
-        "fpr": 0.667
+        "n": 55,
+        "fpr": 0.764
       },
       {
         "specialists": 6,
-        "n": 5,
-        "fpr": 1.0
+        "n": 20,
+        "fpr": 0.8
       }
     ],
     "reliability": [
       {
         "cls": "reentrancy",
-        "tp": 49,
-        "fp": 8,
-        "precision": 0.86
-      },
-      {
-        "cls": "arithmetic",
-        "tp": 50,
-        "fp": 11,
-        "precision": 0.82
+        "tp": 212,
+        "fp": 20,
+        "precision": 0.914
       },
       {
         "cls": "access_control",
-        "tp": 37,
-        "fp": 9,
-        "precision": 0.804
+        "tp": 167,
+        "fp": 35,
+        "precision": 0.827
       },
       {
-        "cls": "oracle_price_manipulation",
-        "tp": 4,
-        "fp": 1,
-        "precision": 0.8
+        "cls": "arithmetic",
+        "tp": 254,
+        "fp": 82,
+        "precision": 0.756
       },
       {
         "cls": "dos_gas",
-        "tp": 54,
-        "fp": 20,
-        "precision": 0.73
+        "tp": 252,
+        "fp": 89,
+        "precision": 0.739
       },
       {
         "cls": "flashloan_mev",
-        "tp": 6,
-        "fp": 3,
-        "precision": 0.667
+        "tp": 14,
+        "fp": 6,
+        "precision": 0.7
       },
       {
-        "cls": "proxy_upgradeability",
-        "tp": 4,
-        "fp": 2,
-        "precision": 0.667
+        "cls": "oracle_price_manipulation",
+        "tp": 11,
+        "fp": 7,
+        "precision": 0.611
       },
       {
         "cls": "business_logic",
-        "tp": 53,
-        "fp": 57,
-        "precision": 0.482
+        "tp": 252,
+        "fp": 243,
+        "precision": 0.509
+      },
+      {
+        "cls": "proxy_upgradeability",
+        "tp": 7,
+        "fp": 10,
+        "precision": 0.412
       }
     ],
-    "n_rows": 233
+    "n_rows": 1089
   },
   "shipped_rule": {
     "available": true,
-    "n": 233,
+    "n": 1089,
     "tau": 0.925,
     "before": {
-      "tp": 101,
-      "fp": 79,
-      "tn": 45,
-      "fn": 8,
-      "precision": 0.561,
-      "recall": 0.927,
-      "f1": 0.699,
-      "fpr": 0.637
+      "tp": 468,
+      "fp": 336,
+      "tn": 235,
+      "fn": 50,
+      "precision": 0.582,
+      "recall": 0.903,
+      "f1": 0.708,
+      "fpr": 0.588
     },
     "after": {
-      "tp": 91,
-      "fp": 33,
-      "tn": 91,
-      "fn": 18,
-      "precision": 0.734,
-      "recall": 0.835,
-      "f1": 0.781,
-      "fpr": 0.266
+      "tp": 421,
+      "fp": 168,
+      "tn": 403,
+      "fn": 97,
+      "precision": 0.715,
+      "recall": 0.813,
+      "f1": 0.761,
+      "fpr": 0.294
     },
     "per_tier": {
       "audit_reviewed_clean": {
-        "n": 40,
-        "before": 26,
-        "after": 10,
-        "fpr_before": 0.65,
-        "fpr_after": 0.25
+        "n": 214,
+        "before": 143,
+        "after": 79,
+        "fpr_before": 0.668,
+        "fpr_after": 0.369
       },
       "audited_library": {
-        "n": 37,
-        "before": 20,
-        "after": 7,
-        "fpr_before": 0.541,
-        "fpr_after": 0.189
+        "n": 166,
+        "before": 81,
+        "after": 26,
+        "fpr_before": 0.488,
+        "fpr_after": 0.157
       },
       "realworld_no_bug_reported": {
-        "n": 47,
-        "before": 33,
-        "after": 16,
-        "fpr_before": 0.702,
-        "fpr_after": 0.34
+        "n": 191,
+        "before": 112,
+        "after": 63,
+        "fpr_before": 0.586,
+        "fpr_after": 0.33
       }
     },
     "note": "Replayed through the production verdict functions. The shipped rule pools finding confidences as 1 - PROD(1 - conf) and blocks at tau; the previous rule blocked on any surviving finding, which is the same rule at tau -> 0."
@@ -551,7 +551,83 @@
         "pct": 0.5
       }
     ],
-    "web3bugs": []
+    "web3bugs": [
+      {
+        "category": "SC",
+        "count": 65,
+        "pct": 13.2
+      },
+      {
+        "category": "S6-4",
+        "count": 56,
+        "pct": 11.4
+      },
+      {
+        "category": "O1",
+        "count": 28,
+        "pct": 5.7
+      },
+      {
+        "category": "O5",
+        "count": 26,
+        "pct": 5.3
+      },
+      {
+        "category": "S3-1",
+        "count": 22,
+        "pct": 4.5
+      },
+      {
+        "category": "L1",
+        "count": 19,
+        "pct": 3.9
+      },
+      {
+        "category": "S6-3",
+        "count": 18,
+        "pct": 3.7
+      },
+      {
+        "category": "L7",
+        "count": 17,
+        "pct": 3.5
+      },
+      {
+        "category": "O3",
+        "count": 16,
+        "pct": 3.3
+      },
+      {
+        "category": "S1-1",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "SE-1",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "L8",
+        "count": 15,
+        "pct": 3.0
+      },
+      {
+        "category": "O6",
+        "count": 14,
+        "pct": 2.8
+      },
+      {
+        "category": "S2-1",
+        "count": 14,
+        "pct": 2.8
+      },
+      {
+        "category": "SE-4",
+        "count": 13,
+        "pct": 2.6
+      }
+    ]
   },
   "published_baselines": [
     {
