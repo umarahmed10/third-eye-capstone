@@ -262,7 +262,7 @@ def _api_stats(all_rows: list[dict]) -> dict:
     }
 
 
-async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True, max_minutes: int = 0) -> dict:
+async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True, max_minutes: int = 0, retry_quarantined: bool = False) -> dict:
     from services import council
 
     # ── Pre-flight: the backend must be able to GENERATE, or every scan
@@ -335,6 +335,15 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
                 return row
             except Exception:
                 pass  # corrupt checkpoint -> re-run
+        # A quarantined contract (GO with errored specialists, or INCONCLUSIVE)
+        # sits in _transient with no terminal checkpoint, so an ordinary resume
+        # retries it FIRST -- and the ones that fail tend to fail repeatedly for
+        # the same reason (oversized input, a model that will not fit). Left
+        # alone the run spends the night re-failing the same set and never
+        # reaches fresh contracts. Skip them unless explicitly asked, so a resume
+        # makes forward progress; retry_quarantined=True revisits them later.
+        if not retry_quarantined and (cp.parent / "_transient" / cp.name).exists():
+            return None
         if _deadline is not None and time.time() > _deadline and not cp.exists():
             if not budget_hit["flag"]:
                 budget_hit["flag"] = True
@@ -561,6 +570,7 @@ async def main():
     ap.add_argument("--no-arbitration", action="store_true", help="council-only ablation row (skip the arbitration precision gate)")
     ap.add_argument("--concurrency", type=int, default=2, help="contracts in flight at once")
     ap.add_argument("--report-only", action="store_true", help="score existing checkpoints; run nothing")
+    ap.add_argument("--retry-quarantined", action="store_true", help="revisit contracts previously quarantined to _transient; off by default so a resume makes forward progress")
     ap.add_argument("--max-minutes", type=int, default=0, help="wall-clock budget; 0 = unlimited. Past it, stop starting new contracts and score what finished.")
     args = ap.parse_args()
     if args.report_only:
@@ -573,7 +583,7 @@ async def main():
             args.backend if args.backend.endswith("_noarb") else f"{args.backend}_noarb")
         report = report_from_checkpoints(tag, args.seed)
     else:
-        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes)
+        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes, args.retry_quarantined)
     _write_reports(report)
 
 
