@@ -27,6 +27,7 @@ import re
 import asyncio
 
 from services.llm import OLLAMA_URL, GROQ_API_KEY, GROQ_URL, LLM_TIMEOUT, preanalyze_code
+import sys
 
 CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", "")
 CEREBRAS_MODEL = os.getenv("CEREBRAS_MODEL", "gpt-oss-120b")
@@ -189,6 +190,15 @@ def specialist_assignments(backend: str) -> dict:
 # optional seed — llm.py's helpers always use the single globally-detected
 # model, which is exactly what a diverse council must NOT do). ───
 
+# Specialist errors were previously swallowed into a return string with no trace,
+# so a run could quarantine contracts all day without revealing WHY. A GO verdict
+# with an errored specialist is unsound and gets quarantined, which means these
+# failures cost whole contracts -- and they are not random, so they bias the
+# scored sample. If they are happening, they must be visible.
+def _warn(model: str, kind: str, detail: str = "") -> None:
+    print(f"[council] {model} {kind}: {detail}", file=sys.stderr, flush=True)
+
+
 async def _query_ollama_model(model: str, prompt: str, timeout: int | None = None, seed: int | None = None) -> str:
     options = {}
     if seed is not None:
@@ -201,12 +211,16 @@ async def _query_ollama_model(model: str, prompt: str, timeout: int | None = Non
             resp = await client.post(f"{OLLAMA_URL}/api/generate", json=body, timeout=timeout or LLM_TIMEOUT)
             if resp.status_code == 200:
                 return resp.json().get("response", "")
+            _warn(model, f"HTTP {resp.status_code}", resp.text[:200])
             return f"[LLM Error {resp.status_code}]"
         except httpx.TimeoutException:
+            _warn(model, "timeout", f"after {timeout or LLM_TIMEOUT}s")
             return "[LLM timeout]"
         except httpx.ConnectError:
+            _warn(model, "connect", OLLAMA_URL)
             return "[Ollama not running]"
         except Exception as e:
+            _warn(model, type(e).__name__, str(e)[:200])
             return f"[Error: {e}]"
 
 
