@@ -540,3 +540,28 @@ a differentiator; that reads as claiming credit for someone else's deliberate
 scoping. It is now reported as a difference in TARGET POPULATION — our taxonomy
 is broader, which is a different claim from being better at the task GPTScan set
 itself.
+
+### The context-truncation ablation (result)
+
+Paired on contract id, 36 pairs / 20 scored in both arms, one variable (num_ctx):
+
+| | 4,096 (shipped) | 16,384 |
+|---|--:|--:|
+| abstained | 44.4% [29.5, 60.4] | 0.0% [0.0, 9.6] |
+| accuracy | 25.0% | 75.0% |
+| recall | 12.5% | 81.2% |
+| median latency | 402.9 s | 108.2 s |
+
+McNemar on the discordant pairs: 12 vs 2, chi2 = 5.79, **p = 0.016**. Latency:
+faster on **20/20**, x4.01, exact sign test p < 0.0001. 14/20 verdicts flipped,
+13 of them GO -> NO-GO on genuinely vulnerable contracts.
+
+The finding behind the finding: abstentions are excluded from scoring, so this
+did not depress any published number — it deleted rows and left healthy-looking
+tables. A configuration failure that hides itself in exactly the way this project
+accuses the field of doing.
+
+Bounds, stated because they matter: measured only on the overflowing 24% of the
+corpus; the FPR arm rests on 4 safe contracts and is not claimed; the extreme
+tail was excluded on cost grounds (decided from latency alone, before any verdict
+was inspected), so everything above is a LOWER bound.

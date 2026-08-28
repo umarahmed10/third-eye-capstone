@@ -226,3 +226,51 @@ export const HEADTOHEAD = {
     "Our detection is any-slice-positive and is NOT type-matched; GPTScan's true " +
     "positive is. Our rate is an upper bound against their lower bound.",
 };
+
+/** THE CONTEXT-TRUNCATION ABLATION — measured on the campus GB10, 2026-08-28.
+ *
+ *  WHAT IT MEASURES. Every number this project has published was produced with
+ *  the local runtime's context window at 4096 tokens. A prompt longer than that
+ *  is not refused — it is silently TRUNCATED, and the specialist then judges a
+ *  fraction of the contract and returns a verdict as though it had seen all of
+ *  it. 540 of 2250 benchmark contracts (24.0%) overflow, and the overflow is not
+ *  class-balanced: 350 vulnerable against 190 safe, because real vulnerable
+ *  contracts are larger.
+ *
+ *  THE DESIGN. Paired on contract id: same contracts, same seed, same models,
+ *  same machine, same concurrency, same _run_one() imported from the benchmark
+ *  so the arms cannot drift. The only difference is num_ctx. The sample is drawn
+ *  only from overflowing contracts, since short ones cannot change and would
+ *  dilute the effect, and a cost ceiling excludes the extreme tail — which makes
+ *  every figure below a LOWER bound on the full effect.
+ *
+ *  Because the arms are paired, correctness is tested with McNemar on the
+ *  discordant pairs and latency with an exact sign test — not two independent
+ *  proportions, which would understate a paired effect.
+ *
+ *  WHY IT MATTERS MORE THAN IT LOOKS. Abstentions are excluded from scoring. So
+ *  a configuration that crippled the council on the largest quarter of the
+ *  corpus did not show up as a lower score — it showed up as missing rows, and
+ *  the tables that remained looked healthy. This is the paper's own thesis
+ *  landing on the paper itself.
+ */
+export const CTXABLATION = {
+  measured: "2026-08-28 · NVIDIA GB10",
+  paired: 36,
+  scored_both: 20,
+  pool_overflowing: 540,
+  corpus: 2250,
+  small: { num_ctx: 4096, inconclusive: 16, accuracy: 5, recall: 2, median_s: 402.9 },
+  large: { num_ctx: 16384, inconclusive: 0, accuracy: 15, recall: 15 - 2, median_s: 108.2 },
+  n_vuln: 16,
+  mcnemar: { only_small_correct: 2, only_large_correct: 12, chi2: 5.79, p: 0.0162 },
+  latency: { faster: 20, of: 20, speedup: 4.01, sign_p: 0.00001 },
+  flips: 14,
+  flips_toward_blocking: 13,
+  /** Stated because they bound the claim, and a reviewer will look for them. */
+  limits:
+    "Measured on the overflowing 24% of the corpus, not the 76% that already " +
+    "fit — it does not restate the headline numbers. The false-alarm comparison " +
+    "rests on 4 safe contracts and is NOT claimed. The extreme-overflow tail was " +
+    "excluded for cost, so the effect is a lower bound.",
+};

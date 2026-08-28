@@ -3,7 +3,7 @@ import { EX, MONO, SERIF, SANS, T, M } from "../lib/exhibit-theme";
 import { Reveal, StatCard, IntervalBar, CountBar } from "../components/exhibit/Measure";
 import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
-import { PARITY, CAPACITY, SLITHER, GPTSCAN, HEADTOHEAD as H2H } from "../data/newfindings";
+import { PARITY, CAPACITY, SLITHER, GPTSCAN, HEADTOHEAD as H2H, CTXABLATION as CTX } from "../data/newfindings";
 import { fmtCI, ci95, separated } from "../lib/stats";
 
 /** The exhibit, framed as a MEASUREMENT paper rather than a product.
@@ -59,6 +59,7 @@ export function Exhibit({ onOpenApp }: { onOpenApp?: () => void }) {
       <PriorWork />
       <NotReproducible />
       <CapabilityDoesntFix />
+      <SilentTruncation />
       <Invariants />
       <Instrument onOpenApp={onOpenApp} />
       <Status />
@@ -509,7 +510,7 @@ function PriorWork() {
         <p style={{ fontSize: T.body, lineHeight: 1.6, color: EX.ink, margin: "16px 0 0", maxWidth: "74ch" }}>
           The intervals <strong>overlap</strong>, so no detection difference is demonstrated. That is
           the finding, and it is reported as such rather than as a win: a gap claimed across
-          overlapping intervals is the precise error this page spends nine sections objecting to.
+          overlapping intervals is the precise error this page spends ten sections objecting to.
         </p>
       </div>
 
@@ -610,6 +611,71 @@ function NotReproducible() {
   );
 }
 
+
+/* ─── 08 the configuration that hid itself ─────────────────────────── */
+
+function SilentTruncation() {
+  const { small, large, mcnemar, latency } = CTX;
+  const pct = (k: number, n: number) => `${((k / n) * 100).toFixed(1)}%`;
+  return (
+    <Section
+      n="08" kicker="A silent failure, in our own results"
+      title="A quarter of the benchmark was being judged on a fraction of its code."
+      lede={`Every number this project has published was produced with the local runtime's context window at 4,096 tokens. A longer prompt is not refused — it is truncated. The specialist then reads part of the contract and returns a verdict as though it had read all of it. ${CTX.pool_overflowing} of ${CTX.corpus} benchmark contracts overflow that window.`}
+    >
+      <div style={{ overflowX: "auto", maxWidth: "100%", minWidth: 0 }}>
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 520, fontSize: 14 }}>
+          <thead>
+            <tr style={{ borderBottom: `2px solid ${EX.ink}` }}>
+              {["", "num_ctx 4,096 (shipped)", "num_ctx 16,384"].map((h, i) => (
+                <th key={h || i} style={{ textAlign: i ? "right" : "left", padding: "10px 8px", fontFamily: MONO, fontSize: 10.5, letterSpacing: ".1em", color: EX.inkMuted, textTransform: "uppercase", fontWeight: 400 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ["Abstained (INCONCLUSIVE)", pct(small.inconclusive, CTX.paired), pct(large.inconclusive, CTX.paired)],
+              ["Accuracy", pct(small.accuracy, CTX.scored_both), pct(large.accuracy, CTX.scored_both)],
+              ["Recall on vulnerable", pct(small.recall, CTX.n_vuln), pct(large.recall, CTX.n_vuln)],
+              ["Median latency", `${small.median_s}s`, `${large.median_s}s`],
+            ].map(([k, a, b], i) => (
+              <tr key={k} style={{ borderBottom: `1px solid ${EX.hairline}`, background: i % 2 ? EX.surfaceAlt : "transparent" }}>
+                <td style={{ padding: "11px 8px" }}>{k}</td>
+                <td style={{ padding: "11px 8px", textAlign: "right", fontFamily: MONO, color: EX.signal }}>{a}</td>
+                <td style={{ padding: "11px 8px", textAlign: "right", fontFamily: MONO, color: EX.ink }}>{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Evidence items={[
+        { k: "Why it never showed up as a bad score", v: `Abstentions are excluded from scoring. So a setting that crippled the council on the largest quarter of the corpus did not lower any number — it removed rows. The tables that remained looked healthy. That is this page's own thesis landing on this page's own results.` },
+        { k: "It is a real paired difference", v: `The arms share contract ids, seed, models, machine and the same run function, so McNemar on the discordant pairs is the right test: ${mcnemar.only_large_correct} contracts were correct only with the full window against ${mcnemar.only_small_correct} the other way — chi-square ${mcnemar.chi2}, p = ${mcnemar.p}.` },
+        { k: "Truncation is also SLOWER, which is the tell", v: `The full window was faster on ${latency.faster} of ${latency.of} paired contracts, median speedup ×${latency.speedup} (sign test p < 0.0001). A prompt longer than the window forces the runtime to shift context instead of processing it once — so the truncating setting pays repeatedly for the very text it is discarding.` },
+        { k: "Which way the verdicts moved", v: `${CTX.flips} of ${CTX.scored_both} paired contracts changed verdict, and ${CTX.flips_toward_blocking} of those moved GO → NO-GO on contracts that are genuinely vulnerable. With the whole contract visible, the council finds bugs the truncation was hiding.` },
+      ]} />
+
+      <div style={{ marginTop: 18, border: `1px solid ${EX.hairline}`, padding: "14px 16px", background: EX.surfaceAlt }}>
+        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.inkMuted, marginBottom: 7 }}>
+          WHAT THIS DOES NOT SAY
+        </div>
+        <p style={{ fontSize: 13.5, lineHeight: 1.62, color: EX.inkMuted, margin: 0, maxWidth: "74ch" }}>
+          {CTX.limits} It does not restate the headline false-alarm rate, and no number
+          elsewhere on this page has been silently adjusted by it.
+        </p>
+      </div>
+
+      <Novelty>
+        The knob that caused this appears in no run configuration, cannot be varied without
+        restarting the runtime, and fails silently when exceeded. We have not found a comparable
+        local-LLM evaluation that reports its context window at all — which means this failure is
+        available to every one of them, and invisible in exactly the same way.
+      </Novelty>
+    </Section>
+  );
+}
+
 /* ─── 06 capability ────────────────────────────────────────────────── */
 
 function CapabilityDoesntFix() {
@@ -676,7 +742,7 @@ const INVARIANTS: [string, string][] = [
 function Invariants() {
   return (
     <Section
-      n="08" kicker="The output" tint
+      n="09" kicker="The output" tint
       title="Five invariants that turn each silent failure into a loud one."
       lede="Every defect above was found by hitting it, and each produced plausible-looking metrics from a broken pipeline. These are the checks that make them fail visibly instead."
     >
@@ -700,7 +766,7 @@ function Invariants() {
 function Instrument({ onOpenApp }: { onOpenApp?: () => void }) {
   return (
     <Section
-      n="09" kicker="The instrument"
+      n="10" kicker="The instrument"
       title="Run it on a contract whose answer is already known."
       lede="The tool is evidence that the measurements above came from a working system rather than a spreadsheet. Pick a contract with a known verdict and watch a recorded run, or paste your own and run it live against the backend."
     >
@@ -734,7 +800,7 @@ const NEXT: [string, string][] = [
 function Status() {
   return (
     <Section
-      n="10" kicker="Status"
+      n="11" kicker="Status"
       title="Where the manuscript stands."
       lede={`Findings 01 through 05 are measured at full scale on ${N} contracts and are stable. Findings 06 and 07 are pilots: the direction is established, the magnitude is still moving.`}
     >

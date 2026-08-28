@@ -682,8 +682,47 @@ those removals are not random. The quieter one is that a truncated prompt whose
 output *did* parse was scored normally, so an unknown share of the reported
 numbers rests on partial code.
 
-We flag this as a threat to every rate in §4 and note that the same knob is,
-in most published local-LLM evaluations, neither reported nor held constant.
+**We measured the magnitude rather than leaving it as a warning.** A paired
+ablation on the campus GB10 ran the identical overflowing contracts at 4,096 and
+at 16,384 tokens — same seed, models, machine, concurrency and run function, so
+`num_ctx` is the only variable. 36 paired contracts, 20 scored in both arms:
+
+| | num_ctx 4,096 (shipped) | num_ctx 16,384 |
+|---|--:|--:|
+| Abstained (INCONCLUSIVE) | **44.4%** [29.5, 60.4] | **0.0%** [0.0, 9.6] |
+| Accuracy | 25.0% [11.2, 46.9] | **75.0%** [53.1, 88.8] |
+| Recall on vulnerable | 12.5% [3.5, 36.0] | **81.2%** [57.0, 93.4] |
+| Median latency | 402.9 s | **108.2 s** |
+
+Because the arms are paired on contract id, correctness is tested with McNemar
+on the discordant pairs: 12 contracts correct only with the full window against
+2 the other way, χ² = 5.79, **p = 0.016** — a real paired difference. 14 of the
+20 changed verdict, and 13 of those moved GO → NO-GO on genuinely vulnerable
+contracts: with the whole contract visible the council finds bugs the truncation
+was hiding.
+
+**Truncation is also slower**, which is the diagnostic tell: the full window was
+faster on **20 of 20** paired contracts, median speedup ×4.01 (exact sign test
+p < 0.0001). A prompt longer than the window forces the runtime to shift context
+rather than process it once, so the truncating configuration pays repeatedly for
+the text it is simultaneously discarding.
+
+**Why this was invisible.** Abstentions are excluded from scoring. A setting that
+crippled the council on the largest quarter of the corpus therefore did not lower
+any published number — it removed rows, and the remaining tables looked healthy.
+This is the paper's own thesis applied to the paper's own results, and we report
+it as such rather than quietly re-running.
+
+**Bounds on the claim.** This is measured on the overflowing 24% of the corpus,
+not the 76% that already fit, so it does **not** restate the headline rates in
+§4.10b, and none of them has been silently adjusted. The false-alarm comparison
+rests on 4 safe contracts and is not claimed. The extreme-overflow tail was
+excluded on cost grounds — a restriction chosen from measured latency before any
+verdict was inspected — which makes every figure above a **lower bound**.
+
+The same knob is, in the local-LLM evaluations we have surveyed, neither reported
+nor held constant, which means this failure mode is available to all of them and
+invisible in precisely the same way.
 
 ## 7. What is NOT claimed
 
