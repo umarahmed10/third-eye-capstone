@@ -35,9 +35,18 @@ for f in glob.glob("eval/checkpoints/benchmark/ollama_noarb/seed0/*.json"):
     if d.get("verdict") in ("GO", "NO-GO") and d.get("tier"): rows.append(d)
 
 def ci(k, n):
+    """Wilson score interval — the same estimator as run_web3bugs, the context
+    ablation, and the exhibit's stats.ts. This was Wald, which is fine at these
+    n and p but disagrees at the boundaries, and a paper that quotes one interval
+    while its own page draws another has the exact defect this project keeps
+    documenting in other people's work."""
     if not n: return (None, None, None)
-    p = k / n; se = math.sqrt(p * (1 - p) / n)
-    return p, max(0.0, p - 1.96 * se), min(1.0, p + 1.96 * se)
+    z = 1.96
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = (z / d) * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return p, max(0.0, c - h), min(1.0, c + h)
 
 SAFE = ["audited_library", "audit_reviewed_clean", "realworld_no_bug_reported"]
 print(f"SHIPPED RULE (noisy-OR, tau={RISK_TAU})   n={len(rows)}\n")

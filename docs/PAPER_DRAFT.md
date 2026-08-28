@@ -424,6 +424,40 @@ laptop (4GB VRAM, 15.7GB RAM):
 **Implication:** the "free/local" selling point of model-diverse councils has a
 hardware floor that published work does not report.
 
+### 4.10b Result at scale, and the shape of the label-trust effect
+
+The n=233 configuration above was extended to **n=1,154 scored contracts** (603
+safe, 551 vulnerable). All figures here are under the **shipped** rule (noisy-OR,
+tau=0.925) replayed over every checkpoint, not the historical OR-gate under which
+the checkpoints were originally recorded — quoting the latter would advertise a
+false-alarm rate the tool no longer has, which is the §4.8 failure mode.
+
+| | shipped rule, n=1,154 | 95% Wilson |
+|---|--:|---|
+| false-alarm rate (safe) | **29.9%** | [26.3, 33.6] |
+| recall (vulnerable) | **0.808** | [0.773, 0.838] |
+| precision | 0.712 | |
+| F1 | 0.757 | |
+
+Per safe tier, ordered by how much the "safe" label can be trusted:
+
+| safe tier | n | FPR | 95% Wilson |
+|---|--:|--:|---|
+| Audited libraries (OZ/Solady) | 172 | **15.7%** | [11.0, 21.9] |
+| Audit-reviewed, clean | 240 | 37.5% | [31.6, 43.8] |
+| Real-world, no bug reported | 191 | 33.0% | [26.7, 39.9] |
+
+**The effect is two-level, not a monotonic gradient**, and we state it that way.
+Audited libraries separate cleanly from both weaker tiers; the two weaker tiers
+have overlapping intervals and are **not** distinguishable from each other. An
+earlier version of this work described a three-step gradient; at n=233 the
+per-tier intervals were roughly +/-13 points and overlapped almost completely, so
+that ordering was not supported by the data and is withdrawn.
+
+The direction still carries the argument: false alarms concentrate where the
+"safe" label is weakest, which is what a label-noise account predicts and what
+§6 quantifies by hand-review.
+
 ### 4.11 Head-to-head vs GPTScan on IDENTICAL projects
 
 GPTScan (ICSE'24) publishes per-project true/false positive and negative counts
@@ -469,8 +503,9 @@ all-positive set an any-slice flag is nearly free, so coverage here is not
 evidence of better detection.
 
 **Precision is not computable for us on this bucket**, because every project in
-it is positive. GPTScan's 0.571 and our 29.4% false-alarm rate on the balanced
-tiers come from different negative sets and are not differenced. The honest
+it is positive. GPTScan's 0.571 and our **29.9%** [26.3, 33.6] false-alarm rate
+on the balanced tiers (shipped rule, n=1154) come from different negative sets
+and are not differenced. The honest
 summary is: comparable detection where both tools apply, on roughly twice the
 applicable projects, at a false-alarm cost we measure and they do not have to
 pay.
