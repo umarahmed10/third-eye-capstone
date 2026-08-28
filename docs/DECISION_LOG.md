@@ -565,3 +565,36 @@ Bounds, stated because they matter: measured only on the overflowing 24% of the
 corpus; the FPR arm rests on 4 safe contracts and is not claimed; the extreme
 tail was excluded on cost grounds (decided from latency alone, before any verdict
 was inspected), so everything above is a LOWER bound.
+
+### Safe-class context ablation — PRELIMINARY, and it points the wrong way
+
+The mixed ablation left the false-alarm question on n=4. A safe-only arm was run
+to answer it. **Partial at time of collection** (21 paired; the 4,096 control was
+still running on the box and will be complete on the next visit):
+
+| | 4,096 | 16,384 |
+|---|--:|--:|
+| abstained | 47.6% [28.3, 67.6] | **0.0%** [0.0, 15.5] |
+| FPR (paired subset) | 27.3% [9.7, 56.6] | **63.6%** [35.4, 84.8] |
+
+The abstention intervals **separate**, replicating the vulnerable-class result on
+the safe class: truncation was removing these contracts from scoring altogether
+(the completed 16,384 arm abstains on 2 of 70; the control on roughly half).
+
+The false-alarm direction is the uncomfortable one. On the paired subset it
+**rises** with a correct context window, and the completed treatment arm sits at
+45.6% [34.3, 57.3] over 68 scored contracts. If that holds, the contracts
+truncation was hiding are disproportionately the ones the council false-alarms
+on, and the reported 29.9% is an UNDER-estimate rather than a conservative one.
+
+NOT YET A RESULT, and must not be quoted as one:
+- 21 paired, 4 discordant, McNemar p = 0.13 — underpowered by our own rule.
+- The 16,384 arm's 45.6% is on the OVERFLOWING safe population only (large
+  contracts), which may draw more alarms regardless of window.
+- It is the raw verdict, not the shipped noisy-OR rule that produces 29.9%.
+  Cross-referencing the two without a shipped-rule replay would repeat exactly
+  the rule-mixing error caught earlier in this session.
+
+Next visit: let the control arm finish (it was budgeted to ~18:30 and
+checkpoints), then replay both arms through the shipped rule before comparing
+anything to the headline.
