@@ -136,6 +136,36 @@ def compare(arm_a: str, arm_b: str) -> None:
             print(f"  FPR          {nm:<8} {k}/{len(safe)}  "
                   f"{w[0]*100:.1f}% [{w[1]*100:.1f}, {w[2]*100:.1f}]")
 
+    # LATENCY, PAIRED. Not bookkeeping: a prompt longer than the window forces
+    # the runtime to shift context rather than process it in one pass, so the
+    # truncating configuration can be markedly SLOWER as well as lossy. Measured
+    # on the same contracts, so it is a within-pair comparison, not two medians
+    # from different samples.
+    import statistics as _st
+    la = [A[c].get("latency_s") for c in sc if A[c].get("latency_s")]
+    lb = [B[c].get("latency_s") for c in sc if B[c].get("latency_s")]
+    if la and lb:
+        print(f"\nmedian latency {arm_a:<8} {_st.median(la):7.1f}s")
+        print(f"  median latency {arm_b:<8} {_st.median(lb):7.1f}s")
+        pairs = [(A[c]["latency_s"], B[c]["latency_s"]) for c in sc
+                 if A[c].get("latency_s") and B[c].get("latency_s")]
+        faster_b = sum(1 for x, y in pairs if y < x)
+        ratio = _st.median([x / y for x, y in pairs if y])
+        # Exact two-sided SIGN TEST on the paired direction. Latency is not
+        # normally distributed and the arms are paired, so the defensible
+        # statement is "B was faster on k of n contracts", not a t-test on
+        # medians. Unanimity at n=11 is already p<0.001, which is why this is
+        # reportable long before the correctness comparison has the power to be.
+        n_p = len(pairs)
+        if n_p:
+            k = max(faster_b, n_p - faster_b)
+            tail = sum(math.comb(n_p, i) for i in range(k, n_p + 1)) / (2 ** n_p)
+            p_sign = min(1.0, 2 * tail)
+            print(f"  {arm_b} faster on   {faster_b}/{n_p} paired contracts, "
+                  f"median speedup x{ratio:.2f}")
+            print(f"  sign test               p = {p_sign:.5f}"
+                  + ("  (significant)" if p_sign < 0.05 else "  (not significant)"))
+
     # THE PAIRED TEST.
     b = sum(1 for c in sc if correct(A[c]) and not correct(B[c]))
     cc = sum(1 for c in sc if correct(B[c]) and not correct(A[c]))
