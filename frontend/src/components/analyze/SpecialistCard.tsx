@@ -67,7 +67,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
       {/* analyzing scan-sweep */}
       {status === "analyzing" && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="scan-sweep absolute left-0 right-0 h-10 bg-gradient-to-b from-transparent via-violet-400/[0.10] to-transparent" />
+          <div className="scan-sweep absolute left-0 right-0 h-10 bg-gradient-to-b from-transparent via-[#1F6FB2]/[0.10] to-transparent" />
         </div>
       )}
 

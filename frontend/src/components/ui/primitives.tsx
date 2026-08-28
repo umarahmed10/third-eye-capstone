@@ -128,7 +128,7 @@ export function KpiCard({
 export function Spinner({ size = 14 }: { size?: number }) {
   return (
     <span
-      className="inline-block rounded-full border-2 border-white/20 border-t-violet-300 animate-spin"
+      className="inline-block rounded-full border-2 border-[#D8D3C7] border-t-[#1F6FB2] animate-spin"
       style={{ width: size, height: size }}
     />
   );

@@ -12,7 +12,7 @@ import {
 
 // ─── Public marketing / product landing (pre-login) ───
 // Two CTAs: "Try a scan" (anonymous trial straight into the Scan view) and
-// "Sign in". Dependency-free, responsive, dark-purple, consistent with theme.
+// "Sign in". Dependency-free, responsive, bone surface, consistent with theme.
 export function Landing({
   onTryScan,
   onSignIn,
@@ -82,7 +82,7 @@ export function Landing({
           <h1 className="text-4xl sm:text-6xl font-bold text-[#16150F] tracking-tight leading-[1.05]">
             ThirdEye
           </h1>
-          <p className="mt-5 text-[15px] sm:text-lg text-[#1F6FB2]/70 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-5 prose-report text-[15px] sm:text-lg text-[#3F3B31] max-w-2xl mx-auto">
             A model-diverse council of LLM specialists that audits your smart contracts and returns a
             single <span className="text-[#16150F] font-semibold">GO</span> /{" "}
             <span className="text-[#B4351F] font-semibold">NO-GO</span> verdict — grounded in real evidence,
@@ -92,7 +92,7 @@ export function Landing({
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={onTryScan}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
             >
               <ScanIcon size={16} /> Try a scan
               <span className="text-[10px] font-mono font-normal text-[#6B675C]">no login</span>
@@ -160,7 +160,7 @@ export function Landing({
 
       {/* ─── What it catches ─── */}
       <section className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-300/[0.12] to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-[#D8D3C7]" />
         <SectionEyebrow icon={<EyeIcon size={12} />}>What it catches</SectionEyebrow>
         <h2 className="text-2xl sm:text-3xl font-bold text-[#16150F] tracking-tight mt-3 max-w-2xl">
           Eight specialists, each pinned to a different attack surface.
@@ -206,7 +206,7 @@ export function Landing({
             <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={onTryScan}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] shadow-[0_10px_30px_-12px_rgba(44,74,107,0.08)] transition-colors"
               >
                 <ScanIcon size={16} /> Try a scan
               </button>

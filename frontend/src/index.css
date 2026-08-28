@@ -1,23 +1,47 @@
 @import "tailwindcss";
 
 /* ─── Third-Eye design tokens ─────────────────────────────────────────
-   Deep aubergine/plum base, refined violet + soft-lilac accents, with a
-   restrained gold highlight for verdicts. A high-end security boutique:
-   premium, hushed, confident — not a generic SaaS dashboard.            */
+   ONE type system with the exhibit, because they are one artifact.
+
+   The exhibit reads as a lab report, and the register comes almost entirely
+   from type: serif prose, monospace numbers, sans reserved for chrome. The tool
+   was set in Outfit -- a geometric display face whose single-storey 'a' and wide
+   caps read as consumer product -- so clicking from the paper into the tool felt
+   like leaving one document for a different one.
+
+   THE MAPPING, and the reason it is not "serif everywhere": a tool is not a
+   document. Prose and headings carry the report voice; controls must stay
+   invisible, and a serif button reads as a mistake.
+     serif  -- headings and explanatory prose      (the argument)
+     mono   -- every number, verdict, code, label  (the measurement)
+     sans   -- buttons, inputs, nav, chrome        (the machinery)
+
+   Inter, not Outfit, for that sans: it is designed to disappear at UI sizes,
+   which is the whole job. It was already named in the exhibit's font stack but
+   had never actually been loaded, so the exhibit was falling back to system
+   faces -- loading it here fixes both surfaces at once.                  */
 @theme {
-  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4", "Iowan Old Style", Charter, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
 
-  /* Base surfaces — near-black with a purple undertone */
+  /* Base surfaces — bone paper. (The comment here used to describe the old
+     near-black plum theme, three migrations after it stopped being true.) */
   --color-base: #F7F5F0;        /* app background */
   --color-surface: #FFFFFF;     /* panels */
   --color-surface-2: #EDE9DF;   /* raised panels */
   --color-line: rgba(22,21,15,0.10);
 
-  /* Accent — refined violet with a soft-lilac partner + gold highlight */
-  --color-accent: #2C4A6B;
-  --color-accent-soft: #5C7C9E;
-  --color-accent-dim: rgba(44,74,107,0.08);
+  /* Accent — the VALIDATED data blue, matching lib/theme.ts and the exhibit.
+     #2C4A6B was replaced because it failed the palette validator on two checks:
+     outside the lightness band and under the chroma floor, i.e. it rendered as
+     grey rather than as a hue. It survived here after lib/theme.ts was fixed,
+     which is why the deployed bundle still carried it. --color-gold is a
+     historical name; it has been the signal vermillion since the move off
+     violet, and renaming it would touch every call site for no gain. */
+  --color-accent: #1F6FB2;
+  --color-accent-soft: #4A88C4;
+  --color-accent-dim: rgba(31,111,178,0.08);
   --color-gold: #B4351F;
 }
 
@@ -57,7 +81,11 @@ body {
   background: #F7F5F0;
   color: #16150F;
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv01";
+  /* "ss01","cv01" were Outfit's stylistic sets and meant nothing to any other
+     face; they shipped as dead declarations once Outfit went. Optical sizing is
+     what Source Serif 4 actually wants -- it is a variable optical-size font, so
+     display sizes get the tighter-spaced cut automatically. */
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizedLegibility;
 }
@@ -67,6 +95,26 @@ code,
 pre,
 .font-mono {
   font-family: var(--font-mono);
+}
+
+/* THE REPORT VOICE. Headings carry the argument, so they take the serif; an
+   element selector is specificity 0,0,1, so any heading that must stay mono or
+   sans opts out simply by keeping its Tailwind font- class (0,1,0 wins). That
+   is deliberate: h3 is used in this app mostly for small uppercase tracked
+   labels, which are chrome, not prose -- so h3 is NOT in this rule. */
+h1,
+h2 {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  letter-spacing: -0.011em;
+}
+
+/* Explanatory prose. Opt-in, because most text in a tool is a label, not
+   writing -- blanket-serifing body copy would catch every table cell. */
+.prose-report {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  line-height: 1.62;
 }
 
 ::selection {
@@ -79,7 +127,11 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid rgba(196, 181, 253, 0.6);
+  /* Was rgba(196,181,253,.6) -- the old dark-theme lilac. On bone that is a
+     ~1.3:1 pale wash: keyboard users had a focus ring they could not see, which
+     is the one indicator they navigate by. Ink at full opacity is unambiguous
+     on every surface in the app. */
+  outline: 2px solid rgba(22, 21, 15, 0.75);
   outline-offset: 2px;
   border-radius: 6px;
 }

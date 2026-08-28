@@ -365,7 +365,7 @@ export function Analyze({
               <button
                 onClick={() => run()}
                 disabled={code.trim().length < 10}
-                className="ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12.5px] font-semibold bg-gradient-to-b from-violet-500 to-violet-600 hover:from-violet-400 hover:to-violet-500 text-[#16150F] shadow-[0_8px_24px_-10px_rgba(44,74,107,0.08)] transition-colors disabled:opacity-25 disabled:cursor-not-allowed disabled:shadow-none"
+                className="ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-[12.5px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] shadow-[0_8px_24px_-10px_rgba(44,74,107,0.08)] transition-colors disabled:opacity-25 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 <BoltIcon size={14} />
                 Run Third-Eye
@@ -425,7 +425,7 @@ export function Analyze({
             </div>
             <div className="mt-3 h-1.5 rounded-full bg-[#F1EEE6] overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-400 rounded-full transition-all duration-500"
+                className="h-full bg-[#1F6FB2] rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, (doneCount / totalActive) * 100)}%` }}
               />
             </div>
