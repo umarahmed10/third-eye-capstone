@@ -441,8 +441,9 @@ function BaselineAbstains() {
             { k: "The selection effect", v: `Slither scored ${SLITHER.by_tier[0].scored}/25 synthetic-injected contracts but only ${SLITHER.by_tier[5].scored}/25 audit-reviewed real code. It is not failing on hard contracts — it never sees them.` },
             { k: "Why it matters", v: "An abstention is not a wrong answer, so it never appears as an error. A tool that answers only the questions it can parse posts excellent precision and recall on the subset it chose." },
             { k: "How we report it", v: `The head-to-head is computed only on the ${h2h.n_common ?? 0} contracts BOTH tools scored, and coverage is reported beside it rather than folded into the averages.` },
+            { k: "We checked whether it was our fault", v: `All ${SLITHER.audit.diagnosed} abstentions were diagnosed by compiling each with solc directly — Slither is no use here, since on these files it exits 0 with empty stdout and stderr and loses its own error. Exactly ${SLITHER.audit.our_toolchain} is our toolchain. ${SLITHER.audit.missing_import} are contracts that do not build standalone; ${SLITHER.audit.hard_compile_error} are real source errors. Coverage moves ${(SLITHER.coverage * 100).toFixed(1)}% → ${(SLITHER.coverage_adjusted * 100).toFixed(1)}%.` },
+            { k: "The objection this invites", v: "86% of the failures are missing imports, so a reviewer will say we fed Slither fragments. Fair — and the claim is scoped to match. This is not evidence about Slither on whole projects, where it is designed to run. It measures single-file input, which is the deployment case, and ThirdEye returned a verdict on the very same fragments." },
           ]} />
-          <Pilot n={SLITHER.attempted}>{SLITHER.caveat}</Pilot>
           <Novelty>
             Published comparisons against static analysers rarely state coverage. Without it, the
             comparison is between one tool&rsquo;s performance on all contracts and another

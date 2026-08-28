@@ -188,12 +188,44 @@ are abstentions, not silent passes.
 | Slither | 46 / 150 | 104 | **31%** |
 
 Slither's abstentions are **not random**. It compiled 36/75 vulnerable contracts
-(old, simple SmartBugs/SolidiFI files) but only 10/75 safe ones (large modern
-OZ/Solady requiring exact solc versions). Any recall figure reported for a
-static analyser on a corpus like this is therefore computed on a subset
-selected for being easy to compile — a bias we have not seen stated in
-comparable evaluations. The council reads source directly and needs no
-compilation, so it has no such subset.
+(old, simple SmartBugs/SolidiFI files) but only 10/75 safe ones. Any recall
+figure reported for a static analyser on a corpus like this is therefore
+computed on a subset selected for being easy to compile — a bias we have not
+seen stated in comparable evaluations. The council reads source directly and
+needs no compilation, so it has no such subset.
+
+**We diagnosed every abstention rather than leaving this as an upper bound.**
+An earlier draft hedged that some share of the 104 failures might be our own
+solc version resolution. All 104 were re-compiled with solc directly — Slither
+itself cannot be used for this, because on these files it exits 0 with empty
+stdout *and* empty stderr, discarding its own error:
+
+| cause | n | share |
+|---|--:|--:|
+| Missing import — contract does not build standalone | 89 | 85.6% |
+| Real Solidity compile error in the source as given | 9 | 8.7% |
+| Other | 5 | 4.8% |
+| **Our toolchain** (pragma unsatisfiable with installed solc) | **1** | **1.0%** |
+
+Coverage moves from 46/150 (30.7%) to 46/149 (**30.9%**). The hedge cost more in
+credibility than the correction was worth, and it is withdrawn.
+
+The diagnosis also **corrects the mechanism** we previously asserted. The
+asymmetry is not that modern safe code "requires exact solc versions"; it is that
+modern safe code is **modular**. The safe tiers fail almost entirely on missing
+imports (audit-reviewed 23/23, real-world 20/21, audited libraries 19/21), while
+the synthetic vulnerable tier fails on none of them — SolidiFI files are
+self-contained by construction and fail only on genuine source errors (6/6).
+Provenance and file structure are confounded in every corpus of this kind.
+
+**The objection this invites, and the scope it forces.** If 86% of the failures
+are missing imports, a reviewer may object that we fed a whole-project analyser
+single-file fragments. That is fair, and the claim is scoped to match: this is
+**not** evidence about Slither's ability on complete projects, which is what it
+is built for. It measures single-file input — the deployment case a paste-a-
+contract tool actually faces — and on those identical fragments the council
+returned a verdict where Slither could not. The comparison is like-for-like on
+the input, not a claim about the tool at its best.
 
 **On the 29 contracts both tools scored:**
 
