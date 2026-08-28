@@ -8,72 +8,111 @@ Placeholders are marked `[TODO]` — do not submit with any remaining.
 
 ## Which paper to write
 
-Two viable framings. They are not equally supported by the evidence.
+Settled by the related-work pass (`RELATED_WORK.md`, 2026-08-28). The evidence
+supports one framing, and it is not the one earlier drafts led with.
 
-### Framing A — "free model-diverse council matches paid GPTScan"
-**Claim:** recall 0.85 on a balanced benchmark at $0/contract, versus GPTScan
-(ICSE'24) 0.833 on Web3Bugs with paid GPT.
+### Framing A — "free council matches paid GPTScan" — DEAD
 
-**Problem:** the false-positive rate is 60% on audited-safe code (12/20). The
-paper's own motivation cites GPT-4o-mini's ~951 false positives as the failure
-to fix. A reviewer reaches that number and stops. Also the GPTScan comparison
-is not head-to-head — different dataset, so it is at best contextual.
+The head-to-head has now run on identical projects (§4.11): 33/34 versus 31/34
+with **overlapping** confidence intervals. No detection difference is
+demonstrated, so there is no win to claim. Keep the comparison as evidence; do
+not build the paper on it.
 
-**Verdict:** not submittable as the headline. Arbitration as a binary gate was
-MEASURED and is harmful (§4.4). Survives only if the threshold sweep (§4.5)
-finds an operating point beating council-only F1.
+### Framing B — "LLM auditors cry wolf" — TAKEN
 
-### Framing B — "silent failure modes in LLM security-evaluation harnesses"  ← RECOMMENDED
-**Claim:** LLM-based evaluation harnesses fail *silently and asymmetrically*,
-producing plausible-looking metrics from broken pipelines. We document seven
-distinct defects found in one system, show each one's directional bias on the
-reported metric, and propose invariants that make them fail loudly instead.
+Heimdallr (arXiv 2601.17833, Jan 2026) reports GPTScan at **97.5%** false-alarm
+rate on real Sherlock contest projects and LLMSmartAudit at 99.01%, concluding
+existing LLM auditors are practically unusable. That paper owns this observation
+and states it more strongly than our data can. Leading with it would be scooped
+on arrival.
 
-**Why this is stronger:** it is fully supported by evidence we already have, it
-is novel (the LLM-eval-methodology literature is thin), and its core artifact —
-a list of concrete, reproducible failure modes with measured impact — is exactly
-the kind of contribution a systems/SE venue accepts. It also does not depend on
-beating anyone's baseline.
+### Framing C — "the false-alarm rate is an artifact of what nobody reports" ← WRITE THIS
 
-**Recommendation:** write B, and include the ThirdEye measurements as the case
-study that produced the findings. Framing A becomes a section, not the thesis.
+**Claim.** A reported false-alarm rate for an LLM security tool is not a property
+of the tool. It is jointly determined by three choices that are almost never
+reported: what the *safe* label means, what the harness silently discards, and
+which machine produced the verdicts. We measure each on one corpus with a
+controlled experiment, and each moves the headline number by more than the
+differences papers currently report as results.
 
----
+**Why this survives where A and B do not.** It takes Heimdallr's gap — GPTScan at
+57.14% precision on its own benchmark against 97.5% FPR in the field — as the
+*premise* rather than the finding, and asks what in the evaluation harness
+produces it. The contributions are then three mechanisms, which the related-work
+pass found unclaimed or only partly claimed:
+
+1. **Label provenance (§4.10b).** False alarms track how far the "safe" label can
+   be trusted: 15.7% on audited libraries against 33.0–37.5% on code that merely
+   has no reported bug. Two-level, intervals separating. No prior work found that
+   measures a false-alarm rate as a function of label trust — the strongest card.
+2. **Silent discards (§6).** A context window smaller than the prompt truncates
+   without error, and abstentions are excluded from scoring — so the harness
+   deleted rows instead of lowering scores. Paired ablation: abstention
+   44.4% → 0.0%, recall 12.5% → 81.2%, McNemar p = 0.016.
+3. **Hardware (§4.10c).** Identical seeds, model digests and code give 0.735
+   verdict agreement across two machines, with batch parallelism excluded as the
+   cause by a `num_parallel=1` control (paired McNemar p = 0.75).
+
+**What must be conceded, explicitly, in the paper itself.** Backend
+nondeterminism is documented elsewhere (arXiv 2605.19537); ours is its
+propagation to *security verdicts* and thus to a published rate. The "bigger
+model is worse" observation exists in prose elsewhere; ours is the controlled
+paired isolation (p = 0.00008). And the claim that benchmarks have no safe class
+is false in general — GPTScan reports a false-alarm rate on its Top200 set. It
+holds for the contest-derived corpora on which recall is usually reported, and
+that is how we state it.
 
 ## 1. Abstract
 
-Large-language-model "councils" — ensembles of specialist agents, each pinned to
-a distinct base model and vulnerability class — are an increasingly common design
-for automated smart-contract auditing. We evaluate one such system on a balanced
-benchmark of 232 Solidity contracts (124 audited-safe, 108 known-vulnerable),
-and report three findings.
+Reported false-alarm rates for LLM-based security tools are treated as properties
+of the tool. We show they are substantially properties of the evaluation harness.
+Using a model-diverse LLM "council" for smart-contract auditing as the case
+study, we evaluate on a balanced benchmark of **1,154 scored Solidity contracts**
+(603 audited-safe across three provenance tiers, 551 known-vulnerable) and
+isolate three unreported choices, each with a controlled experiment on the same
+corpus.
 
-First, the council attains 0.93 recall on known-vulnerable contracts at zero
-inference cost on consumer hardware, comparable to recall reported for paid-model
-baselines. Second, and against the design's own premise, it blocks 64% of
-audited-safe contracts. We show this is structural rather than a prompting
-defect: the council verdicts unsafe if ANY specialist objects — a logical OR over
-k detectors — so the false-alarm rate grows with ensemble size, measured rising
-monotonically as the router engages more specialists. The model diversity that
-produces the ensemble's sensitivity is the same mechanism that destroys its
-precision, and benchmarks without a balanced safe class cannot observe this at
-all.
+**The meaning of the safe label.** The tool's false-alarm rate is 29.9%
+[26.3, 33.6] overall, but this decomposes: 15.7% [11.0, 21.9] on audited
+libraries against 37.5% [31.6, 43.8] on audit-reviewed code and 33.0%
+[26.7, 39.9] on deployed code with no reported bug. The effect is two-level —
+audited libraries separate from both weaker tiers, which are indistinguishable
+from each other — so a "false-alarm rate" is partly a statement about how the
+negative class was assembled. Hand review of 21 blocked safe contracts finds
+roughly 70% are genuine tool errors, bounding how much of this is label noise.
 
-Third, we show the defect is fixable in the aggregation rule rather than the
-models. Replacing the OR-gate with a confidence-thresholded noisy-OR reduces the
-false-alarm rate from 66% to 28% and raises F1 from 0.696 to 0.787 on held-out
-data (10 stratified splits), requiring no additional inference. A per-class
-reliability-weighted variant was also evaluated and did NOT improve on the plain
-threshold, so we report the simpler rule. We further find that adversarial
-LLM-as-judge arbitration — the standard precision mechanism for such systems —
-does not pay for itself: as a binary gate it destroys 71% of true positives, and
-in calibrated form it yields no measurable gain (+0.003 F1).
+**What the harness discards.** The local runtime's context window silently
+truncates any prompt exceeding it, and abstentions are excluded from scoring, so
+a misconfiguration removes rows rather than lowering scores. 24% of the corpus
+overflows a 4,096-token window, and the overflow is class-skewed (350 vulnerable
+against 190 safe). A paired ablation on identical contracts moves abstention from
+44.4% to 0.0%, accuracy from 25.0% to 75.0% and recall from 12.5% to 81.2%
+(McNemar p = 0.016), while running 4.01× *faster* (sign test p < 0.0001).
 
-Finally, we document eight silent failure modes encountered while building the
-evaluation harness, each of which produced plausible-looking but invalid metrics,
-and each of which biased results in a consistent direction. We give the
-invariants that make them fail loudly instead. Our artifacts, checkpoints and
-decision log are released in full.
+**Which machine ran it.** On identical contract ids, seeds and byte-identical
+model digests, verdict agreement across two machines is 0.735, and a
+`num_parallel = 1` control excludes batch parallelism as the cause (paired
+McNemar p = 0.75). Backend nondeterminism is documented; its propagation to
+security verdicts, and thus to a published rate, is not.
+
+We further report two results that constrain the obvious responses. Restoring a
+2.7× larger model on the three semantic specialist roles — a one-variable change
+— significantly *increases* false alarms (49 → 74, McNemar p = 0.00008) while
+reducing misses (15 → 7, p = 0.043), for a net accuracy drop of 0.722 → 0.651:
+capability is not the lever. And adversarial LLM-as-judge arbitration, the
+standard precision mechanism, yields no held-out F1 gain (0.705 against a 0.706
+baseline, winning 4 of 10 splits) despite visibly reducing the false-alarm rate —
+a gate that would read as a success to anyone reporting only the FPR column.
+
+Against prior work, a head-to-head with GPTScan (ICSE'24) on 34 identical
+gradable projects gives 33/34 against 31/34 with **overlapping** intervals: no
+detection difference is demonstrated, and we report that rather than a win. A
+comparison with Slither on an identical sample shows it abstains on 69% of
+contracts, of which we diagnose 104 of 104 — exactly one attributable to our
+toolchain.
+
+Artifacts, per-contract checkpoints, and a decision log recording every
+correction made during the work are released in full.
 
 ## 2. Introduction
 
@@ -84,23 +123,41 @@ and a missed bug is expensive. A recurring architecture is the *council* — one
 specialist agent per vulnerability class, each pinned to a different base model
 for diversity, aggregated into a single go/no-go verdict.
 
-Reported results for such systems emphasise recall. That emphasis is an artifact
-of the benchmarks: the standard corpora in this area (SmartBugs-Curated,
-Web3Bugs) consist almost entirely of known-vulnerable contracts, so precision is
-mechanically 1.0 whenever recall is non-zero and a false-alarm rate cannot be
-computed at all. A tool that flags everything scores perfectly.
+Reported results for such systems emphasise recall, and that emphasis is partly
+an artifact of the benchmarks. The contest-derived corpora on which recall is
+most often reported — SmartBugs-Curated, Web3Bugs — consist almost entirely of
+known-vulnerable contracts, so a false-alarm rate cannot be computed from the
+same data that produces the headline. This is a claim about those corpora, not
+about the field: GPTScan reports a false-alarm rate on a separate Top200 set, and
+purpose-built paired benchmarks exist. What is rare is reporting both on the
+*same* contracts.
 
-We evaluate on a balanced benchmark with a genuine safe class and find that the
-council's headline recall (0.93) coexists with a 64% false-alarm rate on
-audited, widely-used code including OpenZeppelin and Solady. We then show this is
-not a tuning problem. The aggregation rule is a logical OR over k independent
-detectors, so contract-level false positives compound with k by construction —
-and we measure exactly that. The fix is therefore in the aggregation, not the
-prompts or the models, and we show a rule change that halves the false-alarm rate
-at zero additional inference cost.
+That the gap matters is already established. Heimdallr [2601.17833] measures
+GPTScan at a 97.5% false-alarm rate on real Sherlock contest projects, against
+the 57.14% precision GPTScan reports on its own benchmark. We take that gap as
+our starting point rather than our result, and ask a different question: **how
+much of a published false-alarm rate is determined by the harness rather than by
+the tool?**
 
-A secondary contribution is methodological. Building the harness surfaced eight
-distinct defects that each produced *plausible* metrics from a broken pipeline —
+We evaluate on a balanced benchmark with a genuine safe class assembled from
+three provenance tiers, and find first that the council's false-alarm rate is not
+one number. It is 15.7% on audited libraries and 33.0–37.5% on code that merely
+has no reported bug — so the headline depends on how the negative class was
+built. We then show that the harness itself moves the number further than that:
+a context window smaller than the prompt silently truncates 24% of the corpus and
+removes those contracts from scoring as abstentions rather than failures, and the
+same contracts scored on a second machine disagree 27% of the time under
+identical seeds and model digests.
+
+We also show that where a genuine defect exists it is in the aggregation rule
+rather than the models: the council verdicts unsafe if ANY specialist objects — a
+logical OR over k detectors — so contract-level false positives compound with k
+by construction. Replacing it with a confidence-thresholded noisy-OR is a
+rule change requiring no additional inference.
+
+The methodological contribution is the same work seen from the other side.
+Building the harness surfaced distinct defects that each produced *plausible*
+metrics from a broken pipeline —
 a missing pinned model that let a half-dead council record clean passes, a
 provider quota drain checkpointed as a deterministic result, an arbiter
 configuration that silently fell back to a weaker local judge. Every one of them
@@ -171,8 +228,14 @@ Context (NOT head-to-head — different datasets):
 **Honest reading:** recall is competitive; the **64% false-positive rate**
 (79/124) on audited-safe code is disqualifying for a deployment claim on its own.
 The 95% CI at n=68 is roughly 53-76% — precise enough to be a real problem, not
-a small-sample artifact. Note the GPTScan/GPT-4o-mini rows are on DIFFERENT
-datasets and are context only; the one head-to-head we actually ran is §4.3.
+a small-sample artifact.
+
+Two pointers, so this table is not misread. These are the **OR-gate** numbers at
+**n=232**; the shipped noisy-OR rule at n=1,154 is in §4.10b (false alarms 29.9%,
+recall 0.808) and is what the tool does today. And the GPTScan/GPT-4o-mini rows
+here are on DIFFERENT datasets and are **context only** — the two genuine
+head-to-heads are Slither on identical contracts (§4.3) and GPTScan on identical
+projects (§4.11).
 
 ### 4.3 Head-to-head vs Slither on IDENTICAL contracts
 
