@@ -52,8 +52,13 @@ export function sevTokens(sev: string): SevToken {
   return SEV[(sev || "").toLowerCase()] || SEV.medium;
 }
 
-// Accent colors for the design system — refined violet + soft lilac, gold highlight.
-export const ACCENT = "#2C4A6B";
+// Accent colors, shared with the exhibit so the app and the exhibit are one
+// design system. ACCENT is the validated data blue: the previous #2C4A6B failed
+// the palette validator on both the lightness band and the chroma floor, i.e. it
+// read as grey rather than as a hue. The names below are historical — GOLD has
+// been the signal vermillion since the theme moved off violet, and renaming it
+// would touch every call site for no behavioural gain.
+export const ACCENT = "#1F6FB2";
 export const ACCENT_SOFT = "#5C7C9E";
 export const GOLD = "#B4351F";
 
