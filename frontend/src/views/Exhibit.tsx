@@ -1,5 +1,6 @@
-import { useEffect } from "react";
-import { EX, MONO, SERIF, SANS } from "../lib/exhibit-theme";
+import { useEffect, useState } from "react";
+import { EX, MONO, SERIF, SANS, T, M } from "../lib/exhibit-theme";
+import { Reveal, StatCard, IntervalBar, CountBar } from "../components/exhibit/Measure";
 import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
 import { PARITY, CAPACITY, SLITHER, GPTSCAN } from "../data/newfindings";
@@ -49,7 +50,7 @@ export function Exhibit({ onOpenApp }: { onOpenApp?: () => void }) {
   }, []);
   return (
     <div style={{ background: EX.surface, color: EX.ink, fontFamily: SANS, minHeight: "100vh" }}>
-      <Masthead onOpenApp={onOpenApp} />
+      <Masthead />
       <TitleBlock />
       <BlindSpot />
       <MakingItVisible />
@@ -59,7 +60,7 @@ export function Exhibit({ onOpenApp }: { onOpenApp?: () => void }) {
       <NotReproducible />
       <CapabilityDoesntFix />
       <Invariants />
-      <Instrument />
+      <Instrument onOpenApp={onOpenApp} />
       <Status />
       <Colophon />
     </div>
@@ -81,15 +82,22 @@ function Section({
   return (
     <section style={{ borderTop: `1px solid ${EX.hairline}`, background: tint ? EX.surfaceAlt : "transparent", padding: "68px 0" }}>
       <Wrap>
-        <div style={{ display: "flex", gap: 18, alignItems: "baseline", marginBottom: 8 }}>
-          <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.signal, letterSpacing: ".16em" }}>{n}</span>
-          <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.inkMuted, letterSpacing: ".16em", textTransform: "uppercase" }}>{kicker}</span>
-        </div>
-        <h2 style={{ fontFamily: SERIF, fontSize: 34, lineHeight: 1.18, letterSpacing: "-0.015em", margin: "0 0 14px", maxWidth: "28ch" }}>{title}</h2>
-        {lede && (
-          <p style={{ fontFamily: SERIF, fontSize: 18, lineHeight: 1.55, color: EX.inkMuted, maxWidth: "64ch", margin: "0 0 26px" }}>{lede}</p>
-        )}
-        {children}
+        <Reveal>
+          <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 10 }}>
+            {/* channel marker — reads as an instrument label, not a bullet */}
+            <span style={{
+              fontFamily: MONO, fontSize: 11, color: EX.surface, background: EX.ink,
+              letterSpacing: ".1em", padding: "3px 7px",
+            }}>{n}</span>
+            <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.inkMuted, letterSpacing: ".16em", textTransform: "uppercase" }}>{kicker}</span>
+            <span style={{ flex: 1, height: 1, background: EX.hairline }} />
+          </div>
+          <h2 style={{ fontFamily: SERIF, fontSize: T.h2, lineHeight: 1.16, letterSpacing: "-0.018em", margin: "0 0 14px", maxWidth: "28ch" }}>{title}</h2>
+          {lede && (
+            <p style={{ fontFamily: SERIF, fontSize: T.lede, lineHeight: 1.55, color: EX.inkMuted, maxWidth: "64ch", margin: "0 0 26px" }}>{lede}</p>
+          )}
+        </Reveal>
+        <Reveal delay={60}>{children}</Reveal>
       </Wrap>
     </section>
   );
@@ -152,24 +160,40 @@ function Pilot({ n, children }: { n: number; children: React.ReactNode }) {
 
 /* ─── masthead + title ─────────────────────────────────────────────── */
 
-function Masthead({ onOpenApp }: { onOpenApp?: () => void }) {
+function Masthead() {
+  // "OPEN THE ARTIFACT" used to live here, top-right. Under the measurement
+  // framing that is exactly wrong: it invites the reader to leave the argument
+  // before reading it, and it advertises the tool as the deliverable. The tool
+  // now appears once, in section 09, as evidence the measurements are real.
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    const on = () => {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      setP(h > 0 ? Math.min(1, window.scrollY / h) : 0);
+    };
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); };
+  }, []);
+
   return (
-    <header style={{ borderBottom: `2px solid ${EX.ink}` }}>
+    <header style={{ position: "sticky", top: 0, zIndex: 20, background: EX.surface, borderBottom: `1px solid ${EX.hairline}` }}>
       <Wrap>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 0", flexWrap: "wrap", gap: 12 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 13 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "13px 0", flexWrap: "wrap", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <Aperture />
-            <span style={{ fontFamily: SERIF, fontSize: 23 }}>ThirdEye</span>
-            <span style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".14em" }}>
-              RESEARCH EXHIBIT · CAPSTONE TEAM 2 · PESU
-            </span>
+            <span style={{ fontFamily: SERIF, fontSize: 21 }}>ThirdEye</span>
           </div>
-          <button onClick={onOpenApp}
-            style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: ".06em", padding: "7px 13px", background: "transparent", border: `1px solid ${EX.ink}`, color: EX.ink, cursor: "pointer" }}>
-            OPEN THE ARTIFACT →
-          </button>
+          <span style={{ fontFamily: MONO, fontSize: 10, color: EX.slate, letterSpacing: ".14em" }}>
+            RESEARCH EXHIBIT · CAPSTONE TEAM 2 · PESU
+          </span>
         </div>
       </Wrap>
+      {/* reading position — the argument has a length, and you can see where you are in it */}
+      <div style={{ height: 2, background: EX.hairline }}>
+        <div style={{ height: "100%", width: `${p * 100}%`, background: EX.ink, transition: "width 90ms linear" }} />
+      </div>
     </header>
   );
 }
@@ -342,9 +366,9 @@ function WhatItRevealed() {
       lede={`Pooling the evidence instead of gating on any single objection roughly halves the false-alarm rate, costs eight points of recall, and improves F1. Measured on all ${N} scored contracts.`}
     >
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(215px,1fr))", gap: 16, marginBottom: 30 }}>
-        <Rate k={before.fp ?? 0} n={nSafe} label="False alarms — OR-gate" tone="signal" />
-        <Rate k={after.fp ?? 0} n={nSafe} label="False alarms — pooled rule" />
-        <Rate k={after.tp ?? 0} n={nVuln} label="Recall — pooled rule" />
+        <StatCard k={before.fp ?? 0} n={nSafe} label="False alarms — OR-gate" tone="signal" />
+        <StatCard k={after.fp ?? 0} n={nSafe} label="False alarms — pooled rule" />
+        <StatCard k={after.tp ?? 0} n={nVuln} label="Recall — pooled rule" />
         <div style={{ border: `1px solid ${EX.hairline}`, padding: "16px 18px", background: EX.surface }}>
           <div style={{ fontFamily: MONO, fontSize: 10.5, color: EX.inkMuted, letterSpacing: ".12em", textTransform: "uppercase", marginBottom: 8 }}>F1</div>
           <div style={{ fontFamily: MONO, fontSize: 34, lineHeight: 1, color: EX.ink }}>{after.f1 ?? "—"}</div>
@@ -360,15 +384,14 @@ function WhatItRevealed() {
         {tierRows
           .sort((a, b) => a[1].fpr_after - b[1].fpr_after)
           .map(([k, v]) => (
-            <div key={k} style={{ display: "grid", gridTemplateColumns: "minmax(140px,260px) minmax(0,1fr) minmax(120px,170px)", gap: 12, alignItems: "center", padding: "12px 0", borderBottom: `1px solid ${EX.hairline}` }}>
-              <span style={{ fontSize: 14 }}>{TIER_NAME[k] ?? k}</span>
-              <div style={{ height: 16, background: "rgba(0,0,0,0.045)" }}>
-                <div style={{ height: "100%", width: `${Math.min(100, (v.fpr_after / 0.5) * 100)}%`, background: k === "audited_library" ? EX.data : EX.signal }} />
-              </div>
-              <span style={{ fontFamily: MONO, fontSize: 12 }}>{fmtCI(v.after, v.n)}</span>
-            </div>
+            <IntervalBar key={k} k={v.after} n={v.n}
+              label={TIER_NAME[k] ?? k}
+              tone={k === "audited_library" ? "data" : "signal"} />
           ))}
       </div>
+      <p style={{ fontFamily: MONO, fontSize: T.micro, color: EX.slate, marginTop: 10 }}>
+        POINT ESTIMATE ON ITS 95% INTERVAL · SHARED 0–100% SCALE · TICKS AT 25%
+      </p>
 
       <Evidence items={[
         { k: "The pattern", v: `Audited libraries — the tier whose "safe" label is most trustworthy — carry a far lower false-alarm rate than code that merely has no reported bug. The two intervals ${gap ? "do not overlap" : "overlap"}.` },
@@ -403,16 +426,8 @@ function BaselineAbstains() {
               selection effect; this shows it directly — the baseline handles
               synthetic code and abstains on almost everything real. */}
           {SLITHER.by_tier.map((r) => (
-            <div key={r.tier} style={{ marginBottom: 13 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5, gap: 10 }}>
-                <span style={{ fontSize: 12.5 }}>{r.tier}</span>
-                <span style={{ fontFamily: MONO, fontSize: 11.5, color: EX.slate }}>{r.scored}/{r.n}</span>
-              </div>
-              <div style={{ height: 14, background: "rgba(0,0,0,0.045)" }}>
-                <div style={{ height: "100%", width: `${(r.scored / r.n) * 100}%`,
-                              background: r.scored / r.n > 0.4 ? EX.data : EX.signal }} />
-              </div>
-            </div>
+            <CountBar key={r.tier} label={r.tier} scored={r.scored} total={r.n}
+                      tone={r.scored / r.n > 0.4 ? "data" : "signal"} />
           ))}
           <div style={{ fontFamily: MONO, fontSize: 30, color: EX.signal, marginTop: 20 }}>
             {(SLITHER.coverage * 100).toFixed(1)}%
@@ -647,7 +662,7 @@ function Invariants() {
 
 /* ─── 08 the instrument ────────────────────────────────────────────── */
 
-function Instrument() {
+function Instrument({ onOpenApp }: { onOpenApp?: () => void }) {
   return (
     <Section
       n="09" kicker="The instrument"
@@ -655,11 +670,24 @@ function Instrument() {
       lede="The tool is evidence that the measurements above came from a working system rather than a spreadsheet. Pick a contract with a known verdict and watch a recorded run, or paste your own and run it live against the backend."
     >
       <TryIt />
+      {onOpenApp && (
+        <div style={{ marginTop: 26, paddingTop: 18, borderTop: `1px solid ${EX.hairline}`, display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <button onClick={onOpenApp} style={{
+            fontFamily: MONO, fontSize: 11.5, letterSpacing: ".06em", padding: "9px 15px",
+            background: "transparent", border: `1px solid ${EX.ink}`, color: EX.ink, cursor: "pointer",
+          }}>
+            OPEN THE FULL APPLICATION →
+          </button>
+          <span style={{ fontSize: 13, color: EX.slate }}>
+            sign-in, scan history and PDF export — not needed to read this page
+          </span>
+        </div>
+      )}
     </Section>
   );
 }
 
-/* ─── 09 status ────────────────────────────────────────────────────── */
+/* ─── 10 status ────────────────────────────────────────────────────── */
 
 const NEXT: [string, string][] = [
   ["Related-work survey", "Positioning nine surveyed papers against each finding. The one item blocking submission."],
