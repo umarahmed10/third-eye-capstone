@@ -267,7 +267,7 @@ export function Analyze({
             aria-hidden="true"
           />
           <div className="relative px-6 sm:px-8 py-7 flex items-center gap-5">
-            <div className="text-[#2C4A6B] flex-shrink-0">
+            <div className="text-[#1F6FB2] flex-shrink-0">
               <ScanIcon size={34} />
             </div>
             <div className="min-w-0">
@@ -324,7 +324,7 @@ export function Analyze({
                     setCode("");
                     setActiveSample(null);
                   }}
-                  className="text-[10px] text-[#7A8794] hover:text-[#3A372E] transition-colors"
+                  className="text-[10px] text-[#5E6B78] hover:text-[#3A372E] transition-colors"
                 >
                   Clear
                 </button>
@@ -332,7 +332,7 @@ export function Analyze({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="text-[10px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors flex items-center gap-1"
+                className="text-[10px] text-[#6B675C] hover:text-[#1F6FB2] transition-colors flex items-center gap-1"
               >
                 <UploadIcon size={12} /> Upload .sol
               </button>
@@ -349,15 +349,15 @@ export function Analyze({
             spellCheck={false}
             rows={12}
             placeholder={"// Paste your Solidity contract here\npragma solidity ^0.8.0;\n\ncontract MyContract {\n  ...\n}"}
-            className="w-full bg-transparent outline-none resize-y text-[12px] font-mono leading-relaxed text-[#3A372E] placeholder:text-slate-600 px-4 py-3 min-h-[220px]"
+            className="w-full bg-transparent outline-none resize-y text-[12px] font-mono leading-relaxed text-[#3A372E] placeholder:text-[#5E6B78] px-4 py-3 min-h-[220px]"
           />
           <div className="flex items-center gap-3 px-4 py-3 border-t border-[#D8D3C7]">
-            <span className="text-[10px] font-mono text-[#7A8794]">{code.length} chars</span>
+            <span className="text-[10px] font-mono text-[#5E6B78]">{code.length} chars</span>
             {tier && <Pill tone="accent">{tier} tier</Pill>}
             {running ? (
               <button
                 onClick={cancel}
-                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold border border-white/[0.12] text-[#3A372E] hover:bg-white/[0.04] transition-colors"
+                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-semibold border border-[#D8D3C7] text-[#3A372E] hover:bg-[#F1EEE6] transition-colors"
               >
                 <Spinner size={13} /> Cancel
               </button>
@@ -384,21 +384,21 @@ export function Analyze({
         {(routing || running || phase === "done") && (routing?.roles?.length ?? 0) > 0 && (
           <div className="rounded-xl border border-[#D8D3C7] bg-[#EDE9DF] px-5 py-4 animate-fade-in">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-[#2C4A6B] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-1 rounded-md">
+              <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-[0.14em] text-[#1F6FB2] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-2 py-1 rounded-md">
                 <FlowIcon size={11} /> Static routing
               </span>
               <span className="text-[13px] font-medium text-[#16150F]">
                 Router selected{" "}
-                <span className="text-[#2C4A6B] font-semibold tabular-nums">
+                <span className="text-[#1F6FB2] font-semibold tabular-nums">
                   {routing!.roles.length} of {order.length}
                 </span>{" "}
                 specialists
                 {routing!.static_used === false && (
-                  <span className="text-[#7A8794]"> (fallback — full council)</span>
+                  <span className="text-[#5E6B78]"> (fallback — full council)</span>
                 )}
               </span>
             </div>
-            <p className="text-[11px] text-[#7A8794] leading-relaxed mt-1.5">
+            <p className="text-[11px] text-[#5E6B78] leading-relaxed mt-1.5">
               A heuristic pre-scan routes the contract to only the relevant attack-surface specialists —
               the rest are skipped, shown greyed below.
             </p>
@@ -423,7 +423,7 @@ export function Analyze({
                 {doneCount} / {totalActive}
               </span>
             </div>
-            <div className="mt-3 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+            <div className="mt-3 h-1.5 rounded-full bg-[#F1EEE6] overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-violet-400 to-fuchsia-400 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, (doneCount / totalActive) * 100)}%` }}
@@ -434,7 +434,7 @@ export function Analyze({
             {arbitrating && (
               <div className="mt-3 flex items-center gap-2.5 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] px-3 py-2 animate-fade-in">
                 <Spinner size={13} />
-                <span className="text-[11.5px] text-[#2C4A6B]">
+                <span className="text-[11.5px] text-[#1F6FB2]">
                   Evidence-anchored arbitration on{" "}
                   <span className="font-mono font-semibold tabular-nums">{arbitrating.count}</span>{" "}
                   candidate {arbitrating.count === 1 ? "finding" : "findings"} — dropping anything not grounded in the code.
@@ -480,11 +480,11 @@ export function Analyze({
         <section id="samples" className="scroll-mt-4 pt-1">
           <SectionLabel count={samples.length || undefined}>Sample contracts — try it instantly</SectionLabel>
           {samplesErr ? (
-            <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-[#7A8794]">
+            <div className="rounded-xl border border-[#D8D3C7] bg-[#F1EEE6] px-5 py-6 text-center text-[12px] text-[#5E6B78]">
               Couldn't load samples right now — paste or upload a contract above to get started.
             </div>
           ) : samples.length === 0 ? (
-            <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-5 py-6 text-center text-[12px] text-[#7A8794]">
+            <div className="rounded-xl border border-[#D8D3C7] bg-[#F1EEE6] px-5 py-6 text-center text-[12px] text-[#5E6B78]">
               <Spinner /> <span className="ml-2 align-middle">Loading samples…</span>
             </div>
           ) : (
@@ -510,12 +510,12 @@ export function Analyze({
 
         {/* Idle explainer (only before first run) */}
         {phase === "idle" && (
-          <div className="rounded-xl border border-[#D8D3C7] bg-white/[0.01] px-6 py-8 text-center">
+          <div className="rounded-xl border border-[#D8D3C7] bg-[#F1EEE6] px-6 py-8 text-center">
             <div className="inline-flex w-12 h-12 rounded-2xl bg-[#EDE9DF] ring-1 ring-[#D8D3C7] items-center justify-center text-[#6B675C] mb-3">
               <EyeIcon size={22} />
             </div>
             <p className="text-[13px] text-[#3A372E] mb-1">Eight specialists, each pinned to a different base model.</p>
-            <p className="text-[12px] text-[#7A8794] max-w-md mx-auto">
+            <p className="text-[12px] text-[#5E6B78] max-w-md mx-auto">
               You'll watch every verdict land live as it arrives — then Raven sums it up.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4">
@@ -529,23 +529,10 @@ export function Analyze({
                 </span>
               ))}
             </div>
-            {onNavigate && (
-              <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
-                <button
-                  onClick={() => onNavigate("how")}
-                  className="inline-flex items-center gap-1.5 text-[11px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors"
-                >
-                  <FlowIcon size={13} /> How it works
-                </button>
-                <span className="text-slate-700">·</span>
-                <button
-                  onClick={() => onNavigate("benchmarks")}
-                  className="inline-flex items-center gap-1.5 text-[11px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors"
-                >
-                  <ChartIcon size={13} /> Benchmarks
-                </button>
-              </div>
-            )}
+            {/* The "how it works" and "benchmarks" links used to sit here. Both
+                views are gone -- the exhibit carries the method and the
+                measurements now, from the generated snapshot rather than a
+                second hand-maintained copy. */}
           </div>
         )}
       </div>
@@ -569,12 +556,12 @@ function ProvideCard({
       onClick={onClick}
       className="group flex items-start gap-3 rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-4 py-3.5 text-left hover:border-[#D8D3C7] hover:bg-[#EDE9DF] transition-colors"
     >
-      <span className="mt-0.5 w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#2C4A6B] flex-shrink-0 transition-colors">
+      <span className="mt-0.5 w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#1F6FB2] flex-shrink-0 transition-colors">
         {icon}
       </span>
       <div className="min-w-0">
         <div className="text-[12.5px] font-semibold text-[#16150F]">{title}</div>
-        <div className="text-[10.5px] text-[#7A8794] leading-snug mt-0.5">{body}</div>
+        <div className="text-[10.5px] text-[#5E6B78] leading-snug mt-0.5">{body}</div>
       </div>
     </button>
   );
@@ -616,19 +603,19 @@ function SampleCard({
           {s.expected}
         </span>
       </div>
-      <p className="text-[11px] text-[#7A8794] leading-relaxed mt-2 flex-1">{s.blurb}</p>
+      <p className="text-[11px] text-[#5E6B78] leading-relaxed mt-2 flex-1">{s.blurb}</p>
       <div className="flex items-center gap-2 mt-3">
         <button
           onClick={onRun}
           disabled={disabled}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-[#EDE9DF] hover:bg-[#3A372E] text-[#16150F] transition-colors disabled:opacity-30"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] transition-colors disabled:opacity-30"
         >
           <BoltIcon size={12} /> Analyze
         </button>
         <button
           onClick={onLoad}
           disabled={disabled}
-          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-[#6B675C] hover:text-[#2C4A6B] hover:bg-white/[0.04] transition-colors disabled:opacity-30"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-medium text-[#6B675C] hover:text-[#1F6FB2] hover:bg-[#F1EEE6] transition-colors disabled:opacity-30"
         >
           Load <ArrowRightIcon size={12} />
         </button>

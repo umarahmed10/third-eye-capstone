@@ -15,7 +15,7 @@
  */
 
 export const VIZ = {
-  accent: "#2C4A6B",       // series 1 / magnitude (ink-blue)
+  accent: "#1F6FB2",       // series 1 / magnitude (ink-blue)
   accent2: "#B4351F",      // series 2 — the signal vermillion
   muted: "#A8A294",        // de-emphasised marks
   grid: "rgba(22,21,15,0.10)",
@@ -40,7 +40,7 @@ export function ChartFrame({
       )}
       <div className="mt-4">{children}</div>
       {footnote && (
-        <p className="mt-3 text-[11px] text-[#7A8794] leading-relaxed">{footnote}</p>
+        <p className="mt-3 text-[11px] text-[#5E6B78] leading-relaxed">{footnote}</p>
       )}
     </div>
   );
@@ -218,7 +218,7 @@ export function CoverageSplit({
         return (
           <div key={r.label}>
             <div className="flex items-baseline justify-between mb-1.5">
-              <span className="text-xs text-slate-200">{r.label}</span>
+              <span className="text-xs text-[#6B675C]">{r.label}</span>
               <span className="font-mono text-xs" style={{ color: VIZ.ink }}>
                 {r.scored}/{r.total} · {Math.round(pct * 100)}%
               </span>

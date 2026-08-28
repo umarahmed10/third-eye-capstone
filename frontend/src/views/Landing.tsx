@@ -25,7 +25,7 @@ export function Landing({
       {/* ─── Top nav ─── */}
       <header className="sticky top-0 z-30 border-b border-[#D8D3C7] bg-[#F7F5F0]/80 backdrop-blur">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-3">
-          <span className="text-[#2C4A6B]">
+          <span className="text-[#1F6FB2]">
             <ThirdEyeMark size={24} />
           </span>
           <div className="leading-none">
@@ -37,7 +37,7 @@ export function Landing({
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={onSignIn}
-              className="text-[12.5px] font-medium text-[#3A372E] hover:text-[#16150F] px-3 py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
+              className="text-[12.5px] font-medium text-[#3A372E] hover:text-[#16150F] px-3 py-1.5 rounded-lg hover:bg-[#F1EEE6] transition-colors"
             >
               Sign in
             </button>
@@ -68,7 +68,7 @@ export function Landing({
                 style={{ background: "radial-gradient(circle, rgba(44,74,107,0.08), transparent 70%)" }}
                 aria-hidden="true"
               />
-              <span className="relative inline-flex w-20 h-20 rounded-2xl bg-[#FFFFFF] ring-1 ring-[#D8D3C7] items-center justify-center text-[#2C4A6B]">
+              <span className="relative inline-flex w-20 h-20 rounded-2xl bg-[#FFFFFF] ring-1 ring-[#D8D3C7] items-center justify-center text-[#1F6FB2]">
                 <ThirdEyeMark size={44} className="animate-lid-blink" />
               </span>
             </span>
@@ -82,7 +82,7 @@ export function Landing({
           <h1 className="text-4xl sm:text-6xl font-bold text-[#16150F] tracking-tight leading-[1.05]">
             ThirdEye
           </h1>
-          <p className="mt-5 text-[15px] sm:text-lg text-[#2C4A6B]/70 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-5 text-[15px] sm:text-lg text-[#1F6FB2]/70 leading-relaxed max-w-2xl mx-auto">
             A model-diverse council of LLM specialists that audits your smart contracts and returns a
             single <span className="text-[#16150F] font-semibold">GO</span> /{" "}
             <span className="text-[#B4351F] font-semibold">NO-GO</span> verdict — grounded in real evidence,
@@ -99,12 +99,12 @@ export function Landing({
             </button>
             <button
               onClick={onSignIn}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-[#16150F] hover:bg-white/[0.04] transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-[#D8D3C7] text-[#16150F] hover:bg-[#F1EEE6] transition-colors"
             >
               Sign in <ArrowRightIcon size={15} />
             </button>
           </div>
-          <p className="mt-4 text-[11px] font-mono text-slate-600">
+          <p className="mt-4 text-[11px] font-mono text-[#5E6B78]">
             Anonymous scans run instantly — sign in to keep a history.
           </p>
         </div>
@@ -124,7 +124,7 @@ export function Landing({
               className="relative rounded-2xl border border-[#D8D3C7] bg-[#FFFFFF] px-5 py-5"
             >
               <div className="flex items-center gap-2.5">
-                <span className="w-9 h-9 rounded-xl bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#2C4A6B] flex-shrink-0">
+                <span className="w-9 h-9 rounded-xl bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#1F6FB2] flex-shrink-0">
                   {step.icon}
                 </span>
                 <span className="text-[10px] font-mono text-[#6B675C]">
@@ -176,11 +176,11 @@ export function Landing({
               key={c.title}
               className="group rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] px-4 py-4 hover:border-[#D8D3C7] hover:bg-[#EDE9DF] transition-colors"
             >
-              <div className="flex items-center gap-2 text-[#2C4A6B]">
+              <div className="flex items-center gap-2 text-[#1F6FB2]">
                 <EyeIcon size={14} />
                 <span className="text-[13px] font-semibold text-[#16150F]">{c.title}</span>
               </div>
-              <p className="mt-1.5 text-[11.5px] text-[#7A8794] leading-relaxed">{c.body}</p>
+              <p className="mt-1.5 text-[11.5px] text-[#5E6B78] leading-relaxed">{c.body}</p>
             </div>
           ))}
         </div>
@@ -212,7 +212,7 @@ export function Landing({
               </button>
               <button
                 onClick={onSignIn}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-white/[0.12] text-[#16150F] hover:bg-white/[0.04] transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-[14px] font-semibold border border-[#D8D3C7] text-[#16150F] hover:bg-[#F1EEE6] transition-colors"
               >
                 Sign in
               </button>
@@ -220,7 +220,7 @@ export function Landing({
           </div>
         </div>
 
-        <p className="mt-8 text-center text-[11px] font-mono text-slate-600">
+        <p className="mt-8 text-center text-[11px] font-mono text-[#5E6B78]">
           ThirdEye is a decision-support tool — it does not replace a professional audit.
         </p>
       </section>

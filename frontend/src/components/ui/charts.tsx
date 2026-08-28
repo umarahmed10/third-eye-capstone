@@ -19,10 +19,10 @@ export function GroupedBars({
               const pct = Math.round(v * 100);
               return (
                 <div key={m.key} className="flex items-center gap-2.5">
-                  <span className="w-16 text-[9px] uppercase tracking-wide text-[#7A8794] flex-shrink-0">
+                  <span className="w-16 text-[9px] uppercase tracking-wide text-[#5E6B78] flex-shrink-0">
                     {m.label}
                   </span>
-                  <div className="flex-1 h-3 rounded bg-white/[0.05] overflow-hidden">
+                  <div className="flex-1 h-3 rounded bg-[#F1EEE6] overflow-hidden">
                     <div
                       className="h-full rounded bar-grow"
                       style={{ width: `${pct}%`, background: m.color }}
@@ -44,7 +44,7 @@ export function GroupedBars({
 // Single-metric horizontal distribution (vuln categories in the wild).
 export function DistributionBars({
   data,
-  color = "#2C4A6B",
+  color = "#1F6FB2",
   max,
 }: {
   data: { category: string; count: number; pct: number }[];
@@ -59,7 +59,7 @@ export function DistributionBars({
           <span className="w-32 truncate text-[11px] text-[#3A372E] capitalize flex-shrink-0" title={d.category}>
             {d.category.replace(/_/g, " ")}
           </span>
-          <div className="flex-1 h-4 rounded bg-white/[0.04] overflow-hidden">
+          <div className="flex-1 h-4 rounded bg-[#F1EEE6] overflow-hidden">
             <div
               className="h-full rounded bar-grow flex items-center justify-end pr-1.5"
               style={{ width: `${Math.max(4, (d.pct / peak) * 100)}%`, background: color, opacity: 0.85 }}
@@ -67,7 +67,7 @@ export function DistributionBars({
               <span className="text-[8px] font-mono text-black/70 font-bold">{d.pct}%</span>
             </div>
           </div>
-          <span className="w-8 text-right text-[10px] font-mono tabular-nums text-[#7A8794] flex-shrink-0">
+          <span className="w-8 text-right text-[10px] font-mono tabular-nums text-[#5E6B78] flex-shrink-0">
             {d.count}
           </span>
         </div>
@@ -79,7 +79,7 @@ export function DistributionBars({
 // Vertical comparison bars (e.g. baseline recall/F1).
 export function VerticalBars({
   data,
-  color = "#2C4A6B",
+  color = "#1F6FB2",
   height = 120,
 }: {
   data: { label: string; value: number }[];
@@ -103,7 +103,7 @@ export function VerticalBars({
                 animation: "bar-rise 0.7s cubic-bezier(0.16,1,0.3,1) both",
               }}
             />
-            <span className="text-[8px] text-[#7A8794] truncate w-full text-center" title={d.label}>
+            <span className="text-[8px] text-[#5E6B78] truncate w-full text-center" title={d.label}>
               {d.label}
             </span>
           </div>

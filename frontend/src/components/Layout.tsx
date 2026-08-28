@@ -10,12 +10,13 @@ import {
   EyeIcon,
 } from "./ui/icons";
 
-export type Tab = "analyze" | "how" | "benchmarks" | "history";
+// "how" and "benchmarks" were removed: the exhibit now carries the method and
+// every measurement, from the generated snapshot. Two views rendering the same
+// numbers from two sources is precisely the drift this project already hit.
+export type Tab = "analyze" | "history";
 
 const NAV: { id: Tab; label: string; icon: (p: { size?: number }) => ReactNode }[] = [
   { id: "analyze", label: "Scan", icon: ScanIcon },
-  { id: "how", label: "How It Works", icon: FlowIcon },
-  { id: "benchmarks", label: "Benchmarks", icon: ChartIcon },
   { id: "history", label: "History", icon: HistoryIcon },
 ];
 
@@ -58,7 +59,7 @@ export function Layout({
           className="px-5 h-[60px] flex items-center gap-2.5 border-b border-[#D8D3C7]"
           style={onHome ? { cursor: "pointer" } : undefined}
         >
-          <div className="text-[#2C4A6B]">
+          <div className="text-[#1F6FB2]">
             <ThirdEyeMark size={26} />
           </div>
           <div className="leading-none">
@@ -82,13 +83,13 @@ export function Layout({
                   setMobileOpen(false);
                 }}
                 aria-current={active ? "page" : undefined}
-                className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
+                className={`group w-full flex items-center gap-3 px-3 py-2.5 text-[11px] font-mono uppercase tracking-[0.12em] transition-colors border-l-2 ${
                   active
-                    ? "bg-[#EDE9DF] text-[#2C4A6B] ring-1 ring-[#D8D3C7]"
-                    : "text-[#6B675C] hover:text-[#16150F] hover:bg-white/[0.04]"
+                    ? "bg-[#F1EEE6] text-[#16150F] border-[#16150F]"
+                    : "text-[#6B675C] hover:text-[#16150F] hover:bg-[#F1EEE6] border-transparent"
                 }`}
               >
-                <span className={active ? "text-[#2C4A6B]" : "text-[#7A8794] group-hover:text-[#3A372E]"}>
+                <span className={active ? "text-[#16150F]" : "text-[#5E6B78] group-hover:text-[#16150F]"}>
                   <Icon size={17} />
                 </span>
                 {item.label}
@@ -102,7 +103,7 @@ export function Layout({
           {anonymous ? (
             <div className="px-1 py-1 space-y-2">
               <div className="flex items-center gap-2.5 px-1">
-                <div className="w-8 h-8 rounded-lg bg-white/[0.05] ring-1 ring-white/[0.10] flex items-center justify-center text-[#2C4A6B]">
+                <div className="w-8 h-8 bg-[#F1EEE6] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#1F6FB2]">
                   <EyeIcon size={15} />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -113,21 +114,21 @@ export function Layout({
               {onSignIn && (
                 <button
                   onClick={onSignIn}
-                  className="w-full inline-flex items-center justify-center gap-1.5 text-[12px] font-semibold bg-[#EDE9DF] hover:bg-[#3A372E] text-[#16150F] py-2 rounded-lg transition-colors"
+                  className="w-full inline-flex items-center justify-center gap-1.5 text-[12px] font-semibold bg-[#16150F] hover:bg-[#3A372E] text-[#F7F5F0] py-2 transition-colors"
                 >
                   Sign in to save history
                 </button>
               )}
               <button
                 onClick={onLogout}
-                className="w-full inline-flex items-center justify-center gap-1.5 text-[11px] text-[#7A8794] hover:text-[#3A372E] py-1.5 rounded-lg hover:bg-white/[0.04] transition-colors"
+                className="w-full inline-flex items-center justify-center gap-1.5 text-[11px] text-[#5E6B78] hover:text-[#3A372E] py-1.5 hover:bg-[#F1EEE6] transition-colors"
               >
                 <LogoutIcon size={13} /> Exit to home
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2.5 px-2 py-2 rounded-lg">
-              <div className="w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[12px] font-bold text-[#2C4A6B] uppercase">
+              <div className="w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[12px] font-bold text-[#1F6FB2] uppercase">
                 {user.username.slice(0, 2)}
               </div>
               <div className="min-w-0 flex-1">
@@ -138,7 +139,7 @@ export function Layout({
                 onClick={onLogout}
                 title="Sign out"
                 aria-label="Sign out"
-                className="p-1.5 rounded-md text-[#7A8794] hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                className="p-1.5 rounded-md text-[#5E6B78] hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
               >
                 <LogoutIcon size={16} />
               </button>
@@ -162,7 +163,7 @@ export function Layout({
         <header className="flex-shrink-0 h-[60px] flex items-center gap-3 px-4 sm:px-6 border-b border-[#D8D3C7] bg-[#F1EEE6]/70 backdrop-blur">
           <button
             onClick={() => setMobileOpen(true)}
-            className="lg:hidden p-1.5 rounded-md text-[#6B675C] hover:bg-white/[0.05]"
+            className="lg:hidden p-1.5 rounded-md text-[#6B675C] hover:bg-[#F1EEE6]"
             aria-label="Open navigation"
           >
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.6}>
@@ -173,7 +174,7 @@ export function Layout({
             {NAV.find((n) => n.id === tab)?.label}
           </h1>
           <div className="ml-auto flex items-center gap-2">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono text-[#7A8794]">
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-mono text-[#5E6B78]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-glow" />
               engine online
             </span>

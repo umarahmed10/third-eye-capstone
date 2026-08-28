@@ -14,7 +14,7 @@ export function Panel({
 } & React.HTMLAttributes<HTMLElement>) {
   return (
     <As
-      className={`rounded-xl border border-white/[0.07] bg-[#FFFFFF] ${className}`}
+      className={`rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] ${className}`}
       {...rest}
     >
       {children}
@@ -28,15 +28,15 @@ export function SectionLabel({ children, count }: { children: ReactNode; count?:
     <div className="flex items-center gap-2.5 mb-3.5">
       <h3 className="text-[11px] uppercase tracking-[0.18em] text-[#6B675C] font-semibold">{children}</h3>
       {count !== undefined && (
-        <span className="text-[9px] font-mono text-[#3A372E]/70 bg-white/[0.05] px-1.5 py-0.5 rounded">{count}</span>
+        <span className="text-[9px] font-mono text-[#3A372E]/70 bg-[#F1EEE6] px-1.5 py-0.5 rounded">{count}</span>
       )}
-      <div className="flex-1 h-px bg-gradient-to-r from-white/[0.08] to-transparent" />
+      <div className="flex-1 h-px bg-gradient-to-r from-[#D8D3C7] to-transparent" />
     </div>
   );
 }
 
 export function Eyebrow({ children }: { children: ReactNode }) {
-  return <div className="text-[10px] uppercase tracking-[0.18em] text-[#7A8794] mb-1.5 font-medium">{children}</div>;
+  return <div className="text-[10px] uppercase tracking-[0.18em] text-[#5E6B78] mb-1.5 font-medium">{children}</div>;
 }
 
 // ─── Model · provider chip (model-diversity story) ───
@@ -71,7 +71,7 @@ export function ConfidenceMeter({
       aria-valuemax={100}
       aria-label="confidence"
     >
-      <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+      <div className="flex-1 h-1.5 rounded-full bg-[#F1EEE6] overflow-hidden">
         <div className={`h-full rounded-full ${bar} transition-all duration-700`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-[9px] font-mono text-[#6B675C] tabular-nums w-8 text-right">{pct}%</span>
@@ -99,11 +99,11 @@ export function KpiCard({
       className={`rounded-xl border px-4 py-3.5 ${
         accent
           ? "border-[#D8D3C7] bg-[#EDE9DF]"
-          : "border-white/[0.07] bg-[#FFFFFF]"
+          : "border-[#D8D3C7] bg-[#FFFFFF]"
       }`}
     >
       <div className="flex items-start justify-between gap-2">
-        <div className="text-[10px] uppercase tracking-[0.14em] text-[#7A8794]">{label}</div>
+        <div className="text-[10px] uppercase tracking-[0.14em] text-[#5E6B78]">{label}</div>
         {delta !== undefined && (
           <span
             className={`inline-flex items-center gap-0.5 text-[10px] font-mono font-semibold ${
@@ -116,10 +116,10 @@ export function KpiCard({
           </span>
         )}
       </div>
-      <div className={`text-2xl font-bold tabular-nums leading-none mt-2 ${accent ? "text-[#2C4A6B]" : "text-[#16150F]/90"}`}>
+      <div className={`text-2xl font-bold tabular-nums leading-none mt-2 ${accent ? "text-[#1F6FB2]" : "text-[#16150F]/90"}`}>
         {value}
       </div>
-      {sub && <div className="text-[10px] text-[#7A8794] mt-1.5">{sub}</div>}
+      {sub && <div className="text-[10px] text-[#5E6B78] mt-1.5">{sub}</div>}
     </div>
   );
 }
@@ -140,7 +140,7 @@ export function Pill({ children, tone = "neutral" }: { children: ReactNode; tone
       className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
         tone === "accent"
           ? "text-[#6B675C] bg-[#EDE9DF] ring-1 ring-[#D8D3C7]"
-          : "text-[#6B675C] bg-white/[0.05]"
+          : "text-[#6B675C] bg-[#F1EEE6]"
       }`}
     >
       {children}

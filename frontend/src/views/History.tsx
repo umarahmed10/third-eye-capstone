@@ -56,7 +56,7 @@ export function History({ user }: { user: User }) {
 
   if (loading) {
     return (
-      <div className="h-full flex items-center justify-center gap-2 text-[#7A8794] text-[13px]">
+      <div className="h-full flex items-center justify-center gap-2 text-[#5E6B78] text-[13px]">
         <Spinner /> Loading history…
       </div>
     );
@@ -68,9 +68,9 @@ export function History({ user }: { user: User }) {
         {/* Sessions list */}
         <aside>
           <SectionLabel count={sessions.length}>Sessions</SectionLabel>
-          <div className="rounded-xl border border-white/[0.07] bg-[#FFFFFF] divide-y divide-white/[0.04] max-h-[calc(100vh-160px)] overflow-y-auto">
+          <div className="rounded-xl border border-[#D8D3C7] bg-[#FFFFFF] divide-y divide-[#D8D3C7] max-h-[calc(100vh-160px)] overflow-y-auto">
             {sessions.length === 0 ? (
-              <div className="px-4 py-8 text-center text-[12px] text-[#7A8794]">No sessions yet.</div>
+              <div className="px-4 py-8 text-center text-[12px] text-[#5E6B78]">No sessions yet.</div>
             ) : (
               sessions.map((s) => (
                 <button
@@ -78,21 +78,21 @@ export function History({ user }: { user: User }) {
                   onClick={() => setActive(s.id)}
                   aria-current={active === s.id}
                   className={`w-full flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${
-                    active === s.id ? "bg-[#EDE9DF]" : "hover:bg-white/[0.02]"
+                    active === s.id ? "bg-[#EDE9DF]" : "hover:bg-[#F1EEE6]"
                   }`}
                 >
                   <span
                     className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                      active === s.id ? "bg-[#EDE9DF] text-[#2C4A6B]" : "bg-white/[0.04] text-[#7A8794]"
+                      active === s.id ? "bg-[#EDE9DF] text-[#1F6FB2]" : "bg-[#F1EEE6] text-[#5E6B78]"
                     }`}
                   >
                     <HistoryIcon size={14} />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-[#2C4A6B]" : "text-[#16150F]"}`}>
+                    <div className={`text-[12px] font-medium truncate ${active === s.id ? "text-[#1F6FB2]" : "text-[#16150F]"}`}>
                       {s.title || `Session ${s.id}`}
                     </div>
-                    <div className="text-[9px] font-mono text-[#7A8794]">{fmtDate(s.created_at)}</div>
+                    <div className="text-[9px] font-mono text-[#5E6B78]">{fmtDate(s.created_at)}</div>
                   </div>
                 </button>
               ))
@@ -106,7 +106,7 @@ export function History({ user }: { user: User }) {
           {active == null ? (
             <Empty text="Select a session to view its analyses." />
           ) : loadingMsgs ? (
-            <div className="flex items-center gap-2 text-[#7A8794] text-[13px] py-8">
+            <div className="flex items-center gap-2 text-[#5E6B78] text-[13px] py-8">
               <Spinner /> Loading…
             </div>
           ) : analyses.length === 0 ? (
@@ -151,7 +151,7 @@ export function History({ user }: { user: User }) {
 
 function Empty({ text }: { text: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] px-6 py-12 text-center text-[13px] text-[#7A8794]">
+    <div className="rounded-xl border border-[#D8D3C7] bg-[#F1EEE6] px-6 py-12 text-center text-[13px] text-[#5E6B78]">
       {text}
     </div>
   );

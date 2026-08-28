@@ -33,7 +33,7 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
   return (
     <div className="min-h-screen grid lg:grid-cols-[1.05fr_0.95fr] bg-[#F7F5F0]">
       {/* ─── Left brand panel ─── */}
-      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden border-r border-white/[0.06]">
+      <div className="relative hidden lg:flex flex-col justify-between p-12 overflow-hidden border-r border-[#D8D3C7]">
         <div className="absolute inset-0 bg-grid opacity-60" aria-hidden="true" />
         <div
           className="absolute -top-32 -left-24 w-[28rem] h-[28rem] rounded-full blur-3xl"
@@ -42,12 +42,12 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
         />
         <div className="relative">
           <div className="flex items-center gap-3">
-            <div className="text-[#2C4A6B]" style={{ animationDuration: "30s" }}>
+            <div className="text-[#1F6FB2]" style={{ animationDuration: "30s" }}>
               <ThirdEyeMark size={38} />
             </div>
             <div>
               <div className="text-2xl font-bold text-[#16150F] tracking-tight leading-none">Third-Eye</div>
-              <div className="text-[10px] uppercase tracking-[0.24em] text-[#7A8794] mt-1.5">
+              <div className="text-[10px] uppercase tracking-[0.24em] text-[#5E6B78] mt-1.5">
                 Smart-Contract Security Auditor
               </div>
             </div>
@@ -69,12 +69,12 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
               const Icon = f.icon;
               return (
                 <div key={f.title} className="flex gap-3">
-                  <div className="mt-0.5 w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#2C4A6B] flex-shrink-0">
+                  <div className="mt-0.5 w-8 h-8 rounded-lg bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex items-center justify-center text-[#1F6FB2] flex-shrink-0">
                     <Icon size={15} />
                   </div>
                   <div>
                     <div className="text-[12.5px] font-semibold text-[#16150F]">{f.title}</div>
-                    <div className="text-[11px] text-[#7A8794] leading-relaxed mt-0.5">{f.body}</div>
+                    <div className="text-[11px] text-[#5E6B78] leading-relaxed mt-0.5">{f.body}</div>
                   </div>
                 </div>
               );
@@ -82,7 +82,7 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
           </div>
         </div>
 
-        <div className="relative text-[10px] font-mono text-slate-600">
+        <div className="relative text-[10px] font-mono text-[#5E6B78]">
           Third-Eye is a decision-support tool — it does not replace a professional audit.
         </div>
       </div>
@@ -92,7 +92,7 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
         <div className="w-full max-w-sm animate-fade-in">
           {/* compact brand for mobile */}
           <div className="lg:hidden flex items-center gap-2.5 mb-10">
-            <span className="text-[#2C4A6B]">
+            <span className="text-[#1F6FB2]">
               <ThirdEyeMark size={28} />
             </span>
             <span className="text-xl font-bold text-[#16150F] tracking-tight">ThirdEye</span>
@@ -101,7 +101,7 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
           {onBack && (
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-1.5 text-[12px] text-[#6B675C] hover:text-[#2C4A6B] transition-colors mb-6"
+              className="inline-flex items-center gap-1.5 text-[12px] text-[#6B675C] hover:text-[#1F6FB2] transition-colors mb-6"
             >
               <HomeIcon size={13} /> Back to home
             </button>
@@ -110,7 +110,7 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
           <h1 className="text-xl font-bold text-[#16150F] tracking-tight">
             {mode === "login" ? "Sign in to Third-Eye" : "Create your account"}
           </h1>
-          <p className="text-[12px] text-[#7A8794] mt-1.5">
+          <p className="text-[12px] text-[#5E6B78] mt-1.5">
             {mode === "login" ? "Access the audit console." : "Minimum 3-char username, 4-char password."}
           </p>
 
@@ -152,14 +152,14 @@ export function Login({ onAuth, onBack }: { onAuth: (u: User) => void; onBack?: 
             </button>
           </form>
 
-          <p className="text-center text-[12px] text-[#7A8794] mt-6">
+          <p className="text-center text-[12px] text-[#5E6B78] mt-6">
             {mode === "login" ? "Don't have an account? " : "Already registered? "}
             <button
               onClick={() => {
                 setMode(mode === "login" ? "register" : "login");
                 setError("");
               }}
-              className="text-[#2C4A6B] hover:text-[#2C4A6B] font-medium transition-colors"
+              className="text-[#1F6FB2] hover:text-[#1F6FB2] font-medium transition-colors"
             >
               {mode === "login" ? "Register" : "Sign in"}
             </button>
@@ -185,13 +185,13 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-[11px] uppercase tracking-[0.14em] text-[#7A8794] mb-1.5">{label}</span>
+      <span className="block text-[11px] uppercase tracking-[0.14em] text-[#5E6B78] mb-1.5">{label}</span>
       <input
         type={type}
         value={value}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-white/[0.03] border border-white/[0.09] rounded-lg px-3.5 py-2.5 text-[13px] text-[#16150F] placeholder:text-slate-600 outline-none focus:border-[#D8D3C7] focus:bg-white/[0.05] transition-colors"
+        className="w-full bg-[#F1EEE6] border border-[#D8D3C7] rounded-lg px-3.5 py-2.5 text-[13px] text-[#16150F] placeholder:text-[#5E6B78] outline-none focus:border-[#D8D3C7] focus:bg-[#F1EEE6] transition-colors"
       />
     </label>
   );

@@ -17,29 +17,29 @@ export type SpecialistState = {
 
 export function SpecialistCard({ s, index }: { s: SpecialistState; index: number }) {
   const { status } = s;
-  const color = s.provider ? providerColor(s.provider) : "#2C4A6B";
+  const color = s.provider ? providerColor(s.provider) : "#1F6FB2";
 
   // Skipped specialists render greyed-out with their router skip reason.
   if (status === "skipped") {
     return (
       <article
-        className="relative overflow-hidden rounded-xl border border-white/[0.05] bg-white/[0.008] px-3.5 py-3 flex flex-col gap-2 opacity-55"
+        className="relative overflow-hidden rounded-xl border border-[#D8D3C7] bg-[#FBFAF7] px-3.5 py-3 flex flex-col gap-2 opacity-55"
         title={s.skip_reason || "Not selected by the static router"}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-slate-600">
+            <span className="text-[#5E6B78]">
               <EyeIcon size={14} />
             </span>
-            <span className="text-[12.5px] font-semibold text-[#7A8794] leading-tight truncate line-through decoration-slate-700/60">
+            <span className="text-[12.5px] font-semibold text-[#5E6B78] leading-tight truncate line-through decoration-slate-700/60">
               {humanizeRole(s.role)}
             </span>
           </div>
-          <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#7A8794] bg-white/[0.03] ring-1 ring-white/[0.05] flex-shrink-0">
+          <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#5E6B78] bg-[#F1EEE6] ring-1 ring-[#D8D3C7] flex-shrink-0">
             Skipped
           </span>
         </div>
-        <p className="text-[9.5px] text-slate-600 leading-snug">
+        <p className="text-[9.5px] text-[#5E6B78] leading-snug">
           {s.skip_reason || "Not selected by the static router."}
         </p>
       </article>
@@ -56,7 +56,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
         : "border-emerald-500/20 bg-emerald-500/[0.03]"
       : status === "analyzing"
       ? "border-[#D8D3C7] bg-[#EDE9DF]"
-      : "border-white/[0.07] bg-white/[0.012]";
+      : "border-[#D8D3C7] bg-[#FBFAF7]";
 
   return (
     <article
@@ -81,8 +81,8 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
                   ? "text-rose-400/80"
                   : "text-emerald-400/70"
                 : status === "analyzing"
-                ? "text-[#2C4A6B]"
-                : "text-slate-600"
+                ? "text-[#1F6FB2]"
+                : "text-[#5E6B78]"
             }
           >
             <EyeIcon size={14} />
@@ -107,7 +107,7 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
       {status === "done" && !s.llm_error ? (
         <ConfidenceMeter value={s.confidence ?? 0} tone={s.found ? "danger" : "safe"} />
       ) : status === "queued" ? (
-        <div className="h-1.5 w-full rounded-full bg-white/[0.05]" />
+        <div className="h-1.5 w-full rounded-full bg-[#F1EEE6]" />
       ) : (
         <div className="h-1.5 w-full rounded-full shimmer" />
       )}
@@ -132,14 +132,14 @@ export function SpecialistCard({ s, index }: { s: SpecialistState; index: number
 function StatusBadge({ s }: { s: SpecialistState }) {
   if (s.status === "queued") {
     return (
-      <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#7A8794] bg-white/[0.04] flex-shrink-0">
+      <span className="text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#5E6B78] bg-[#F1EEE6] flex-shrink-0">
         Queued
       </span>
     );
   }
   if (s.status === "analyzing") {
     return (
-      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#2C4A6B] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex-shrink-0">
+      <span className="flex items-center gap-1 text-[8.5px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-md text-[#1F6FB2] bg-[#EDE9DF] ring-1 ring-[#D8D3C7] flex-shrink-0">
         <span className="flex gap-0.5">
           {[0, 0.18, 0.36].map((d) => (
             <span

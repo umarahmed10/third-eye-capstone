@@ -5,8 +5,6 @@ import { Landing } from "./views/Landing";
 import { Exhibit } from "./views/Exhibit";
 import { Login } from "./views/Login";
 import { Analyze } from "./views/Analyze";
-import { HowItWorks } from "./views/HowItWorks";
-import { Benchmarks } from "./views/Benchmarks";
 import { History } from "./views/History";
 
 const STORAGE_KEY = "te_user";
@@ -91,8 +89,6 @@ export default function App() {
           onHome={backToExhibit}
         >
           {tab === "analyze" && <Analyze user={ANON_USER} onNavigate={setTab} />}
-          {tab === "how" && <HowItWorks />}
-          {tab === "benchmarks" && <Benchmarks />}
           {tab === "history" && <History key={`hist-anon`} user={ANON_USER} />}
         </Layout>
       );
@@ -111,8 +107,6 @@ export default function App() {
           onScanComplete={() => setScanNonce((n) => n + 1)}
         />
       )}
-      {tab === "how" && <HowItWorks />}
-      {tab === "benchmarks" && <Benchmarks />}
       {tab === "history" && <History key={`hist-${scanNonce}`} user={user} />}
     </Layout>
   );
