@@ -330,9 +330,26 @@ p_real = conf if judge ruled "real" else 1 − conf; a contract is NO-GO iff any
 finding scores ≥ τ. Early scores on safe contracts are low (0.04–0.18), which
 is the separation the sweep needs.
 
-- Best F1 over τ vs council-only baseline: **[TODO]**
-- If some τ beats 0.694, arbitration is salvageable as a *calibrated* gate and
-  Framing A returns. If not, §4.4 stands as a clean negative result.
+Resolved (n=233 scored, 185 arbitrated). The in-sample optimum is τ=0.15 at F1
+**0.711** against a council-only **0.699** — but that τ was chosen on the same
+data it is scored on, so it is not reportable and we do not report it as a
+result. Held out over 10 disjoint splits:
+
+| | baseline | calibrated gate |
+|---|--:|--:|
+| F1 | 0.706 | **0.705** ± 0.020 |
+| false-alarm rate (safe tiers) | 0.639 | **0.532** |
+| splits won | — | 4 / 10 |
+
+**No τ beats the baseline on held-out F1**, and the gate wins fewer than half
+the splits, so the difference is not distinguishable from noise. §4.4 therefore
+stands as a clean negative result and Framing A does not return.
+
+The one real effect is on the false-alarm rate, which falls 0.639 -> 0.532. It
+does not reach F1 because the recall it costs cancels the precision it buys.
+That is worth stating precisely because it is the trap this paper is about: a
+gate that visibly "reduces false positives" while delivering no net gain would
+read as a success in any evaluation that reported only the FPR column.
 
 ### 4.8 Deployment gap: the measured rule must be the shipped rule
 
@@ -406,6 +423,57 @@ laptop (4GB VRAM, 15.7GB RAM):
 
 **Implication:** the "free/local" selling point of model-diverse councils has a
 hardware floor that published work does not report.
+
+### 4.11 Head-to-head vs GPTScan on IDENTICAL projects
+
+GPTScan (ICSE'24) publishes per-project true/false positive and negative counts
+for the 72 Web3Bugs projects it evaluated. Aggregating that artifact reproduces
+its published recall (0.833) and F1 (0.678) exactly, which establishes the file
+is the right one; it also yields a precision of **0.571** — thirty false
+positives against forty true ones — that the paper does not lead with.
+
+Because the file is per-project, it supports a real head-to-head rather than the
+side-by-side of two different corpora that §6 rightly calls context. We hold
+source for 63 of the 72.
+
+**The unit conversion, and the trap in it.** GPTScan's unit is a project x rule
+check; ours is a project-level decision. Collapsing theirs to ours — detected if
+`tp > 0` — is the only way to compare them, but done naively it is wrong: **34 of
+the 72 projects carry `tp = 0` AND `fn = 0`**, meaning GPTScan's ten rule types
+had no applicable check to run there at all. Scoring those as misses is scoring a
+tool on questions it was never asked, and it drags its apparent detection rate
+from ~91% to ~49%. We therefore compute detection only over projects where
+GPTScan had a ground-truth positive to find.
+
+| on 34 gradable projects | detected | 95% Wilson |
+|---|--:|---|
+| ThirdEye | 33/34 | 97.1% [85.1, 99.5] |
+| GPTScan | 31/34 | 91.2% [77.0, 97.0] |
+
+**The intervals overlap: no detection difference is demonstrated.** We report
+this as the result. A gap claimed across overlapping intervals is precisely the
+inference this paper objects to elsewhere, and claiming one here would forfeit
+the argument.
+
+Two asymmetries remain, both favouring us, and both are stated rather than left
+for a reviewer to find: our detection is any-slice-positive and is **not**
+type-matched, whereas their true positive is; and collapsing to `tp > 0` hides
+their per-check misses inside projects both tools detect. Our rate is an upper
+bound against their lower bound.
+
+**The defensible difference is scope, not accuracy.** The 29 excluded projects
+each carry a confirmed Web3Bugs S-class bug that falls outside GPTScan's rule
+set, so it has no applicable check; ThirdEye returns a verdict on all 29. This is
+a coverage property and is never merged into the recall figure — on an
+all-positive set an any-slice flag is nearly free, so coverage here is not
+evidence of better detection.
+
+**Precision is not computable for us on this bucket**, because every project in
+it is positive. GPTScan's 0.571 and our 29.4% false-alarm rate on the balanced
+tiers come from different negative sets and are not differenced. The honest
+summary is: comparable detection where both tools apply, on roughly twice the
+applicable projects, at a false-alarm cost we measure and they do not have to
+pay.
 
 ## 5. Silent failure modes (the core contribution of Framing B)
 
@@ -489,18 +557,50 @@ corpora. External validity to other contract populations is unestablished.
 4GB-VRAM consumer GPU. They bound what that class of machine can do; they say
 nothing about a datacentre deployment.
 
-**Dataset non-equivalence.** The GPTScan and GPT-4o-mini figures are from other
-papers on other corpora under their own protocols. They are context. The only
-like-for-like comparison in this paper is Slither (§4.3).
+**Dataset non-equivalence.** The GPT-4o-mini figures are from another paper on
+another corpus under its own protocol, and are context only. Two comparisons in
+this paper ARE like-for-like: Slither on identical contracts (§4.3), and GPTScan
+on identical projects (§4.11), the latter using the authors' own published
+per-project results. The aggregate GPTScan row quoted elsewhere in §4 remains
+context, and should not be read as the head-to-head — the two use different
+units and different project sets.
 
 **Threshold selection.** τ is chosen on a dev split and applied once to a
 disjoint test split, averaged over 10 partitions. We additionally report the
 fit-on-everything number so the inflation from selecting on the evaluation set
 is visible rather than assumed.
 
+**Context truncation silently removed a quarter of the corpus from view.**
+Every result in this paper was produced with the local backend's context window
+at 4096 tokens. A longer prompt is not rejected: it is truncated, and the
+specialist then judges a fraction of the contract while returning a verdict
+formed as though it had seen all of it. The backend's own token accounting
+confirms the loss — one identical prompt evaluated **2,050** tokens at the 4096
+setting against **9,054** at 32768.
+
+Measured across the benchmark, **540 of 2,250 contracts (24.0%)** build a prompt
+that exceeds 4096 tokens (median overflow 1.5x, worst 12.6x). The overflow is
+**not class-balanced**: 350 are vulnerable against 190 safe, because real
+vulnerable contracts are larger. Truncation therefore suppresses **recall**
+specifically — the direction that flatters a paper reporting a false-alarm
+problem, which is why we measure it rather than assume it benign.
+
+The effect has two paths. The visible one is abstention: a truncated prompt can
+produce unparseable output, which fails closed to INCONCLUSIVE and removes the
+contract from scoring — and because the affected contracts are the large ones,
+those removals are not random. The quieter one is that a truncated prompt whose
+output *did* parse was scored normally, so an unknown share of the reported
+numbers rests on partial code.
+
+We flag this as a threat to every rate in §4 and note that the same knob is,
+in most published local-LLM evaluations, neither reported nor held constant.
+
 ## 7. What is NOT claimed
 
-- Not "beats GPTScan" — different dataset, no head-to-head run.
+- Not "beats GPTScan". A head-to-head on 34 identical, gradable projects now
+  exists (§4.11) and its confidence intervals OVERLAP, so no detection
+  difference is demonstrated. The defensible claim is broader applicability
+  at an unquantified precision cost on that bucket, not superiority.
 - Not deployable — a 60% FP rate on audited code is not production-ready.
 - Dynamic exploit confirmation is scaffold; auto-harness generation for
   arbitrary contracts is an open problem and is off by default.
