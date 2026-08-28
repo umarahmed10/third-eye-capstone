@@ -173,18 +173,41 @@ async def run_arm(a) -> None:
     spec = next(s for s in council.SPECIALISTS if s["role"] == "business_logic")
 
     pool = []
+    max_tokens = a.max_tokens
+    excluded_tail = 0
     for it in thirdeye_bench.load():
         try:
             code = it.read_code()
         except Exception:
             continue
-        if len(council._build_prompt(spec, code)) // CHARS_PER_TOKEN > 4096:
+        tok = len(council._build_prompt(spec, code)) // CHARS_PER_TOKEN
+        # THE COST CEILING, and why it is not outcome-driven selection.
+        #
+        # The overflow pool is by construction the LARGEST contracts in the
+        # corpus, and its extreme tail (up to 12.6x the window) costs 500-700s
+        # per contract. A first pass managed 14 contracts in 24 minutes, which
+        # would have paired ~16 and left McNemar unable to say anything.
+        #
+        # Capping the prompt size raises n by roughly 4x within the same budget.
+        # The decision was made on MEASURED LATENCY ONLY -- no verdict from
+        # either arm had been examined -- so it is a feasibility restriction, not
+        # a choice made after seeing results.
+        #
+        # It biases the estimate CONSERVATIVELY: the excluded contracts are the
+        # ones where truncation is most severe, so whatever effect we measure on
+        # the retained band is a LOWER bound on the effect over the full pool.
+        if tok > 4096 and (not max_tokens or tok <= max_tokens):
             pool.append(it)
+        elif tok > 4096:
+            excluded_tail += 1
     rng = random.Random(f"ctxablation:{a.sample_seed}")
     rng.shuffle(pool)
     items = pool[: a.n]
     print(f"[ctx] arm={a.arm} num_ctx={a.num_ctx} pool={len(pool)} n={len(items)} "
-          f"conc={a.concurrency}", flush=True)
+          f"conc={a.concurrency}"
+          + (f"  (cost ceiling {max_tokens} tok excluded {excluded_tail} "
+             f"extreme-overflow contracts — conservative)" if max_tokens else ""),
+          flush=True)
 
     ckpt = CKPT_ROOT / f"ctx_{a.arm}"
     ckpt.mkdir(parents=True, exist_ok=True)
@@ -226,6 +249,8 @@ def build_parser():
     ap.add_argument("--arm", help="label, e.g. ctx4k or ctx32k")
     ap.add_argument("--num-ctx", type=int)
     ap.add_argument("--n", type=int, default=120, help="contracts per arm")
+    ap.add_argument("--max-tokens", type=int, default=0,
+                    help="cost ceiling: exclude prompts above this estimated token count")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--sample-seed", type=int, default=0)
     ap.add_argument("--concurrency", type=int, default=4)

@@ -18,8 +18,19 @@ ssh "$BOX" 'cd ~/thirdeye/backend/eval && tar czf - checkpoints 2>/dev/null' \
   > "$OUT/dgx_fullscale/dgx_checkpoints.tar.gz" && \
   echo "   $(du -h "$OUT/dgx_fullscale/dgx_checkpoints.tar.gz" | cut -f1) of checkpoints"
 
-echo "== session log =="
-scp "$BOX:tuesday.log" "$OUT/dgx_fullscale/tuesday.log" 2>/dev/null
+echo "== session logs =="
+# All of them. The 2026-08-28 session produced three separate runs, and the
+# diagnostics that identified the context-truncation bug live in ctx.log and
+# stageb.log, not in tuesday.log. A log left on the box is a log that is gone.
+for L in tuesday ctx stageb ollama; do
+  scp "$BOX:$L.log" "$OUT/dgx_fullscale/$L.log" 2>/dev/null && echo "   $L.log"
+done
+
+echo "== ablation comparison, recomputed locally so it is reproducible here =="
+ssh "$BOX" 'cd ~/thirdeye/backend && ~/thirdeye/venv/bin/python -m eval.run_ctx_ablation --compare ctx4k ctx16k'   > "$OUT/dgx_fullscale/ctx_ablation_compare.txt" 2>&1 &&   tail -6 "$OUT/dgx_fullscale/ctx_ablation_compare.txt"
+
+echo "== gptscan head-to-head =="
+ssh "$BOX" 'cd ~/thirdeye/backend && ~/thirdeye/venv/bin/python -m eval.run_web3bugs --gptscan-set --contests 0 --report-only'   > "$OUT/dgx_fullscale/gptscan_head_to_head.txt" 2>&1 && echo "   captured"
 
 echo
 echo "Collected into $OUT/dgx_fullscale/"
