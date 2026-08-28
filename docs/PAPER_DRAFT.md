@@ -461,10 +461,22 @@ The direction still carries the argument: false alarms concentrate where the
 ### 4.11 Head-to-head vs GPTScan on IDENTICAL projects
 
 GPTScan (ICSE'24) publishes per-project true/false positive and negative counts
-for the 72 Web3Bugs projects it evaluated. Aggregating that artifact reproduces
-its published recall (0.833) and F1 (0.678) exactly, which establishes the file
-is the right one; it also yields a precision of **0.571** — thirty false
-positives against forty true ones — that the paper does not lead with.
+for the 72 Web3Bugs projects it evaluated (the subset of the Code4rena corpus
+that compiles directly, carrying 48 ground-truth logic vulnerabilities in its
+scope). Aggregating that artifact reproduces the published table exactly —
+tp 40, fp 30, tn 154, fn 8 over 232 counts, giving precision **57.14%**, recall
+**83.33%**, F1 **67.8%** — which establishes the file is the right one. The
+precision figure is the one their abstract does not lead with.
+
+**Their unit, in their own words**, is scored at the function level *for each
+tested vulnerability type*: "if a project tested five vulnerability types, each
+would contribute one count". A count is therefore a project x rule-check, not a
+project and not a contract.
+
+**Their definition of a true negative is what licenses the subset below**: a TN
+is a tested type that *lacks a corresponding ground-truth vulnerability in that
+project*. So a project with `tp = 0` and `fn = 0` had nothing of the relevant
+type to find. This is their definition, not our inference.
 
 Because the file is per-project, it supports a real head-to-head rather than the
 side-by-side of two different corpora that §6 rightly calls context. We hold
@@ -495,12 +507,23 @@ type-matched, whereas their true positive is; and collapsing to `tp > 0` hides
 their per-check misses inside projects both tools detect. Our rate is an upper
 bound against their lower bound.
 
-**The defensible difference is scope, not accuracy.** The 29 excluded projects
-each carry a confirmed Web3Bugs S-class bug that falls outside GPTScan's rule
-set, so it has no applicable check; ThirdEye returns a verdict on all 29. This is
-a coverage property and is never merged into the recall figure — on an
-all-positive set an any-slice flag is nearly free, so coverage here is not
-evidence of better detection.
+**The remaining difference is scope, and it is not a defect of theirs.** The 29
+excluded projects each carry a confirmed Web3Bugs S-class bug outside GPTScan's
+rule set, so it has no applicable check; ThirdEye returns a verdict on all 29.
+This is a coverage property and is never merged into the recall figure — on an
+all-positive set an any-slice flag is nearly free.
+
+It must also be attributed honestly. GPTScan targets **ten DeFi logic types**
+(Approval Not Cleared, Risky First Deposit, Price Manipulation by AMM, Price
+Manipulation by Buying Tokens, Vote Manipulation by Flashloan, Front Running,
+Wrong Interest Rate Order, Wrong Checkpoint Order, Slippage, Unauthorized
+Transfer) and **deliberately excludes reentrancy and integer overflow**, on the
+stated premise that existing pattern-based tools already handle those and that
+~80% of Web3 bugs cannot be audited by them. Its narrower project coverage is a
+design decision in service of that premise, not a shortfall against ours. We
+therefore report the gap as **a difference in target population**, not as a win:
+our taxonomy is broader, which is a different claim from being better at the
+task GPTScan set itself.
 
 **Precision is not computable for us on this bucket**, because every project in
 it is positive. GPTScan's 0.571 and our **29.9%** [26.3, 33.6] false-alarm rate

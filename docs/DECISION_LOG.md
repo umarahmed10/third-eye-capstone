@@ -508,3 +508,35 @@ launch and killed its parent. ssh died with 255 before the launch line ran, and
 the script reported success because it never checked ssh's exit code. It now
 refuses to double-start and verifies the process exists rather than inferring it
 from `rc=0`.
+
+### Verifying GPTScan against the paper, not just its CSV
+
+Checked the published paper (arxiv.org/abs/2308.03314) rather than trusting the
+results file alone. The parse reproduces the published table exactly: tp 40,
+fp 30, tn 154, fn 8 over 232 counts, giving 57.14% / 83.33% / 67.8%. (A search
+summary claiming "recall 71.43%" for Web3Bugs is wrong; the paper's Web3Bugs row
+is 83.33%, and the abstract's "over 70%" is a cross-dataset statement.)
+
+Two things the paper settles that we had been inferring:
+
+**The unit.** Scoring is at the function level *for each tested vulnerability
+type* — "if a project tested five vulnerability types, each would contribute one
+count". A count is a project x rule-check.
+
+**The true-negative definition licenses our gradable subset.** A TN is a tested
+type that lacks a corresponding ground-truth vulnerability in that project.
+So `tp = 0 and fn = 0` means there was no positive of the relevant type to find.
+Restricting the detection comparison to projects with `tp + fn > 0` is therefore
+required by their own definition, not a choice of ours. The earlier version that
+scored those 34 projects as GPTScan misses was wrong by their definition, not
+merely unfair.
+
+**A fairness correction the paper forced.** GPTScan targets ten DeFi logic types
+and DELIBERATELY excludes reentrancy and integer overflow, on the premise that
+pattern-based tools already cover those and that ~80% of Web3 bugs cannot be
+audited by them. Its narrower project coverage is a design decision in service of
+that premise. Our draft had presented "roughly twice the applicable projects" as
+a differentiator; that reads as claiming credit for someone else's deliberate
+scoping. It is now reported as a difference in TARGET POPULATION — our taxonomy
+is broader, which is a different claim from being better at the task GPTScan set
+itself.

@@ -524,10 +524,19 @@ function PriorWork() {
           exactly that. Recall is computed only where GPTScan had a positive to find.
         </p>
         <p style={{ fontSize: 13.5, lineHeight: 1.62, color: EX.inkMuted, margin: "11px 0 0", maxWidth: "74ch" }}>
-          Those {H2H.out_of_scope} projects are a <strong>coverage</strong> result instead, never
-          merged into recall: each carries a confirmed bug outside GPTScan&rsquo;s rule set, and
-          ThirdEye returns a verdict on {H2H.out_of_scope_flagged} of {H2H.out_of_scope}. Coverage
-          is not accuracy — an any-slice flag on an all-positive set is nearly free.
+          Those {H2H.out_of_scope} projects are a <strong>coverage</strong> observation, never
+          merged into recall: each carries a confirmed bug outside GPTScan&rsquo;s {GPTSCAN.n_types}
+          rule types, and ThirdEye returns a verdict on {H2H.out_of_scope_flagged} of{" "}
+          {H2H.out_of_scope}. Coverage is not accuracy — an any-slice flag on an all-positive set
+          is nearly free.
+        </p>
+        <p style={{ fontSize: 13.5, lineHeight: 1.62, color: EX.ink, margin: "11px 0 0", maxWidth: "74ch" }}>
+          <strong>And that difference is not a defect of theirs.</strong> GPTScan deliberately
+          scopes to ten DeFi logic types and explicitly excludes reentrancy and overflow, because
+          its stated premise is the ~80% of Web3 bugs that pattern-based tools cannot audit. It is
+          a different target population, not a narrower copy of ours. Reporting the coverage gap as
+          a win would be claiming credit for someone else&rsquo;s deliberate scoping — so it is
+          reported as a difference in what the two tools are for.
         </p>
       </div>
 
@@ -535,6 +544,7 @@ function PriorWork() {
         { k: "What this shows", v: `A paid-GPT system at ICSE'24 carries a false-discovery rate of ${(100 - GPTSCAN.precision * 100).toFixed(0)}% on its own numbers. The false-alarm problem is not peculiar to our council — it is a property of the approach.` },
         { k: "An honest narrowing", v: "GPTScan CAN compute a false-alarm rate, because their evaluation includes negatives by construction. Our blind-spot claim is about the benchmark datasets being all-positive, not about every paper failing to count false alarms. We state the narrower claim." },
         { k: "Their coverage too", v: `${GPTSCAN.static_failures} of their ${GPTSCAN.projects} projects are marked as static-analysis failures in their own results — the same abstention effect measured in section 04, in a published system.` },
+        { k: "Verified against the paper", v: `Every GPTScan figure here was checked against the publication, not just the results file: tp ${GPTSCAN.tp} · fp ${GPTSCAN.fp} · tn ${GPTSCAN.tn} · fn ${GPTSCAN.fn} over ${GPTSCAN.total_checks} counts, reproducing their published ${(GPTSCAN.precision*100).toFixed(2)}% / ${(GPTSCAN.recall*100).toFixed(2)}% / ${(GPTSCAN.f1*100).toFixed(1)}% exactly. Their unit is a ${GPTSCAN.unit}, and their true negative is defined as a tested type with no ground-truth vulnerability in that project — which is precisely why the gradable subset above is the correct denominator.` },
       ]} />
       <Novelty>
         The comparison that matters is not whose recall is higher. It is that two independently
