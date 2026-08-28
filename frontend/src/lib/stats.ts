@@ -1,24 +1,33 @@
-/** Wald 95% interval for a proportion.
+/** Wilson 95% score interval for a proportion.
  *
  * Every headline on this page is a rate estimated from a finite sample, and the
  * whole argument of the paper is that this field reports such rates without
  * saying how sure it is. Printing a bare point estimate here would repeat the
  * mistake we are documenting, so nothing is shown without its interval.
  *
- * Wald is adequate at these n (>150 per tier, p away from 0 and 1) and is what
- * the backend reports, so the two agree. It is clamped to [0,1] because Wald
- * can stray outside the unit interval for small n or extreme p.
+ * NOT WALD, which is what this used to be. Wald is p +/- 1.96*sqrt(p(1-p)/n),
+ * and its width goes to ZERO as p approaches 0 or 1 — so a 63/63 detection rate
+ * renders as "100.0% [100.0, 100.0]", claiming perfect certainty from a finite
+ * sample. That is exactly the unqualified rate this page exists to object to,
+ * and the head-to-head in section 05 sits at 33/34, right where Wald breaks.
+ * Wilson stays inside (0,1) and keeps a sane width at the boundary.
+ *
+ * The backend uses the identical estimator, so a number quoted in the paper and
+ * the same number on this page cannot disagree.
  */
 export function ci95(k: number, n: number): { p: number; lo: number; hi: number; halfWidth: number } | null {
   if (!n || n <= 0) return null;
+  const z = 1.96;
   const p = k / n;
-  const se = Math.sqrt((p * (1 - p)) / n);
-  const lo = Math.max(0, p - 1.96 * se);
-  const hi = Math.min(1, p + 1.96 * se);
-  return { p, lo, hi, halfWidth: 1.96 * se };
+  const d = 1 + (z * z) / n;
+  const centre = (p + (z * z) / (2 * n)) / d;
+  const half = (z / d) * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n));
+  const lo = Math.max(0, centre - half);
+  const hi = Math.min(1, centre + half);
+  return { p, lo, hi, halfWidth: half };
 }
 
-/** "29.4% [25.7, 33.2]" — the form every rate on the page takes. */
+/** "29.4% [26.8, 32.2]" — the form every rate on the page takes. */
 export function fmtCI(k: number, n: number): string {
   const c = ci95(k, n);
   if (!c) return "—";

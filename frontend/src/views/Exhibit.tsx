@@ -3,7 +3,7 @@ import { EX, MONO, SERIF, SANS, T, M } from "../lib/exhibit-theme";
 import { Reveal, StatCard, IntervalBar, CountBar } from "../components/exhibit/Measure";
 import { TryIt } from "../components/exhibit/TryIt";
 import { BENCHMARK_SNAPSHOT } from "../data/benchmark";
-import { PARITY, CAPACITY, SLITHER, GPTSCAN } from "../data/newfindings";
+import { PARITY, CAPACITY, SLITHER, GPTSCAN, HEADTOHEAD as H2H } from "../data/newfindings";
 import { fmtCI, ci95, separated } from "../lib/stats";
 
 /** The exhibit, framed as a MEASUREMENT paper rather than a product.
@@ -467,7 +467,7 @@ function PriorWork() {
     <Section
       n="05" kicker="Against prior work"
       title="GPTScan's own published results contain a precision number their paper does not lead with."
-      lede="The GPTScan authors ship per-project true/false positives and negatives for the 72 Web3Bugs projects they evaluated. Aggregating that file reproduces their published recall and F1 exactly — and also yields a precision of 0.571: thirty false positives against forty true ones."
+      lede="The GPTScan authors ship per-project true/false positives and negatives for the 72 Web3Bugs projects they evaluated. Aggregating that file reproduces their published recall and F1 exactly — and also yields a precision of 0.571: thirty false positives against forty true ones. Because the file is per-project, it also makes a real head-to-head possible: the same tools, scored on the same projects."
     >
       <div style={{ overflowX: "auto", maxWidth: "100%", minWidth: 0 }}>
         <table style={{ borderCollapse: "collapse", width: "100%", minWidth: 480, fontSize: 14 }}>
@@ -490,16 +490,44 @@ function PriorWork() {
         </table>
       </div>
 
-      <div style={{ marginTop: 18, border: `1px solid ${EX.signal}`, padding: "14px 16px", background: EX.signalWash }}>
-        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.signal, marginBottom: 7 }}>
-          NOT YET A LIKE-FOR-LIKE COMPARISON
+      {/* THE HEAD-TO-HEAD. This block used to be a red "NOT YET A LIKE-FOR-LIKE
+          COMPARISON" caveat saying the run was queued. It has now run, so the
+          caveat is replaced by the result — and by the one methodological
+          decision that result depends on. */}
+      <div style={{ marginTop: 22, border: `1px solid ${EX.ink}`, padding: "16px 18px", background: EX.surfaceLift }}>
+        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.ink, marginBottom: 4 }}>
+          HEAD-TO-HEAD · IDENTICAL PROJECTS
         </div>
-        <p style={{ fontSize: 13.5, lineHeight: 1.6, color: EX.inkMuted, margin: 0, maxWidth: "74ch" }}>
-          GPTScan&rsquo;s unit is a {GPTSCAN.unit}; ours is a whole contract, and the two sets differ.
-          Placing the columns side by side is context, not a result, and we say so rather than
-          letting the table imply otherwise. The fix is running our tool on their exact evaluated
-          set — {GPTSCAN.runnable_here} of their {GPTSCAN.projects} projects are reproducible here,
-          and that run is queued.
+        <div style={{ fontFamily: MONO, fontSize: T.micro, color: EX.slate, marginBottom: 14 }}>
+          {H2H.measured} · {H2H.gradable} gradable of {H2H.projects_compared} shared
+        </div>
+
+        <IntervalBar k={H2H.thirdeye_detected} n={H2H.gradable} label="ThirdEye — projects detected" />
+        <IntervalBar k={H2H.gptscan_detected} n={H2H.gradable} label="GPTScan (ICSE'24) — projects detected" tone="signal" />
+
+        <p style={{ fontSize: T.body, lineHeight: 1.6, color: EX.ink, margin: "16px 0 0", maxWidth: "74ch" }}>
+          The intervals <strong>overlap</strong>, so no detection difference is demonstrated. That is
+          the finding, and it is reported as such rather than as a win: a gap claimed across
+          overlapping intervals is the precise error this page spends nine sections objecting to.
+        </p>
+      </div>
+
+      <div style={{ marginTop: 16, border: `1px solid ${EX.hairline}`, padding: "14px 16px", background: EX.surfaceAlt }}>
+        <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: ".12em", color: EX.inkMuted, marginBottom: 7 }}>
+          WHY {H2H.gradable} AND NOT {H2H.projects_compared}
+        </div>
+        <p style={{ fontSize: 13.5, lineHeight: 1.62, color: EX.inkMuted, margin: 0, maxWidth: "74ch" }}>
+          {H2H.out_of_scope} of the shared projects carry <strong>tp = 0 and fn = 0</strong> in
+          GPTScan&rsquo;s own results: its ten rule types had no applicable check to run there.
+          Scoring those as misses would be scoring a tool on questions it was never asked — it
+          drags its apparent rate from 91% to 49%, and an earlier version of this comparison did
+          exactly that. Recall is computed only where GPTScan had a positive to find.
+        </p>
+        <p style={{ fontSize: 13.5, lineHeight: 1.62, color: EX.inkMuted, margin: "11px 0 0", maxWidth: "74ch" }}>
+          Those {H2H.out_of_scope} projects are a <strong>coverage</strong> result instead, never
+          merged into recall: each carries a confirmed bug outside GPTScan&rsquo;s rule set, and
+          ThirdEye returns a verdict on {H2H.out_of_scope_flagged} of {H2H.out_of_scope}. Coverage
+          is not accuracy — an any-slice flag on an all-positive set is nearly free.
         </p>
       </div>
 
