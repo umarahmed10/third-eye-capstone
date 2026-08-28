@@ -226,6 +226,17 @@ async def run_arm(a) -> None:
         # It biases the estimate CONSERVATIVELY: the excluded contracts are the
         # ones where truncation is most severe, so whatever effect we measure on
         # the retained band is a LOWER bound on the effect over the full pool.
+        # THE SAFE-CLASS ARM, and why it needs its own run.
+        #
+        # The overflow pool is 350 vulnerable against 190 safe, so an unfiltered
+        # seeded draw put only FOUR safe contracts into the paired scored set --
+        # an FPR comparison with intervals [4.6, 69.9] vs [15.0, 85.0], which
+        # says nothing. False alarms are this project's headline metric, so
+        # "we do not know what a correct context window does to FPR" is not an
+        # acceptable gap. Restricting the pool to one class buys the power.
+        if a.label and (
+            ("vulnerable" if it.ground_truth_label == "vulnerable" else "safe") != a.label):
+            continue
         if tok > 4096 and (not max_tokens or tok <= max_tokens):
             pool.append(it)
         elif tok > 4096:
@@ -239,7 +250,7 @@ async def run_arm(a) -> None:
              f"extreme-overflow contracts — conservative)" if max_tokens else ""),
           flush=True)
 
-    ckpt = CKPT_ROOT / f"ctx_{a.arm}"
+    ckpt = CKPT_ROOT / f"ctx_{a.arm}"   # arm label carries the class, e.g. ctx4k_safe
     ckpt.mkdir(parents=True, exist_ok=True)
     sem = asyncio.Semaphore(a.concurrency)
     deadline = time.time() + a.max_minutes * 60 if a.max_minutes else None
@@ -281,6 +292,8 @@ def build_parser():
     ap.add_argument("--n", type=int, default=120, help="contracts per arm")
     ap.add_argument("--max-tokens", type=int, default=0,
                     help="cost ceiling: exclude prompts above this estimated token count")
+    ap.add_argument("--label", choices=["safe", "vulnerable"], default=None,
+                    help="restrict the pool to one ground-truth class")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--sample-seed", type=int, default=0)
     ap.add_argument("--concurrency", type=int, default=4)

@@ -22,12 +22,18 @@ echo "== session logs =="
 # All of them. The 2026-08-28 session produced three separate runs, and the
 # diagnostics that identified the context-truncation bug live in ctx.log and
 # stageb.log, not in tuesday.log. A log left on the box is a log that is gone.
-for L in tuesday ctx stageb ollama; do
+for L in tuesday ctx ctx_a2 ctxsafe stageb ollama; do
   scp "$BOX:$L.log" "$OUT/dgx_fullscale/$L.log" 2>/dev/null && echo "   $L.log"
 done
 
 echo "== ablation comparison, recomputed locally so it is reproducible here =="
 ssh "$BOX" 'cd ~/thirdeye/backend && ~/thirdeye/venv/bin/python -m eval.run_ctx_ablation --compare ctx4k ctx16k'   > "$OUT/dgx_fullscale/ctx_ablation_compare.txt" 2>&1 &&   tail -6 "$OUT/dgx_fullscale/ctx_ablation_compare.txt"
+
+echo "== safe-class ablation (the FPR arm) =="
+# The mixed ablation left FPR on n=4. This arm is the answer to "what does a
+# correct context window do to the false-alarm rate", which is the headline
+# metric, so it is captured separately and by name.
+ssh "$BOX" 'cd ~/thirdeye/backend && ~/thirdeye/venv/bin/python -m eval.run_ctx_ablation --compare ctx4k_safe ctx16k_safe'   > "$OUT/dgx_fullscale/ctx_ablation_safe.txt" 2>&1 &&   grep -E "paired|FPR|McNemar|Verdict" "$OUT/dgx_fullscale/ctx_ablation_safe.txt" | head -6
 
 echo "== gptscan head-to-head =="
 ssh "$BOX" 'cd ~/thirdeye/backend && ~/thirdeye/venv/bin/python -m eval.run_web3bugs --gptscan-set --contests 0 --report-only'   > "$OUT/dgx_fullscale/gptscan_head_to_head.txt" 2>&1 && echo "   captured"
