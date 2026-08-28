@@ -60,7 +60,7 @@ start_ollama 4
 warm llama3.1:8b
 log "### A. finish 8B ablation (n=233) — $(left) min left"
 OLLAMA_LOGIC_MODEL=llama3.1:8b $PY -u -m eval.run_parity \
-  --arm full8b --seed 0 --concurrency 4 --manifest "$MAN" || log "A failed, continuing"
+  --arm full8b --seed 0 --concurrency 4 --manifest "$MAN" || log "A EXITED NONZERO -- check the traceback above"
 
 # --------------------------------------------------------- C. NUM_PARALLEL=1
 log "### C. NUM_PARALLEL=1 control — $(left) min left"
@@ -92,12 +92,12 @@ if [ "$D_BUDGET" -gt 10 ]; then
   # is unchanged, so no verdict numerics move.
   timeout $(( D_BUDGET * 2 / 3 ))m $PY -u -m eval.run_web3bugs \
     --gptscan-set --contests 0 --max-slices 25 --backend ollama --seed 0 --concurrency 8 \
-    || log "D1 (gptscan head-to-head) stopped at budget"
+    || log "D1 (gptscan head-to-head) EXITED NONZERO -- budget OR crash, check above"
   $PY -u -m eval.run_web3bugs --gptscan-set --report-only || true
 
   timeout $(( D_BUDGET / 3 ))m $PY -u -m eval.run_web3bugs \
     --contests 0 --max-slices 25 --backend ollama --seed 0 --concurrency 8 \
-    || log "D2 (full sweep) stopped at budget"
+    || log "D2 (full sweep) EXITED NONZERO -- budget OR crash, check above"
   $PY -u -m eval.run_web3bugs --report-only || true
 else
   log "skipping D — no time left"

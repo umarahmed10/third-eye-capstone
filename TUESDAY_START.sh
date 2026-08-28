@@ -29,7 +29,7 @@ echo "== 2. sync the fixed eval code =="
 # .env is excluded on purpose -- that box is shared with other students.
 tar czf - --exclude='.env' --exclude='venv*' --exclude='__pycache__' \
           --exclude='*.pyc' --exclude='eval/checkpoints' --exclude='*.db' \
-    backend/eval backend/services backend/requirements.txt 2>/dev/null \
+    backend/eval backend/services backend/requirements.txt datasets/gptscan 2>/dev/null \
   | ssh "$BOX" 'tar xzf - -C ~/thirdeye --strip-components=0 && echo "   code synced"'
 
 echo "== 3. sanity checks =="
@@ -45,12 +45,33 @@ ssh "$BOX" 'cd ~/thirdeye/backend
   if [ ! -f ~/thirdeye/backend/eval/dgx_tuesday.sh ]; then echo "   ERROR: session script missing"; fi'
 
 echo "== 4. launch, detached =="
+# DO NOT pkill here. The bracket trick stops the PATTERN matching itself, but
+# this same command line also contains the literal path .../dgx_tuesday.sh, so
+# "pkill -f dgx_tue[s]day" matched the shell running THIS command and killed its
+# own parent: ssh died with 255 before the launch line ran, and this script
+# reported success because it never checked ssh's exit code. Killing a live
+# session would also be destructive -- stages are budgeted, so a mid-run kill
+# costs the whole remaining budget. Refuse to double-start instead.
+ALIVE='pgrep -f "^/bin/bash .*dgx_tuesday[.]sh$" >/dev/null'
+if ssh "$BOX" "$ALIVE"; then
+  echo "A session is ALREADY RUNNING on the box. Not starting a second one."
+  echo "  progress : ./TUESDAY_STATUS.sh"
+  exit 1
+fi
 ssh "$BOX" "chmod +x ~/thirdeye/backend/eval/dgx_tuesday.sh
-  pkill -f 'dgx_tue[s]day' 2>/dev/null || true
   TOTAL_MINUTES=$MINUTES setsid nohup ~/thirdeye/backend/eval/dgx_tuesday.sh \
       > ~/tuesday.log 2>&1 < /dev/null &
   sleep 8
-  echo '   started:'; head -3 ~/tuesday.log"
+  echo '   started:'; head -3 ~/tuesday.log" || { echo "LAUNCH SSH FAILED"; exit 1; }
+
+# Trust nothing: prove the process exists rather than inferring it from rc=0.
+sleep 4
+if ! ssh "$BOX" "$ALIVE"; then
+  echo "LAUNCH FAILED -- no session process on the box. Last log lines:"
+  ssh "$BOX" 'tail -20 ~/tuesday.log 2>/dev/null || echo "(no log written)"'
+  exit 1
+fi
+echo "   verified: session process alive"
 
 echo
 echo "RUNNING. Budget ${MINUTES} min. Safe to close the laptop lid."

@@ -145,6 +145,121 @@ def score(rows: list[dict], sclass: dict[str, list[dict]]) -> dict:
     }
 
 
+def _wilson(k: int, n: int):
+    """95% Wilson score interval.
+
+    NOT Wald. Wald is p +/- 1.96*sqrt(p(1-p)/n), whose width is ZERO when p hits
+    0 or 1 -- so a tool detecting 63/63 would report "100.0% [100.0-100.0]",
+    claiming perfect certainty from a finite sample. That is exactly the kind of
+    unqualified rate this paper exists to complain about, and a reviewer would
+    rightly kill it. Wilson stays inside (0,1) and keeps sane width at the
+    boundary: 63/63 becomes ~[94.3-100.0].
+    """
+    import math
+    if n <= 0:
+        return None
+    z = 1.96
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = (z / d) * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return p, max(0.0, c - h), min(1.0, c + h)
+
+
+def head_to_head(rows: list[dict]) -> None:
+    """ThirdEye vs GPTScan on the SAME projects.
+
+    THE UNIT PROBLEM. GPTScan publishes per-project counts of RULE-CHECK
+    outcomes: a tp means one of its ten targeted vulnerability types was matched
+    in that project. We produce one decision per project ("was any slice
+    flagged"). Comparing those directly is indefensible, so their counts are
+    collapsed to our unit -- a project is detected if tp > 0 -- and compared on
+    an identical project list.
+
+    THE TRAP THAT MAKES THAT COLLAPSE WRONG IF DONE NAIVELY, and it is a large
+    one: 34 of the 72 published projects have tp = 0 AND fn = 0. GPTScan had no
+    ground-truth positive check in those projects at all -- its ten rule types
+    simply do not cover the bug that Web3Bugs labels there. Counting them as
+    GPTScan misses scores it on questions it was never asked, and drags its
+    apparent detection rate from ~90% down to ~49%. The first version of this
+    function did exactly that. So recall is computed ONLY over projects where
+    GPTScan had at least one positive to find.
+
+    What the excluded projects actually measure is SCOPE, not accuracy, and it is
+    reported separately: on those projects GPTScan's rule set has nothing
+    applicable to look for, while ThirdEye still returns a verdict. That is a
+    real difference in coverage and it is worth saying -- but it is not recall,
+    and merging the two would be the same error in the other direction.
+
+    Even on the fair subset the remaining asymmetries FAVOUR US, so they are
+    printed rather than buried:
+      1. our "detected" needs any slice flagged anywhere in the codebase; it does
+         NOT require the flag to name the right bug. Their tp does.
+      2. collapsing to tp>0 hides their per-check misses inside a project we both
+         detect.
+    Our rate is therefore an UPPER bound against their LOWER bound.
+
+    And the number that matters most is the one this bucket cannot give: every
+    project here is positive, so precision is not computable for us, while
+    GPTScan reports 30 FPs against 154 TNs. Their precision is printed beside our
+    balanced-bucket FPR, labelled as two DIFFERENT negative sets, never
+    subtracted from one another.
+    """
+    gs = json.load(open(REPO_ROOT / "datasets" / "gptscan" / "gptscan_parsed.json",
+                        encoding="utf-8"))
+    theirs = {str(r["contest_id"]): r for r in gs["per_project"]}
+    ours = {str(r["contest_id"]): r for r in rows if r.get("n_slices_scanned", 0) > 0}
+    shared = sorted(set(theirs) & set(ours), key=lambda x: int(x))
+    if not shared:
+        print("\n[head-to-head] no overlapping projects scored yet")
+        return
+
+    # Projects where GPTScan actually had a ground-truth positive check.
+    gradable = [c for c in shared if theirs[c]["tp"] + theirs[c]["fn"] > 0]
+    out_of_scope = [c for c in shared if theirs[c]["tp"] + theirs[c]["fn"] == 0]
+
+    print("\n=== HEAD-TO-HEAD vs GPTScan (ICSE'24) ===")
+    print(f"projects we both cover   {len(shared)}")
+    print(f"  gradable for recall    {len(gradable)}   (GPTScan had >=1 positive check)")
+    print(f"  outside GPTScan scope  {len(out_of_scope)}   (tp=0 and fn=0: no applicable rule)")
+
+    if gradable:
+        od = [c for c in gradable if ours[c]["detected"]]
+        td = [c for c in gradable if theirs[c]["tp"] > 0]
+        a = _wilson(len(od), len(gradable))
+        b = _wilson(len(td), len(gradable))
+        print(f"\n-- DETECTION on the {len(gradable)} gradable projects --")
+        print(f"ThirdEye                 {len(od):>3}/{len(gradable)}   "
+              f"{a[0]*100:.1f}%  [{a[1]*100:.1f}-{a[2]*100:.1f}]")
+        print(f"GPTScan                  {len(td):>3}/{len(gradable)}   "
+              f"{b[0]*100:.1f}%  [{b[1]*100:.1f}-{b[2]*100:.1f}]")
+        sep = "SEPARATED" if (a[1] > b[2] or b[1] > a[2]) else "OVERLAPPING"
+        print(f"95% Wilson intervals     {sep}")
+        if sep == "OVERLAPPING":
+            print("                         -> NO detection difference is demonstrated.")
+
+    if out_of_scope:
+        oo = [c for c in out_of_scope if ours[c]["detected"]]
+        print(f"\n-- SCOPE on the {len(out_of_scope)} out-of-scope projects --")
+        print(f"These carry a confirmed Web3Bugs S-class bug that GPTScan's ten rule")
+        print(f"types do not target, so it has no applicable check to run.")
+        print(f"ThirdEye still returns a verdict and flags  {len(oo)}/{len(out_of_scope)}.")
+        print("This is COVERAGE, not recall. It is not evidence of better detection,")
+        print("because an any-slice flag on an all-positive set is nearly free.")
+
+    agg = gs["aggregate"]
+    print(f"\nGPTScan precision        {agg['precision']:.3f} "
+          f"(tp={agg['tp']} fp={agg['fp']}) — published, rule-check unit")
+    print(f"GPTScan FPR              {agg['fpr']:.3f} on its own "
+          f"{agg['tn'] + agg['fp']} negative checks")
+    print("ThirdEye precision       NOT COMPUTABLE here — every project in this bucket is positive.")
+    print("\nREMAINING ASYMMETRIES, all favouring us:")
+    print("  * our detection is any-slice-positive and NOT type-matched; their tp is.")
+    print("  * collapsing to tp>0 hides their misses inside projects we both detect.")
+    print("  * the two false-positive figures come from DIFFERENT negative sets and")
+    print("    are not a difference; ThirdEye's FPR is measured on buckets 01/02.")
+
+
 async def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--contests", type=int, default=20, help="0 = all 102")
@@ -194,11 +309,19 @@ async def main() -> None:
                   f"-> {'DETECTED' if row['detected'] else 'missed  '} "
                   f"({n_bugs} S-bug(s), {row['latency_s']}s)")
     else:
+        # --report-only used to glob EVERY checkpoint and ignore --gptscan-set, so
+        # "the GPTScan comparison" silently reported the whole 91-contest sweep
+        # under that label. Same filter as the run path, or the report is a
+        # comparison that is not one.
+        keep_ids = {str(i.contract_id) for i in items} if a.gptscan_set else None
         for cp in sorted(CKPT.glob("contest_*.json")):
             try:
-                rows.append(json.load(open(cp)))
+                r = json.load(open(cp))
             except Exception:
                 continue
+            if keep_ids is not None and str(r.get("contest_id")) not in keep_ids:
+                continue
+            rows.append(r)
 
     if not rows:
         print("[web3bugs] nothing scored yet")
@@ -208,7 +331,11 @@ async def main() -> None:
     rep["backend"] = a.backend
     rep["max_slices"] = a.max_slices
     RESULTS.mkdir(parents=True, exist_ok=True)
-    json.dump({"summary": rep, "contests": rows}, open(RESULTS / "web3bugs_bench.json", "w"), indent=1)
+    # Distinct filename: the head-to-head and the open sweep are different
+    # populations, and writing both to web3bugs_bench.json meant whichever ran
+    # last silently became "the" web3bugs result.
+    out = "web3bugs_gptscan.json" if a.gptscan_set else "web3bugs_bench.json"
+    json.dump({"summary": rep, "contests": rows}, open(RESULTS / out, "w"), indent=1)
 
     print(f"\n=== WEB3BUGS (bucket 04) — contest-level ===")
     print(f"contests scored          {rep['contests_scored']}")
@@ -218,6 +345,9 @@ async def main() -> None:
     print(f"bug recall (UPPER bound) {rep['bug_level_recall_upper_bound']:.3f}")
     print(f"median latency/contest   {rep['median_latency_s']}s")
     print(f"\n{rep['note']}")
+
+    if a.gptscan_set:
+        head_to_head(rows)
 
 
 asyncio.run(main())
