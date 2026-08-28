@@ -30,6 +30,11 @@ import os
 import json
 
 from services.council import _query, GROQ_MODEL, CEREBRAS_MODEL, CEREBRAS_API_KEY
+from services.llm import LLM_TIMEOUT
+
+# Same fix as council.SPECIALIST_TIMEOUT: 240 was hardcoded here too, so
+# LLM_TIMEOUT never governed arbitration either.
+ARB_TIMEOUT = int(os.getenv("ARB_TIMEOUT", str(LLM_TIMEOUT)))
 
 # Who plays red-team / judge in each tier. Both must differ from the typical
 # proposer model so the review is adversarial across model families.
@@ -143,7 +148,7 @@ async def _arbitrate_one(finding: dict, code: str, backend: str, seed: int | Non
         evidence_quote=finding.get("evidence_quote", ""),
         proposed_property=finding.get("proposed_property", ""),
         code=code,
-    ), timeout=240, seed=seed)
+    ), timeout=ARB_TIMEOUT, seed=seed)
 
     judge_raw = await _query(j_provider, j_model, _JUDGE_PROMPT.format(
         vuln_type=finding["type"],
@@ -151,7 +156,7 @@ async def _arbitrate_one(finding: dict, code: str, backend: str, seed: int | Non
         evidence_quote=finding.get("evidence_quote", ""),
         rebuttal=rebuttal[:1500],
         code=code,
-    ), timeout=240, seed=seed)
+    ), timeout=ARB_TIMEOUT, seed=seed)
     judgment = _parse_judge(judge_raw)
 
     return {

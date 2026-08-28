@@ -372,8 +372,23 @@ def quote_appears_in_code(quote: str, code: str) -> bool:
     return _normalize_for_quote_check(quote) in _normalize_for_quote_check(code)
 
 
+# The per-specialist wait. This was hardcoded to 240 while _query does
+# "timeout or LLM_TIMEOUT", so passing 240 explicitly meant LLM_TIMEOUT was
+# DEAD: setting LLM_TIMEOUT=600 for a big-GPU run changed nothing, and every
+# call was still capped at 240s on every machine.
+#
+# That is not merely a throughput bug. With N contracts in flight x 8
+# specialists against OLLAMA_NUM_PARALLEL, requests QUEUE, and queue wait counts
+# against this client-side deadline. A timeout returns an error marker, which
+# fails closed to INCONCLUSIVE and quarantines the contract -- and the calls that
+# blow the deadline are the LARGE, COMPLEX contracts. Dropping those biases the
+# scored sample toward simpler code, which is a threat to validity, not a
+# slowdown. On the campus GB10 it was discarding 23% of contracts.
+SPECIALIST_TIMEOUT = int(os.getenv("SPECIALIST_TIMEOUT", str(LLM_TIMEOUT)))
+
+
 async def _run_specialist(spec: dict, provider: str, model: str, code: str, seed: int | None) -> dict:
-    raw = await _query(provider, model, _build_prompt(spec, code), timeout=240, seed=seed)
+    raw = await _query(provider, model, _build_prompt(spec, code), timeout=SPECIALIST_TIMEOUT, seed=seed)
     result = _parse_specialist_json(raw, spec["role"])
     # If the specialist found something but proposed no property, fall back to
     # the curated property_hint so the dynamic layer always has a target.
