@@ -410,3 +410,101 @@ obvious reviewer objection — "why not just use a bigger model?" — with our o
 data, and it argues the lever is aggregation, not capability. The n=233 arm is
 ~223/233 computed and resumes on next campus access.
 
+
+---
+
+## 2026-08-28 — Campus GB10 session
+
+### The 8B capacity ablation, at full n
+
+The n=24 pilot held. Final arm, n=233 (232 scored, 1 inconclusive):
+
+| | DGX / llama3.1:8b | laptop / llama3.2:3b |
+|---|--:|--:|
+| accuracy | 0.651 | 0.625 |
+| median latency | 22.6 s | 60.6 s |
+| agreement with laptop | 0.767 | — |
+
+Note the confound this arm does NOT resolve: it varies model AND hardware AND
+Ollama version at once. The `NUM_PARALLEL=1` control (n=233, 227 scored) is the
+lever that separates serving config from the rest.
+
+### The GPTScan head-to-head had never run
+
+`run_web3bugs --gptscan-set` reads `datasets/gptscan/comparison_set.json`, which
+lives at the repo root. `TUESDAY_START.sh` synced only three `backend/` paths,
+so the file was never on the box: the stage died with `FileNotFoundError` on
+every session, and the session script logged it as `stopped at budget`. The
+failure read as a clock problem for weeks. It needed **zero** new GPU time —
+63 of the projects were already checkpointed.
+
+Two further defects in the same path, both of which would have put a wrong
+number in the paper:
+
+* `--report-only` ignored `--gptscan-set` and globbed every checkpoint, so "the
+  GPTScan comparison" silently reported the whole 91-contest sweep.
+* Both runs wrote `web3bugs_bench.json`, so whichever finished last became "the"
+  web3bugs result.
+
+### The comparison was unfair in our favour, twice
+
+**Wald at the boundary.** 63/63 printed as `100.0% [100.0-100.0]` — perfect
+certainty claimed from a finite sample, on a project whose thesis is that rates
+are published without their uncertainty. Backend and exhibit both moved to
+Wilson. This also tightened the headline FPR from `[25.7, 33.2]` to
+`[26.8, 32.2]`.
+
+**Scoring GPTScan on questions it was never asked.** Collapsing their per-project
+rule-check counts to "detected if tp > 0" counted 34 of 72 projects as misses.
+Those have `tp = 0` AND `fn = 0`: their ten rule types had no applicable check
+there at all. That single error dragged their apparent rate from ~91% to ~49%
+and would have been fatal in review.
+
+Recall is now computed only over projects where GPTScan had a positive to find:
+
+| on 34 gradable projects | detected | |
+|---|--:|---|
+| ThirdEye | 33/34 | 97.1% [85.1, 99.5] |
+| GPTScan | 31/34 | 91.2% [77.0, 97.0] |
+
+**Intervals overlap — no detection difference is demonstrated.** That is the
+result, and claiming a win across overlapping intervals would forfeit the
+paper's own argument.
+
+The real finding is **scope**, reported separately and never merged into recall:
+29 of the 63 shared projects carry a confirmed bug outside GPTScan's rule set,
+and ThirdEye returns a verdict on all 29. Coverage is not accuracy — an
+any-slice flag on an all-positive set is nearly free.
+
+Positioning that follows: **comparable detection where both tools apply, on
+roughly twice the applicable projects, at a false-alarm cost we measure and they
+do not have to pay** (their published precision 0.571; our FPR 29.4% on buckets
+01/02 — different negative sets, never subtracted).
+
+### `LLM_TIMEOUT` was dead code, and it was biasing the sample
+
+`_query` does `timeout or LLM_TIMEOUT`, and `_run_specialist` passed
+`timeout=240` explicitly, so the env var never governed anything on any machine.
+`arbitration.py` had two more hardcoded 240s and never imported `LLM_TIMEOUT`.
+
+This is a validity bug, not a throughput one. With N contracts in flight x 8
+specialists against `OLLAMA_NUM_PARALLEL`, requests queue, and queue wait counts
+against the client-side deadline. A blown deadline fails closed to INCONCLUSIVE
+and quarantines the contract — and the calls that blow it are the **large,
+complex** contracts. The discards are not random, so the scored sample skews
+toward simpler code.
+
+Measured on the GB10 before the fix: 9 INCONCLUSIVE in 39 contracts (23%), with
+deaths clustered at 303.0 s, 303.4 s and 405.4 s — the signature of a 240 s
+per-call cap plus queueing. Stage B was relaunched with the fix live and
+`--retry-quarantined`.
+
+### Operational: a pkill that killed its own launcher
+
+`TUESDAY_START.sh` ran `pkill -f 'dgx_tue[s]day'` to clear a stale session. The
+bracket stops the *pattern* matching itself, but the same command line contains
+the literal path `.../dgx_tuesday.sh`, so pkill matched the shell running the
+launch and killed its parent. ssh died with 255 before the launch line ran, and
+the script reported success because it never checked ssh's exit code. It now
+refuses to double-start and verifies the process exists rather than inferring it
+from `rc=0`.
