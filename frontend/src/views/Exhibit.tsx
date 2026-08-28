@@ -587,9 +587,9 @@ function NotReproducible() {
       <Evidence items={[
         { k: "Ruled out", v: "Model weights. The digests are byte-identical on both machines, so the models and their sampling defaults are the same artefacts." },
         { k: "Also ruled out", v: "The decision rule. Both sides are replayed through the same live verdict functions; comparing a stored verdict against a fresh run measures a code change, not a machine." },
-        { k: "Still open", v: "Three variables moved together — GPU, runtime build, and batch parallelism. A single-variable control is queued and decides which." },
+        { k: "And now: batching ruled out", v: `Three variables moved together — GPU, runtime build, and the batch parallelism we ourselves changed. The single-variable control has now run: re-scoring the identical contracts at num_parallel=1 moves agreement ${(PARITY.np1_control.agreement_np4 * 100).toFixed(1)}% → ${(PARITY.np1_control.agreement_np1 * 100).toFixed(1)}%, and paired McNemar finds nothing — false alarms p = ${PARITY.np1_control.false_alarms_mcnemar_p}, misses p = ${PARITY.np1_control.misses_mcnemar_p}.` },
+        { k: "What that leaves", v: "The machine and its runtime build. This is the harder result, not the easier one: identical model digests, identical seeds and identical code do not reproduce across hardware, and the convenient explanation — that we perturbed it ourselves by batching — is now excluded by measurement." },
       ]} />
-      <Pilot n={PARITY.n}>{PARITY.caveat}</Pilot>
       <Novelty>
         If a verdict depends on the machine that produced it, a published false-alarm rate is partly
         a property of the authors&rsquo; hardware. We can find no prior work in this area that
@@ -633,14 +633,10 @@ function CapabilityDoesntFix() {
       </div>
 
       <Evidence items={[
-        { k: "What improved", v: `The larger model caught every bug it had been missing — misses went ${small.misses} → ${large.misses}.` },
-        { k: "What got worse", v: `It also objected to three more safe contracts — false alarms ${small.false_alarms} → ${large.false_alarms}. Net accuracy fell, and latency was unchanged.` },
-        { k: "Not noise", v: `All ${CAPACITY.flips_same_direction} differing verdicts moved the same way: toward blocking. A coin would not do that.` },
+        { k: "What improved, and it is real", v: `The larger model missed fewer bugs — ${small.misses} → ${large.misses} of ${CAPACITY.n_vuln}. Paired McNemar over the same contracts: p = ${CAPACITY.mcnemar.misses.p}. We are not dismissing the gain; it happened.` },
+        { k: "What it cost, and it is bigger", v: `False alarms went ${small.false_alarms} → ${large.false_alarms} of ${CAPACITY.n_safe}. Paired McNemar p = ${CAPACITY.mcnemar.false_alarms.p} — the same test, four orders of magnitude more decisive. Net accuracy FELL, ${small.accuracy.toFixed(3)} → ${large.accuracy.toFixed(3)}.` },
+        { k: "The trade, stated plainly", v: `${CAPACITY.mcnemar.misses.only_small_wrong - CAPACITY.mcnemar.misses.only_large_wrong} fewer misses bought with ${CAPACITY.mcnemar.false_alarms.only_large_wrong - CAPACITY.mcnemar.false_alarms.only_small_wrong} more false alarms. Because the arms are PAIRED on contract id, this is McNemar on the discordant pairs rather than two overlapping intervals — the weaker test would have understated it.` },
       ]} />
-      <Pilot n={CAPACITY.n}>
-        {CAPACITY.why} The full-scale arm completes on the next session; the direction is
-        established, the magnitude is not yet pinned.
-      </Pilot>
       <Novelty>
         This answers the first objection any reviewer raises — &ldquo;why not just use a better
         model?&rdquo; — with measurement rather than argument. More capability bought recall and
