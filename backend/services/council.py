@@ -199,10 +199,31 @@ def _warn(model: str, kind: str, detail: str = "") -> None:
     print(f"[council] {model} {kind}: {detail}", file=sys.stderr, flush=True)
 
 
+# The context window, as an EXPLICIT per-request option rather than an invisible
+# server setting.
+#
+# It was governed only by OLLAMA_CONTEXT_LENGTH on the server, which meant the
+# single most consequential knob in the whole pipeline was not recorded in any
+# run config, could not be varied without restarting Ollama, and truncated
+# silently when exceeded. Measured on the benchmark corpus: 24% of contracts
+# (540/2250) build a prompt longer than 4096 tokens, and Ollama's own
+# prompt_eval_count confirms the overflow is simply cut -- 2050 tokens evaluated
+# out of a ~11.8k-token prompt. The specialist then judges a fraction of the
+# contract and reports a verdict as if it had seen all of it.
+#
+# The truncation is NOT class-balanced: 350 of those 540 are vulnerable against
+# 190 safe, because buggy real-world contracts are bigger. So it suppresses
+# recall specifically, which is the direction that flatters a false-alarm paper.
+# 0 keeps Ollama's server default.
+NUM_CTX = int(os.getenv("OLLAMA_NUM_CTX", "0"))
+
+
 async def _query_ollama_model(model: str, prompt: str, timeout: int | None = None, seed: int | None = None) -> str:
     options = {}
     if seed is not None:
         options["seed"] = seed  # Ollama honours options.seed for reproducible sampling
+    if NUM_CTX:
+        options["num_ctx"] = NUM_CTX
     async with httpx.AsyncClient() as client:
         try:
             body = {"model": model, "prompt": prompt, "stream": False}
