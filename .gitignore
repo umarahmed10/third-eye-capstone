@@ -26,23 +26,23 @@ backend/dynamic_workspace/cache/
 # Large third-party benchmark corpora (cloned by backend/eval/loaders/, not authored here)
 datasets/
 
-# Generated eval CHECKPOINTS are large; ignored. The small result tables +
-# the committed benchmark snapshot under results/ ARE tracked (see !lines)
-# so the deployed dashboard has real numbers without the datasets.
+# Generated eval CHECKPOINTS are large; ignored.
 backend/eval/checkpoints/
-backend/eval/results/*
-!backend/eval/results/baseline_table.md
-!backend/eval/results/ablation_ac.md
-!backend/eval/results/ablation_ac.json
-!backend/eval/results/benchmark_stats.json
-# SEM-7 result tables — small, and they are what the dashboard and the paper
-# cite. Checkpoints that produced them stay ignored (thousands of files).
-!backend/eval/results/benchmark_by_tier*.json
-!backend/eval/results/benchmark_by_tier*.md
-!backend/eval/results/weighted_aggregation.json
-!backend/eval/results/arbitration_sweep.json
-!backend/eval/results/arbitration_ablation.json
-!backend/eval/results/slither_bench.json
+
+# Result tables under results/ ARE tracked: they are small, and they are what
+# the paper and the dashboard cite.
+#
+# This was previously "backend/eval/results/*" plus a hand-maintained !allowlist,
+# which failed twice over. New result files were silently dropped unless someone
+# remembered to add a ! line, and NOTHING in a subdirectory could ever be
+# re-allowed at all -- git does not descend into an ignored directory to honour a
+# negation, so the entire dgx_fullscale/ campus capture was invisible.
+#
+# Inverted: track by default, and name the few things that must stay out.
+backend/eval/results/.pipeline.lock
+backend/eval/results/dgx_fullscale/ollama.log
+backend/eval/results/benchmark_run.log
+backend/eval/results/benchmark_vuln_rerun.log
 
 # New benchmark buckets (large, gitignored like datasets/)
 smartcontract-datasets/
