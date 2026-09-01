@@ -8,6 +8,10 @@
 # closing the laptop or dropping wifi does NOT kill it), and returns.
 # Check progress later with ./TUESDAY_STATUS.sh, collect with ./TUESDAY_FETCH.sh
 # ============================================================================
+# Run from anywhere: these paths are repo-root-relative, and this script
+# now lives in scripts/ rather than at the root.
+cd "$(dirname "$0")/.." || exit 1
+
 set -u
 # Host is NOT committed: it is a shared campus machine on a private network.
 # Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host

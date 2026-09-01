@@ -230,7 +230,7 @@ async def analyze_council(req: AnalyzeReq, request: Request, uid: int | None = D
     return result
 
 
-class ArgusReq(BaseModel):
+class PipelineReq(BaseModel):
     code: str
     session_id: str | None = None
     user_id: str | None = None
@@ -239,8 +239,12 @@ class ArgusReq(BaseModel):
     use_dynamic: bool = True
 
 
-@app.post("/api/analyze/argus")
-async def analyze_argus(req: ArgusReq, request: Request, uid: int | None = Depends(optional_user)):
+# The "/argus" spelling is the pre-rename path. It is kept as an alias so any
+# saved client, script or bookmark keeps working; new callers should use
+# "/api/analyze/pipeline". Both resolve to the same handler.
+@app.post("/api/analyze/pipeline")
+@app.post("/api/analyze/argus", deprecated=True)
+async def analyze_pipeline(req: PipelineReq, request: Request, uid: int | None = Depends(optional_user)):
     enforce_rate_limit(request, uid)
     """Full ThirdEye pipeline: retrieval -> model-diverse council -> evidence-
     anchored arbitration -> dynamic confirmation. Per-stage toggles let the
@@ -249,13 +253,13 @@ async def analyze_argus(req: ArgusReq, request: Request, uid: int | None = Depen
     if len(code) < 10:
         raise HTTPException(422, "Code too short")
 
-    from services.pipeline import run_argus
+    from services.pipeline import run_thirdeye
     if req.session_id:
         if uid is None:
             raise HTTPException(401, "Sign in to write to a session")
         await owned_session(int(req.session_id), uid)
         await add_message(req.session_id, "user", code)
-    result = await run_argus(
+    result = await run_thirdeye(
         code,
         use_retrieval=req.use_retrieval,
         use_arbitration=req.use_arbitration,

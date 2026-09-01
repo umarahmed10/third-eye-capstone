@@ -69,3 +69,7 @@ publish_when_done.sh
 
 # Codebase-flattening helpers for pasting into an assistant. Private workflow.
 tools/
+
+# Personal working checkpoint, explicitly "not a deliverable doc".
+# Durable decisions belong in docs/DECISION_LOG.md.
+backend/eval/SESSION_NOTES.md

@@ -2,6 +2,10 @@
 # Progress check. Safe to run any time, as often as you like.
 # Host is NOT committed: it is a shared campus machine on a private network.
 # Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
+# Run from anywhere: these paths are repo-root-relative, and this script
+# now lives in scripts/ rather than at the root.
+cd "$(dirname "$0")/.." || exit 1
+
 BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host (see .env.example)}"
 ssh -o BatchMode=yes -o ConnectTimeout=10 "$BOX" '
 cd ~/thirdeye/backend/eval/checkpoints 2>/dev/null || exit 1

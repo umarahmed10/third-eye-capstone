@@ -62,8 +62,8 @@ async def _single_llm(code: str) -> list[dict]:
 
 
 async def _council(code: str, seed: int, use_retrieval: bool, use_arbitration: bool) -> list[dict]:
-    from services.pipeline import run_argus
-    r = await run_argus(code, backend="ollama", seed=seed,
+    from services.pipeline import run_thirdeye
+    r = await run_thirdeye(code, backend="ollama", seed=seed,
                         use_retrieval=use_retrieval, use_arbitration=use_arbitration,
                         use_dynamic=False)
     return r.get("vulnerabilities", [])

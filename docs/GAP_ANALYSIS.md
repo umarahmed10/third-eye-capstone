@@ -1,4 +1,16 @@
-# ThirdEye → Argus: Gap Analysis
+# Gap Analysis — HISTORICAL, SUPERSEDED
+
+> **Read this as a record, not as a description of the code.**
+>
+> This document was written during an early planning pass, when the project was
+> still called Argus and most of the pipeline was a plan rather than an
+> implementation. Nearly everything it lists as missing now exists: the
+> model-diverse council, arbitration, suppression, the six-tier benchmark and
+> the evaluation harness are all built and measured.
+>
+> It is kept because the decision trail is worth preserving, and because the
+> paper argues that projects should publish what they got wrong. For the
+> architecture as it actually stands, read **`THIRDEYE_PIPELINE.md`**.
 
 Audit pass only. No code was modified, deleted, or created — this document is the sole output.
 

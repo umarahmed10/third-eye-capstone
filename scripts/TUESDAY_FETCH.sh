@@ -1,6 +1,10 @@
 #!/bin/bash
 # Collect everything. RUN THIS BEFORE LEAVING CAMPUS — the box is on a private
 # campus address and is unreachable from anywhere else.
+# Run from anywhere: these paths are repo-root-relative, and this script
+# now lives in scripts/ rather than at the root.
+cd "$(dirname "$0")/.." || exit 1
+
 set -u
 # Host is NOT committed: it is a shared campus machine on a private network.
 # Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
