@@ -1,10 +1,11 @@
 # Related work — and an audit of our own novelty claims
 
-**Status: 2026-08-28. VERIFY BEFORE CITING.** Everything below came from web
-search plus automated page/PDF summarisation, not from reading each paper end to
-end. Numbers marked (v) were cross-checked against the paper's own text; the rest
-are leads. Do not put an uncited number in the submission on the strength of this
-file.
+**Status: 2026-09-01.** Entries marked **(v)** were cross-checked against the
+paper's own text and are cleared for citation: GPTScan, Durieux et al., Slither.
+Entries without (v) came from search plus automated summarisation and are
+**leads, not citations** — verify before they enter the submission. The
+per-entry marking replaces the blanket "verify everything" banner this file
+used to carry.
 
 The purpose of this pass was not to pad a related-work section. It was to find
 out which of *our* claims survive contact with the literature, because three of
@@ -64,6 +65,74 @@ Why it helps, and it genuinely does:
   label-noise problem we quantified by hand-reviewing 21 contracts (≈70% genuine
   tool errors). We can say something about our negatives they cannot.
 
+### Durieux et al., "Empirical Review of Automated Analysis Tools on 47,587 Ethereum Smart Contracts" — ICSE 2020 · [arXiv 1910.10601](https://arxiv.org/abs/1910.10601)
+
+Verified against the full text (v). **The single best citation we have**, and it
+was missing from this file.
+
+Nine tools (HoneyBadger, Maian, Manticore, Mythril, Osiris, Oyente, Securify,
+Slither, Smartcheck) over two datasets: 69 annotated contracts carrying 115
+tagged vulnerabilities, and 47,518 unlabelled contracts from the chain.
+428,337 analyses, 564 days 3 h of compute.
+
+| result | value |
+|---|--:|
+| vulnerabilities found by **all nine tools combined** | **48/115 (42%)** |
+| best single tool (Mythril) | 31/115 (27%) |
+| Slither | 20/115 (17%) |
+| wild-set contracts flagged vulnerable (combined) | **44,589/47,518 (93%)** |
+| Oyente alone / Mythril alone on the wild set | 73% / 48% |
+| DASP categories with **zero** detections by any tool | DoS, bad randomness, short addresses |
+| agreement: vulns found by 4+ tools | arithmetic 937, reentrancy 133 — nothing else |
+
+Why this is the most useful paper in the file:
+
+1. **It is the canonical evidence for claim A, in its narrowed form.** The
+   largest evaluation in the field flags 93% of real contracts as vulnerable and
+   then *cannot say how many of those are wrong*, because the wild set has no
+   labels. The authors say so themselves — the flag rate "suggests a considerable
+   number of false positives" is as far as the data lets them go. That is not a
+   flaw in their study; it is the structural hole our six-tier benchmark exists
+   to fill.
+2. **It is the ancestor of claim G.** They demonstrate the problem at scale
+   (unlabelled negatives ⇒ unmeasurable FPR); we measure what happens when you
+   *construct* negatives at graded trust levels. The gap between their paper and
+   ours is exactly one experiment, and we ran it.
+3. **It independently corroborates our Slither result.** We measured Slither at
+   46/150 with 1 finding of 104 on our corpus; they measure 20/115 (17%) on
+   theirs. Two different corpora, same conclusion, and theirs is peer-reviewed —
+   this defuses "you must have configured Slither wrong."
+4. **It supports claim F.** Three of ten DASP categories are detected by *no*
+   tool at all. Coverage bias is not a hypothetical.
+
+### Feist, Grieco, Groce, "Slither: A Static Analysis Framework for Smart Contracts" — WETSEB@ICSE 2019 · [arXiv 1908.09878](https://arxiv.org/abs/1908.09878)
+
+Verified against the full text (v). Our own baseline's paper — we had been
+citing the tool without citing its evaluation, which was a hole.
+
+SlithIR: Solidity → SSA-form intermediate representation, enabling dataflow and
+taint tracking. Table I evaluates **reentrancy detection on the 1,000 most-used
+contracts**:
+
+| tool | "false positives" | flagged | s/contract | timed out | failed |
+|---|--:|--:|--:|--:|--:|
+| **Slither** | **10.9%** | 112 | 0.79 ± 1 | 0% | 0.1% |
+| Securify | 25% | 8 | 41.4 ± 46.3 | 20.4% | 11.2% |
+| SmartCheck | 73.6% | 793 | 10.9 ± 7.14 | 4% | 10.22% |
+| Solhint | 91.3% | 81 | 0.95 ± 0.35 | 0% | 1.2% |
+
+**Read the denominator before quoting the 10.9%.** It is the share of *flagged*
+contracts that were wrong — i.e. 1 − precision — established by manually
+reviewing "a random sample of at least 50 of the flagged contracts for each
+tool," on **one** detector class, with **no true-negative denominator at all**.
+It is not FP/(FP+TN), which is what we report.
+
+This is worth a paragraph of its own in the paper, because it is the field's
+most-cited "low false positive" number and it is routinely compared against
+rates computed a different way. Restated on our denominator it is not
+computable from their data. That is claim-A's thesis appearing inside the
+baseline everyone trusts.
+
 ### "Benchmarking LLM-Based Static Analysis…" — COMPSAC 2026 · [arXiv 2605.11163](https://arxiv.org/html/2605.11163)
 
 Closest methodological neighbour, and mostly an **ally**.
@@ -118,13 +187,13 @@ and kernel/batch-shape dependence — is well established.
 
 | # | Our claim | Verdict |
 |---|---|---|
-| A | Benchmarks are all-positive, so FPR is not measurable | **MUST NARROW** |
+| A | Benchmarks are all-positive, so FPR is not measurable | **NARROWED — now well-supported** |
 | B | LLM auditors carry high real-world false-alarm rates | **NOT NOVEL — cite Heimdallr** |
 | C | A bigger model makes false alarms worse | **NARROW to the controlled measurement** |
 | D | Nobody checks cross-platform reproducibility | **MUST NARROW** |
 | E | Local-LLM security evals do not report context window | **SURVIVES** |
 | F | Coverage/abstention bias goes unreported | **PROBABLY SURVIVES — verify** |
-| G | False alarms track the provenance of the "safe" label | **APPEARS NOVEL — our best claim** |
+| G | False alarms track the provenance of the "safe" label | **APPEARS NOVEL — our best claim; Durieux is the ancestor** |
 
 ### A. All-positive benchmarks — narrow it
 
@@ -140,6 +209,15 @@ exists. The defensible version:
 
 That is still a real and checkable observation, and our balanced six-tier
 benchmark answers it directly.
+
+**Durieux et al. now carries this claim.** The largest evaluation in the field
+(9 tools, 47,518 contracts, 564 days of compute) reports that 93% of real
+contracts are flagged vulnerable and cannot decompose that figure, because the
+wild set is unlabelled. Their annotated set, where labels do exist, has 69
+contracts and no safe class. So the field's biggest study measures flag rate
+without a false-alarm rate, and its labelled study measures recall without a
+negative class — in the same paper. Cite this rather than asserting the claim
+in our own voice.
 
 ### B. High real-world FPR — concede and build on it
 
@@ -196,6 +274,13 @@ errors), this is a claim about *what a false-alarm rate even means* when the
 negative class is constructed from absence of evidence. Nothing found so far
 does this. **Verify hardest here, because it is what the paper should lead on.**
 
+Durieux et al. is the closest prior work and it *strengthens* G rather than
+threatening it: they establish that an unlabelled negative class makes the
+false-alarm rate unmeasurable at scale; we grade the negative class by label
+provenance and measure how much the answer moves (15.7% → 37.5%, non-overlapping
+intervals). Their paper is the motivation section; ours is the experiment they
+could not run.
+
 ---
 
 ## 3. Recommended positioning
@@ -225,5 +310,7 @@ That framing:
    "unlabelled ≠ negative" / PU-learning in vulnerability detection.
 3. **Check F** against the SAST survey ([2404.18186](https://arxiv.org/pdf/2404.18186)),
    which is the natural place for compile-failure coverage to be reported.
+   Partly answered already: Durieux reports three DASP categories with zero
+   detections across all nine tools.
 4. Decide whether to cite Heimdallr as motivation (recommended) or as a baseline
    we cannot run.

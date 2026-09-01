@@ -274,3 +274,77 @@ export const CTXABLATION = {
     "rests on 4 safe contracts and is NOT claimed. The extreme-overflow tail was " +
     "excluded for cost, so the effect is a lower bound.",
 };
+
+/** CALIBRATION. Every published false-alarm rate we could verify against the
+ *  source paper's own text, with its negative class and — the part that is
+ *  usually dropped — its DENOMINATOR.
+ *
+ *  The point of this table is not to rank tools. It is that the rates are not
+ *  commensurable: two of them are FP/(FP+TN) on curated negatives, one is
+ *  1 - precision on a sample of flagged contracts with no true-negative set at
+ *  all, and one cannot be computed because the corpus is unlabelled. They are
+ *  nonetheless compared against each other routinely, including against us.
+ *
+ *  `ours: true` marks our own rows so the component can weight them without
+ *  hardcoding labels. `comparable: false` marks a row whose denominator differs
+ *  from FP/(FP+TN) — it must never be differenced against one that does.
+ */
+export const CALIBRATION = {
+  verified: "2026-09-01, against each paper's full text",
+  rows: [
+    {
+      tool: "GPTScan (ICSE'24)", rate: 0.0439, comparable: true, ours: false,
+      negatives: "Top200 non-vulnerable contracts", denom: "FP/(FP+TN)",
+      note: "Self-reported, on curated negatives.",
+    },
+    {
+      tool: "Slither (WETSEB'19)", rate: 0.109, comparable: false, ours: false,
+      negatives: "none — sample of flagged", denom: "1 - precision",
+      note:
+        "The field's most-cited low-FPR number. Share of FLAGGED contracts that " +
+        "manual review found wrong, from a sample of >=50, on the reentrancy " +
+        "detector alone. No true-negative denominator exists in the paper.",
+    },
+    {
+      tool: "ThirdEye — audited-library tier", rate: 0.157, comparable: true, ours: true,
+      negatives: "OpenZeppelin / Solady", denom: "FP/(FP+TN)",
+      note: "Our closest like-for-like population to Slither's 1,000 most-used contracts.",
+    },
+    {
+      tool: "ThirdEye — overall (shipped rule)", rate: 0.299, comparable: true, ours: true,
+      negatives: "603 safe, three provenance tiers", denom: "FP/(FP+TN)",
+      note: "The number we report as ours.",
+    },
+    {
+      tool: "COMPSAC'26 — local 4-bit", rate: 0.3409, comparable: true, ours: false,
+      negatives: "paired safe variants", denom: "FP/(FP+TN)",
+      note: "Closest methodological neighbour; independently brackets our rate.",
+    },
+    {
+      tool: "ThirdEye — audit-reviewed tier", rate: 0.375, comparable: true, ours: true,
+      negatives: "contest code, no reported bug", denom: "FP/(FP+TN)",
+      note: "Same tool, same seed, same machine as the 15.7% row. Only the label changed.",
+    },
+    {
+      tool: "GPTScan, measured by Heimdallr", rate: 0.975, comparable: true, ours: false,
+      negatives: "Sherlock contest projects", denom: "FP/(FP+TN)",
+      note:
+        "The SAME TOOL as the 4.39% row, measured by someone else on real contest " +
+        "code. A 22x move with no change to the tool.",
+    },
+  ],
+  durieux: {
+    paper: "Durieux et al., ICSE'20 · arxiv.org/abs/1910.10601",
+    tools: 9,
+    wild_contracts: 47518,
+    analyses: 428337,
+    compute: "564 days 3 h",
+    flagged_rate: 0.93,
+    annotated_contracts: 69,
+    annotated_vulns: 115,
+    all_tools_combined: 48,     // of 115 — 42%
+    best_single: 31,            // Mythril, 27%
+    slither_detected: 20,       // 17%
+    zero_detection_categories: ["denial of service", "bad randomness", "short addresses"],
+  },
+} as const;

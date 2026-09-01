@@ -22,7 +22,7 @@ Optional: `./TUESDAY_START.sh 150` for a shorter budget (default 210 minutes).
 ```
 
 `TUESDAY_FETCH.sh` is not optional. The box is on a **private campus address**
-(10.1.72.54) and is unreachable from anywhere else — anything left on it is
+(RFC1918, set via `THIRDEYE_DGX_HOST`) and is unreachable from anywhere else — anything left on it is
 stranded until the next visit.
 
 ## What runs, in order

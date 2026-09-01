@@ -95,6 +95,17 @@ model digests, verdict agreement across two machines is 0.735, and a
 McNemar p = 0.75). Backend nondeterminism is documented; its propagation to
 security verdicts, and thus to a published rate, is not.
 
+**Calibration.** Verified against each source paper's own text, published
+false-alarm rates for this task span 4.39% (GPTScan, self-reported on curated
+negatives) to 97.50% (the same tool, independently measured on contest code) — a
+22× move with no change to the tool. The largest study in the field, nine tools
+over 47,518 chain contracts, flags 93% as vulnerable and cannot decompose that
+figure because its negative class is unlabelled; the field's most-cited low-FPR
+number, Slither's 10.9%, is 1 − precision on a single detector class with no
+true-negative denominator. Our 29.9% is not offered as better than these. It is
+offered as interpretable: a stated negative class, a per-tier decomposition, a
+hand-audited label-noise bound, and intervals.
+
 We further report two results that constrain the obvious responses. Restoring a
 2.7× larger model on the three semantic specialist roles — a one-variable change
 — significantly *increases* false alarms (49 → 74, McNemar p = 0.00008) while
@@ -627,6 +638,77 @@ and are not differenced. The honest
 summary is: comparable detection where both tools apply, on roughly twice the
 applicable projects, at a false-alarm cost we measure and they do not have to
 pay.
+
+### 4.12 Calibrating 29.9% against the literature — and against its own denominator
+
+A false-alarm rate means nothing without a reference band, and the reference band
+in this field is 20× wide. Collecting every rate we could verify against the
+source paper's own text:
+
+| source | reported rate | negative class | denominator |
+|---|--:|---|---|
+| GPTScan, ICSE'24 (self-reported) | **4.39%** | Top200 non-vulnerable contracts | FP/(FP+TN) |
+| Slither, WETSEB'19 (self-reported) | **10.9%** | *none* — sample of flagged | 1 − precision |
+| **ThirdEye, audited-library tier** | **15.7%** [11.0, 21.9] | OpenZeppelin / Solady | FP/(FP+TN) |
+| **ThirdEye, overall (shipped rule, n=1,154)** | **29.9%** [26.3, 33.6] | 603 safe, three tiers | FP/(FP+TN) |
+| COMPSAC'26, local 4-bit models | 34.09% | paired safe variants | FP/(FP+TN) |
+| **ThirdEye, audit-reviewed tier** | **37.5%** [31.6, 43.8] | contest code, no reported bug | FP/(FP+TN) |
+| Heimdallr on GPTScan (independent) | **97.50%** | Sherlock contest projects | FP/(FP+TN) |
+| Durieux et al., ICSE'20, 9 tools combined | 93% *flagged* | *unlabelled* — 47,518 wild contracts | not computable |
+
+Three things follow, and they are the reason this section exists.
+
+**1. The spread is not between tools, it is between protocols.** GPTScan reports
+4.39% on its own curated negatives and is independently measured at 97.50% on
+contest code — a 22× move for *the same tool*, with no change to the tool. No
+difference any of these papers claims as a result is anywhere near that large.
+Our own corpus reproduces the effect in miniature and under control: holding the
+tool, the seed, the model digests and the machine fixed and varying only how the
+safe label was obtained moves our rate 15.7% → 37.5%, with non-overlapping
+intervals. The published number is a property of the negative class first and the
+tool second.
+
+**2. The field's most-trusted low-FPR number is computed on a different
+denominator.** Slither's 10.9% is the share of *flagged* contracts that manual
+review found wrong — 1 − precision — established by sampling at least 50 flagged
+contracts, on the reentrancy detector alone, with no true-negative set. It is not
+FP/(FP+TN) and cannot be converted into one from the published data. It is
+nonetheless the figure LLM tools are informally held against. Our 15.7% on
+audited libraries is the closest like-for-like population we have (widely used,
+heavily reviewed code) and is measured on the stricter denominator across eight
+vulnerability classes rather than one.
+
+**3. The largest study in the field cannot compute the quantity at all.**
+Durieux et al. run nine tools over 47,518 chain contracts (428,337 analyses, 564
+days of compute) and report that 93% are flagged vulnerable. Because the wild set
+is unlabelled, that 93% cannot be split into true and false positives; the paper
+correctly goes no further than calling it evidence of "a considerable number of
+false positives." Their labelled set, where the split would be possible, has 69
+contracts and no safe class. So the same paper measures flag rate without a
+false-alarm rate and recall without a negative class — not through any defect of
+method, but because no corpus offered both. That is the gap this benchmark was
+built to close, and §4.10b is the measurement it enables.
+
+**A note on what we are not claiming.** We do not claim 29.9% is good. Against
+the only two verified same-denominator figures from published tools it is worse
+than GPTScan's self-reported 4.39% and better than COMPSAC'26's 34.09% for local
+4-bit models — and the Heimdallr result shows how little the first of those
+survives independent measurement. What we claim is that the number is
+*interpretable*: it carries a stated negative class, a per-tier decomposition, a
+hand-audited estimate of label noise (≈70% of blocked safe contracts are genuine
+tool errors), and confidence intervals. A single flattering slice is available in
+our own data — the audited-library tier at 15.7% — and reporting it alone is
+exactly the practice this paper argues against.
+
+**Detection, for completeness.** Durieux also independently corroborates our
+Slither result. We measured Slither returning findings on 46 of 150 contracts,
+with 1 finding of the 104 we diagnose attributable to our toolchain; they measure
+Slither at 20/115 (17%) tagged vulnerabilities on their annotated set, with all
+nine tools combined reaching only 48/115 (42%), and three DASP categories —
+denial of service, bad randomness, short addresses — detected by no tool at all.
+Two different corpora, the same conclusion, one of them peer-reviewed. This
+matters procedurally: it forecloses the reading that our Slither baseline was
+misconfigured.
 
 ## 5. Silent failure modes (the core contribution of Framing B)
 

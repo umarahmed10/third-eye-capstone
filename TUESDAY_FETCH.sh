@@ -2,7 +2,9 @@
 # Collect everything. RUN THIS BEFORE LEAVING CAMPUS — the box is on a private
 # campus address and is unreachable from anywhere else.
 set -u
-BOX=student-9@10.1.72.54
+# Host is NOT committed: it is a shared campus machine on a private network.
+# Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
+BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host (see .env.example)}"
 OUT=backend/eval/results
 mkdir -p "$OUT/dgx_fullscale"
 

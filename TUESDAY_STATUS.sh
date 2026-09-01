@@ -1,6 +1,8 @@
 #!/bin/bash
 # Progress check. Safe to run any time, as often as you like.
-BOX=student-9@10.1.72.54
+# Host is NOT committed: it is a shared campus machine on a private network.
+# Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
+BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host (see .env.example)}"
 ssh -o BatchMode=yes -o ConnectTimeout=10 "$BOX" '
 cd ~/thirdeye/backend/eval/checkpoints 2>/dev/null || exit 1
 c () { ls "$1"/*.json 2>/dev/null | wc -l; }

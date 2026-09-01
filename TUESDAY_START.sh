@@ -9,7 +9,9 @@
 # Check progress later with ./TUESDAY_STATUS.sh, collect with ./TUESDAY_FETCH.sh
 # ============================================================================
 set -u
-BOX=student-9@10.1.72.54
+# Host is NOT committed: it is a shared campus machine on a private network.
+# Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
+BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host (see .env.example)}"
 MINUTES="${1:-210}"        # ./TUESDAY_START.sh 150  -> shorter session
 
 echo "== 1. reachable? =="
