@@ -142,7 +142,48 @@ abstentions are excluded from scoring — so the misconfiguration
 vulnerable class; the safe-class arm is still running and may move
 the 29.9% figure, which is stated as an open risk rather than hidden.
 
-## 7. Seed variance
+## 7. Which detections count — the protocol is worth 57 points
+
+`class_coverage_shipped.json` · re-scored from the same checkpoints through the live shipped rule, no inference
+
+Recall depends on a choice no paper we surveyed states. Scoring
+**any-slice-positive** (the contract was flagged and it carries the label)
+against **type-matched** (the specialist that fired names the labelled
+class), on identical contracts, verdicts and rule:
+
+| DASP-10 class | n | any-slice | type-matched | specialist? |
+|---|--:|--:|--:|---|
+| unchecked low level calls | 109 | 89.0% | — | **none** |
+| reentrancy | 86 | 76.7% | 29.1% [20.5, 39.4] | yes |
+| arithmetic | 79 | 77.2% | 62.0% [51.0, 71.9] | yes |
+| time manipulation | 40 | 92.5% | — | **none** |
+| access control | 17 | 88.2% | 70.6% [46.9, 86.7] | yes |
+| bad randomness | 9 | 66.7% | — | **none** |
+| denial of service | 8 | 62.5% | 50.0% [21.5, 78.5] | yes |
+| front running | 4 | 100.0% | 0.0% [0.0, 49.0] | yes |
+| other | 3 | 66.7% | — | **none** |
+| short addresses | 1 | 100.0% | — | **none** |
+
+Overall on the 349 vulnerable contracts carrying a mapped DASP-10 label (202 of the 551 scored carry none and are excluded): **82.2% any-slice against 25.5% type-matched**. 158 of them (45.3%) carry only classes the council has no role for — including the two largest, unchecked low-level calls (n=109) and time manipulation (n=40), whose detection is therefore entirely incidental.
+
+`[25.5%, 82.2%]` is reported as a bracket rather than a point: 25.5% is a
+lower bound, because only 5 of 8 roles have an unambiguous DASP slot and
+the map deliberately refuses to stretch the other three into "other".
+
+This is what makes the Durieux comparison fair. Their units are
+type-matched: nine tools combined 42%, Mythril 27%, Slither 17%. Our
+25.5% sits in that band, while returning a verdict on 100% of contracts
+against Slither's 31% (table 4).
+
+> **Not claimed.** Durieux find denial of service, bad randomness and
+> short addresses detected by none of nine analysers. We have a `dos_gas`
+> role and score it type-matched 4/8 = 50.0% [21.5, 78.5] — indicative
+> on eight contracts, not established. For bad randomness and short
+> addresses there is **no specialist at all**, so their contract-level
+> hits are incidental and are not claimed. A tool cannot be credited with
+> finding a class it never looks for.
+
+## 8. Seed variance
 
 | seed | n | scored | precision | recall | F1 | FPR |
 |---|--:|--:|--:|--:|--:|--:|

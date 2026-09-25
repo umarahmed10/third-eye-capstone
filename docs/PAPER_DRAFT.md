@@ -95,6 +95,18 @@ model digests, verdict agreement across two machines is 0.735, and a
 McNemar p = 0.75). Backend nondeterminism is documented; its propagation to
 security verdicts, and thus to a published rate, is not.
 
+**Which detections count.** A fourth choice is buried in the word "detected."
+Scoring any-slice-positive — the contract was flagged, and it carried the label —
+gives recall 82.2% on the 349 vulnerable contracts carrying a mapped DASP-10
+label. Requiring that the specialist which fired actually *names* the labelled
+category gives **25.5%** on the identical contracts, verdicts and rule. 158 of
+those 349 (45.3%) carry only categories our council has no specialist for: the
+two largest labelled classes, unchecked low-level calls (n=109) and time
+manipulation (n=40), have no role at all, so their 89.0% and 92.5% detection is
+entirely incidental. We report the bracket **[25.5%, 82.2%]** rather than either
+endpoint, because no paper we surveyed states which protocol produced its recall
+— and the choice is worth 57 points.
+
 **Calibration.** Verified against each source paper's own text, published
 false-alarm rates for this task span 4.39% (GPTScan, self-reported on curated
 negatives) to 97.50% (the same tool, independently measured on contest code) — a
@@ -709,6 +721,80 @@ denial of service, bad randomness, short addresses — detected by no tool at al
 Two different corpora, the same conclusion, one of them peer-reviewed. This
 matters procedurally: it forecloses the reading that our Slither baseline was
 misconfigured.
+
+### 4.13 Which detections count — recall is 82.2% or 25.5% on the same verdicts
+
+Every recall figure in this paper, and every recall figure we found in the
+literature, is produced by one of two protocols that are never named:
+
+- **any-slice-positive** — the tool flagged the contract, and the contract
+  carries the label. This is what §4.10b reports and what the head-to-heads in
+  §4.3 and §4.11 use.
+- **type-matched** — the finding that fired must itself name the labelled
+  category. This is Durieux et al.'s unit, and GPTScan's.
+
+Re-scoring the same 1,154 checkpoints through the same shipped rule, changing
+nothing but the protocol:
+
+| protocol | detected | of | recall |
+|---|--:|--:|--:|
+| any-slice-positive | 287 | 349 | **82.2%** |
+| type-matched | 89 | 349 | **25.5%** |
+
+The denominator is the 349 vulnerable contracts carrying at least one DASP-10
+label that our taxonomy bridge maps; 202 of the 551 scored vulnerable contracts
+carry no mapped label and are excluded rather than counted either way.
+
+**The mechanism is a coverage gap, not a scoring trick.** The council has eight
+roles. Five map unambiguously onto DASP-10 (reentrancy, access control,
+arithmetic, denial of service via `dos_gas`, front running via `flashloan_mev`);
+`business_logic`, `oracle_price_manipulation` and `proxy_upgradeability` have no
+clean DASP slot and are deliberately left unmapped rather than stretched into
+"other," which would manufacture type-matched hits. **158 of the 349 contracts
+(45.3%) carry only categories no role covers at all.**
+
+| DASP-10 class | n | any-slice | type-matched | specialist? |
+|---|--:|--:|--:|---|
+| unchecked low-level calls | 109 | 89.0% | — | **none** |
+| reentrancy | 86 | 76.7% | 29.1% [20.5, 39.4] | yes |
+| arithmetic | 79 | 77.2% | 62.0% [51.0, 71.9] | yes |
+| time manipulation | 40 | 92.5% | — | **none** |
+| access control | 17 | 88.2% | 70.6% [46.9, 86.7] | yes |
+| bad randomness | 9 | 66.7% | — | **none** |
+| denial of service | 8 | 62.5% | 50.0% [21.5, 78.5] | yes |
+| front running | 4 | 100.0% | 0.0% [0.0, 49.0] | yes |
+
+Our two largest labelled classes have no specialist, and are nonetheless
+"detected" at 89.0% and 92.5%. Reentrancy — the class the field has studied
+longest — is flagged on 76.7% of its contracts but named by the reentrancy
+specialist on only 29.1% of them.
+
+**25.5% is a lower bound and 82.2% an upper bound.** The true type-matched rate
+under a more generous role map lies between; we report the bracket rather than
+pick a point, because picking one is precisely the unreported choice this
+section exists to expose.
+
+**This makes the comparison with prior work fair for the first time.** Durieux
+et al. score type-matched: nine tools combined reach 42% of 115 tagged
+vulnerabilities, the best single tool (Mythril) 27%, and Slither 17%. Our 25.5%
+sits inside that band — comparable to the strongest single static analyser,
+below the nine-tool union, and achieved while returning a verdict on 100% of
+contracts against Slither's 31% (§4.3). Against our previously reported 82.2% the
+same comparison would have looked like a 2× win over the entire field combined,
+which would have been an artifact of protocol, not capability.
+
+**What we do not claim.** Durieux report denial of service, bad randomness and
+short addresses as detected by *none* of nine analysers. We have a `dos_gas`
+role and score it type-matched at 4/8 = 50.0% [21.5, 78.5] — an interval
+excluding zero, but on eight contracts, so it is indicative rather than
+established. For bad randomness and short addresses we have **no specialist at
+all**; their contract-level hits (6/9 and 1/1) are incidental and are not
+claimed as detections. A tool cannot be credited with finding a class it never
+looks for.
+
+Reproduce with `python backend/eval/run_class_coverage.py`; it re-scores the
+committed checkpoints through the live verdict functions and performs no
+inference.
 
 ## 5. Silent failure modes (the core contribution of Framing B)
 

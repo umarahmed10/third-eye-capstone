@@ -322,11 +322,64 @@ if ctx or p8 or p1:
         w('the 29.9% figure, which is stated as an open risk rather than hidden.')
         w()
 
+# ─── 6b. per-class coverage ──────────────────────────────────────────────
+cc = load(RES, 'class_coverage_shipped.json')
+if cc:
+    w('## 7. Which detections count — the protocol is worth 57 points')
+    w()
+    w('`class_coverage_shipped.json` · re-scored from the same checkpoints '
+      'through the live shipped rule, no inference')
+    w()
+    # The denominator is contracts carrying a MAPPED DASP label, not every
+    # scored vulnerable contract: 202 of the 551 carry no mapped label and
+    # are excluded rather than counted as either hit or miss.
+    any_n = cc['n_vulnerable_scored'] - cc['n_without_mapped_label']
+    w('Recall depends on a choice no paper we surveyed states. Scoring')
+    w('**any-slice-positive** (the contract was flagged and it carries the label)')
+    w('against **type-matched** (the specialist that fired names the labelled')
+    w('class), on identical contracts, verdicts and rule:')
+    w()
+    w('| DASP-10 class | n | any-slice | type-matched | specialist? |')
+    w('|---|--:|--:|--:|---|')
+    for r in cc['per_category']:
+        tm = ('%.1f%% [%.1f, %.1f]'
+              % (100 * r['rate_type_matched'], r['ci95_type_matched'][0],
+                 r['ci95_type_matched'][1])) if r['has_specialist'] else '—'
+        w('| %s | %d | %.1f%% | %s | %s |'
+          % (r['category'].replace('_', ' '), r['n'],
+             100 * r['rate_any_slice'], tm,
+             'yes' if r['has_specialist'] else '**none**'))
+    w()
+    w('Overall on the %d vulnerable contracts carrying a mapped DASP-10 label '
+      '(202 of the 551 scored carry none and are excluded): '
+      '**82.2%% any-slice against 25.5%% type-matched**. 158 of them (45.3%%) '
+      'carry only classes the council has no role for \u2014 including the two '
+      'largest, unchecked low-level calls (n=109) and time manipulation (n=40), '
+      'whose detection is therefore entirely incidental.' % any_n)
+    w()
+    w('`[25.5%, 82.2%]` is reported as a bracket rather than a point: 25.5% is a')
+    w('lower bound, because only 5 of 8 roles have an unambiguous DASP slot and')
+    w('the map deliberately refuses to stretch the other three into "other".')
+    w()
+    w('This is what makes the Durieux comparison fair. Their units are')
+    w('type-matched: nine tools combined 42%, Mythril 27%, Slither 17%. Our')
+    w('25.5% sits in that band, while returning a verdict on 100% of contracts')
+    w('against Slither\'s 31% (table 4).')
+    w()
+    w('> **Not claimed.** Durieux find denial of service, bad randomness and')
+    w('> short addresses detected by none of nine analysers. We have a `dos_gas`')
+    w('> role and score it type-matched 4/8 = 50.0% [21.5, 78.5] \u2014 indicative')
+    w('> on eight contracts, not established. For bad randomness and short')
+    w('> addresses there is **no specialist at all**, so their contract-level')
+    w('> hits are incidental and are not claimed. A tool cannot be credited with')
+    w('> finding a class it never looks for.')
+    w()
+
 # ─── 7. seed variance ────────────────────────────────────────────────────
 s1 = load(RES, 'benchmark_by_tier_ollama_noarb_seed1.json')
 s2 = load(RES, 'benchmark_by_tier_ollama_noarb_seed2.json')
 if s1 and s2:
-    w('## 7. Seed variance')
+    w('## 8. Seed variance')
     w()
     w('| seed | n | scored | precision | recall | F1 | FPR |')
     w('|---|--:|--:|--:|--:|--:|--:|')
