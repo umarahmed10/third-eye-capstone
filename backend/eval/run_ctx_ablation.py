@@ -281,7 +281,35 @@ async def run_arm(a) -> None:
     print(f"attempted {len(rows)}  scored {len(scored)}  "
           f"inconclusive {len(rows)-len(scored)}  wall {(time.time()-t0)/60:.1f} min")
     OUT.mkdir(parents=True, exist_ok=True)
-    json.dump({"arm": a.arm, "num_ctx": a.num_ctx, "rows": rows},
+    # RECORD THE SAMPLING PARAMETERS, not just the result.
+    #
+    # This file used to carry only {arm, num_ctx, rows}. That made the arm
+    # impossible to extend safely: the sample is nested only while the POOL is
+    # identical, and the pool depends on --label and --max-tokens. Re-running
+    # with a different ceiling silently swaps the population — which is defect
+    # #6 in this project's own silent-failure list, committed by the tool that
+    # measures it. Recovering these values afterwards needed a separate script
+    # (`reconstruct_ctx_sample.py`) that rebuilds the pool and matches contract
+    # ids. Recording them here means that never has to happen again.
+    json.dump({"arm": a.arm,
+               "num_ctx": a.num_ctx,
+               "sampling": {
+                   "label": a.label,
+                   "n_requested": a.n,
+                   "max_tokens": a.max_tokens,
+                   "sample_seed": a.sample_seed,
+                   "seed": a.seed,
+                   "pool_size": len(pool),
+                   "excluded_extreme_tail": excluded_tail,
+                   "chars_per_token": CHARS_PER_TOKEN,
+                   "rng_key": f"ctxablation:{a.sample_seed}",
+                   "note": ("Sample is pool[:n] after a seeded shuffle, so a "
+                            "larger n with identical label/max_tokens is a "
+                            "strict SUPERSET of this run."),
+               },
+               "contract_ids": [it.contract_id for it in items],
+               "concurrency": a.concurrency,
+               "rows": rows},
               open(OUT / f"ctx_{a.arm}.json", "w"), indent=1)
 
 
