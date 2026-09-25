@@ -269,6 +269,29 @@ async def run_arm(a) -> None:
         r["num_ctx"] = a.num_ctx
         r["expected"] = "vulnerable" if it.ground_truth_label == "vulnerable" else "safe"
         r["tier"] = (it.meta or {}).get("tier", "?")
+
+        # TRANSIENT != DETERMINISTIC (invariant 2, and defect #3 of the paper).
+        #
+        # A row in which specialists ERRORED says the backend was unavailable,
+        # not that the contract is hard. Writing it to the arm directory bakes
+        # an outage permanently into the result, and because resume above
+        # returns any existing checkpoint verbatim, a later re-run reuses the
+        # poisoned row rather than repairing it — which is exactly how a
+        # 176-contract arm came back with 145 rows of "4/4 specialists failed"
+        # and re-running appeared to complete instantly.
+        #
+        # Such rows are parked under _transient/ instead: kept for diagnosis,
+        # excluded from scoring, and retried automatically on the next run
+        # because no checkpoint exists in the arm directory.
+        if r.get("specialists_errored"):
+            tdir = ckpt / "_transient"
+            tdir.mkdir(parents=True, exist_ok=True)
+            json.dump(r, open(tdir / f"{it.contract_id}.json", "w"), indent=1)
+            print(f"  [{i}/{len(items)}] QUARANTINED  "
+                  f"{r.get('specialists_errored')}/{r.get('n_specialists_run')} errored  "
+                  f"{it.contract_id[:40]}", flush=True)
+            return None
+
         json.dump(r, open(cp, "w"), indent=1)
         print(f"  [{i}/{len(items)}] {r['verdict']:<12} {r.get('latency_s')}s  "
               f"{it.contract_id[:46]}", flush=True)
@@ -277,7 +300,13 @@ async def run_arm(a) -> None:
     got = await asyncio.gather(*[one(i, it) for i, it in enumerate(items, 1)])
     rows = [r for r in got if r]
     scored = [r for r in rows if r["verdict"] in ("GO", "NO-GO")]
+    n_quar = len(list((ckpt / "_transient").glob("*.json"))) if (ckpt / "_transient").exists() else 0
     print(f"\n=== CTX ARM {a.arm} (num_ctx={a.num_ctx}) ===")
+    if n_quar:
+        print(f"*** {n_quar} contracts QUARANTINED (errored specialists) — these are "
+              f"NOT scored and WILL be retried on the next run. If this number is "
+              f"large the backend was down: fix it and re-run before reading any "
+              f"result below.")
     print(f"attempted {len(rows)}  scored {len(scored)}  "
           f"inconclusive {len(rows)-len(scored)}  wall {(time.time()-t0)/60:.1f} min")
     OUT.mkdir(parents=True, exist_ok=True)
