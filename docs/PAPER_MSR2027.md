@@ -1,6 +1,6 @@
 # A False-Alarm Rate Is Not a Property of the Tool
 
-### Four Unreported Choices That Move LLM Smart-Contract Audit Results by up to 57 Points
+### The Same Verdicts, Two Defensible Scores: Four Unreported Choices in LLM Smart-Contract Audit Evaluation
 
 **Umar Ahmed, Anvita Agarwal, Tarun B, V Lakshitha**
 Department of Computer Science and Engineering, PES University, Bengaluru, India
@@ -31,12 +31,15 @@ and evaluate a model-diverse LLM council on 1,154 of them. Holding the tool, the
 seed, the model digests and the machine fixed, four evaluation choices each move
 the headline metric by more than any tool-versus-tool difference we found in the
 literature. **The same 1,154 verdicts, scored two defensible ways, yield recall
-of 25.5% or 82.2%, and false-alarm rates of 15.7% or 37.5%.**
+of 25.5% or 82.2%, and false-alarm rates of 15.7% or 37.5%.** Controlling for
+our own coverage gaps, 31.6 points of the recall spread remain attributable to
+the scoring protocol alone.
 
 The four choices are: how the safe label was established (false alarms 15.7%
 [11.0, 21.9] on audited libraries against 37.5% [31.6, 43.8] on audit-reviewed
 code); what counts as a detection (recall 82.2% any-slice against 25.5%
-type-matched, a 56.7-point spread on 349 labelled contracts); what the model was
+type-matched on 349 labelled contracts; 31.6 points survive on the 187 where
+the tool had a specialist for the labelled class); what the model was
 permitted to read (a silently truncating context window moves recall 12.5% →
 81.2%, McNemar *p* = 0.016, while running 4.01× *slower*); and which machine
 produced the verdicts (0.735 agreement across two hosts on identical inputs, with
@@ -103,8 +106,9 @@ controlled experiments on one corpus with one tool.
 2. Four controlled measurements on one corpus, each isolating a single
    evaluation choice, with paired statistics where the design is paired.
 3. A protocol-sensitivity result: identical verdicts scored any-slice versus
-   type-matched give 82.2% and 25.5% recall, a 56.7-point spread that also makes
-   comparison with prior static-analysis work fair for the first time.
+   type-matched give 82.2% and 25.5% recall. We decompose the 56.7-point spread
+   into 31.6 points of genuine protocol effect and ~25 points of our own
+   coverage gap, and report both separately rather than claiming the sum.
 4. Seven silent failure modes observed during the work, six proposed invariants,
    and a documented instance of our own instrument violating one of them.
 5. A released artifact: corpus, loaders, per-contract checkpoints, replay
@@ -281,6 +285,23 @@ cleanly from both weaker tiers; the two weaker tiers overlap and are not
 distinguishable from each other. An earlier version of this work described a
 three-step gradient, which the intervals do not support.
 
+**Is this just code complexity?** The obvious confound is that audited libraries
+might simply be smaller and simpler than contest code, making the gradient a
+statement about contract size rather than label provenance. It is not, and the
+data runs the other way:
+
+| safe tier | n | median chars | mean chars | FPR |
+|---|--:|--:|--:|--:|
+| Audited libraries | 283 | **6,649** | 12,300 | **15.7%** |
+| Audit-reviewed, clean | 625 | 3,531 | 7,811 | 37.5% |
+| Real-world, no bug reported | 217 | 3,783 | 6,661 | 33.0% |
+
+The tier with the **lowest** false-alarm rate has contracts with nearly **twice
+the median size** of the tier with the highest. If surface area drove false
+alarms we would observe the opposite ordering. The size confound therefore works
+*against* the measured effect, which means the effect of label provenance is if
+anything **understated** here.
+
 **The 21.8-point spread between tiers 1 and 2 is larger than the difference
 between most published tools.** A paper evaluating only against audited libraries
 would report 15.7%; the same tool evaluated against contest code reports 37.5%.
@@ -305,10 +326,29 @@ DASP-10 label; 202 of the 551 carry none and are excluded):
 | any-slice-positive | 287 / 349 | **82.2%** |
 | type-matched | 89 / 349 | **25.5%** |
 
-**A 56.7-point spread with no change to any verdict.** The mechanism is a
-coverage gap rather than a scoring trick: the council has eight roles, five of
-which map unambiguously onto DASP-10, and **158 of the 349 contracts (45.3%)
-carry only classes no role covers**.
+**A 56.7-point spread with no change to any verdict** — but that figure mixes
+two different things, and we separate them rather than claim the sum. The council
+has eight roles, five of which map unambiguously onto DASP-10, and **158 of the
+349 contracts (45.3%) carry only classes no role covers**. Part of the spread is
+therefore *our* coverage gap, not a property of the protocol.
+
+Restricting to the 187 contracts that carry **only** classes for which a
+specialist exists — so the tool was genuinely looking for the labelled thing —
+isolates the protocol effect:
+
+| set | n | any-slice | type-matched | spread |
+|---|--:|--:|--:|--:|
+| all labelled contracts | 349 | 82.2% | 25.5% | 56.7 pts |
+| **coverage-controlled** | **187** | **77.0%** | **45.5%** | **31.6 pts** |
+
+So roughly 25 points are attributable to our role set and **31.6 points to the
+scoring protocol alone**. We take the controlled figure as the paper's claim. It
+is still larger than any tool-versus-tool difference we found in the literature,
+and it is obtained with the tool held fixed and every verdict unchanged.
+
+The uncontrolled 56.7 points is not discarded — it is the number a reader of our
+headline recall would actually be misled by — but it is reported as a *joint*
+effect of protocol and coverage, never as protocol alone.
 
 | DASP-10 class | n | any-slice | type-matched | specialist? |
 |---|--:|--:|--:|---|
@@ -458,7 +498,11 @@ callable surfaces, not full reads.
 
 **Internal.** RQ3 is established on the vulnerable class only (§5.3). The
 type-matched mapping in RQ2 covers five of eight roles; a more generous map
-would raise 25.5%, which is why it is reported as a lower bound.
+would raise 25.5%, which is why it is reported as a lower bound and why the
+coverage-controlled 31.6-point figure, not the 56.7-point one, is the claim.
+The RQ1 gradient is not explained by contract size, which runs opposite to it
+(§5.1), but we have not controlled for cyclomatic complexity or external-call
+count, either of which could still carry part of the effect.
 
 **External.** One tool, one language, one model family, two machines. The
 *mechanisms* — constructed negatives, matching rules, silent truncation,
@@ -491,8 +535,10 @@ A false-alarm rate is not a property of a tool. In a detection task it is jointl
 determined by how the negative class was constructed, what counts as a match,
 what the model was permitted to read, and which machine ran it. We measured each
 on one corpus with one tool, and each moved the headline further than the
-differences the literature currently reports as results — up to 56.7 points, from
-a choice that changes no verdict at all.
+differences the literature currently reports as results. The largest
+well-controlled instance is 31.6 points, from a choice that changes no verdict at
+all — and even that is measured with the tool's own coverage held constant, so it
+is a floor rather than a ceiling.
 
 The practical consequence is a reporting standard, not a better tool: **state the
 provenance of your negative class, state your matching rule, state your context

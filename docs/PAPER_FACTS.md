@@ -26,6 +26,7 @@ Three labels are used throughout and they are not interchangeable:
 | balance | 1,125 safe : 1,125 vulnerable | ditto |
 | scored in the main run | **1,154** (603 safe, 551 vulnerable) | `benchmark_by_tier.json` |
 | safe tiers | audited libraries 172 · audit-reviewed 240 · real-world-no-bug 191 | ditto |
+| safe-tier median contract size (full corpus) | audited 6,649 · audit-reviewed 3,531 · real-world 3,783 chars | computed 2026-09-25 |
 | vulnerable tiers | curated 214 · injected 170 · audit-report 167 | ditto |
 | vulnerable contracts with a mapped DASP-10 label | 349 (202 carry none) | `class_coverage_shipped.json` |
 | contracts overflowing a 4,096-token window | 540 / 2,250 (24.0%), skewed 350 vulnerable : 190 safe | `run_ctx_ablation.py` docstring |
@@ -85,8 +86,16 @@ protocol changes. Denominator = 349 labelled vulnerable contracts.
 | any-slice-positive | 287 | **82.2%** |
 | type-matched | 89 | **25.5%** |
 
-**Spread: 56.7 points.** 158 / 349 (45.3%) carry only classes the council has no
-specialist for.
+**Spread: 56.7 points**, which decomposes. 158 / 349 (45.3%) carry only classes
+the council has no specialist for, so part of the spread is our coverage gap.
+Restricting to contracts carrying ONLY covered classes isolates the protocol:
+
+| set | n | any-slice | type-matched | spread |
+|---|--:|--:|--:|--:|
+| all labelled | 349 | 82.2% | 25.5% | 56.7 pts |
+| **coverage-controlled** | **187** | **77.0%** | **45.5%** | **31.6 pts** |
+
+**Cite 31.6 as the protocol effect.** 56.7 is protocol + coverage jointly.
 
 | DASP-10 class | n | any-slice | type-matched | specialist? | Durieux |
 |---|--:|--:|--:|---|---|
