@@ -1,7 +1,7 @@
 # Related work — and an audit of our own novelty claims
 
 **Status: 2026-09-01.** Entries marked **(v)** were cross-checked against the
-paper's own text and are cleared for citation: GPTScan, Durieux et al., Slither.
+paper's own text and are cleared for citation: GPTScan, Durieux et al., Slither, Berriche et al.
 Entries without (v) came from search plus automated summarisation and are
 **leads, not citations** — verify before they enter the submission. The
 per-entry marking replaces the blanket "verify everything" banner this file
@@ -64,6 +64,88 @@ Why it helps, and it genuinely does:
   is "initially classified as a potential false positive". That is precisely the
   label-noise problem we quantified by hand-reviewing 21 contracts (≈70% genuine
   tool errors). We can say something about our negatives they cannot.
+
+### Berriche, Shalby, Alhanahnah, Boshmaf (QCRI), "Benchmark Scores Are Pipeline-Dependent: A Reliability Audit of Cybersecurity LLM Benchmarks" — Sept 2026 · [arXiv 2609.08765](https://arxiv.org/html/2609.08765v1)
+
+**The most dangerous paper for us since Heimdallr, and it is three weeks old.**
+Verified against the paper's own text (v). Found 2026-09-25 during the
+positioning pass; it did not exist at the time of the 2026-08-28 survey.
+
+Their thesis, in their title: benchmark outcomes are not properties of the
+dataset, they are properties of the configurable pipeline that scores it. Eight
+cybersecurity benchmarks (MMLU-CS, CyberMetric, SecBench, SecEval, SECURE,
+CTI-Bench, AthenaBench, RedSage-Bench) across ten models. **A single pipeline
+choice can move a model's score by more than 80 percentage points** — stop-
+sequence handling 85.9 pp, token-budget filters 81 pp, and *denominator
+inflation* 99.8 pp.
+
+They enumerate 15 failure modes over five stages:
+
+| stage | failure modes |
+|---|---|
+| Dataset | capability coverage; gold-label correctness |
+| Prompt | format-token leakage; prompt-question conflicts; template incompatibility |
+| Inference | stop-sequence mismatch; token-budget filters; decoding drift |
+| Extraction / scoring | extractor divergence; **denominator inflation**; metric-direction mismatch; prompt-mode sensitivity |
+| Aggregation | logprob vs generative scoring; task-level metric drift; aggregation inconsistency |
+
+**Why it hurts.** The general form of Framing C — "the reported number is an
+artifact of unreported evaluation choices" — is now published, in a security
+context, with larger swings than ours (80+ pp against our 57) and a more
+systematic taxonomy. We cannot present that observation as the contribution any
+more than we could present "LLM auditors cry wolf" after Heimdallr.
+
+**Why it does not kill us, stated precisely.** Their failure modes are *harness
+mechanics on question-answering benchmarks*: stop sequences, extractors, logprob
+versus generative scoring, aggregation order. These are implementation bugs in
+the plumbing around a multiple-choice task. Every benchmark they audit is QA —
+**none has a negative class**, because a multiple-choice question cannot produce
+a false alarm. Their "denominator inflation" is a counting error over attempted
+versus total questions, not a statement about what the denominator of a
+false-positive rate should be.
+
+Ours are not plumbing bugs. They are epistemic properties of a *detection*
+benchmark, and each is a design decision the evaluation cannot avoid making:
+
+| our finding | in their taxonomy? |
+|---|---|
+| G — FPR as a function of how the "safe" label was obtained | **No.** They have gold-label *correctness* (noise), not label *provenance*. Their benchmarks have no negative class at all. |
+| E — input truncation at `num_ctx`, silent, class-skewed | **No.** Their "token-budget filters" is an *output* budget. Ours is what the model was allowed to read. |
+| D — verdict disagreement across machines | **No.** Explicitly absent; not a pipeline-configuration axis for them. |
+| New — any-slice vs type-matched detection | **No.** Has no meaning in a QA task. |
+
+**How to use it.** Cite it as motivation, the way we now cite Durieux — it
+establishes the phenomenon in a neighbouring domain and makes our question
+obviously worth asking, which is strictly better than asserting it ourselves.
+Then narrow:
+
+> Berriche et al. show that scoring *pipelines* move benchmark scores in
+> cybersecurity question-answering. We ask the same question of a *detection*
+> task, where the negative class must be constructed rather than given, and find
+> three further choices that move the headline by comparable amounts. None is a
+> harness bug. Each is a decision about what the benchmark means: how "safe" was
+> established, what the model was permitted to read, and what counts as having
+> found the bug.
+
+This is the fourth time a claim of ours has had to narrow on contact with the
+literature (A, B, D, and now the framing itself). Each narrowing has left a
+sharper paper, and the pattern is worth stating in the submission rather than
+hiding: it is the same discipline the paper argues for.
+
+### Gate AI, "LLM Security Benchmark Evaluation Methodology and Results" — June 2026 · [arXiv 2606.02959](https://arxiv.org/abs/2606.02959)
+
+Prompt-injection and jailbreak *detectors*, not smart contracts. Relevant for one
+idea only, and it is a good one: they insist on a **single global operating
+point** — one threshold chosen on held-out folds and applied to all 16
+benchmarks — because per-dataset threshold tuning and "undisclosed operating
+points" inflate apparent performance and make cross-paper comparison meaningless.
+
+That is our §4.8 (the measured rule must be the shipped rule) and §4.12 (rates
+computed on different denominators are not comparable), arrived at independently
+in a different subfield. Cite it as converging evidence that operating-point
+disclosure is a live methodological problem, not a quirk of our project. Note the
+abstract carries no numbers — it is a working preprint, so cite the methodology,
+never a figure from it.
 
 ### Durieux et al., "Empirical Review of Automated Analysis Tools on 47,587 Ethereum Smart Contracts" — ICSE 2020 · [arXiv 1910.10601](https://arxiv.org/abs/1910.10601)
 
