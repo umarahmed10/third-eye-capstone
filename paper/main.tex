@@ -1,0 +1,836 @@
+%% ThirdEye — MSR 2027 Technical Paper, full submission (10 pp + 2 pp refs)
+%%
+%% Build: Overleaf, or locally with
+%%   latexmk -pdf main.tex
+%% Requires the ACM acmart class (Overleaf: "ACM Conference Proceedings
+%% Primary Article Template"). No local TeX install is assumed.
+%%
+%% DOUBLE-ANONYMOUS: MSR technical papers are reviewed double-anonymous.
+%% For submission, add the `anonymous` option to \documentclass below and
+%% replace the repository URL in Section 10 with an anonymised archive.
+%% Names are left visible here because this draft doubles as a capstone
+%% deliverable.
+
+\documentclass[sigconf,nonacm]{acmart}
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{microtype}
+
+\newcommand{\ci}[2]{\,[#1,\,#2]}
+\newcommand{\tool}{ThirdEye}
+
+\begin{document}
+
+\title{A False-Alarm Rate Is Not a Property of the Tool}
+\subtitle{Four Unreported Choices in LLM Smart-Contract Audit Evaluation}
+
+\author{Umar Ahmed}
+\affiliation{%
+  \institution{PES University}
+  \city{Bengaluru}
+  \country{India}}
+\email{PES2UG23CS662@pesu.pes.edu}
+
+\author{Anvita Agarwal}
+\affiliation{%
+  \institution{PES University}
+  \city{Bengaluru}
+  \country{India}}
+\email{PES2UG23CS085@pesu.pes.edu}
+
+\author{Tarun Basavaraju}
+\affiliation{%
+  \institution{PES University}
+  \city{Bengaluru}
+  \country{India}}
+\email{PES2UG23CS644@pesu.pes.edu}
+
+\author{V Lakshitha}
+\affiliation{%
+  \institution{PES University}
+  \city{Bengaluru}
+  \country{India}}
+\email{PES2UG23CS665@pesu.pes.edu}
+
+\begin{abstract}
+Reported false-alarm rates for LLM-based security tools are read as properties of
+the tool. We show that they are substantially properties of the benchmark, and
+that the choices responsible are systematically unreported.
+
+Recent work establishes that scoring \emph{pipelines} move benchmark outcomes in
+cybersecurity question-answering by as much as eighty percentage points. We ask
+the same question of a \emph{detection} task, which differs in a way that turns
+out to matter: a detection benchmark must \textbf{construct a negative class} and
+\textbf{define a matching rule}, and a question-answering benchmark does neither.
+Those two constructions dominate the numbers.
+
+We build a balanced benchmark of 2,250 Solidity contracts (1,125 safe :
+1,125 vulnerable) whose safe class is stratified by \emph{how the safe label was
+obtained}, and evaluate a model-diverse LLM council on 1,154 of them. Holding the
+tool, the seed, the model digests and the machine fixed, four evaluation choices
+each move the headline metric further than any tool-versus-tool difference we
+found in the literature. \textbf{The same 1,154 verdicts, scored two defensible
+ways, yield recall of 25.5\% or 82.2\%, and false-alarm rates of 15.7\% or
+37.5\%.} Controlling for our own detector coverage, 31.6 points of the recall
+spread remain attributable to the scoring protocol alone --- a choice that
+changes no verdict at all.
+
+We also report what this costs us. Scored type-matched, our recall falls inside
+the band of the static analysers we set out to beat. Our original hypothesis,
+that a model-diverse council raises precision, is refuted on the one early corpus
+with a negative class. Adversarial arbitration, the standard precision mechanism,
+yields no held-out gain. We release the benchmark, per-contract checkpoints for
+every run, and a decision log recording each correction made during the work.
+\end{abstract}
+
+\keywords{smart contracts, benchmark construction, large language models,
+evaluation methodology, false positives, reproducibility}
+
+\maketitle
+
+%% ===================================================================
+\section{Introduction}
+%% ===================================================================
+
+A paper reporting a new LLM-based vulnerability detector reports a recall and a
+false-alarm rate. A reader compares those two numbers against the previous
+paper's two numbers and forms a view about which tool is better. That comparison
+is close to meaningless, and the reason is not that the tools are similar.
+
+Consider two figures from the literature, both verified against their source
+papers. GPTScan~\cite{gptscan} reports a 4.39\% false-alarm rate on a curated set
+of non-vulnerable contracts. Heimdallr~\cite{heimdallr} measures \emph{the same
+tool} at 97.50\% on real audit-contest projects. Twenty-two-fold, with no change
+to the tool. The difference lies entirely in which contracts were designated
+``not vulnerable.''
+
+Now consider the most-cited low-false-positive figure in the field:
+Slither's 10.9\%~\cite{slither}. Read the denominator. It is the share of
+\emph{flagged} contracts that manual review found wrong --- one minus precision
+--- established by sampling at least fifty flagged contracts, on the reentrancy
+detector alone, with no true-negative set at all. It is not $FP/(FP+TN)$ and it
+cannot be converted into one from the published data. It is nonetheless the
+number LLM tools are informally held against.
+
+Berriche et al.~\cite{berriche} show that this is not peculiar to smart
+contracts: across eight cybersecurity benchmarks and ten models, a single
+scoring-pipeline choice can move a model's score by more than eighty percentage
+points. Their taxonomy of fifteen failure modes covers stop-sequence handling,
+extractor divergence, token budgets and aggregation order.
+
+Every benchmark in that study is question-answering. \textbf{A multiple-choice
+question cannot produce a false alarm.} Their failure modes are therefore defects
+in the plumbing around a task whose ground truth is given. A detection benchmark
+is a different object: it must \emph{construct} the class of things that are not
+bugs, and it must \emph{decide} what it means to have found one. Neither
+construction has a correct answer, both are usually unreported, and --- we find
+--- both move the headline further than the tool does.
+
+\paragraph{This paper.}
+We build a detection benchmark designed so that those two constructions can be
+varied and measured rather than assumed, and run four controlled experiments on
+one corpus with one tool.
+
+\begin{description}
+\item[RQ1] Does the \emph{provenance of the safe label} change the false-alarm
+  rate?
+\item[RQ2] Does the \emph{matching rule} change recall?
+\item[RQ3] Does what the model was \emph{permitted to read} change measured
+  performance?
+\item[RQ4] Does the \emph{execution environment} change the verdicts themselves?
+\end{description}
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A balanced 2,250-contract Solidity benchmark whose negative class is
+  stratified by label provenance --- to our knowledge the first that permits a
+  false-alarm rate to be decomposed by how much the ``safe'' label can be
+  trusted.
+\item Four controlled measurements on one corpus, each isolating a single
+  evaluation choice, with paired statistics where the design is paired.
+\item A protocol-sensitivity result: identical verdicts scored any-slice versus
+  type-matched give 82.2\% and 25.5\% recall. We decompose the 56.7-point spread
+  into 31.6 points of protocol effect and ${\approx}25$ points of our own
+  coverage gap, and report both separately rather than claiming the sum.
+\item Seven silent failure modes observed during the work, six proposed
+  invariants, and a documented instance of our own instrument violating one of
+  them.
+\item A released artifact: corpus, loaders, per-contract checkpoints, replay
+  tooling, and a chronological decision log.
+\end{enumerate}
+
+%% ===================================================================
+\section{Background and Related Work}
+%% ===================================================================
+
+\subsection{What the standard corpora can and cannot measure}
+
+SmartBugs-curated~\cite{smartbugs} and the Web3Bugs contest
+corpus~\cite{web3bugs} are the sets on which recall is most often reported. Both
+are \textbf{all-positive}: every contract carries a known bug. Precision computed
+on such a set is mechanically $1.000$ whenever recall is non-zero, and a
+false-alarm rate is not defined at all. Our own early runs make the point
+concretely --- on SmartBugs-curated our council records precision $1.000$ and
+recall $0.881$, which says nothing whatever about false alarms.
+
+Durieux et al.~\cite{durieux} is the largest evaluation in the field: nine tools
+over 47,518 chain contracts and 69 annotated ones, 428,337 analyses, 564 days of
+compute. They report that \textbf{93\% of the wild contracts are flagged
+vulnerable}, and then --- correctly --- go no further than calling this evidence
+of ``a considerable number of false positives,'' because the wild corpus is
+unlabelled. Their annotated set, where the split would be possible, has 69
+contracts and no safe class. One paper, a flag rate without a false-alarm rate
+and recall without a negative class, not through any defect of method but because
+no corpus offered both. That is the gap this benchmark exists to close.
+
+\subsection{The claim we are \emph{not} making}
+
+Berriche et al.~\cite{berriche} own the general observation that benchmark scores
+are pipeline-dependent, and state it more strongly than our data can: swings
+above eighty points across eight benchmarks and ten models. Heimdallr
+\cite{heimdallr} owns the observation that LLM auditors carry catastrophic
+real-world false-alarm rates. We take both as premises rather than findings.
+
+Our claim is narrower and, we argue, unclaimed: in a \textbf{detection} task, the
+construction of the negative class and the definition of the matching rule are
+themselves experimental variables of first-order magnitude. Neither exists in the
+QA benchmarks Berriche et al.\ audit. Their ``denominator inflation'' is a
+counting error over attempted versus total questions; ours is a question about
+what the denominator of a false-positive rate should \emph{be}.
+
+\begin{table*}[t]
+\centering
+\caption{Positioning. Each row is verified against the source paper's own text.}
+\label{tab:positioning}
+\small
+\begin{tabular}{@{}p{0.17\textwidth}p{0.38\textwidth}p{0.38\textwidth}@{}}
+\toprule
+\textbf{Prior work} & \textbf{What it establishes} & \textbf{What it leaves open} \\
+\midrule
+GPTScan~\cite{gptscan} &
+Logic-vulnerability detection with GPT plus program analysis; a false-alarm rate
+on a curated negative set &
+The negative set is one curated slice; the 22$\times$ gap
+to~\cite{heimdallr} is unexplained \\
+Slither~\cite{slither} &
+Fast, precise static analysis; 10.9\% ``false positives'' &
+A different denominator ($1-$precision), one detector class, no true-negative
+set \\
+Durieux et al.~\cite{durieux} &
+Nine tools at scale; 93\% of wild contracts flagged; 42\% combined detection &
+The negative class is unlabelled, so a false-alarm rate is not computable \\
+Heimdallr~\cite{heimdallr} &
+LLM auditors at 97.5\% FPR on contest code &
+Negatives are ``not in the report,'' i.e.\ absence of evidence \\
+COMPSAC'26~\cite{compsac} &
+Paired safe variants; local 4-bit FPR 34.09\%; lexical bias &
+States ``no context-window analysis'' as its own limitation \\
+Berriche et al.~\cite{berriche} &
+Scoring pipelines move QA scores by more than 80 points &
+Every benchmark is QA --- \textbf{no negative class exists} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%% ===================================================================
+\section{Benchmark Construction}
+%% ===================================================================
+
+The benchmark is the instrument, so its construction is a contribution rather
+than a preliminary.
+
+\subsection{Balance and tiers}
+
+2,250 Solidity contracts, balanced 1,125 safe : 1,125 vulnerable. Both halves are
+stratified into three tiers. The safe tiers are ordered by \emph{how much the
+safe label can be trusted} (Table~\ref{tab:tiers}).
+
+\begin{table}[t]
+\centering
+\caption{Corpus tiers, with counts scored in the main run.}
+\label{tab:tiers}
+\small
+\begin{tabular}{@{}lrp{0.42\columnwidth}@{}}
+\toprule
+\textbf{Tier} & \textbf{$n$} & \textbf{How the label was established} \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Safe}} \\
+Audited libraries & 172 & OpenZeppelin / Solady --- heavily reviewed, widely
+deployed \\
+Audit-reviewed, clean & 240 & In a published audit's scope, no finding filed \\
+Real-world, no report & 191 & Deployed, no public report --- \emph{absence of
+evidence} \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Vulnerable}} \\
+Curated & 214 & SmartBugs-style annotated vulnerabilities \\
+Injected & 170 & A known bug deliberately introduced \\
+Audit-report findings & 167 & A real finding from a published audit \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The safe tiers are the novel part. Tier~1 is as close to ground truth as this
+domain offers; tier~3 is an inference from silence. A tool's false-alarm rate is
+conventionally reported against whichever of these a paper happened to use.
+
+\subsection{The negative class is a claim, not a fact}
+\label{sec:labelnoise}
+
+Because tier~3 is absence of evidence, some ``false alarms'' against it may be
+real unreported bugs. We bound this by hand. A random sample (seed 2026) of 20 of
+the 79 blocked safe contracts, plus one from an earlier read, was reviewed
+against each contract's externally callable surface: 14 of 21 (70\%) are clear
+tool errors, 4 (20\%) are unclear without a full read, and 2 (10\%) are possible
+real bugs in a contract the datasets call safe.
+
+So roughly 70\% of blocked safe contracts are genuine tool errors, and at most
+30\% of the false-alarm rate could be label noise. The two candidate real defects
+--- both with unmodified external \texttt{mint}/\texttt{withdraw} surfaces ---
+are flagged as such in the artifact. This bound is self-assessed by the tool's
+own authors and we treat it as a threat rather than a result
+(\S\ref{sec:threats}).
+
+\subsection{Sampling discipline}
+
+Samples are \textbf{nested and seeded}: extending a run from $n$ to $n' > n$
+yields a strict superset, so a longer run cannot silently change the population.
+Every contract is checkpointed individually, which makes every table in this
+paper re-scorable without re-running inference --- a property we rely on in
+\S\ref{sec:rq2}, where a new result is produced from old checkpoints at zero
+inference cost.
+
+%% ===================================================================
+\section{The Instrument}
+%% ===================================================================
+
+The tool under measurement is not the contribution, and we describe it only as
+far as the experiments require.
+
+\tool{} routes a contract to up to eight single-class specialists (reentrancy,
+access control, arithmetic, business logic, oracle/price manipulation,
+flash-loan/MEV, DoS/gas, proxy upgradeability), each pinned to a distinct
+open-weights base model served locally by Ollama. A finding whose quoted evidence
+does not appear verbatim in the source is discarded before aggregation.
+
+\paragraph{Verdict rule.}
+Surviving finding confidences are pooled as
+$\mathit{risk} = 1 - \prod_i (1 - \mathit{conf}_i)$, blocking at $\tau = 0.925$.
+This matters for reading our tables, because an earlier rule blocked on
+\emph{any} surviving finding --- the same rule at $\tau \to 0$. Both appear in the
+artifact and they are never interchanged (Table~\ref{tab:rule}).
+
+\begin{table}[t]
+\centering
+\caption{The two rules on the same 1,154 verdicts. The shipped rule is what this
+paper reports throughout.}
+\label{tab:rule}
+\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Rule} & \textbf{tp/fp/tn/fn} & \textbf{FPR} & \textbf{Recall} &
+\textbf{Prec.} & \textbf{F1} \\
+\midrule
+OR-gate & 498/356/247/53 & 59.0\% & 90.4\% & 0.583 & 0.709 \\
+\textbf{Noisy-OR} & \textbf{445/180/423/106} & \textbf{29.9\%} &
+\textbf{80.8\%} & \textbf{0.712} & \textbf{0.757} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The choice between the two is not a tuning detail, because the OR-gate is what a
+naive council implementation produces and it is what our own earlier runs used.
+Table~\ref{tab:splits} gives the comparison over 10 random dev/test splits
+($n = 233$, 116 dev / 117 test, $\tau$ fitted on dev at $0.575$).
+
+\begin{table}[t]
+\centering
+\caption{Verdict rule over 10 random dev/test splits, mean $\pm$ s.d. The
+threshold wins 9 of 10 splits. A per-class weighted variant, tested as a control,
+wins only 3 of 10 and is not reported as the mechanism.}
+\label{tab:splits}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Rule} & \textbf{FPR} & \textbf{Prec.} & \textbf{Recall} & \textbf{F1} \\
+\midrule
+OR-gate & 64.8\%\,$\pm$5.4 & 0.563 & 0.938 & 0.703 \\
+\textbf{Noisy-OR} & \textbf{27.4\%}\,$\pm$7.8 & \textbf{0.733} & 0.824 &
+\textbf{0.770} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Per-class weighting beats a flat threshold on only 3 of 10 splits
+(F1 $0.770$ against a threshold-only $0.790$), so we attribute the gain to
+\textbf{thresholding, not weighting}, and report the simpler mechanism. We note
+this because the weighted variant was the intuitively better design and was
+implemented first; the control is the only reason it is not in the paper as a
+contribution.
+
+\paragraph{Where the council helps, and where it does not.}
+On a balanced access-control slice (8 positive, 8 negative, seed 0) the council is
+a clear win over a single LLM: recall $0.125 \rightarrow 0.750$, F1
+$0.222 \rightarrow 0.857$, precision $1.000$ throughout. On Etherscan-50, the
+only other early corpus with a negative class, \textbf{it loses}: precision
+$0.067$ / recall $0.167$, against a single LLM's $0.182$ / $0.667$ and an
+LLM+Slither pipeline's $0.140$ / $1.000$. That corpus has scraped, noisy ground
+truth and we weight it accordingly --- but the project's original hypothesis was
+that a model-diverse council raises precision, and on the available evidence that
+hypothesis is \textbf{refuted}. We report it because a paper about honest
+measurement that suppressed its own negative result would be self-refuting.
+
+Adversarial LLM-as-judge arbitration, the standard precision mechanism, wins
+\textbf{4 of 10} held-out splits --- no gain, despite visibly reducing the FPR
+column. A reader shown only that column would have recorded it as a success.
+
+%% ===================================================================
+\section{Results}
+%% ===================================================================
+
+All experiments hold the tool, seed, model digests and (except in RQ4) the
+machine fixed. Intervals are Wilson~\cite{wilson}; paired designs use
+McNemar~\cite{mcnemar}. We never report Wald intervals, whose width collapses to
+zero at the boundaries where several of these rates sit.
+
+\subsection{RQ1 --- the provenance of the safe label}
+\label{sec:rq1}
+
+Same tool, same contracts, same rule. Only the origin of the safe label varies.
+
+\begin{table}[t]
+\centering
+\caption{RQ1. False-alarm rate by how the safe label was obtained, with Wilson
+intervals.}
+\label{tab:rq1}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Safe tier} & \textbf{$n$} & \textbf{fp} &
+\textbf{False-alarm rate} \\
+\midrule
+Audited libraries & 172 & 27 & \textbf{15.7\%}\ci{11.0}{21.9} \\
+Audit-reviewed, clean & 240 & 90 & \textbf{37.5\%}\ci{31.6}{43.8} \\
+Real-world, no report & 191 & 63 & \textbf{33.0\%}\ci{26.7}{39.9} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The effect is \textbf{two-level, not a monotonic gradient}. Audited libraries
+separate cleanly from both weaker tiers; the two weaker tiers overlap and are not
+distinguishable from each other. An earlier version of this work described a
+three-step gradient, which the intervals do not support.
+
+\paragraph{Is this just code complexity?}
+The obvious confound is that audited libraries might simply be smaller and
+simpler than contest code, making the gradient a statement about contract size
+rather than label provenance. It is not, and the data runs the other way. Median
+contract size is 6,649 characters for audited libraries, against 3,531 for
+audit-reviewed and 3,783 for real-world code. The tier with the \textbf{lowest}
+false-alarm rate has contracts with nearly \textbf{twice the median size} of the
+tier with the highest. If surface area drove false alarms we would observe the
+opposite ordering. The size confound therefore works \emph{against} the measured
+effect, which means the effect of label provenance is if anything
+\textbf{understated} here.
+
+The 21.8-point spread between tiers 1 and 2 is larger than the difference between
+most published tools. A paper evaluating only against audited libraries would
+report 15.7\%; the same tool evaluated against contest code reports 37.5\%.
+
+\paragraph{The positive class is stratified too.}
+The same construction question applies to the vulnerable half, and the answer is
+milder but present. Detection rates by how the vulnerability was established are
+86.4\%\ci{81.2}{90.4} on curated annotations, 89.4\%\ci{83.9}{93.2} on
+deliberately injected bugs, and 70.7\%\ci{63.4}{77.0} on findings taken from
+published audit reports. Injected bugs --- the cheapest positives to manufacture,
+and therefore common in generated benchmarks --- are the easiest to find, and real
+audit findings are the hardest, by an 18.7-point margin whose intervals do not
+overlap. A benchmark built predominantly from injected bugs overstates recall in
+the same way that a benchmark built predominantly from audited libraries
+understates false alarms. We report the positive-class effect as secondary because
+it does not, unlike RQ1 and RQ2, change the metric by more than the field's
+tool-versus-tool differences.
+
+\subsection{RQ2 --- what counts as a detection}
+\label{sec:rq2}
+
+Recall requires deciding when a flag \emph{counts}. Two protocols appear in the
+literature and neither is usually named:
+
+\begin{itemize}
+\item \textbf{any-slice-positive} --- the tool flagged the contract, and the
+  contract carries the label. This is what our \S4 table and most head-to-head
+  comparisons use.
+\item \textbf{type-matched} --- the finding that fired must itself name the
+  labelled category. This is Durieux et al.'s unit, and GPTScan's.
+\end{itemize}
+
+Re-scoring the same checkpoints through the same shipped rule, changing nothing
+but the protocol (denominator: the 349 vulnerable contracts carrying a mapped
+DASP-10~\cite{dasp} label; 202 of the 551 carry none and are excluded),
+any-slice-positive gives $287/349 = \mathbf{82.2\%}$ and type-matched gives
+$89/349 = \mathbf{25.5\%}$.
+
+\textbf{A 56.7-point spread with no change to any verdict} --- but that figure
+mixes two different things, and we separate them rather than claim the sum. The
+council has eight roles, five of which map unambiguously onto DASP-10, and
+\textbf{158 of the 349 contracts (45.3\%) carry only classes no role covers}.
+Part of the spread is therefore \emph{our} coverage gap, not a property of the
+protocol. Restricting to the 187 contracts that carry \textbf{only} classes for
+which a specialist exists --- so the tool was genuinely looking for the labelled
+thing --- isolates the protocol effect (Table~\ref{tab:rq2}).
+
+\begin{table}[t]
+\centering
+\caption{RQ2. Decomposing the protocol spread. The coverage-controlled row is the
+paper's claim.}
+\label{tab:rq2}
+\small
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Set} & \textbf{$n$} & \textbf{Any-slice} & \textbf{Type-matched} &
+\textbf{Spread} \\
+\midrule
+All labelled & 349 & 82.2\% & 25.5\% & 56.7 pts \\
+\textbf{Coverage-controlled} & \textbf{187} & \textbf{77.0\%} &
+\textbf{45.5\%} & \textbf{31.6 pts} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+So roughly 25 points are attributable to our role set and \textbf{31.6 points to
+the scoring protocol alone}. We take the controlled figure as the paper's claim.
+It is still larger than any tool-versus-tool difference we found in the
+literature, and it is obtained with the tool held fixed and every verdict
+unchanged. The uncontrolled 56.7 points is not discarded --- it is the number a
+reader of our headline recall would actually be misled by --- but it is reported
+as a \emph{joint} effect of protocol and coverage, never as protocol alone.
+
+\begin{table}[t]
+\centering
+\caption{RQ2 by vulnerability class. Our two largest labelled classes have no
+specialist and are nonetheless ``detected'' at 89.0\% and 92.5\%.}
+\label{tab:rq2class}
+\small
+\begin{tabular}{@{}lrrrc@{}}
+\toprule
+\textbf{DASP-10 class} & \textbf{$n$} & \textbf{Any-slice} &
+\textbf{Type-matched} & \textbf{Spec.?} \\
+\midrule
+Unchecked low-level calls & 109 & 89.0\% & --- & \textbf{none} \\
+Reentrancy & 86 & 76.7\% & 29.1\% & yes \\
+Arithmetic & 79 & 77.2\% & 62.0\% & yes \\
+Time manipulation & 40 & 92.5\% & --- & \textbf{none} \\
+Access control & 17 & 88.2\% & 70.6\% & yes \\
+Bad randomness & 9 & 66.7\% & --- & \textbf{none} \\
+Denial of service & 8 & 62.5\% & 50.0\% & yes \\
+Front running & 4 & 100.0\% & 0.0\% & yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Reentrancy --- the class the field has studied longest --- is flagged on 76.7\% of
+its contracts but \emph{named} by the reentrancy specialist on 29.1\%. A separate,
+earlier two-model council independently scored recall \textbf{zero} on bad
+randomness (0/8), denial of service (0/6) and arithmetic (0/15), corroborating the
+gap on a different run.
+
+We report $[25.5\%, 82.2\%]$ as a bracket rather than either endpoint. 25.5\% is a
+\emph{lower} bound: only five of eight roles have an unambiguous DASP slot, and we
+deliberately refuse to stretch \texttt{business\_logic},
+\texttt{oracle\_price\_manipulation} and \texttt{proxy\_upgradeability} into
+``other,'' which would manufacture type-matched hits.
+
+\paragraph{This makes comparison with prior work fair for the first time.}
+Durieux et al.'s units are type-matched: nine tools combined reach 42\% of 115
+tagged vulnerabilities, the best single tool 27\%, and Slither 17\%. Our 25.5\%
+sits inside that band, while returning a verdict on 100\% of contracts against
+Slither's 31\% (\S\ref{sec:calibration}). Reported as 82.2\%, the same comparison
+would have read as a two-fold win over the entire field combined --- an artifact
+of protocol, not of capability.
+
+\subsection{RQ3 --- what the model was permitted to read}
+\label{sec:rq3}
+
+The local runtime truncates any prompt exceeding \texttt{num\_ctx}
+\textbf{without error}, and abstentions are excluded from scoring. A
+misconfiguration therefore \emph{removes rows} rather than lowering a score. 540
+of 2,250 contracts (24.0\%) overflow a 4,096-token window, and the overflow is
+class-skewed --- 350 vulnerable against 190 safe, because real buggy contracts are
+larger.
+
+Paired ablation on identical contracts, $4{,}096 \rightarrow 16{,}384$,
+vulnerable class (36 paired, 20 scored in both arms): abstention
+$44.4\% \rightarrow 0.0\%$, recall $12.5\% \rightarrow 81.2\%$, accuracy
+$25.0\% \rightarrow 75.0\%$. McNemar $b = 2$, $c = 12$, $p = 0.016$. The larger
+window is also \textbf{4.01$\times$ faster} (sign test $p < 0.0001$) ---
+truncation triggers context shifting, so the misconfiguration cost both accuracy
+and time while appearing in neither.
+
+\paragraph{Limitation, stated rather than managed.}
+The safe-class arm of this experiment is \emph{not} reported. Our run of it was
+corrupted by a backend outage that left 145/176 and 108/176 rows as total council
+failures; only 31 pairs scored in both arms, and those 31 are whatever ran while
+the backend was alive. Consequently \textbf{RQ3 is established on the vulnerable
+class only}, and our 29.9\% headline false-alarm rate may be an under-estimate by
+an amount this work does not yet bound. We flag this as the most important open
+item rather than reporting a figure from a compromised run.
+
+\subsection{RQ4 --- which machine produced the verdicts}
+
+Identical contract ids, seeds and byte-identical model digests, two hosts. On the
+main arm ($n = 230$) the two hosts agree on \textbf{0.735} of verdicts, with
+accuracy $0.722$ on one host and $0.622$ on the other. Roughly one verdict in four
+flips across machines. A \texttt{num\_parallel = 1} control ($n = 227$, agreement
+$0.727$) excludes batch parallelism as the cause (paired McNemar $p = 0.75$).
+Backend and hardware nondeterminism is documented
+elsewhere~\cite{pape}; what we add is its \textbf{propagation to security
+verdicts}, and therefore to a published rate.
+
+\paragraph{Capacity is not the lever (negative result).}
+Restoring a 2.7$\times$ larger model on the three semantic roles --- a
+one-variable change on the same 230 contracts --- \emph{increases} false alarms
+$49 \rightarrow 74$ (McNemar $p = 0.00008$) while reducing misses
+$15 \rightarrow 7$ ($p = 0.043$), for a net accuracy drop of
+$0.722 \rightarrow 0.651$. Stronger associative reasoning reads more benign
+patterns as vulnerabilities.
+
+\subsection{Calibration against the literature}
+\label{sec:calibration}
+
+\begin{table}[t]
+\centering
+\caption{Every published rate we could verify, with its denominator printed
+beside it. Two of these are not comparable to the others by construction.}
+\label{tab:calibration}
+\small
+\begin{tabular}{@{}lrl@{}}
+\toprule
+\textbf{Source} & \textbf{Rate} & \textbf{Denominator} \\
+\midrule
+GPTScan, self-reported & 4.39\% & $FP/(FP{+}TN)$ \\
+Slither, self-reported & 10.9\% & $1-$precision \\
+\textbf{\tool{}, audited-library tier} & \textbf{15.7\%} & $FP/(FP{+}TN)$ \\
+\textbf{\tool{}, overall} & \textbf{29.9\%} & $FP/(FP{+}TN)$ \\
+COMPSAC'26, local 4-bit & 34.09\% & $FP/(FP{+}TN)$ \\
+\textbf{\tool{}, audit-reviewed tier} & \textbf{37.5\%} & $FP/(FP{+}TN)$ \\
+GPTScan, measured by~\cite{heimdallr} & 97.50\% & $FP/(FP{+}TN)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We do not claim 29.9\% is good. We claim it is \emph{interpretable}: it carries a
+stated negative class, a per-tier decomposition, a hand-audited label-noise
+bound, and intervals.
+
+\paragraph{Against Slither on 150 identical contracts.}
+Table~\ref{tab:slither} gives the comparison on one contract set with one ground
+truth, under the rule NO-GO iff at least one High or Medium finding.
+
+\begin{table}[t]
+\centering
+\caption{Slither against \tool{} on 150 identical contracts. Coverage, not
+precision, is the difference.}
+\label{tab:slither}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+& \textbf{Slither} & \textbf{\tool{}} \\
+\midrule
+Answered & \textbf{46 / 150} & \textbf{150 / 150} \\
+Abstained & 104 (69\%) & 0 \\
+tp / fp / tn / fn & 32 / 2 / 8 / 4 & --- \\
+Precision where it answers & \textbf{0.941} & 0.712 \\
+Recall where it answers & 0.889 & 0.808 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Where Slither answers it is \textbf{more precise than we are} --- a 5.9\%
+false-discovery rate ($2/34$) that independently corroborates the 10.9\% its own
+paper reports. Its 104 abstentions were diagnosed with \texttt{solc} directly and
+\textbf{exactly one} was attributable to our toolchain; the rest are multi-file
+contest codebases and pragma mismatches, i.e.\ properties of the corpus rather
+than of the tool. Slither is a high-precision, low-coverage instrument; we are a
+moderate-precision, full-coverage one. The two are not ordered, and any single
+scalar that claims to order them is hiding the abstention column.
+
+\paragraph{Where the council is unambiguously the right design.}
+On a balanced access-control slice with real negative signal (8 positive, 8
+negative, seed 0), a single LLM finds 1 of 8 and the council finds 6 of 8, both at
+precision $1.000$: recall $0.125 \rightarrow 0.750$, F1
+$0.222 \rightarrow 0.857$. Adding arbitration on top returns it to $0.125$. This
+is the clearest positive result in the work and it is obtained on 16 contracts,
+which is why we present it as an existence proof for the mechanism rather than as
+a performance claim.
+
+\paragraph{Against GPTScan on 34 gradable shared projects.}
+33/34 against 31/34, with \textbf{overlapping} intervals: no detection difference
+is demonstrated, and we report that rather than a win.
+
+%% ===================================================================
+\section{Silent Failure Modes}
+%% ===================================================================
+
+Seven defects found during this work, each of which produced \emph{plausible}
+metrics rather than obvious garbage. Directional bias is what makes them
+dangerous.
+
+\begin{table*}[t]
+\centering
+\caption{Seven silent failure modes observed during this work. In every case the
+metric produced was plausible, and in six of seven the bias was towards a
+\emph{better}-looking result.}
+\label{tab:defects}
+\small
+\begin{tabular}{@{}rp{0.42\textwidth}p{0.42\textwidth}@{}}
+\toprule
+\textbf{\#} & \textbf{Defect} & \textbf{Effect on the reported metric} \\
+\midrule
+1 & Pinned model absent; at exactly 50\% errored, the ``$>$50\%'' fail-closed rule
+does not trip &
+A half-dead council records a clean GO. One 1,152-contract run invalidated \\
+2 & Partial-council results treated as terminal &
+32 of 198 rows had errored specialists, and \textbf{100\% of them were GO} \\
+3 & Provider quota drained mid-run, checkpointed as terminal &
+Bakes a transient outage permanently into recall \\
+4 & Arbitration silently defaulted to a hosted backend &
+The reported ``local tier'' was not local \\
+5 & Arbiter config keyed on names the caller never passes &
+Precision collapsed to $0.094$ and looked like a finding \\
+6 & Subsampling by \texttt{items[:N]} &
+Filename order clusters by project: the ``sample'' was 263 consecutive files \\
+7 & Health-probe timeout shorter than a cold model load &
+Aborts a healthy backend, so the run under-reports coverage \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:defects} lists them with the direction of the bias each induced.
+Six of the seven make the tool look better than it is, which is the property that
+makes them hard to notice: a result that improves is rarely audited as closely as
+one that degrades.
+
+\paragraph{Proposed invariants.}
+(i)~A verdict is terminal only if the whole council ran. (ii)~Transient
+$\neq$ deterministic: provider failures must never be checkpointed as results.
+(iii)~Every stage records the backend and model it \emph{actually used}.
+(iv)~Configuration lookups must fail loudly, never fall back. (v)~Samples must be
+nested and seeded. (vi)~Probe timeouts must exceed measured worst-case cold
+start.
+
+\paragraph{We then violated invariant (ii) ourselves.}
+The context-ablation runner --- the instrument measuring RQ3 --- wrote rows in
+which every specialist had errored into its checkpoint directory, and its resume
+path returned them verbatim, so a retry silently reused an outage instead of
+repairing it. This is the failure reported in \S\ref{sec:rq3}. We record it
+because it is the strongest available evidence that these invariants are not
+obvious in retrospect: they were written by the authors, published in a prior
+draft, and violated in the same codebase.
+
+%% ===================================================================
+\section{Threats to Validity}
+\label{sec:threats}
+%% ===================================================================
+
+\paragraph{Construct.}
+Tier-3 ``safe'' is absence of evidence. \S\ref{sec:labelnoise} bounds this at
+${\approx}30\%$ by hand review, but the bound rests on 21 contracts assessed from
+externally callable surfaces rather than full reads, and it was assessed by the
+tool's own authors, unblinded. An independent second rater is the single cheapest
+improvement available to this work.
+
+\paragraph{Internal.}
+RQ3 is established on the vulnerable class only (\S\ref{sec:rq3}). The
+type-matched mapping in RQ2 covers five of eight roles; a more generous map would
+raise 25.5\%, which is why it is reported as a lower bound and why the
+coverage-controlled 31.6-point figure, not the 56.7-point one, is the claim. The
+RQ1 effect is not explained by contract size, which runs opposite to it
+(\S\ref{sec:rq1}), but we have not controlled for cyclomatic complexity or
+external-call count, either of which could still carry part of it.
+
+\paragraph{External.}
+One tool, one language, one model family, two machines. The \emph{mechanisms} ---
+constructed negatives, matching rules, silent truncation, execution
+nondeterminism --- are not specific to any of these, but the magnitudes certainly
+are.
+
+\paragraph{Statistical.}
+RQ3 rests on 20 paired contracts and RQ1's smallest tier on 172. We report Wilson
+intervals throughout and never Wald.
+
+%% ===================================================================
+\section{What Is Not Claimed}
+%% ===================================================================
+
+\begin{itemize}
+\item Not that \tool{} is a good auditor. A 29.9\% false-alarm rate is not
+  deployable unattended, and scored type-matched our recall falls inside the band
+  of the static analysers we set out to beat.
+\item Not that the benchmark is representative of all Solidity.
+\item Not that benchmark scores being configuration-dependent is a new
+  observation --- Berriche et al.~\cite{berriche} established that, in a
+  neighbouring domain, first.
+\item Not that our rate is comparable to every figure in
+  Table~\ref{tab:calibration}. Two are computed on a different denominator, which
+  is why the denominator is printed beside each.
+\item Not that we beat GPTScan. The head-to-head intervals overlap.
+\end{itemize}
+
+%% ===================================================================
+\section{Conclusion}
+%% ===================================================================
+
+A false-alarm rate is not a property of a tool. In a detection task it is jointly
+determined by how the negative class was constructed, what counts as a match,
+what the model was permitted to read, and which machine ran it. We measured each
+on one corpus with one tool, and each moved the headline further than the
+differences the literature currently reports as results. The largest
+well-controlled instance is 31.6 points, from a choice that changes no verdict at
+all --- and even that is measured with the tool's own coverage held constant, so
+it is a floor rather than a ceiling.
+
+The practical consequence is a reporting standard, not a better tool. Concretely,
+we propose that a paper reporting a detection rate on smart-contract code state
+the following four things, none of which is expensive and none of which is
+currently conventional.
+
+\begin{enumerate}
+\item \textbf{The provenance of the negative class.} Not its size --- its origin.
+  ``Contracts with no filed audit finding'' and ``audited library code'' are
+  different claims, and on our corpus they differ by 21.8 points with the tool
+  unchanged. A paper that cannot say which it used has not reported a false-alarm
+  rate; it has reported a number.
+\item \textbf{The matching rule.} Whether a flag counts because the contract was
+  flagged, or because the finding named the labelled class. On our data the two
+  differ by 31.6 points with coverage controlled, and by 56.7 without. Both
+  protocols are defensible; using one while being read as the other is not.
+\item \textbf{The context window, and the abstention count beside it.} Silent
+  truncation removes rows rather than lowering a score, so a truncated run reports
+  a rate over a quietly different population. An abstention count makes this
+  visible at a glance; a recall figure alone never does.
+\item \textbf{The execution environment.} Host, backend, quantisation and batch
+  settings, because one verdict in four flipped between two of our machines
+  running byte-identical model digests.
+\end{enumerate}
+
+Absent those four, two reported rates are not comparable, and the field has been
+comparing them anyway. We would rather this paper be cited for the checklist than
+for the tool.
+
+%% ===================================================================
+\section{Data Availability}
+%% ===================================================================
+
+Corpus, loaders, per-contract checkpoints for every run, replay tooling, the
+generated results index, and a chronological decision log recording each
+correction made during this work are released at
+\url{https://github.com/tarunb05/ThirdEye}. Every table above is re-scorable from
+the committed checkpoints without re-running inference. Artifact scale: 18,078
+lines of source across 61 commits, 42 backend regression tests pinning the
+defects in \S6, and 3,707 lines of documentation.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

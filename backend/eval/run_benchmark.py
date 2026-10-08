@@ -53,6 +53,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from eval.loaders import thirdeye_bench
+from eval.provenance import collect as collect_provenance, summarise as provenance_line
 from eval.schema import REPO_ROOT
 
 CKPT = REPO_ROOT / "backend" / "eval" / "checkpoints" / "benchmark"
@@ -308,6 +309,19 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
         tier_items[(bucket, tier, expected)] = items
 
     total = sum(len(v) for v in tier_items.values())
+    # Captured BEFORE any work, so a run that dies still names its own setup in
+    # the log. Without this the cross-machine claim (RQ4) is not checkable from
+    # the artefact by anyone, ourselves included.
+    from services.council import specialist_assignments
+    _models = sorted({m for _p, m in specialist_assignments(backend).values()})
+    provenance = collect_provenance(_models, extra={"run": "benchmark", "backend": backend,
+                                                    "seed": seed, "concurrency": concurrency,
+                                                    "limit_per_tier": limit_per_tier})
+    print(provenance_line(provenance))
+    _missing = [m for m, d in (provenance.get("model_digests") or {}).items() if not d]
+    if _missing:
+        print(f"[benchmark] WARNING no digest recorded for {_missing} — "
+              f"this run is not comparable across hosts.")
     print(f"[benchmark] backend={backend} seed={seed}  {total} contracts across {len(TIERS)} tiers")
     for (b, t, e), items in tier_items.items():
         print(f"    {t:<28} {len(items):>4} contracts  (expected {e})")
@@ -466,6 +480,7 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
         "per_tier": per_tier,
         "api_accounting": _api_stats(all_rows),
         "verdict_note": "INCONCLUSIVE verdicts are abstentions, excluded from P/R/F1 and reported separately.",
+        "provenance": provenance,
     }
     return report
 
@@ -476,11 +491,29 @@ def _fmt(x, pct=False):
     return f"{x*100:.1f}%" if pct else (f"{x:.3f}" if isinstance(x, float) else str(x))
 
 
-def _write_reports(report: dict) -> None:
+def _write_reports(report: dict, allow_partial: bool = False) -> None:
     RESULTS.mkdir(parents=True, exist_ok=True)
     tag = f"{report['backend']}{'' if report.get('arbitration', True) else '_noarb'}_seed{report['seed']}"
     json.dump(report, open(RESULTS / f"benchmark_by_tier_{tag}.json", "w"), indent=2)
-    # Also a stable filename the snapshot builder can pick up.
+    # The stable filename is what the frontend snapshot builder and every
+    # downstream table read. A partial run reaching it is exactly how a
+    # budget-truncated 1,154-row snapshot became "the" 2,250-contract headline:
+    # nothing downstream ever read the `partial` flag. It is a gate now.
+    n, corpus = report.get("n_total"), report.get("corpus_size")
+    short = bool(report.get("partial")) or (corpus is not None and n is not None and n < corpus)
+    if short and not allow_partial:
+        cov = f"{n}/{corpus}" if corpus else f"{n}/?"
+        print()
+        print("=" * 72)
+        print(f"  PARTIAL RUN — {cov} contracts. NOT written to benchmark_by_tier.json.")
+        print(f"  The per-seed file benchmark_by_tier_{tag}.json was written and is safe to")
+        print("  inspect. Re-run to completion, or pass --allow-partial if you genuinely")
+        print("  mean to publish a fraction of the corpus as the headline.")
+        print("=" * 72)
+        print()
+        return
+    if short:
+        print(f"[benchmark] --allow-partial: writing a {n}/{corpus} run as the headline.")
     json.dump(report, open(RESULTS / "benchmark_by_tier.json", "w"), indent=2)
 
     lines = [
@@ -548,10 +581,22 @@ def report_from_checkpoints(backend: str, seed: int) -> dict:
                           **_score_tier(rows_by_tier.get(tier, []), expected)}
     safe_rows = [r for r in rows if r.get("expected") == "safe"]
     vuln_rows = [r for r in rows if r.get("expected") == "vulnerable"]
+    try:
+        corpus_size = sum(len(thirdeye_bench.load(buckets={b}, tier=t)) for b, t, _e in TIERS)
+    except Exception:  # noqa: BLE001 - datasets may be absent on a deploy host
+        corpus_size = None
     return {
         "backend": backend, "seed": seed, "limit_per_tier": None,
         "n_total": len(rows),
         "partial": True,
+        # A --report-only snapshot scores whatever checkpoints happen to exist.
+        # Recording the corpus size it is a fraction OF is the difference
+        # between "a benchmark" and "however far the run got before the budget
+        # hit" -- the committed 1,154-row headline was the latter.
+        "corpus_size": corpus_size,
+        "coverage": round(len(rows) / corpus_size, 4) if corpus_size else None,
+        "provenance": collect_provenance(None, extra={"run": "report_from_checkpoints",
+                                                      "backend": backend, "seed": seed}),
         "overall": _score_tier(rows, "mixed"),
         "safe_aggregate": _score_tier(safe_rows, "safe"),
         "vuln_aggregate": _score_tier(vuln_rows, "vulnerable"),
@@ -570,6 +615,9 @@ async def main():
     ap.add_argument("--no-arbitration", action="store_true", help="council-only ablation row (skip the arbitration precision gate)")
     ap.add_argument("--concurrency", type=int, default=2, help="contracts in flight at once")
     ap.add_argument("--report-only", action="store_true", help="score existing checkpoints; run nothing")
+    ap.add_argument("--allow-partial", action="store_true",
+                    help="permit a run that covers less than the full corpus to be written "
+                         "as the headline benchmark_by_tier.json")
     ap.add_argument("--retry-quarantined", action="store_true", help="revisit contracts previously quarantined to _transient; off by default so a resume makes forward progress")
     ap.add_argument("--max-minutes", type=int, default=0, help="wall-clock budget; 0 = unlimited. Past it, stop starting new contracts and score what finished.")
     args = ap.parse_args()
@@ -584,7 +632,7 @@ async def main():
         report = report_from_checkpoints(tag, args.seed)
     else:
         report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes, args.retry_quarantined)
-    _write_reports(report)
+    _write_reports(report, allow_partial=args.allow_partial)
 
 
 if __name__ == "__main__":

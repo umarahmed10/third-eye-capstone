@@ -1,0 +1,181 @@
+%% ThirdEye — two-page summary of the MSR 2027 submission.
+%% Standalone: compiles independently of main.tex, shares refs.bib.
+%%   latexmk -pdf summary.tex
+
+\documentclass[sigconf,nonacm]{acmart}
+
+\usepackage{booktabs}
+\usepackage{microtype}
+\settopmatter{printfolios=true}
+
+\newcommand{\ci}[2]{\,[#1,\,#2]}
+\newcommand{\tool}{ThirdEye}
+
+\begin{document}
+
+\title{A False-Alarm Rate Is Not a Property of the Tool}
+\subtitle{Two-page summary of a submission to MSR 2027}
+
+\author{Umar Ahmed}
+\affiliation{\institution{PES University}\city{Bengaluru}\country{India}}
+\email{PES2UG23CS662@pesu.pes.edu}
+\author{Anvita Agarwal}
+\affiliation{\institution{PES University}\city{Bengaluru}\country{India}}
+\email{PES2UG23CS085@pesu.pes.edu}
+\author{Tarun Basavaraju}
+\affiliation{\institution{PES University}\city{Bengaluru}\country{India}}
+\email{PES2UG23CS644@pesu.pes.edu}
+\author{V Lakshitha}
+\affiliation{\institution{PES University}\city{Bengaluru}\country{India}}
+\email{PES2UG23CS665@pesu.pes.edu}
+
+\begin{abstract}
+The same 1,154 verdicts from one unchanged tool, scored two defensible ways,
+yield recall of 25.5\% or 82.2\%. We build a Solidity benchmark whose safe class
+is stratified by \emph{how the safe label was obtained}, and show that four
+unreported evaluation choices each move the headline metric further than any
+tool-versus-tool difference in the literature. This summary states the claim, the
+evidence, and what the work does not yet establish.
+\end{abstract}
+
+\keywords{smart contracts, benchmark construction, evaluation methodology}
+
+\maketitle
+
+\section{The problem}
+
+GPTScan~\cite{gptscan} reports a 4.39\% false-alarm rate.
+Heimdallr~\cite{heimdallr} measures \emph{the same tool} at 97.50\%.
+Twenty-two-fold, with no change to the tool: the difference lies entirely in
+which contracts were designated ``not vulnerable.'' Slither's much-cited 10.9\%
+\cite{slither} is not even the same quantity --- it is $1-$precision on one
+detector class with no true-negative set --- yet LLM tools are informally held
+against it.
+
+Berriche et al.~\cite{berriche} establish the general form of this problem:
+across eight cybersecurity benchmarks and ten models, one scoring-pipeline choice
+moves a score by more than eighty points. Every benchmark in that study is
+question-answering, and \textbf{a multiple-choice question cannot produce a false
+alarm}. A detection benchmark is a different object: it must \emph{construct} the
+class of things that are not bugs, and \emph{decide} what counts as having found
+one. Neither construction has a correct answer, both go unreported, and both ---
+we find --- move the headline further than the tool does.
+
+\section{What we built}
+
+A balanced benchmark of 2,250 Solidity contracts (1,125 safe : 1,125 vulnerable)
+in which the safe half is stratified by label provenance: audited libraries
+(OpenZeppelin, Solady), contracts inside a published audit's scope with no
+finding filed, and deployed contracts with no public report --- the last being an
+inference from silence rather than evidence of safety. To our knowledge this is
+the first corpus that lets a false-alarm rate be decomposed by how much the
+``safe'' label can be trusted.
+
+Every contract is checkpointed individually and sampling is nested and seeded, so
+every table is re-scorable without re-running inference, and a longer run is a
+strict superset of a shorter one. The tool under measurement is a council of
+single-class LLM specialists pooling confidences as
+$1-\prod(1-\mathit{conf}_i)$ at $\tau = 0.925$; 1,154 contracts were scored.
+
+\section{Four findings}
+
+Each experiment changes one evaluation choice with the tool, seed, model digests
+and (except RQ4) the machine held fixed. Intervals are Wilson; paired designs use
+McNemar.
+
+\begin{table}[h]
+\centering
+\caption{Each row is one evaluation choice, with the tool unchanged.}
+\label{tab:findings}
+\small
+\begin{tabular}{@{}p{0.40\columnwidth}rr@{}}
+\toprule
+\textbf{The unreported choice} & \textbf{Effect} & \textbf{$n$} \\
+\midrule
+How the safe label was obtained & FPR 15.7\% $\rightarrow$ 37.5\% & 603 \\
+What counts as a detection & recall 25.5\% $\rightarrow$ 82.2\% & 349 \\
+What the model may read & recall 12.5\% $\rightarrow$ 81.2\% & 20 \\
+Which machine ran it & agreement 0.735 & 230 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{RQ1 --- label provenance.}
+False alarms are 15.7\%\ci{11.0}{21.9} on audited libraries against
+37.5\%\ci{31.6}{43.8} on audit-reviewed contest code. The effect is two-level
+rather than a monotonic gradient: the two weaker tiers overlap. The obvious
+confound is size, and it runs the wrong way --- the lowest-false-alarm tier has
+nearly twice the median contract length (6,649 characters against 3,531), so the
+effect is if anything understated.
+
+\paragraph{RQ2 --- the matching rule.}
+Re-scoring the same checkpoints, any-slice-positive gives 82.2\% recall and
+type-matched gives 25.5\%: a 56.7-point spread with no verdict changed. That
+figure decomposes, and we refuse to claim the sum. 158 of 349 labelled contracts
+carry only classes for which the council has no specialist. On the 187 where a
+specialist exists, the spread is \textbf{31.6 points} --- still larger than any
+tool-versus-tool difference we found in the literature. We report 31.6 as the
+protocol effect and 56.7 as protocol and coverage jointly.
+
+\paragraph{RQ3 --- what the model may read.}
+The runtime truncates over-long prompts \emph{without error}, and abstentions are
+excluded from scoring, so a misconfiguration removes rows instead of lowering a
+score. 24.0\% of the corpus overflows a 4,096-token window, skewed towards
+vulnerable contracts because they are larger. Widening the window moves recall
+$12.5\% \rightarrow 81.2\%$ (McNemar $p = 0.016$) and runs 4.01$\times$
+\emph{faster}. The safe-class arm is not reported: that run was destroyed by a
+backend outage, so RQ3 stands on the vulnerable class only.
+
+\paragraph{RQ4 --- the machine.}
+Two hosts with byte-identical model digests agree on 0.735 of verdicts --- one in
+four flips. A \texttt{num\_parallel = 1} control excludes batch parallelism
+($p = 0.75$). Restoring a 2.7$\times$ larger model \emph{increases} false alarms
+$49 \rightarrow 74$ ($p = 0.00008$): capability is not the lever.
+
+\section{What it costs us}
+
+Scored type-matched, our 25.5\% recall sits inside the band of the static
+analysers we set out to beat --- Durieux et al.~\cite{durieux} report Mythril at
+27\% and Slither at 17\% on the same style of unit. Where Slither answers at all,
+it is more precise than we are (32 tp / 2 fp on 46 of 150 contracts, against our
+0.712 precision); it is a high-precision, low-coverage instrument and we are a
+moderate-precision, full-coverage one. Against GPTScan on 34 shared projects the
+intervals overlap and no difference is demonstrated. The project's original
+hypothesis --- that a model-diverse council raises precision --- is refuted on the
+one early corpus that had a negative class, and adversarial arbitration, the
+standard precision mechanism, wins only 4 of 10 held-out splits.
+
+Reported at 82.2\%, the same comparison would have read as a two-fold win over the
+entire field combined. That would have been an artifact of protocol, not of
+capability, and a reviewer would have found it. The honest version is the
+publishable one: it is what makes the comparison with prior work fair for the
+first time.
+
+\section{Status and open items}
+
+The submission targets MSR 2027 (abstract 20 October 2026, paper 23 October). Four
+items remain. The safe-class arm of RQ3 must be re-run, and until it is, the
+paper must state that 29.9\% may be an under-estimate by an unbounded amount ---
+the single most attackable sentence in the draft. RQ3's vulnerable arm rests on 20
+paired contracts and should be extended. The 70\% label-noise bound is
+self-assessed by the tool's own authors and needs an independent second rater over
+the same 21 contracts. Two cited works are still to be read in full rather than
+in summary.
+
+We also record seven silent failure modes found during this work, six proposed
+invariants, and the fact that our own measurement instrument later violated one of
+them --- which is the strongest evidence we can offer that these mistakes are not
+obvious in retrospect.
+
+\section{Artifact}
+
+Corpus, loaders, per-contract checkpoints for every run, replay tooling and a
+chronological decision log are released at
+\url{https://github.com/tarunb05/ThirdEye}: 18,078 lines of source over 61
+commits, 42 passing regression tests, 3,707 lines of documentation. Every figure
+in the paper traces to a committed result file.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

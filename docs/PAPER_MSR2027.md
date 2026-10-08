@@ -4,7 +4,7 @@
 
 **Umar Ahmed, Anvita Agarwal, Tarun B, V Lakshitha**
 Department of Computer Science and Engineering, PES University, Bengaluru, India
-`{PES2UG23CS662, PES2UG23CS085, PES2UG23CS646, PES2UG23CS665}`
+`{PES2UG23CS662, PES2UG23CS085, PES2UG23CS644, PES2UG23CS665}`
 
 > **Target:** MSR 2027 Technical Papers. Abstract 20 Oct 2026, full paper 23 Oct 2026, 10 pp + 2 refs.
 > **Draft status:** v1, 2026-09-25. Every figure traces to `docs/PAPER_FACTS.md`.
