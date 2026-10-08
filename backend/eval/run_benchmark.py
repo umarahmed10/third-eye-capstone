@@ -263,7 +263,7 @@ def _api_stats(all_rows: list[dict]) -> dict:
     }
 
 
-async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True, max_minutes: int = 0, retry_quarantined: bool = False) -> dict:
+async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sample_seed: int = 0, use_arbitration: bool = True, max_minutes: int = 0, retry_quarantined: bool = False, schedule: str = "balanced") -> dict:
     from services import council
 
     # ── Pre-flight: the backend must be able to GENERATE, or every scan
@@ -433,9 +433,31 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
     # vulnerable ones — yielding an FPR with no recall to pair it with. Taking
     # one contract from each tier in turn keeps every tier growing together, so
     # a partial run is still a balanced, scorable benchmark.
+    # Within a tier, LONGEST FIRST when asked. Measured latency on the 1,154-row
+    # run spans 2.6s to 445.7s -- 171x. In arrival order the run ends on
+    # whatever monsters happen to be drawn last, with the semaphore mostly
+    # idle: classic straggler makespan. Starting the big ones first lets the
+    # cheap ones fill the tail instead.
+    #
+    # It is a flag, not the default, because it trades against the balance
+    # property below. A run that stops early under longest-first has completed
+    # each tier's LARGEST contracts, which is a size-biased sample -- and size
+    # correlates with context overflow, the very thing RQ3 is about. Safe for a
+    # run that completes (where order cannot affect the result), wrong for one
+    # that might not. Selection is untouched either way: this sorts AFTER
+    # items[:limit_per_tier], so the nested-sample superset property holds.
+    def _size(it) -> int:
+        try:
+            return sum(p.stat().st_size for p in it.code_paths)
+        except OSError:
+            return 0
+
     tasks = []
-    _queues = [[(it, b, t, e) for it in items]
+    _queues = [[(it, b, t, e) for it in (sorted(items, key=_size, reverse=True)
+                                         if schedule == "longest-first" else items)]
                for (b, t, e), items in tier_items.items()]
+    if schedule == "longest-first":
+        print(f"[benchmark] schedule=longest-first — largest contract first within each tier")
     for i in range(max((len(q) for q in _queues), default=0)):
         for q in _queues:
             if i < len(q):
@@ -480,6 +502,7 @@ async def run(backend: str, seed: int, limit_per_tier: int, concurrency: int, sa
         "per_tier": per_tier,
         "api_accounting": _api_stats(all_rows),
         "verdict_note": "INCONCLUSIVE verdicts are abstentions, excluded from P/R/F1 and reported separately.",
+        "schedule": schedule,
         "provenance": provenance,
     }
     return report
@@ -615,6 +638,11 @@ async def main():
     ap.add_argument("--no-arbitration", action="store_true", help="council-only ablation row (skip the arbitration precision gate)")
     ap.add_argument("--concurrency", type=int, default=2, help="contracts in flight at once")
     ap.add_argument("--report-only", action="store_true", help="score existing checkpoints; run nothing")
+    ap.add_argument("--schedule", choices=("balanced", "longest-first"), default="balanced",
+                    help="balanced: round-robin across tiers, so a run that stops early is still "
+                         "a balanced sample. longest-first: largest contract first within each "
+                         "tier, which cuts makespan on a 171x latency spread but makes a "
+                         "truncated run size-biased. Use it only for a run you intend to finish.")
     ap.add_argument("--allow-partial", action="store_true",
                     help="permit a run that covers less than the full corpus to be written "
                          "as the headline benchmark_by_tier.json")
@@ -631,7 +659,7 @@ async def main():
             args.backend if args.backend.endswith("_noarb") else f"{args.backend}_noarb")
         report = report_from_checkpoints(tag, args.seed)
     else:
-        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes, args.retry_quarantined)
+        report = await run(args.backend, args.seed, args.limit_per_tier, args.concurrency, args.sample_seed, not args.no_arbitration, args.max_minutes, args.retry_quarantined, args.schedule)
     _write_reports(report, allow_partial=args.allow_partial)
 
 
