@@ -1,6 +1,6 @@
 # Paper facts — every number, with provenance
 
-**Status: 2026-09-25.** One place to look up any figure that goes into the
+**Status: 2026-10-09.** One place to look up any figure that goes into the
 submission. Each row names the artefact it came from. Nothing here is typed from
 memory; everything was read out of a committed result file, a generated table, or
 a verified source paper.
@@ -11,10 +11,36 @@ Three labels are used throughout and they are not interchangeable:
 - **UNSOUND** — the run was corrupted (backend outage); do not cite any figure.
 - **EXTERNAL (v)** — from another paper, checked against that paper's own text.
 
-> **The two-rule trap.** Checkpoints were recorded under the historical OR-gate;
-> the tool *ships* a pooled noisy-OR rule at τ = 0.925. Both appear below and
-> they must never be quoted interchangeably. **The shipped column is what the
-> paper reports.**
+> **The three-rule trap.** There are *three* decision rules in this codebase, not
+> two, and the one this file used to call "OR-gate" was the wrong one of them.
+> Replayed 2026-10-09 from `eval/checkpoints/benchmark/ollama_noarb/seed0`
+> (1,154 rows, all schema 2, zero null confidences):
+>
+> | rule | where it sits | tp/fp/tn/fn | FPR |
+> |---|---|--:|--:|
+> | `n_findings > 0` | **pre-gate** — any specialist raised anything | 498 / 356 / 247 / 53 | 59.0% |
+> | `verdict == NO-GO` | post evidence-gate + agreement vote | 455 / 226 / 377 / 96 | 37.5% |
+> | noisy-OR, τ = 0.925 | pooling over the surviving findings | 446 / 182 / 421 / 105 | 30.2% |
+>
+> The first two reproduce **exactly** — the second is `benchmark_by_tier.json`'s
+> `overall` to the contract. The third lands 2 contracts off the figure the paper
+> reports (445/180/423/106), at *every* τ in [0.80, 0.999] and under every
+> treatment of a missing confidence, so the published replay applied something the
+> checkpoints do not record. Structural suppression (`services/suppression.py`) is
+> the candidate: it drops findings *after* the council, and the stored `findings`
+> list is pre-suppression. Rerun `python -m eval.verify_facts` to reproduce any of
+> this; it exits non-zero on a mismatch.
+>
+> **The correction this forces.** Calling the pre-gate count "the OR-gate" credits
+> the pooling rule with the evidence gate's work. The OR over *surviving* findings
+> is 37.5%, not 59.0%. So the honest framing is a three-step decomposition —
+> 59.0% (flag anything) → 37.5% (evidence gate) → 30.2% (pooling) — and the gate
+> does more of that work than the pooling does. Do not write "59.0% → 29.9%" as a
+> single step attributable to noisy-OR.
+>
+> Two fixes owed: store post-suppression findings in the checkpoint (or apply
+> suppression inside `verify_facts`), and relabel every "OR-gate" column below
+> according to which of the three rules it actually is.
 
 ---
 
@@ -39,13 +65,19 @@ Three labels are used throughout and they are not interchangeable:
 `benchmark_by_tier.json` + shipped replay in `frontend/src/data/benchmark.ts`,
 n = 1,154, backend `ollama_noarb`, seed 0, 0 abstentions, 0 errors.
 
-| | OR-gate (as recorded) | **noisy-OR (shipped)** |
-|---|--:|--:|
-| tp / fp / tn / fn | 498 / 356 / 247 / 53 | **445 / 180 / 423 / 106** |
-| false-alarm rate | 59.0% [55.1, 62.9] | **29.9% [26.3, 33.6]** |
-| recall | 90.4% [87.6, 92.6] | **80.8% [77.3, 83.8]** |
-| precision | 0.583 | **0.712** |
-| F1 | 0.709 | **0.757** |
+| | pre-gate (`n_findings > 0`) | evidence gate (`NO-GO`) | **noisy-OR (shipped)** |
+|---|--:|--:|--:|
+| tp / fp / tn / fn | 498 / 356 / 247 / 53 | 455 / 226 / 377 / 96 | **445 / 180 / 423 / 106** |
+| false-alarm rate | 59.0% [55.1, 62.9] | 37.5% [33.7, 41.4] | **29.9% [26.3, 33.6]** |
+| recall | 90.4% [87.6, 92.6] | 82.6% [79.2, 85.5] | **80.8% [77.3, 83.8]** |
+| precision | 0.583 | 0.668 | **0.712** |
+| F1 | 0.709 | 0.739 | **0.757** |
+
+The middle column is the one the committed JSON holds; the first column is *not*
+"the OR-gate", it is the rule before any gating at all. Replaying the shipped
+column from these checkpoints gives 446/182/421/105 (FPR 30.2%) — 2 contracts
+off, unexplained, see the three-rule note at the top. **Cite the shipped column
+as 29.9% only alongside that caveat, or cite the replayable 30.2%.**
 
 ---
 
@@ -53,11 +85,15 @@ n = 1,154, backend `ollama_noarb`, seed 0, 0 abstentions, 0 errors.
 
 Same tool, seed, machine, contracts. Only how the *safe* label was obtained changes.
 
-| safe tier | n | fp (shipped) | FPR, shipped | FPR, OR-gate |
+| safe tier | n | fp (shipped) | FPR, shipped | FPR, pre-gate |
 |---|--:|--:|--:|--:|
 | Audited libraries (OZ / Solady) | 172 | 27 | **15.7% [11.0, 21.9]** | 49.4% [42.0, 56.8] |
 | Audit-reviewed, clean | 240 | 90 | **37.5% [31.6, 43.8]** | 66.2% [60.1, 71.9] |
 | Real-world, no bug reported | 191 | 63 | **33.0% [26.7, 39.9]** | 58.6% [51.6, 65.4] |
+
+The right-hand column sums to 85 + 159 + 112 = 356 false positives, which is the
+**pre-gate** count, not the OR over surviving findings — relabelled 2026-10-09,
+see the three-rule note at the top.
 
 Two-level, **not** a monotonic gradient: audited libraries separate from both
 weaker tiers; the two weaker tiers overlap and are not distinguishable.
@@ -71,7 +107,7 @@ weaker tiers; the two weaker tiers overlap and are not distinguishable.
 | unclear, needs a read | 4 | 20% |
 | possible real bug in a "safe" contract | 2 | 10% |
 
-Detection by vulnerable tier (OR-gate tp): curated 185/214 = 86.4% [81.2, 90.4] ·
+Detection by vulnerable tier (evidence-gate tp, 185+152+118 = 455): curated 185/214 = 86.4% [81.2, 90.4] ·
 injected 152/170 = 89.4% [83.9, 93.2] · audit-report 118/167 = 70.7% [63.4, 77.0].
 
 ---
