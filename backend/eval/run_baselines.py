@@ -34,7 +34,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()  # must run before importing eval.metrics -> services.llm reads LLM_BACKEND/GROQ_API_KEY at module-import time
 
-from eval import metrics
+from eval import guard, metrics
 from eval.loaders import etherscan50, smartbugs_curated, web3bugs, access_control_slice
 from eval.schema import EvalItem, REPO_ROOT
 
@@ -294,6 +294,16 @@ async def run_dataset_baseline(baseline: str, dataset_name: str, items: list[Eva
     preds: dict[str, metrics.Prediction] = {}
     counts = {"ok": 0, "skipped_checkpoint": 0, "no_result": 0, "error": 0, "rate_limited_exhausted": 0}
 
+    # This runner already refuses to checkpoint a non-terminal status, so a
+    # failure costs no permanent damage -- what it lacked was any reason to
+    # STOP. With a dead backend it would walk all 400 items, write nothing,
+    # and exit printing a tidy counts dict, having burnt the slot for nothing.
+    # Note that "no_result" (a missing source file) counts as terminal here and
+    # must not trip the breaker: it is a permanent property of the corpus, not
+    # a symptom of the backend.
+    g = guard.Guard(f"baseline:{baseline}/{dataset_name}",
+                    terminal_fn=lambda r: r.get("status") in TERMINAL_STATUSES)
+
     for i, item in enumerate(items):
         ckpt_path = _checkpoint_path(baseline, dataset_name, item.contract_id, seed=seed)
         cached = _load_checkpoint(ckpt_path)
@@ -307,11 +317,18 @@ async def run_dataset_baseline(baseline: str, dataset_name: str, items: list[Eva
                 t0 = time.time()
                 result = await run_one(baseline, item, llm_backend, seed=seed)
                 result["latency_s"] = round(time.time() - t0, 2)
-            if result.get("status") in TERMINAL_STATUSES:
-                result["_checkpointed_at"] = time.time()
-                if seed is not None:
-                    result["_seed"] = seed
-                _save_checkpoint(ckpt_path, result)
+            # Observe before saving: a RunAborted here must not leave a
+            # half-considered row behind, and the existing save condition is
+            # already the same predicate the guard is using.
+            try:
+                if g.observe(result):
+                    result["_checkpointed_at"] = time.time()
+                    if seed is not None:
+                        result["_seed"] = seed
+                    _save_checkpoint(ckpt_path, result)
+            except guard.RunAborted:
+                guard.record_stage(g.summary())
+                raise
 
         status = result.get("status", "error")
         counts[status] = counts.get(status, 0) + 1
@@ -327,6 +344,8 @@ async def run_dataset_baseline(baseline: str, dataset_name: str, items: list[Eva
             )
 
     print(f"  [{baseline}/{dataset_name}] done: {counts}")
+    print(f"  {g.line()}")
+    guard.record_stage(g.summary())
     return {"predictions": preds, "counts": counts}
 
 

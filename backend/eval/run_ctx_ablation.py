@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dotenv import load_dotenv
 load_dotenv()
 
+from eval import guard
 from eval.loaders import thirdeye_bench
 from eval.schema import REPO_ROOT
 
@@ -256,6 +257,21 @@ async def run_arm(a) -> None:
     deadline = time.time() + a.max_minutes * 60 if a.max_minutes else None
     t0 = time.time()
 
+    # Quarantining was already right here; what was missing is a reason to STOP.
+    # The 2026-09-25 incident quarantined 145 of 176 rows and still ran to
+    # completion, because nothing was counting the rate while it happened.
+    #
+    # The terminal rule below is deliberately STRICTER than guard's default: any
+    # errored specialist disqualifies the row, GO or NO-GO. The asymmetric rule
+    # is sound when the question is "is this contract vulnerable", but this stage
+    # asks a PAIRED question -- does the same contract flip verdict, and how much
+    # slower is it, at 4k versus 16k context. A row produced by six specialists
+    # is not comparable to its partner produced by eight, so admitting it would
+    # contaminate the flip count and the latency delta both.
+    g = guard.Guard(f"ctx_{a.arm}",
+                    terminal_fn=lambda r: not r.get("specialists_errored")
+                    and (r.get("verdict") or "").upper() in guard.TERMINAL_VERDICTS)
+
     async def one(i, it):
         cp = ckpt / f"{it.contract_id}.json"
         if cp.exists():
@@ -283,21 +299,23 @@ async def run_arm(a) -> None:
         # Such rows are parked under _transient/ instead: kept for diagnosis,
         # excluded from scoring, and retried automatically on the next run
         # because no checkpoint exists in the arm directory.
-        if r.get("specialists_errored"):
-            tdir = ckpt / "_transient"
-            tdir.mkdir(parents=True, exist_ok=True)
-            json.dump(r, open(tdir / f"{it.contract_id}.json", "w"), indent=1)
+        if not g.write(r, cp):
             print(f"  [{i}/{len(items)}] QUARANTINED  "
                   f"{r.get('specialists_errored')}/{r.get('n_specialists_run')} errored  "
-                  f"{it.contract_id[:40]}", flush=True)
+                  f"verdict={r.get('verdict')}  {it.contract_id[:40]}", flush=True)
             return None
 
-        json.dump(r, open(cp, "w"), indent=1)
         print(f"  [{i}/{len(items)}] {r['verdict']:<12} {r.get('latency_s')}s  "
               f"{it.contract_id[:46]}", flush=True)
         return r
 
-    got = await asyncio.gather(*[one(i, it) for i, it in enumerate(items, 1)])
+    try:
+        got = await asyncio.gather(*[one(i, it) for i, it in enumerate(items, 1)])
+    except guard.RunAborted:
+        guard.record_stage(g.summary())
+        raise
+    print(g.line())
+    guard.record_stage(g.summary())
     rows = [r for r in got if r]
     scored = [r for r in rows if r["verdict"] in ("GO", "NO-GO")]
     n_quar = len(list((ckpt / "_transient").glob("*.json"))) if (ckpt / "_transient").exists() else 0

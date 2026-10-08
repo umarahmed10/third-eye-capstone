@@ -27,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dotenv import load_dotenv
 load_dotenv()
 
+from eval import guard
 from eval.loaders import thirdeye_bench
 from eval.schema import REPO_ROOT
 
@@ -72,6 +73,13 @@ async def main() -> None:
     rows: list[dict] = []
     t_wall = time.time()
 
+    # Parity is the one stage whose whole claim is "the same contract gets the
+    # same verdict on a different machine". A backend failure here does not
+    # merely lose a row -- it manufactures a DISAGREEMENT, because the laptop
+    # baseline has a real verdict and this arm has a dead one. Unguarded, an
+    # outage reads as exactly the finding that would invalidate the paper.
+    g = guard.Guard(f"parity_{a.arm}")
+
     async def one(it):
         cp = ckpt / f"{it.contract_id}.json"
         if cp.exists():
@@ -83,13 +91,19 @@ async def main() -> None:
         r["baseline_latency_s"] = b.get("latency_s")
         r["bucket"], r["tier"], r["expected"] = b["bucket"], b["tier"], b["expected"]
         r["agrees"] = r["verdict"] == b["verdict"]
-        json.dump(r, open(cp, "w"), indent=1)
-        mark = "=" if r["agrees"] else "!"
+        terminal = g.write(r, cp)
+        mark = ("=" if r["agrees"] else "!") if terminal else "Q"
         print(f"  [{mark}] {r['verdict']:<12} was {b['verdict']:<12} "
               f"{r.get('latency_s')}s (laptop {b.get('latency_s')}s)  {it.contract_id[:44]}")
-        return r
+        return r if terminal else None
 
-    rows = await asyncio.gather(*[one(it) for it in items])
+    try:
+        rows = [r for r in await asyncio.gather(*[one(it) for it in items]) if r]
+    except guard.RunAborted:
+        guard.record_stage(g.summary())
+        raise
+    print(g.line())
+    guard.record_stage(g.summary())
 
     scored = [r for r in rows if r["verdict"] in ("GO", "NO-GO")]
     agree = [r for r in scored if r["agrees"]]

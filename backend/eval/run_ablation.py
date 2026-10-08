@@ -35,6 +35,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+from eval import guard
 from eval.loaders import access_control_slice
 from eval.schema import REPO_ROOT
 
@@ -118,6 +119,16 @@ async def main(n_per_class: int = 12, seed: int = 0):
     sample = pos + neg
     print(f"Ablation sample: {len(pos)} AC-positive + {len(neg)} AC-negative = {len(sample)} items (seed={seed})")
 
+    # This runner had the bug the guard exists for, in its purest form: an
+    # exception was caught, printed, and then checkpointed as `pred = False`.
+    # A backend failure therefore became a NEGATIVE PREDICTION -- permanently,
+    # since the checkpoint is reused -- which lowers recall for whichever
+    # config happened to be running when the backend hiccuped. An ablation
+    # exists precisely to compare configs, so noise that attaches to one config
+    # is the one kind of noise that cannot be tolerated here.
+    g = guard.Guard("ablation", terminal_fn=lambda r: bool(r.get("ok")),
+                    max_consecutive=6, window=20)
+
     rows = []
     for i, it in enumerate(sample):
         code = it.read_code()
@@ -129,18 +140,35 @@ async def main(n_per_class: int = 12, seed: int = 0):
                 pred[config] = json.load(open(cp))["pred"]
                 continue
             t0 = time.time()
+            ok, p, err = True, False, None
             try:
                 vulns = await fn(code, seed)
                 p = _is_ac_prediction(vulns)
             except Exception as e:
                 print(f"  ! {config} failed on {it.contract_id}: {e}")
-                p = False
+                ok, err = False, str(e)[:200]
             dt = round(time.time() - t0, 1)
-            pred[config] = p
+            row = {"pred": p, "latency_s": dt, "is_ac": is_ac, "ok": ok, "error": err}
             cp.parent.mkdir(parents=True, exist_ok=True)
-            json.dump({"pred": p, "latency_s": dt, "is_ac": is_ac}, open(cp, "w"))
-            print(f"  [{i+1}/{len(sample)}] {it.contract_id} {config}: pred_ac={p} ({dt}s)")
-        rows.append({"cid": it.contract_id, "is_ac": is_ac, "pred": pred})
+            try:
+                terminal = g.write(row, cp)
+            except guard.RunAborted:
+                guard.record_stage(g.summary())
+                raise
+            if terminal:
+                pred[config] = p
+            print(f"  [{i+1}/{len(sample)}] {it.contract_id} {config}: "
+                  + (f"pred_ac={p} ({dt}s)" if terminal else f"QUARANTINED ({dt}s)"))
+        # A contract missing any config is dropped whole. Comparing config A on
+        # 24 contracts against config B on 21 is not an ablation, and the three
+        # B is missing are the ones that timed out, i.e. the hardest.
+        if len(pred) == len(CONFIGS):
+            rows.append({"cid": it.contract_id, "is_ac": is_ac, "pred": pred})
+        else:
+            print(f"  - dropping {it.contract_id}: only {len(pred)}/{len(CONFIGS)} configs completed")
+
+    print(g.line())
+    guard.record_stage(g.summary())
 
     # Build report
     reports = {c: _confusion(rows, c) for c in CONFIGS}

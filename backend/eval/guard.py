@@ -48,6 +48,36 @@ from pathlib import Path
 TERMINAL_VERDICTS = ("GO", "NO-GO")
 
 
+def default_terminal(row: dict) -> bool:
+    """The single-contract rule: a terminal verdict, and -- for GO only -- an
+    intact council. See the asymmetry argument in the module docstring."""
+    v = (row.get("verdict") or "").upper()
+    if v not in TERMINAL_VERDICTS:
+        return False
+    if v == "GO" and row.get("specialists_errored"):
+        return False
+    return True
+
+
+def aggregate_terminal(positive_key: str, errored_key: str):
+    """Terminality for a row that aggregates many sub-scans -- a Web3Bugs
+    contest over its slices, a sliced project, a sweep over one contract's
+    findings.
+
+    The same asymmetry, lifted one level. A POSITIVE aggregate is sound however
+    many sub-scans died, because the detection came from one that actually ran
+    and the dead ones could only have added more. A NEGATIVE aggregate with any
+    failed sub-scan is not sound: the bug may have been in precisely the slice
+    that errored, so "we scanned it and found nothing" is unearned, and scoring
+    it as a miss understates recall rather than overstating it.
+    """
+    def _fn(row: dict) -> bool:
+        if row.get(positive_key):
+            return True
+        return not row.get(errored_key)
+    return _fn
+
+
 class RunAborted(RuntimeError):
     """Raised when the guard stops a run. Carries why, for the log."""
 
@@ -58,11 +88,17 @@ class Guard:
     max_consecutive: consecutive non-terminal rows before aborting.
     window / max_rate: rolling failure-rate cap, e.g. 50 and 0.25 means abort
         if more than a quarter of the last 50 rows failed.
+    terminal_fn: override for runners whose row is not one contract's verdict.
+        Web3Bugs rows aggregate a contest's slices; the ablation writes a bare
+        prediction. Use `aggregate_terminal` rather than inventing a fresh rule
+        per runner -- the asymmetry has to survive the lift.
     """
 
     def __init__(self, label: str, max_consecutive: int = 15,
-                 window: int = 50, max_rate: float = 0.25) -> None:
+                 window: int = 50, max_rate: float = 0.25,
+                 terminal_fn=None) -> None:
         self.label = label
+        self.terminal_fn = terminal_fn or default_terminal
         self.max_consecutive = max_consecutive
         self.window = window
         self.max_rate = max_rate
@@ -75,16 +111,9 @@ class Guard:
 
     # ---------------------------------------------------------------- policy
 
-    @staticmethod
-    def is_terminal(row: dict) -> bool:
-        """Whether this row may be written as a result. See the asymmetry note
-        in the module docstring."""
-        v = (row.get("verdict") or "").upper()
-        if v not in TERMINAL_VERDICTS:
-            return False
-        if v == "GO" and row.get("specialists_errored"):
-            return False
-        return True
+    def is_terminal(self, row: dict) -> bool:
+        """Whether this row may be written as a result."""
+        return bool(self.terminal_fn(row))
 
     def observe(self, row: dict) -> bool:
         """Record one completed row. Returns True if it is terminal.
