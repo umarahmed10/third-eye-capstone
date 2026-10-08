@@ -1,6 +1,37 @@
 """Regenerate the paper's headline confusion matrices from checkpoints.
 
-Why this exists. Three different confusion matrices are currently attributed to
+RESOLVED 2026-10-09 against eval/checkpoints/benchmark/ollama_noarb/seed0
+(1,154 rows, all schema 2). The three matrices were never in contradiction --
+they are three different rules, one of them misleadingly labelled:
+
+    n_findings > 0  (ANY specialist raised anything, pre-gate)
+                                           498 / 356 / 247 /  53   FPR 59.0%
+    verdict NO-GO   (post evidence-gate + agreement vote)
+                                           455 / 226 / 377 /  96   FPR 37.5%
+    noisy-OR, tau = 0.925, recomputed      446 / 182 / 421 / 105   FPR 30.2%
+    noisy-OR, as the paper reports it      445 / 180 / 423 / 106   FPR 29.9%
+
+The first two reproduce EXACTLY. The third is 2 contracts off the paper at
+every tau in [0.80, 0.999] and under every treatment of a null confidence, so
+the published replay applied something the checkpoints do not record --
+structural suppression (services/suppression.py) is the obvious candidate,
+since it drops findings after the council and the stored `findings` list is
+pre-suppression.
+
+Two things to fix, neither of them a fabrication:
+
+  * PAPER_FACTS labels the pre-gate count "OR-gate (as recorded)". The OR over
+    SURVIVING findings is 455/226/377/96, FPR 37.5%. So the honest framing of
+    the rule's effect is 59.0% (flag anything) -> 37.5% (evidence gate) ->
+    30.2% (noisy-OR), not a single 59.0% -> 29.9% step attributed to the
+    pooling rule alone. The gate does more of that work than the pooling does.
+  * Checkpoints should store post-suppression findings, or this script should
+    apply suppression, so the shipped column reproduces to the contract.
+
+The original note follows, because the reasoning still applies to any figure
+that cannot be regenerated.
+
+Three different confusion matrices are currently attributed to
 the same n = 1,154 run:
 
     benchmark_by_tier.json -> overall      455 / 226 / 377 /  96
