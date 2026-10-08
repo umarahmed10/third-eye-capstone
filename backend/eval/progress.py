@@ -34,12 +34,24 @@ CKPT = ROOT / "checkpoints"
 # Denominators. A1's is overridden by --a1-n when calibrate forces a smaller
 # corpus, because reporting 62% of 2,250 when the run was deliberately sized to
 # 1,400 would be wrong in the direction that matters.
+# Order matches scripts/run_all.sh, which is value order, so reading top to
+# bottom is reading the pipeline in the order it matters.
 STAGES = [
     # key,            label,                       dir glob,                 default n
     ("ctx4k_safe",    "A2 safe ctx  4k",           "ctx_ctx4k_safe",         120),
     ("ctx16k_safe",   "A2 safe ctx 16k",           "ctx_ctx16k_safe",        120),
-    ("benchmark",     "A1 full corpus",            "benchmark/*/seed0",     2250),
-    ("web3bugs",      "web3bugs sweep",            "web3bugs",              2733),
+    ("benchmark",     "A1 full corpus",            "benchmark/{backend}/seed0", 2250),
+    ("ctx4k_vuln",    "A3 vuln ctx  4k",           "ctx_ctx4k",               90),
+    ("ctx16k_vuln",   "A3 vuln ctx 16k",           "ctx_ctx16k",              90),
+    # Contest-level, not slice-level: 102 projects, each capped at 40 slices.
+    # Counting slices would report 2,733 and never reach it, since most
+    # projects have far fewer than the cap.
+    ("web3bugs",      "web3bugs contests",         "web3bugs",               102),
+    ("baselines",     "baselines",                 "*/smartbugs_curated/seed0", 429),
+    ("ablation",      "AC ablation",               "ablation/seed0/*",        72),
+    ("arb",           "arbitration sweep",         "arb_sweep",              455),
+    ("seed1",         "A1 seed 1",                 "benchmark/{backend}/seed1", 2250),
+    ("seed2",         "A1 seed 2",                 "benchmark/{backend}/seed2", 2250),
 ]
 
 WINDOW_MIN = 15.0
@@ -99,7 +111,14 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--a1-n", type=int, default=None,
                     help="A1's real denominator when calibrate sized it below the full 2,250")
+    ap.add_argument("--backend", default="ollama_noarb",
+                    help="which benchmark backend directory counts as A1. The glob used to "
+                         "be benchmark/*/seed0, which SUMMED three different backends and "
+                         "reported A1 at 68%% when the real run was at 51%% -- an overstated "
+                         "progress bar is worse than none.")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--health", action="store_true",
+                    help="also print the per-stage health log (sound/quarantined/aborted)")
     args = ap.parse_args()
 
     now = time.time()
@@ -107,7 +126,7 @@ def main() -> int:
     for key, label, pattern, n in STAGES:
         if key == "benchmark" and args.a1_n:
             n = args.a1_n
-        rows.append(stage_status(key, label, pattern, n, now))
+        rows.append(stage_status(key, label, pattern.format(backend=args.backend), n, now))
 
     if args.json:
         print(json.dumps({"now": now, "stages": rows}, indent=1))
@@ -134,6 +153,28 @@ def main() -> int:
         print(f"  {r['label']:<18} {r['pct']:>5.1f}%  {r['done']:>5}/{r['n']:<5} "
               f"{(str(r['rate_per_min']) + '/min') if r['rate_per_min'] else '—':>10}  "
               f"ETA {eta:<10} {mark}{q}")
+
+    # The health log is the only record of a stage that ABORTED. A stage that
+    # died at row 400 of 2,250 shows here as 18% and "idle", which is
+    # indistinguishable from a stage still waiting its turn -- so when nothing
+    # is running, say which it was.
+    if args.health or not any(r["active"] for r in rows):
+        try:
+            from eval.guard import STAGE_LOG
+            if STAGE_LOG.exists():
+                print()
+                print("stage health:")
+                for raw in open(STAGE_LOG):
+                    raw = raw.strip()
+                    if not raw:
+                        continue
+                    h = json.loads(raw)
+                    flag = f"  ABORTED: {h['aborted']}" if h.get("aborted") else ""
+                    print(f"  {h.get('label','?'):<28} sound={h.get('sound')} "
+                          f"quarantined={h.get('quarantined')} "
+                          f"({100 * (h.get('quarantine_rate') or 0):.0f}%){flag}")
+        except Exception:  # noqa: BLE001 -- status must never be the thing that crashes
+            pass
 
     worst = max((r["quarantined"] for r in rows), default=0)
     if worst:
