@@ -630,6 +630,25 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
     }
 
 
+def _models_resident() -> bool:
+    """True when every local model can stay loaded at once, so grouping by
+    model buys nothing.
+
+    The grouping below exists because a 4GB GPU holds ONE of these models at a
+    time. On a host with enough memory for all three (OLLAMA_MAX_LOADED_MODELS
+    >= the number of distinct models, OLLAMA_KEEP_ALIVE long enough that
+    nothing is evicted between contracts), there is no reload to avoid and the
+    serialisation is pure dead time: a contract waits out three sequential
+    groups instead of fanning all eight specialists out at once.
+
+    Opt-in, not auto-detected. Memory being present is not the same as Ollama
+    being configured to use it, and guessing wrong costs an evict+reload per
+    call -- the failure this grouping was written to prevent. Set
+    OLLAMA_MODELS_RESIDENT=1 once Gate 0 confirms the models stay loaded.
+    """
+    return os.getenv("OLLAMA_MODELS_RESIDENT", "").strip().lower() in ("1", "true", "yes")
+
+
 def _schedule_groups(assignments: dict, backend: str) -> list[list[tuple]]:
     """Order specialist execution into groups that run concurrently.
 
@@ -648,7 +667,7 @@ def _schedule_groups(assignments: dict, backend: str) -> list[list[tuple]]:
     positionally indexes), so that is safe.
     """
     items = [(role, provider, model) for role, (provider, model) in assignments.items()]
-    if backend == "ollama":
+    if backend == "ollama" and not _models_resident():
         by_model: dict[str, list[tuple]] = {}
         for role, provider, model in items:
             by_model.setdefault(model, []).append((role, provider, model))
