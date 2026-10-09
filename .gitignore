@@ -73,3 +73,7 @@ tools/
 # Personal working checkpoint, explicitly "not a deliverable doc".
 # Durable decisions belong in docs/DECISION_LOG.md.
 backend/eval/SESSION_NOTES.md
+
+# Local, uncommitted: the campus box address, sourced by scripts/GO.sh.
+#   THIRDEYE_DGX_HOST=user@host
+.dgx_host

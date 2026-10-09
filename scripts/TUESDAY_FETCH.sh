@@ -7,8 +7,15 @@ cd "$(dirname "$0")/.." || exit 1
 
 set -u
 # Host is NOT committed: it is a shared campus machine on a private network.
-# Set it in your shell or a local .env:  export THIRDEYE_DGX_HOST=user@host
-BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host (see .env.example)}"
+# The box address lives in .dgx_host (gitignored) so it never has to be typed
+# or remembered, and never lands in a public repo: it is a shared campus
+# machine on a private 10.x network. An explicit THIRDEYE_DGX_HOST in the
+# environment still wins.
+if [ -z "${THIRDEYE_DGX_HOST:-}" ] && [ -f .dgx_host ]; then
+  . ./.dgx_host
+  export THIRDEYE_DGX_HOST
+fi
+BOX="${THIRDEYE_DGX_HOST:?set THIRDEYE_DGX_HOST=user@host, or create .dgx_host from .dgx_host.example}"
 OUT=backend/eval/results
 mkdir -p "$OUT/dgx_fullscale"
 

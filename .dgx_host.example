@@ -1,0 +1,4 @@
+# Copy to .dgx_host (gitignored) and fill in. The campus DGX is a shared
+# machine on a private 10.x network, so its address is deliberately NOT
+# committed to a public repo.
+THIRDEYE_DGX_HOST=user@host
