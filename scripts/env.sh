@@ -39,16 +39,35 @@ export OLLAMA_CONTEXT_LENGTH=16384
 # Long runs must not pay a reload between stages.
 export OLLAMA_KEEP_ALIVE=24h
 
-# THE MODEL THAT CHANGES THE RESULT. business_logic is a role the router runs on
-# EVERY contract. llama3.1:8b (4.9GB) does not fit a 4GB laptop GPU -- measured
-# ~190s for a three-word prompt, and under memory pressure the load fails
-# outright -- so the laptop substituted llama3.2:3b and every number the project
-# has published was produced with the weakest model on the most-used role.
-# 119GB removes that constraint entirely. This is the single highest-value
-# difference between the laptop runs and this one.
-export OLLAMA_LOGIC_MODEL=llama3.1:8b
+# THE LOGIC MODEL, SETTLED BY MEASUREMENT 2026-10-09.
+#
+# business_logic is a role the router runs on EVERY contract, so whichever
+# model sits here sets the character of the whole system. llama3.1:8b does not
+# fit a 4GB laptop GPU, so the laptop substituted llama3.2:3b and that was
+# recorded as a known weakness -- the weakest model on the most-used role.
+#
+# On arriving at 119GB the obvious move was to "restore" the 8B. That was an
+# argument from intent, and it was WRONG. Scoring the two parity arms already
+# on this box against each other, 212 contracts paired, same machine:
+#
+#     3b   acc 73.1%   recall 92.0%   FPR 43.8%   median 18.1s
+#     8b   acc 66.5%   recall 99.0%   FPR 62.5%   median 22.6s
+#     McNemar on paired correctness: chi2 = 4.69, p = 0.0303
+#
+# The 8B is SIGNIFICANTLY WORSE. It buys 7 points of recall and pays 19 points
+# of false-alarm rate -- and false alarms are the paper's entire subject. A
+# model that flags nearly everything is the failure mode this work exists to
+# criticise, so adopting it to look rigorous would have argued against our own
+# thesis with our own data.
+#
+# The laptop's substitution was an accidental improvement, not a compromise.
+# Keeping 3b also makes every row already on this box valid, rather than
+# something to re-run.
+export OLLAMA_LOGIC_MODEL=llama3.2:3b
 
-# Client-side deadline per specialist call.
-export LLM_TIMEOUT=240
+# Client-side deadline per specialist call. 240s was a laptop number for
+# llama3.2:3b; an 8B model generating under contention needs more, and a
+# deadline that fires on healthy work silently filters out the large contracts.
+export LLM_TIMEOUT=600
 
 export OLLAMA_HOST=127.0.0.1:11434

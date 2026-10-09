@@ -62,6 +62,26 @@ CONC="${CONC:-6}"            # overwritten by calibrate's recommendation below
 #    would corrupt the number the stage exists to produce. These arms want to
 #    be the only thing on the box.
 CONC_CTX="${CONC_CTX:-4}"
+
+# The ctx arms need a LONGER client deadline than everything else, and the
+# reason is the result itself. A 12k-token prompt forced through a 4096 window
+# is not truncated in one pass -- the runtime SHIFTS context, re-evaluating in
+# chunks, which is far more expensive than simply processing it. Measured on
+# this box: a completed 4k row took 120.2s where the 16k arm's median is 51s.
+# So the arm this stage exists to characterise is intrinsically slow, and a
+# 240s deadline does not discipline it, it DELETES it -- every slow row fails
+# closed to INCONCLUSIVE and the stage reports nothing rather than reporting
+# "4k is slower", which is precisely the finding.
+CTX_TIMEOUT="${CTX_TIMEOUT:-900}"
+
+# 240s was tuned on a 4GB laptop running llama3.2:3b. This box runs
+# llama3.1:8b on the most-used role -- the whole point of being here -- and an
+# 8B model generating ~500 tokens under 16-way contention does not fit in 240s.
+# Measured: 63 quarantined rows in the first eight minutes of A1, every one of
+# them `timeout: after 240s`. A deadline that fires on HEALTHY work is not a
+# safety margin, it is a silent sampling filter, and it filters out precisely
+# the large contracts -- the bias the guard exists to prevent.
+export LLM_TIMEOUT="${LLM_TIMEOUT:-600}"
 STOPFILE="$ROOT/STOP"
 
 mkdir -p "$LOGDIR"
@@ -191,6 +211,7 @@ calibrate() {
 #    --max-tokens 12230 and --sample-seed 0 are not optional: they define the
 #    paired sample.
 s_a2() {
+  local LLM_TIMEOUT="$CTX_TIMEOUT"; export LLM_TIMEOUT
   stage a2_ctx4k_safe "$PY" -m eval.run_ctx_ablation --arm ctx4k_safe \
       --num-ctx 4096 --label safe --n 120 --max-tokens 12230 --sample-seed 0 \
       --concurrency "$CONC_CTX" --max-minutes 110
@@ -203,19 +224,30 @@ s_a2() {
 
 # 2. A1 full corpus, seed 0 -- the headline. 2,250 contracts, the first run ever
 #    to cover the whole corpus: the shipped figure is 1,154 of 2,250 and marked
-#    partial. longest-first cuts makespan against a 171x latency spread; it is
-#    only sound for a run intended to FINISH, because a truncated longest-first
-#    run is size-biased, hence --max-minutes 0.
+#
+#    SCHEDULING, corrected 2026-10-09. This ran longest-first, whose own help
+#    text says "use it only for a run you intend to finish" -- and it was then
+#    pointed at a time-boxed session on a shared machine, i.e. exactly the case
+#    that caveat excludes. The effect was immediate: the largest contracts in
+#    the corpus ran first, each against a deadline it could not meet, giving
+#    0.7 contracts/min and 63 quarantined rows in eight minutes where
+#    calibration on a random sample had measured 20/min.
+#
+#    balanced round-robins across tiers, so a run stopped at ANY point is still
+#    a balanced sample rather than a pile of the hardest contracts. On a box
+#    that can be reclaimed by another user, that property is worth more than
+#    makespan.
 s_a1() {
   stage a1_full "$PY" -m eval.run_benchmark --backend ollama --seed 0 \
       --limit-per-tier 0 --sample-seed 0 --no-arbitration \
-      --concurrency "$CONC" --schedule longest-first --max-minutes 0
+      --concurrency "$CONC" --schedule balanced --max-minutes 0
 }
 
 # 3. A3 vulnerable-class ctx arm. The safe arm (stage 1) answers "does
 #    truncation invent false alarms"; this answers "does it hide real bugs",
 #    which is the half that actually threatens the thesis.
 s_a3() {
+  local LLM_TIMEOUT="$CTX_TIMEOUT"; export LLM_TIMEOUT
   stage a3_ctx4k_vuln "$PY" -m eval.run_ctx_ablation --arm ctx4k \
       --num-ctx 4096 --n 90 --max-tokens 12230 --sample-seed 0 \
       --concurrency "$CONC_CTX" --max-minutes 45
@@ -264,14 +296,25 @@ s_arb() {
 s_seeds() {
   stage a1_seed1 "$PY" -m eval.run_benchmark --backend ollama --seed 1 \
       --limit-per-tier 0 --sample-seed 0 --no-arbitration \
-      --concurrency "$CONC" --schedule longest-first --max-minutes 0
+      --concurrency "$CONC" --schedule balanced --max-minutes 0
   stage a1_seed2 "$PY" -m eval.run_benchmark --backend ollama --seed 2 \
       --limit-per-tier 0 --sample-seed 0 --no-arbitration \
-      --concurrency "$CONC" --schedule longest-first --max-minutes 0
+      --concurrency "$CONC" --schedule balanced --max-minutes 0
 }
 
 # ------------------------------------------------------------------------ main
-STAGES="${STAGES:-a2 a1 a3 web3 baselines ablation arb seeds}"
+# ORDER REVISED 2026-10-09, on measurement. A2 led because it is the blocker --
+# nothing is safe to report until truncation is characterised. But measurement
+# on the box showed the 4k arm runs at roughly a quarter of normal speed BY
+# CONSTRUCTION (context shifting), making A2+A3 about 8 hours against A1's 2.
+# Leading with them spends the entire attended window on the slowest stage and
+# leaves the headline unstarted.
+#
+# A1 does not depend on A2 to RUN, only to be INTERPRETED, and interpretation
+# happens after the session either way. So the headline goes first and the ctx
+# arms run overnight, when slow costs nothing. Value order is preserved; what
+# changed is that value per GPU-hour, not value alone, now sets the order.
+STAGES="${STAGES:-a1 a2 a3 baselines ablation arb seeds}"
 
 preconditions
 calibrate
