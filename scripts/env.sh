@@ -13,9 +13,9 @@
 # that costs ~3x per-contract latency and buys nothing.
 export OLLAMA_MODELS_RESIDENT=1
 
-# Four distinct models are pulled; 8 slots leaves headroom and costs nothing
-# when fewer are in use.
-export OLLAMA_MAX_LOADED_MODELS=8
+# Exactly four models are pulled. More slots than models buys nothing and
+# each loaded model carries its own KV cache.
+export OLLAMA_MAX_LOADED_MODELS=4
 
 # The specialists are NOT evenly spread across models: qwen2.5-coder:7b carries
 # 4 of the 8 roles, llama3.x carries 3, gemma3 carries 1. So at contract
@@ -26,6 +26,15 @@ export OLLAMA_MAX_LOADED_MODELS=8
 # over-subscription biases the scored sample toward simple code while every
 # table still looks healthy.
 export OLLAMA_NUM_PARALLEL=16
+
+# MEASURED, not assumed. At 16 slots x 32k context the server allocated 34GB
+# for qwen2.5-coder:7b and 73GB for llama3.1:8b -- 107GB of 119GB for two
+# 5GB models, because the KV cache is slots x context, not model size. gemma3
+# had not loaded yet and the council needs all three at once, so A2 would have
+# OOM'd partway in. Capping server context at 16384 cuts the cache in half and
+# is not a restriction: the largest arm this pipeline runs is num_ctx=16384,
+# and the client sends a smaller value per request for the 4k arm.
+export OLLAMA_CONTEXT_LENGTH=16384
 
 # Long runs must not pay a reload between stages.
 export OLLAMA_KEEP_ALIVE=24h

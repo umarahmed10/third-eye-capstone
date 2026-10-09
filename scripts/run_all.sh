@@ -123,6 +123,14 @@ stage() {
 # what concurrency this box actually wants. Nothing is checkpointed, so a
 # calibration row can never be scored as a result.
 calibrate() {
+  # A relaunch should not re-measure. Calibration takes ~5 minutes of a finite
+  # campus window, and the answer does not change unless the serving config
+  # does -- so pass SKIP_CALIBRATE=1 with an explicit CONC when restarting a
+  # pipeline for an unrelated reason.
+  if [ "${SKIP_CALIBRATE:-}" = "1" ]; then
+    say "calibrate SKIPPED (SKIP_CALIBRATE=1), using CONC=$CONC"
+    return 0
+  fi
   say "calibrate"
   cd "$BACKEND" || return 1
   "$PY" -m eval.calibrate --n 12 --levels 2,4,8,16,24 2>&1 | tee "$LOGDIR/calibrate.log"
@@ -131,12 +139,18 @@ calibrate() {
         | tail -1 | awk '{print $NF}')
   if [ -n "$rec" ]; then
     CONC="$rec"
-    # Hard ceiling from the serving config. The specialists are not evenly
-    # spread: qwen2.5-coder:7b carries 4 of the 8 roles, so the busiest model
-    # sees 4x the contract concurrency. Above NUM_PARALLEL/4 the surplus queues
-    # against the client deadline and the LARGE contracts are the ones
-    # discarded -- a bias that no table would reveal.
-    ceil=$(( OLLAMA_NUM_PARALLEL / 4 ))
+    # Ceiling from the serving config. An earlier version of this divided by 4,
+    # reasoning that qwen2.5-coder:7b carries 4 of the 8 roles so the busiest
+    # model sees 4x the contract concurrency. MEASUREMENT SAYS OTHERWISE: on
+    # 2026-10-09 calibrate ran 2/4/8/16/24 and found ZERO abstentions at every
+    # level, p95 35.2s against a 240s timeout at concurrency 16, and throughput
+    # 20.15/min there against 9.14/min at 4. The /4 cap was costing 2.2x for a
+    # queueing collapse that does not occur -- the router runs a subset of the
+    # council per contract and generation staggers, so the 4x pile-up is not
+    # realised. The rate guard in eval/guard.py is the real protection against
+    # the bias that argument was worried about, and unlike a static cap it
+    # triggers on evidence.
+    ceil="$OLLAMA_NUM_PARALLEL"
     [ "$ceil" -lt 1 ] && ceil=1
     if [ "$CONC" -gt "$ceil" ]; then
       echo "calibrate said $CONC but NUM_PARALLEL=$OLLAMA_NUM_PARALLEL caps it at $ceil; using $ceil"
