@@ -46,6 +46,22 @@ PY="${THIRDEYE_PY:-$ROOT/venv/bin/python}"
 BACKEND="$ROOT/backend"
 LOGDIR="${THIRDEYE_LOGS:-$HOME/thirdeye_logs}"
 CONC="${CONC:-6}"            # overwritten by calibrate's recommendation below
+
+# The ctx arms get their OWN, much lower concurrency, for two independent
+# reasons -- and ignoring both cost an abort on 2026-10-09.
+#
+# 1. POPULATION. Calibration samples the corpus at random; the ctx arms run the
+#    OVERFLOW POOL exclusively -- the largest contracts there are, ~12k tokens
+#    each, deliberately selected for being too big for a 4k window. A
+#    concurrency calibrated on a mixed sample is simply not valid for them. At
+#    16 the specialists queued past the 240s client deadline and every row came
+#    back INCONCLUSIVE at 241.3s.
+# 2. MEASUREMENT. A2/A3 REPORT paired latency (the sign test on 4k-vs-16k
+#    speedup). Queue wait is indistinguishable from model time in a wall-clock
+#    measurement, so running these arms hot would not just risk timeouts, it
+#    would corrupt the number the stage exists to produce. These arms want to
+#    be the only thing on the box.
+CONC_CTX="${CONC_CTX:-4}"
 STOPFILE="$ROOT/STOP"
 
 mkdir -p "$LOGDIR"
@@ -177,10 +193,10 @@ calibrate() {
 s_a2() {
   stage a2_ctx4k_safe "$PY" -m eval.run_ctx_ablation --arm ctx4k_safe \
       --num-ctx 4096 --label safe --n 120 --max-tokens 12230 --sample-seed 0 \
-      --concurrency "$CONC" --max-minutes 110
+      --concurrency "$CONC_CTX" --max-minutes 110
   stage a2_ctx16k_safe "$PY" -m eval.run_ctx_ablation --arm ctx16k_safe \
       --num-ctx 16384 --label safe --n 120 --max-tokens 12230 --sample-seed 0 \
-      --concurrency "$CONC" --max-minutes 40
+      --concurrency "$CONC_CTX" --max-minutes 40
   ( cd "$BACKEND" && "$PY" -m eval.run_ctx_ablation --compare ctx4k_safe ctx16k_safe ) \
       2>&1 | tee "$LOGDIR/a2_compare.log"
 }
@@ -202,10 +218,10 @@ s_a1() {
 s_a3() {
   stage a3_ctx4k_vuln "$PY" -m eval.run_ctx_ablation --arm ctx4k \
       --num-ctx 4096 --n 90 --max-tokens 12230 --sample-seed 0 \
-      --concurrency "$CONC" --max-minutes 45
+      --concurrency "$CONC_CTX" --max-minutes 45
   stage a3_ctx16k_vuln "$PY" -m eval.run_ctx_ablation --arm ctx16k \
       --num-ctx 16384 --n 90 --max-tokens 12230 --sample-seed 0 \
-      --concurrency "$CONC" --max-minutes 30
+      --concurrency "$CONC_CTX" --max-minutes 30
   ( cd "$BACKEND" && "$PY" -m eval.run_ctx_ablation --compare ctx4k ctx16k ) \
       2>&1 | tee "$LOGDIR/a3_compare.log"
 }

@@ -218,6 +218,25 @@ def last_stage() -> dict | None:
     return last
 
 
+def acknowledge(reason: str) -> None:
+    """Record that a human diagnosed an abort and fixed the cause.
+
+    preflight reads the LAST stage entry, so a single abort latches the whole
+    pipeline shut -- which is correct, and is exactly what it did on
+    2026-10-09. But the operator then needs a way to say "I found it and fixed
+    it" that is honest about what happened. This appends an explicit
+    acknowledgement rather than rewriting or deleting the abort, so the log
+    still shows the failure, the diagnosis, and the restart in order.
+    """
+    STAGE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    row = {"label": "OPERATOR ACKNOWLEDGEMENT", "sound": 0, "quarantined": 0,
+           "quarantine_rate": 0.0, "aborted": None, "reason": reason,
+           "finished_at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    with open(STAGE_LOG, "a") as fh:
+        fh.write(json.dumps(row) + chr(10))
+    print(f"[guard] acknowledged: {reason}")
+
+
 def preflight(stage: str, max_quarantine_rate: float = 0.25) -> None:
     """Gate between stages of an unattended pipeline.
 
@@ -252,7 +271,13 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("stage")
     ap.add_argument("--max-quarantine-rate", type=float, default=0.25)
+    ap.add_argument("--acknowledge", metavar="REASON", default=None,
+                    help="record that an abort was diagnosed and fixed, then proceed. "
+                         "Appends to the log; never rewrites it.")
     a = ap.parse_args()
+    if a.acknowledge:
+        acknowledge(a.acknowledge)
+        return 0
     preflight(a.stage, a.max_quarantine_rate)
     return 0
 
