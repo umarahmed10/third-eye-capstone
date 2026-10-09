@@ -8,6 +8,11 @@
 set -u
 ROOT="${THIRDEYE_ROOT:-$HOME/thirdeye}"
 PY="${THIRDEYE_PY:-$ROOT/venv/bin/python}"
+
+# The box has no OLLAMA_* exports in its profile. Demanding them from the
+# environment failed a perfectly good machine for the wrong reason, so the
+# config is sourced from the repo instead, where it is versioned.
+[ -f "$ROOT/scripts/env.sh" ] && . "$ROOT/scripts/env.sh"
 fail=0
 ok()   { printf '  ok    %s\n' "$*"; }
 bad()  { printf '  FAIL  %s\n' "$*"; fail=1; }

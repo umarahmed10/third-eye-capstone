@@ -50,6 +50,9 @@ STOPFILE="$ROOT/STOP"
 
 mkdir -p "$LOGDIR"
 
+# Same reason as gate0: serving config lives in the repo, not a profile.
+[ -f "$ROOT/scripts/env.sh" ] && . "$ROOT/scripts/env.sh"
+
 say() { printf '\n==== %s  %s\n' "$(date '+%F %T')" "$*"; }
 
 # ---------------------------------------------------------------- preconditions
@@ -128,6 +131,17 @@ calibrate() {
         | tail -1 | awk '{print $NF}')
   if [ -n "$rec" ]; then
     CONC="$rec"
+    # Hard ceiling from the serving config. The specialists are not evenly
+    # spread: qwen2.5-coder:7b carries 4 of the 8 roles, so the busiest model
+    # sees 4x the contract concurrency. Above NUM_PARALLEL/4 the surplus queues
+    # against the client deadline and the LARGE contracts are the ones
+    # discarded -- a bias that no table would reveal.
+    ceil=$(( OLLAMA_NUM_PARALLEL / 4 ))
+    [ "$ceil" -lt 1 ] && ceil=1
+    if [ "$CONC" -gt "$ceil" ]; then
+      echo "calibrate said $CONC but NUM_PARALLEL=$OLLAMA_NUM_PARALLEL caps it at $ceil; using $ceil"
+      CONC="$ceil"
+    fi
     echo "adopting calibrated concurrency $CONC"
   else
     echo "WARNING calibrate produced no recommendation; keeping CONC=$CONC"

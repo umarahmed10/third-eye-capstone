@@ -36,13 +36,17 @@ ssh -o BatchMode=yes -o ConnectTimeout=10 "$BOX" 'echo ok' >/dev/null 2>&1 || {
 echo "   reachable"
 
 echo "== 2. sync code + scripts =="
+# CRLF is stripped on arrival. .gitattributes pins *.sh to LF in the REPO, but
+# this tar ships the Windows WORKING TREE verbatim, where the files are CRLF --
+# and a CRLF shebang fails on Linux with the useless error
+#     /usr/bin/env: 'bash': No such file or directory
 # backend/.env is excluded DELIBERATELY and permanently: it holds a live API key
 # and that box is shared with another student and three admins. The pipeline is
 # all-local inference and needs no key.
 tar czf - --exclude='.env' --exclude='venv*' --exclude='__pycache__' \
           --exclude='*.pyc' --exclude='eval/checkpoints' --exclude='*.db' \
     backend/eval backend/services backend/requirements.txt scripts datasets/gptscan 2>/dev/null \
-  | ssh "$BOX" 'mkdir -p ~/thirdeye && tar xzf - -C ~/thirdeye && chmod +x ~/thirdeye/scripts/*.sh && echo "   code synced"' \
+  | ssh "$BOX" 'mkdir -p ~/thirdeye && tar xzf - -C ~/thirdeye       && chmod +x ~/thirdeye/scripts/*.sh       && for f in ~/thirdeye/scripts/*.sh; do sed -i "s/$//" "$f"; done       && find ~/thirdeye/backend -name "*.py" -exec sed -i "s/$//" {} +       && echo "   code synced (line endings normalised)"' \
   || { echo "sync FAILED"; exit 1; }
 
 echo "== 3. GATE 0 on the box =="
