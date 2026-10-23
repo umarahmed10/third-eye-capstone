@@ -250,6 +250,25 @@ async def main(n_per_class: int = 12, seed: int = 0):
         r = reports[c]
         lines.append(f"| {c} | {model_labels[c]} | {r['tp']} | {r['fp']} | {r['tn']} | {r['fn']} | "
                      f"{r['precision']:.3f} | {r['recall']:.3f} | {r['f1']:.3f} |")
+    # Did the judge actually run? "No gain" and "never executed" produce the
+    # same table, and only one of them is a finding.
+    if _ARB_EVIDENCE:
+        n = len(_ARB_EVIDENCE)
+        judged = sum(j for j, _d in _ARB_EVIDENCE)
+        dropped = sum(d for _j, d in _ARB_EVIDENCE)
+        if judged or dropped:
+            lines += ["", f"**Arbitration executed** on {n} contract-runs: {judged} findings "
+                          f"carried a judge verdict, {dropped} were dropped by the judge. The "
+                          f"identical row above is therefore a real null result."]
+        else:
+            lines += ["", f"**WARNING — arbitration did NOT run.** {n} contract-runs produced "
+                          f"ZERO judged and ZERO dropped findings. The identical row above is "
+                          f"NOT evidence of 'no gain'; do not cite it as such."]
+    else:
+        lines += ["", "**Arbitration evidence unavailable** — rows came from checkpoints written "
+                      "before evidence recording existed. Re-run fresh before citing the "
+                      "arbitration row."]
+
     (RESULTS / "ablation_ac.md").write_text("\n".join(lines) + "\n")
     print("\n" + "\n".join(lines))
     print(f"\nWrote {RESULTS / 'ablation_ac.md'}")
