@@ -598,3 +598,121 @@ NOT YET A RESULT, and must not be quoted as one:
 Next visit: let the control arm finish (it was budgeted to ~18:30 and
 checkpoints), then replay both arms through the shipped rule before comparing
 anything to the headline.
+
+---
+
+## Phase 9 — End-to-end audit of the instruments (2026-10-23)
+
+Phase 0 discarded a 1,152-contract run because a model named in a config was not
+installed, every call to it errored, and a half-dead council recorded clean GOs
+at ~1s latency. This phase asked a narrower question: **is that defect still
+present anywhere, and would we currently detect it?** The answer was no on the
+second half, in three places, and all three were our own integrity tooling.
+
+The common mechanism is one line of Python semantics: `row.get(k)` returns
+`None` for an absent key, `None` is falsy, and so **"this was never recorded"
+became indistinguishable from "this was recorded as fine."** Absence of a
+record is not a record of absence.
+
+**1. `eval/audit.py` — the contamination auditor failed open, twice.** It keyed
+intactness on `specialists_errored`, so rows that never recorded council health
+counted as intact. It also keyed terminality on `verdict` alone, while
+`arb_sweep` stores `council_verdict`, the ablation arms store `ok`/`pred`, and
+web3bugs stores `detected`/`slices_errored`. Those three trees reported
+`terminal=0` — printed as a row of harmless zeros that actually meant *this tree
+was never audited*. Fixed: unrecorded health is now its own tier that never
+counts as intact, every tree shape is recognised, and an unparseable tree says
+so loudly instead of showing zeros.
+
+*What this surfaced once the auditor could see:* **web3bugs is 72.2%
+contaminated — 65 of 90 contest rows ran with at least one errored slice**, the
+most contaminated tree in the project, previously invisible. All 90 remain sound
+under the asymmetric rule, so the contest-recall claim (98.4%) and the 33/34
+head-to-head stand; **no rate or paired claim on that corpus does.**
+
+**2. `eval/guard.py` — `default_terminal` admitted a GO whose health field was
+absent.** Latent rather than realised: every tree governed by that rule does
+carry the field. But `run_full_analysis` emits only `llm_error_detected`, so the
+next runner wiring it through the guard would have hit it. A GO must now *prove*
+an intact council rather than merely fail to report a broken one.
+
+**3. `tests/test_eval_integrity.py` — three tests that could not fail.** Each
+re-implemented the terminal rule in its own body and asserted on its own
+arithmetic; `guard` was never executed, so a regression there would have left
+all three green. They now call `guard.default_terminal`, and the replacements
+were verified to fail against the old rule before being kept. A check that
+cannot fail is not a check — the project's own thesis, found in its own tests.
+
+Root cause closed as well as reported: `services/llm.py` now records
+`specialists_errored` on the single-model path and `eval/run_ablation.py`
+persists council health per row, so the ambiguity stops being *possible* rather
+than merely being flagged.
+
+### The arbitration retraction
+
+`LOCAL_JUDGE_MODEL` defaulted to `qwen3:8b`, which was not pulled on the
+evaluation host. Every judge call returned 404 and the unparseable-output path
+**failed open** with `verdict="real", upheld=True, confidence=0.4`. All 234
+findings received an identical verdict and identical confidence and were upheld
+unconditionally — so arbitration dropped nothing, and the reported result
+("wins 4 of 10 held-out splits — no gain") was true **by construction, not by
+measurement.** Nothing in the output distinguished this from a judge that had
+adjudicated and agreed.
+
+The fail-open behaviour is *correct* for a security tool: a judge that cannot be
+reached must not silently delete a candidate bug. The defect is that it was
+indistinguishable from a verdict. Findings now carry `judge_ok` end to end.
+
+With the model installed the judge discriminates — 24 `not_a_bug` to 3 `real`
+over 27 findings, every call `judge_ok`, and confidence genuinely varying
+(0.6–0.95; an earlier read of "constant 0.95" was a small-n artifact and is
+withdrawn). The mechanism is therefore **not** a no-op and the sign of its
+effect is unknown until the sweep completes. Marked RETRACTED in the paper
+rather than quietly deleted. This is the fifth instance in this project of an
+unreported configuration detail converting a mechanism into a no-op while every
+downstream number looked normal, and the fourth found in our own
+infrastructure rather than in the tool under test.
+
+### The third decision rule is the second one
+
+Replayed the decision-rule table on the full 2,142-row corpus (all asym-sound):
+
+| rule | tp/fp/tn/fn | recall | FPR | was (n=1,154) |
+|---|--:|--:|--:|--:|
+| pre-gate `n_findings > 0` | 1051/755/291/45 | 95.9% | **72.2%** | 59.0% |
+| evidence gate `NO-GO` | 977/480/566/119 | 89.1% | **45.9%** | 37.5% |
+| noisy-OR τ = 0.925 | 977/480/566/119 | 89.1% | **45.9%** | 30.2% |
+
+The noisy-OR column is identical to the evidence gate in **every cell**, and the
+two disagree on **0 of 2,142** contracts. That is an identity, not a
+measurement: `services/council.py:472` defines the shipped verdict as
+`risk = 1 − Π(1 − conf_i)`, `NO-GO iff risk ≥ RISK_TAU`, with `RISK_TAU = 0.925`
+at line 484. A τ sweep confirms it — disagreement is 191 rows at τ = 0.90,
+**0** at 0.925, 1 at 0.95, 108 at 0.99; the zero sits exactly on the shipped
+threshold.
+
+This closes Phase 7's open "lands 2 contracts off" question in the opposite
+direction. The third column is not slightly wrong; it is a *different function*
+of data the checkpoints do not store (post-suppression findings), because any
+noisy-OR over data they **do** store is the second column. It also dissolves
+part of an earlier caveat: in replayable data there is no distinction between
+"the raw verdict" and "the shipped noisy-OR rule" — they are the same function.
+
+**Report two measured steps, not three:** 72.2% → 45.9%, a 26.3-point move
+attributable to the decision rule on identical verdicts. Still the cleanest form
+of the thesis, and it no longer credits a step we cannot reproduce. Caught
+before review, where proposing noisy-OR pooling as an improvement would have
+been proposing the tool's own shipped rule.
+
+Both reproducible rules are materially worse at full corpus than at the
+1,154-row replay (FPR +13.2 and +8.4 points), so **every FPR figure derived
+from that replay is optimistic and must be regenerated before submission.**
+
+### Sequencing note
+
+The box runs at 96% GPU with two stages; a third reduced baseline throughput
+from 2.5 to 1.4 rows/min without raising total output, so the stages are
+contending for a saturated device rather than filling idle capacity. Work is
+therefore serialised by paper value — arbitration sweep (settles the
+retraction) and baselines first, the n=35 ablation paused at 11 rows and
+resuming from checkpoints — rather than run three-wide.
