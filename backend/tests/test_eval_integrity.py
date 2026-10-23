@@ -7,6 +7,7 @@ prevent cost multi-day reruns.
 import os, sys, json, random
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from eval import guard
 from services.suppression import contract_profile, suppress, blocking_findings
 from services.llm import preanalyze_code
 
@@ -92,19 +93,37 @@ class TestSeveritySplit:
 
 
 class TestCheckpointContract:
-    """Defect 2/3: what may be treated as a terminal result."""
+    """Defect 2/3: what may be treated as a terminal result.
+
+    These tests call eval.guard.default_terminal. They used to RE-IMPLEMENT
+    the rule in each test body and assert on their own arithmetic, so they
+    could not fail: guard was never executed, and a regression there would
+    have left all three green. A check that cannot fail is not a check --
+    which is the defect this whole project is about, found in its own tests.
+    """
 
     def test_go_with_errored_specialist_is_not_terminal(self):
-        row = {"verdict": "GO", "specialists_errored": 1}
-        terminal = row["verdict"] == "NO-GO" or (row["verdict"] == "GO" and not row.get("specialists_errored"))
-        assert not terminal, "a clean GO from a partial council must never be trusted"
+        assert not guard.default_terminal({"verdict": "GO", "specialists_errored": 1}), \
+            "a clean GO from a partial council must never be trusted"
 
     def test_nogo_with_errored_specialist_is_terminal(self):
-        row = {"verdict": "NO-GO", "specialists_errored": 1}
-        terminal = row["verdict"] == "NO-GO" or (row["verdict"] == "GO" and not row.get("specialists_errored"))
-        assert terminal, "a missing specialist cannot have invented the finding that was raised"
+        assert guard.default_terminal({"verdict": "NO-GO", "specialists_errored": 1}), \
+            "a missing specialist cannot have invented the finding that was raised"
 
     def test_inconclusive_is_never_terminal(self):
-        row = {"verdict": "INCONCLUSIVE", "specialists_errored": 0}
-        terminal = row["verdict"] == "NO-GO" or (row["verdict"] == "GO" and not row.get("specialists_errored"))
-        assert not terminal
+        assert not guard.default_terminal({"verdict": "INCONCLUSIVE", "specialists_errored": 0})
+
+    def test_clean_go_is_terminal(self):
+        assert guard.default_terminal({"verdict": "GO", "specialists_errored": 0})
+
+    def test_go_with_unrecorded_health_is_not_terminal(self):
+        """The case the inline copy could never have caught. A row that never
+        recorded council health is UNKNOWN, not healthy; .get() made it falsy
+        and so indistinguishable from an intact council."""
+        assert not guard.default_terminal({"verdict": "GO"}), \
+            "a GO must prove an intact council, not merely fail to report a broken one"
+
+    def test_nogo_with_unrecorded_health_is_still_terminal(self):
+        """The asymmetry survives: a dead specialist can only suppress a
+        flag, so an unrecorded council cannot have fabricated the NO-GO."""
+        assert guard.default_terminal({"verdict": "NO-GO"})

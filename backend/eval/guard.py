@@ -54,8 +54,20 @@ def default_terminal(row: dict) -> bool:
     v = (row.get("verdict") or "").upper()
     if v not in TERMINAL_VERDICTS:
         return False
-    if v == "GO" and row.get("specialists_errored"):
-        return False
+    if v == "GO":
+        # A GO must PROVE an intact council, not merely fail to report a
+        # broken one. `row.get("specialists_errored")` returns None for a row
+        # that never recorded council health, which is falsy, which admitted
+        # the row as a trustworthy GO on no evidence. That is the same
+        # fail-open that let eval/audit.py report unaudited trees as CLEAN:
+        # absence of a record is not a record of absence. Every tree governed
+        # by this rule (benchmark, parity) does carry the field, so this is
+        # closing a latent trap rather than rejecting existing data -- a new
+        # runner wiring run_full_analysis through here would have hit it.
+        if "specialists_errored" not in row:
+            return False
+        if row["specialists_errored"]:
+            return False
     return True
 
 

@@ -262,6 +262,15 @@ async def run_full_analysis(code: str, similar_exploits: list | None = None, dis
             "final_findings": len(all_vulns),
             "similar_in_db": len(similar_exploits) if similar_exploits else 0,
             "llm_error_detected": llm_error_detected,
+            # Recorded even on the single-model path. eval/audit.py keys
+            # intactness on `specialists_errored`, and a MISSING key reads as
+            # falsy -- i.e. as "nothing errored". Omitting it here made the
+            # ablation and arb_sweep trees report CLEAN when their council
+            # health had never been recorded at all. Absence must not be
+            # indistinguishable from health, so the single-model path reports
+            # itself as what it is: a one-specialist council.
+            "specialists_errored": 1 if llm_error_detected else 0,
+            "specialists_run": 1,
         },
         "slither": slither_out,
     }

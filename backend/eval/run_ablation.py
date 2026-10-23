@@ -56,9 +56,29 @@ def _is_ac_prediction(vulns: list[dict]) -> bool:
     return False
 
 
+# Council health for the config that just ran. The ablation rows recorded
+# pred/ok/error and nothing about whether the council was intact, so a
+# `pred=False` produced by a council with three dead specialists was
+# indistinguishable from a genuine clean negative -- and eval/audit.py, keying
+# on a field these rows never carried, reported the whole tree as CLEAN. A
+# dead specialist can only suppress a finding, so in an ablation whose metric
+# is detection that bias runs straight into the result. Recorded per row now.
+_LAST_HEALTH: dict = {}
+
+
+def _note_health(stats: dict) -> None:
+    _LAST_HEALTH.clear()
+    _LAST_HEALTH.update({
+        "specialists_run": stats.get("specialists_run"),
+        "specialists_errored": stats.get("specialists_errored"),
+        "llm_error_detected": stats.get("llm_error_detected"),
+    })
+
+
 async def _single_llm(code: str) -> list[dict]:
     from services.llm import run_full_analysis
     r = await run_full_analysis(code, disable_slither=True)
+    _note_health(r.get("stats") or {})
     return r.get("vulnerabilities", [])
 
 
@@ -75,6 +95,7 @@ async def _council(code: str, seed: int, use_retrieval: bool, use_arbitration: b
         dropped = len(r.get("dropped_by_arbitration") or [])
         judged = sum(1 for v in (r.get("vulnerabilities") or []) if v.get("arbitration"))
         _ARB_EVIDENCE.append((judged, dropped))
+    _note_health(r.get("stats") or {})
     return r.get("vulnerabilities", [])
 
 
@@ -194,6 +215,7 @@ async def main(n_per_class: int = 12, seed: int = 0):
                 continue
             t0 = time.time()
             ok, p, err = True, False, None
+            _LAST_HEALTH.clear()
             try:
                 vulns = await fn(code, seed)
                 p = _is_ac_prediction(vulns)
@@ -201,7 +223,8 @@ async def main(n_per_class: int = 12, seed: int = 0):
                 print(f"  ! {config} failed on {it.contract_id}: {e}")
                 ok, err = False, str(e)[:200]
             dt = round(time.time() - t0, 1)
-            row = {"pred": p, "latency_s": dt, "is_ac": is_ac, "ok": ok, "error": err}
+            row = {"pred": p, "latency_s": dt, "is_ac": is_ac, "ok": ok, "error": err,
+                   **_LAST_HEALTH}
             cp.parent.mkdir(parents=True, exist_ok=True)
             try:
                 terminal = g.write(row, cp)

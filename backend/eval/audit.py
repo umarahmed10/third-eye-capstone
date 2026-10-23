@@ -11,6 +11,15 @@ twice, by hand, in the two places someone happened to look. This script looks
 everywhere, every time, so the question "is this number clean?" is answered by
 running something rather than by remembering.
 
+On 2026-10-23 this script was itself caught by the defect it audits. It keyed
+intactness on `row.get("specialists_errored")`, so a row that never recorded
+council health at all -- every row produced through run_full_analysis, which
+emits only `llm_error_detected` -- was indistinguishable from a row that
+recorded a healthy council, and the ablation and arb_sweep trees were reported
+CLEAN on no evidence whatsoever. Hence the third tier below: unrecorded health
+is UNKNOWN, is reported loudly, and never counts as intact. A checker that
+fails open is worse than no checker, because it manufactures confidence.
+
 THE BIAS DIRECTION IS THE POINT. A specialist that errored can only fail to
 raise a flag, never invent one. So contamination does not add noise
 symmetrically -- it pushes verdicts toward GO. In an arm measuring RECALL that
@@ -32,6 +41,27 @@ from pathlib import Path
 
 CKPT = Path(__file__).resolve().parent / "checkpoints"
 TERMINAL = ("GO", "NO-GO")
+VERDICT_KEYS = ("verdict", "council_verdict", "final_verdict")
+
+
+def _verdict(r: dict) -> str:
+    """The verdict under whichever key this tree happens to use.
+
+    Two trees do not carry a verdict STRING at all, and both have a real
+    soundness rule that eval/purge.py already encodes -- the ablation rows
+    carry ok/pred (guarded on `ok`) and the web3bugs rows carry
+    detected/slices_errored (guard.aggregate_terminal). Mapping them onto the
+    same GO/NO-GO vocabulary keeps ONE definition of soundness in this report
+    instead of silently excluding whatever it cannot parse.
+    """
+    for k in VERDICT_KEYS:
+        if r.get(k):
+            return str(r[k]).upper()
+    if "ok" in r and "pred" in r:                      # ablation arm
+        return ("NO-GO" if r.get("pred") else "GO") if r.get("ok") else ""
+    if "detected" in r and "slices_errored" in r:      # web3bugs contest row
+        return "NO-GO" if r.get("detected") else ("GO" if not r.get("slices_errored") else "")
+    return ""
 
 
 def load_tree(pattern: str) -> dict[str, list[dict]]:
@@ -63,17 +93,46 @@ def classify(rows: list[dict]) -> dict:
     """
     n = len(rows)
     unreadable = sum(1 for r in rows if r.get("_unreadable"))
-    verdicts = Counter((r.get("verdict") or "?") for r in rows)
-    terminal = [r for r in rows if (r.get("verdict") or "").upper() in TERMINAL]
-    intact = [r for r in terminal if not r.get("specialists_errored")]
+    # Trees do not agree on the verdict key: the benchmark/ctx/parity runners
+    # write `verdict`, arbitration_sweep writes `council_verdict`, and the
+    # service layer writes `final_verdict`. Keying on `verdict` alone made
+    # this script report terminal=0 for arb_sweep, the ablation arms, and
+    # web3bugs -- a row of zeros that reads as "nothing wrong" when it
+    # actually means "this tree was never audited". Try every known key, and
+    # if a non-empty tree still yields no verdict at all, SAY SO (below)
+    # rather than printing a reassuring zero.
+    verdicts = Counter(_verdict(r) or "?" for r in rows)
+    terminal = [r for r in rows if _verdict(r) in TERMINAL]
+    # THREE states, not two. `specialists_errored` ABSENT is not the same fact
+    # as `specialists_errored == 0`, but `.get()` collapses them: both are
+    # falsy, so a row whose council health was never recorded was being
+    # counted as intact. That is this script's own failure mode -- the exact
+    # one it exists to catch -- and it reported the ablation and arb_sweep
+    # trees as CLEAN on rows that carry no health field at all. Unrecorded
+    # health is now its own tier and NEVER counts as intact.
+    # web3bugs records council health per contest under its own name.
+    def _health_key(r: dict) -> str | None:
+        for k in ("specialists_errored", "slices_errored"):
+            if k in r:
+                return k
+        return None
+    unrecorded = [r for r in terminal if _health_key(r) is None]
+    intact = [r for r in terminal
+              if (k := _health_key(r)) is not None and not r[k]]
+    # The asymmetric rule still holds on an unrecorded row: a NO-GO is sound
+    # whatever the council did, because a dead specialist can only suppress a
+    # flag. A GO with UNKNOWN health is not sound -- it is exactly the case the
+    # rule excludes, so it must not pass merely because the field is missing.
     asym = [r for r in terminal
-            if (r.get("verdict") or "").upper() == "NO-GO" or not r.get("specialists_errored")]
+            if _verdict(r) == "NO-GO"
+            or ((k := _health_key(r)) is not None and not r[k])]
     return {
         "n": n,
         "unreadable": unreadable,
         "verdicts": dict(verdicts),
         "terminal": len(terminal),
         "intact_council": len(intact),
+        "unrecorded_health": len(unrecorded),
         "asym_sound": len(asym),
         "contaminated_pct": round(100 * (len(terminal) - len(intact)) / len(terminal), 1) if terminal else None,
     }
@@ -85,22 +144,40 @@ def paired(a: list[dict], b: list[dict]) -> dict:
     B = {r.get("contract_id"): r for r in b if r.get("contract_id")}
     common = set(A) & set(B)
     both_term = [c for c in common
-                 if (A[c].get("verdict") or "").upper() in TERMINAL
-                 and (B[c].get("verdict") or "").upper() in TERMINAL]
-    both_intact = [c for c in both_term
-                   if not A[c].get("specialists_errored") and not B[c].get("specialists_errored")]
+                 if _verdict(A[c]) in TERMINAL and _verdict(B[c]) in TERMINAL]
+    # Same three-state rule as classify(): a pair is intact only if BOTH arms
+    # positively recorded a healthy council. A missing field cannot buy a pair
+    # into the comparison -- the whole point of intact_both is that the two
+    # arms are known to be comparable.
+    def _healthy(r: dict) -> bool:
+        return "specialists_errored" in r and not r["specialists_errored"]
+    both_intact = [c for c in both_term if _healthy(A[c]) and _healthy(B[c])]
+    both_unrec = [c for c in both_term
+                  if "specialists_errored" not in A[c] or "specialists_errored" not in B[c]]
     return {"common": len(common), "scored_both": len(both_term),
-            "intact_both": len(both_intact),
+            "intact_both": len(both_intact), "unrecorded_either": len(both_unrec),
             "usable_pct": round(100 * len(both_intact) / len(both_term), 1) if both_term else None}
 
 
 def verdict_line(label: str, s: dict) -> str:
     c = s["contaminated_pct"]
+    u = s.get("unrecorded_health", 0)
     flag = ""
-    if c is not None:
+    if s["n"] and not s["terminal"]:
+        # A non-empty tree in which NOTHING parsed as a verdict is an audit
+        # FAILURE, not a clean result. Printing "terminal=0 intact=0" and
+        # stopping is how arb_sweep, web3bugs and the ablation arms went
+        # unaudited while appearing in this report as rows of harmless zeros.
+        return (f"  {label:<34} n={s['n']:<5} *** NOT AUDITED: no recognised verdict key "
+                f"(saw {sorted(s['verdicts'])[:3]}) -- THIS TREE IS UNVERIFIED ***")
+    if u:
+        # Loudest state in the report. "No errors recorded" and "no record of
+        # errors" are different claims, and only one of them is evidence.
+        flag = f"  *** {u} ROWS: COUNCIL HEALTH NOT RECORDED -- NOT CLEAN, UNKNOWN ***"
+    elif c is not None:
         flag = "  CLEAN" if c == 0 else (f"  {c}% contaminated" if c < 25 else f"  *** {c}% CONTAMINATED ***")
     return (f"  {label:<34} n={s['n']:<5} terminal={s['terminal']:<5} "
-            f"intact={s['intact_council']:<5} asym={s['asym_sound']:<5}{flag}")
+            f"intact={s['intact_council']:<5} unrec={u:<5} asym={s['asym_sound']:<5}{flag}")
 
 
 def main() -> int:
