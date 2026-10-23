@@ -65,6 +65,24 @@ export OLLAMA_KEEP_ALIVE=24h
 # something to re-run.
 export OLLAMA_LOGIC_MODEL=llama3.2:3b
 
+# PINNED DELIBERATELY. This was unset, so services/arbitration.py fell through
+# to its hardcoded default of qwen3:8b -- a model that was NOT pulled on this
+# box. Every judge call returned 404, the unparseable path failed open with
+# verdict=real/upheld=True, all 234 findings were upheld unconditionally, and
+# the paper reported "adversarial arbitration yields no held-out gain" as a
+# measured result. It was true by construction. A serving config that leaves
+# the judge implicit cannot distinguish "the judge agreed" from "there is no
+# judge", so the model is named here and `scripts/gate0.sh` should fail if it
+# is not present locally.
+#
+# qwen3:8b is a REASONING model: ~97% of its generated tokens are a thinking
+# trace the parser discards, at 23s per call. That is a known, accepted cost,
+# not a misconfiguration -- see DECISION_LOG Phase 9. Do not "optimise" it by
+# disabling thinking without relabelling the arm, and never set num_predict
+# low enough for the thinking trace to exhaust it: an empty response is
+# unparseable, and unparseable fails open.
+export LOCAL_JUDGE_MODEL=qwen3:8b
+
 # Client-side deadline per specialist call. 240s was a laptop number for
 # llama3.2:3b; an 8B model generating under contention needs more, and a
 # deadline that fires on healthy work silently filters out the large contracts.

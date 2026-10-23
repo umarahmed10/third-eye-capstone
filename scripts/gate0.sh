@@ -40,8 +40,26 @@ fi
 #    startup -- it errors per contract, at which point the run is half spent.
 if curl -fsS --max-time 5 http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then
   ok "ollama responding"
-  present=$(curl -fsS http://127.0.0.1:11434/api/tags | tr ',' '\n' | grep -c '"name"')
+  TAGS=$(curl -fsS http://127.0.0.1:11434/api/tags)
+  present=$(printf '%s' "$TAGS" | tr ',' '\n' | grep -c '"name"')
   ok "$present models pulled"
+  # COUNTING IS NOT CHECKING. This gate used to report "N models pulled" and
+  # pass, which it did on 2026-10-23 while the arbitration judge
+  # (LOCAL_JUDGE_MODEL, default qwen3:8b) was absent. Every judge call 404'd,
+  # the fail-open path upheld all 234 findings, and the paper reported "no
+  # held-out gain" as a measured result. The count was right and the run was
+  # worthless. Each role's model is now checked BY NAME.
+  for spec in \
+      "logic:${OLLAMA_LOGIC_MODEL:-llama3.2:3b}" \
+      "judge:${LOCAL_JUDGE_MODEL:-qwen3:8b}" \
+      "red_team:gemma3:4b"; do
+    role=${spec%%:*}; mdl=${spec#*:}
+    if printf '%s' "$TAGS" | grep -q "\"name\":\"${mdl}\""; then
+      ok "$role model present: $mdl"
+    else
+      bad "$role model MISSING: $mdl — this fails per call, not at startup, and the fail-open path makes the result look normal. Run: ollama pull $mdl"
+    fi
+  done
 else
   bad "ollama is not answering on 11434 — nothing can run"
 fi
