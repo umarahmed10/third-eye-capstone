@@ -798,3 +798,41 @@ unchanged) is the part least likely to be an artifact of ordering, but it needs
 the full sweep and a Wilson interval before it is a claim.
 
 Reproduce with `python -m eval.arb_interim` from `backend/`.
+
+#### Correction at n = 41: precision-neutrality does NOT hold
+
+The n=13 read above is **withdrawn**. Tripling the sample reverses it:
+
+| | tp | fp | tn | fn | recall | FPR | **precision** |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| council (pre-arbitration) | 20 | 20 | 1 | 0 | 100.0% | 95.2% | **50.0%** |
+| post-arbitration | 7 | 1 | 20 | 13 | 35.0% | 4.8% | **87.5%** |
+
+Precision moves **50.0% → 87.5%**, not 50% → 50%. At n=13 true and false
+positives happened to be dropped at equal rates; at n=41 they are not, and the
+sample is now roughly class-balanced (20 vulnerable, 21 safe) rather than the
+all-safe-prefix block the earlier figure was computed on. The "sensitivity dial,
+not a precision mechanism" framing was an artifact of a 13-contract sample and
+must not be used.
+
+**Arbitration is a real precision mechanism with a steep price: +37.5 points of
+precision for −65 points of recall** (85% of findings dropped, 109 → 16).
+
+This matters beyond the number. The retracted claim was not merely
+*unmeasured* — it pointed the wrong way. "No held-out gain" was produced by a
+judge that upheld everything; the working judge produces a large gain in
+precisely the quantity the mechanism was adopted for. The paper's concession
+has to become a result.
+
+Two corrections to our own reasoning recorded alongside it, since both were
+made in the course of a single evening by the people writing a paper about
+this exact failure mode:
+- a 13-contract interim was quoted as a structural property ("drops TPs and
+  FPs at the same rate ⇒ precision cannot move"). Structural-sounding
+  reasoning from a small sample is still a small sample.
+- `judge_ok` is False on 0 of 109 findings, so none of this is fail-open
+  contamination. The instrument that made the original defect visible is also
+  what lets this number be trusted.
+
+Still INTERIM: 41 of ~90 contracts, processed in sorted order, so not a random
+sample. Wilson intervals and the full sweep before anything is quoted.
