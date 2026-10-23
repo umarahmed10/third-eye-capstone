@@ -67,7 +67,19 @@ async def _council(code: str, seed: int, use_retrieval: bool, use_arbitration: b
     r = await run_thirdeye(code, backend="ollama", seed=seed,
                         use_retrieval=use_retrieval, use_arbitration=use_arbitration,
                         use_dynamic=False)
+    # EVIDENCE THAT IT RAN. council+arbitration returned cells byte-identical to
+    # plain council, which is either a real null result or a stage that never
+    # executed -- and those are not the same claim. Record the judge's footprint
+    # so the report can tell them apart instead of asserting "no gain" on faith.
+    if use_arbitration:
+        dropped = len(r.get("dropped_by_arbitration") or [])
+        judged = sum(1 for v in (r.get("vulnerabilities") or []) if v.get("arbitration"))
+        _ARB_EVIDENCE.append((judged, dropped))
     return r.get("vulnerabilities", [])
+
+
+# (judged, dropped) per arbitrated contract; summarised in the report.
+_ARB_EVIDENCE: list[tuple[int, int]] = []
 
 
 # council+retrieval is intentionally omitted from the RUN: retrieved
@@ -103,6 +115,32 @@ def _confusion(rows: list[dict], config: str) -> dict:
     f1 = 2 * p * rec / (p + rec) if (p + rec) else 0.0
     acc = (tp + tn) / (tp + fp + tn + fn) if (tp + fp + tn + fn) else 0.0
     return {"tp": tp, "fp": fp, "tn": tn, "fn": fn, "precision": p, "recall": rec, "f1": f1, "accuracy": acc}
+
+
+def _single_llm_model() -> str:
+    """Read the model actually used, never a literal.
+
+    The report previously hardcoded 'llama3.1:8b (single)' and 'council +
+    Cerebras gpt-oss-120b judge'. Both were false on 2026-10-23: the logic
+    model is llama3.2:3b (measured better, see scripts/env.sh) and the judge
+    runs on local ollama -- there is no cloud in this pipeline at all. A table
+    that misreports its own configuration is precisely the defect this paper
+    is about, so the labels are now derived.
+    """
+    return os.getenv("OLLAMA_SINGLE_MODEL") or os.getenv("OLLAMA_LOGIC_MODEL", "llama3.2:3b")
+
+
+def _council_models() -> str:
+    try:
+        from services.council import specialist_assignments
+        models = sorted({m for _p, m in specialist_assignments("ollama").values()})
+        return " + ".join(models)
+    except Exception:  # noqa: BLE001 — a label must never break the report
+        return "(could not read specialist assignments)"
+
+
+def _arb_backend() -> str:
+    return os.getenv("ARB_BACKEND", "ollama")
 
 
 def _ckpt_path(config: str, cid: str, seed: int) -> Path:
@@ -203,10 +241,10 @@ async def main(n_per_class: int = 12, seed: int = 0):
         "|---|---|---|---|---|---|---|---|---|",
     ]
     model_labels = {
-        "single_llm": "llama3.1:8b (single)",
-        "council": "qwen2.5-coder:7b + llama3.1:8b + gemma3:4b",
+        "single_llm": _single_llm_model(),
+        "council": _council_models(),
         "council+retrieval": "council + exploit-corpus precedents",
-        "council+arbitration": "council + Cerebras gpt-oss-120b judge",
+        "council+arbitration": "council + retrieval + arbitration (" + _arb_backend() + ")",
     }
     for c in CONFIGS:
         r = reports[c]
