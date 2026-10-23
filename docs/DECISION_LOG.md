@@ -761,3 +761,40 @@ rows/min for the *same* three-stage configuration, because per-contract cost
 varies by more than the effect being measured. GPU sat at 96% throughout. All
 stages are per-row checkpointed, so they were left running concurrently and no
 further scheduling decisions were made on that signal.
+
+### Interim: arbitration is a sensitivity dial, not a precision mechanism
+
+First read on the re-run sweep with a judge that actually answers, at **n = 13
+contracts (6 vulnerable, 7 safe) — INTERIM, not a result**:
+
+| | tp | fp | tn | fn | recall | FPR | **precision** |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| council (pre-arbitration) | 6 | 6 | 1 | 0 | 100.0% | 85.7% | **50.0%** |
+| post-arbitration | 1 | 1 | 6 | 5 | 16.7% | 14.3% | **50.0%** |
+
+The judge drops **92% of findings** (35 of 38) and flips 10 verdicts NO-GO→GO:
+five safe contracts (correct) and five vulnerable ones (catastrophic). It
+removes true and false positives at the *same rate*, so **precision does not
+move at all** — 50.0% before, 50.0% after — while recall falls 83 points.
+
+If this holds, the honest claim is not "adversarial arbitration yields no
+held-out gain" but something sharper: **arbitration is a sensitivity threshold
+presented as a reasoning mechanism.** It is drastically active, and
+precision-neutral in exactly the quantity it was adopted to improve. The
+retracted conclusion was accidentally right and entirely unearned — it was
+measured on a judge that never answered.
+
+`judge_ok` is False on **0 of 38** findings, so every adjudication here is real
+rather than a fail-open default. The instrumentation added earlier is doing the
+job it was added for.
+
+**Why this is not yet reportable.** The sweep processes contracts in sorted
+order and the corpus prefixes correlate with class: all five safe flips are
+`01_dappclean_*`, all five vulnerable flips are `02_dappscan_*`. The first 13
+contracts are therefore **not a class-random sample** and every rate above is
+order-biased. Recompute at full n before quoting anything. The structural
+observation (true and false positives dropped at equal rate ⇒ precision
+unchanged) is the part least likely to be an artifact of ordering, but it needs
+the full sweep and a Wilson interval before it is a claim.
+
+Reproduce with `python -m eval.arb_interim` from `backend/`.
