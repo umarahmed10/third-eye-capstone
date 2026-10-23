@@ -35,18 +35,28 @@ ssh -o BatchMode=yes -o ConnectTimeout=10 "$BOX" 'echo ok' >/dev/null 2>&1 || {
 }
 echo "   reachable"
 
-echo "== 2. sync code + scripts =="
+echo "== 2. sync code + datasets =="
+# datasets/ IN FULL, not just gptscan. On 2026-10-23 the box had only
+# datasets/gptscan, and the consequence was not a crash -- it was worse. The
+# access-control ablation loaded 17 positives and ZERO negatives, ran to
+# completion on an empty sample, and wrote a correctly formatted
+# results/ablation_ac.md whose every cell was 0.000. A table that looks like a
+# result and is made of nothing is exactly the failure this project studies, so
+# the sync no longer picks and chooses.
 # CRLF is stripped on arrival. .gitattributes pins *.sh to LF in the REPO, but
 # this tar ships the Windows WORKING TREE verbatim, where the files are CRLF --
 # and a CRLF shebang fails on Linux with the useless error
-#     /usr/bin/env: 'bash': No such file or directory
+#     /usr/bin/env: 'bash
+': No such file or directory
 # backend/.env is excluded DELIBERATELY and permanently: it holds a live API key
 # and that box is shared with another student and three admins. The pipeline is
 # all-local inference and needs no key.
 tar czf - --exclude='.env' --exclude='venv*' --exclude='__pycache__' \
           --exclude='*.pyc' --exclude='eval/checkpoints' --exclude='*.db' \
-    backend/eval backend/services backend/requirements.txt scripts datasets/gptscan 2>/dev/null \
-  | ssh "$BOX" 'mkdir -p ~/thirdeye && tar xzf - -C ~/thirdeye       && chmod +x ~/thirdeye/scripts/*.sh       && for f in ~/thirdeye/scripts/*.sh; do sed -i "s/$//" "$f"; done       && find ~/thirdeye/backend -name "*.py" -exec sed -i "s/$//" {} +       && echo "   code synced (line endings normalised)"' \
+    backend/eval backend/services backend/requirements.txt scripts datasets 2>/dev/null \
+  | ssh "$BOX" 'mkdir -p ~/thirdeye && tar xzf - -C ~/thirdeye       && chmod +x ~/thirdeye/scripts/*.sh       && for f in ~/thirdeye/scripts/*.sh; do sed -i "s/
+$//" "$f"; done       && find ~/thirdeye/backend -name "*.py" -exec sed -i "s/
+$//" {} +       && echo "   code synced (line endings normalised)"' \
   || { echo "sync FAILED"; exit 1; }
 
 echo "== 3. GATE 0 on the box =="

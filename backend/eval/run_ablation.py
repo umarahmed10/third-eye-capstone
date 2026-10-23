@@ -119,6 +119,21 @@ async def main(n_per_class: int = 12, seed: int = 0):
     sample = pos + neg
     print(f"Ablation sample: {len(pos)} AC-positive + {len(neg)} AC-negative = {len(sample)} items (seed={seed})")
 
+    # REFUSE rather than report nothing as something. On 2026-10-23 this ran
+    # with 17 positives and ZERO negatives -- the dataset had not been synced --
+    # and produced a correctly formatted table of 0.000s that was written to
+    # results/ and looked like a finding. An all-positive sample cannot measure
+    # the false positives this table exists to measure, so an empty or
+    # single-class sample is a configuration error, not a result.
+    if not pos or not neg:
+        raise SystemExit(
+            f"ABORT: ablation needs BOTH classes and has {len(pos)} AC-positive / "
+            f"{len(neg)} AC-negative. The AC-negatives are the entire point of this "
+            f"table -- they are the only real negative-class signal in the benchmark. "
+            f"Check that datasets/ is fully synced (the web3bugs clone supplies the "
+            f"negatives, smartbugs-curated the positives)."
+        )
+
     # This runner had the bug the guard exists for, in its purest form: an
     # exception was caught, printed, and then checkpointed as `pred = False`.
     # A backend failure therefore became a NEGATIVE PREDICTION -- permanently,
