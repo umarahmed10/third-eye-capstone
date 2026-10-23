@@ -83,6 +83,30 @@ pgrep -f 'tailscaled.*userspace' >/dev/null || {
   sleep 3
 }
 echo "   daemon running"
+
+# PERSISTENCE. Without this the whole thing silently evaporates on the next
+# power cycle -- and you would find out from 100km away, which is precisely
+# the failure this script exists to prevent. The auth token lives in
+# --statedir, so a restarted daemon re-authenticates on its own with no
+# interactive step; only the daemon itself needs restarting.
+#
+# A userspace daemon under @reboot needs no root, same as the daemon itself.
+LINE="@reboot sleep 30 && setsid nohup \$HOME/.local/bin/tailscaled --tun=userspace-networking --socket=\$HOME/.tailscale/tailscaled.sock --statedir=\$HOME/.tailscale/state > \$HOME/tailscaled.log 2>&1 &"
+if crontab -l 2>/dev/null | grep -q 'tailscaled.*userspace'; then
+  echo "   @reboot entry already present"
+else
+  ( crontab -l 2>/dev/null; echo "$LINE" ) | crontab -     && echo "   @reboot entry installed"     || echo "   WARNING could not install @reboot entry -- cron may be restricted. Access will NOT survive a reboot."
+fi
+
+# Same treatment for the pipeline: a reboot mid-run otherwise loses the box
+# silently. Checkpoints make this safe -- a resumed run costs zero inference
+# for work already done.
+PLINE="@reboot sleep 90 && cd \$HOME/thirdeye && SKIP_CALIBRATE=1 CONC=6 STAGES=\"a1 a2 a3 baselines ablation arb web3\" setsid nohup bash scripts/run_all.sh > \$HOME/run_all.log 2>&1 &"
+if crontab -l 2>/dev/null | grep -q 'run_all.sh'; then
+  echo "   pipeline @reboot entry already present"
+else
+  ( crontab -l 2>/dev/null; echo "$PLINE" ) | crontab -     && echo "   pipeline @reboot entry installed"     || echo "   WARNING pipeline will not auto-resume after a reboot"
+fi
 REMOTE
 
   say "4. authenticate -- OPEN THE URL BELOW AND LOG IN"
@@ -104,6 +128,14 @@ REMOTE
 
    If that succeeds from the hotspot, you never need to drive here again
    for a run. Do not leave until you have seen it succeed.
+
+   Both tailscaled AND the pipeline now have @reboot crontab entries, so a
+   power cycle restores access and resumes the run by itself. Verify with:
+
+       ssh <user>@thirdeye-gb10 'crontab -l'
+
+   If cron is restricted on this box the script says so above -- in that case
+   a reboot DOES cost you the access, and you would discover it from home.
 EOF
 else
   cat <<'EOF'
