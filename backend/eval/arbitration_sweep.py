@@ -112,6 +112,10 @@ async def collect(arb_backend: str, council_backend: str, limit: int) -> None:
                     findings.append({
                         "type": f.get("type"),
                         "judge_verdict": a.get("verdict"),
+                        # Carry the judge's liveness into the row. Without it a
+                        # fail-open default is stored as a verdict and the
+                        # sweep cannot tell adjudication from a 404.
+                        "judge_ok": a.get("judge_ok", True),
                         "conf": f.get("confidence"),
                         "p_real": _p_real(a.get("verdict", ""), f.get("confidence", 0.0)),
                         "upheld": bool(f.get("upheld")),
