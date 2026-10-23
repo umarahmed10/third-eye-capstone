@@ -280,9 +280,27 @@ async def main(n_per_class: int = 12, seed: int = 0):
         judged = sum(j for j, _d in _ARB_EVIDENCE)
         dropped = sum(d for _j, d in _ARB_EVIDENCE)
         if judged or dropped:
+            # Whether the arms AGREE is a fact about the table, so read it off
+            # the table instead of asserting it. This sentence used to end
+            # "...the identical row above is therefore a real null result",
+            # hardcoded from the era when the two council arms produced
+            # byte-identical rows. Once the judge was actually installed they
+            # stopped being identical (precision 0.583 -> 0.923), and the
+            # report went on claiming a null result directly beneath a table
+            # showing a large effect. A conclusion that does not check its own
+            # premise is the same defect as a checker that cannot fail.
+            base, arb = reports.get("council"), reports.get("council+arbitration")
+            same = bool(base and arb and all(
+                base[k] == arb[k] for k in ("tp", "fp", "tn", "fn")))
+            verdict = ("The two council rows above are identical, so this is a real null "
+                       "result rather than a stage that never ran."
+                       if same else
+                       f"The arms DIFFER (council precision {base['precision']:.3f} vs "
+                       f"{arb['precision']:.3f}), so arbitration has a measurable effect "
+                       f"here; it is not a null result.")
             lines += ["", f"**Arbitration executed** on {n} contract-runs: {judged} findings "
-                          f"carried a judge verdict, {dropped} were dropped by the judge. The "
-                          f"identical row above is therefore a real null result."]
+                          f"carried a judge verdict, {dropped} were dropped by the judge. "
+                          + verdict]
         else:
             lines += ["", f"**WARNING — arbitration did NOT run.** {n} contract-runs produced "
                           f"ZERO judged and ZERO dropped findings. The identical row above is "
