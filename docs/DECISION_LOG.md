@@ -716,3 +716,48 @@ contending for a saturated device rather than filling idle capacity. Work is
 therefore serialised by paper value — arbitration sweep (settles the
 retraction) and baselines first, the n=35 ablation paused at 11 rows and
 resuming from checkpoints — rather than run three-wide.
+
+### The judge is a reasoning model, and that is 97% of its cost
+
+Diagnosing why the arbitration sweep ran at ~0.2 contracts/min, the first
+hypothesis — GPU starvation from three concurrent stages — was wrong. A direct
+call to the judge model returned in 2.7 s, so it was never queue-starved. The
+measurement that mattered, on a realistic judge prompt:
+
+| | per judge call |
+|---|--:|
+| latency | **23.2 s** |
+| `thinking` emitted | 1,349 chars |
+| `response` used | 35 chars (`{"verdict":"real","confidence":0.9}`) |
+| `eval_count` | 300 tokens |
+
+`qwen3:8b` is a **reasoning model**: roughly 97% of the tokens it generates per
+arbitration are a chain-of-thought trace that the parser discards. That, not
+contention, is the sweep's cost — about 8 min/contract, ~12 h for the corpus.
+
+Two consequences recorded rather than optimised away:
+
+1. **It is a second route to the fail-open we just retracted.** With a short
+   `num_predict` or a tight timeout, the thinking trace consumes the budget and
+   `response` arrives EMPTY with `done_reason: "length"` — reproduced directly
+   (`num_predict: 5` returns `response: ""`). An empty body is unparseable, and
+   the unparseable path fails open. The `judge_ok` flag added earlier now makes
+   this visible (27/27 `True` in the current sweep, so it is parsing today), but
+   the fragility is structural: **the judge's output budget must exceed its
+   thinking budget or the mechanism silently reverts to a no-op.**
+
+2. **Thinking was NOT disabled to speed up the sweep.** Doing so would be ~10–20×
+   faster and is the obvious optimisation, but `qwen3:8b` with thinking on is the
+   shipped default, and changing a model's reasoning mode partway through a sweep
+   would mix two different judges into one result set — the same class of
+   unreported configuration change that produced the retraction this sweep
+   exists to correct. The sweep runs as shipped. If a no-thinking judge is worth
+   measuring, it is a separate arm with its own label, not a performance tweak.
+
+Also noted: the throughput-based scheduling decisions made during this session
+(pausing and then resuming the ablation to manage contention) were **not
+supported by the data**. Row-rate sampled over 5–15 min windows varied 0.93–2.5
+rows/min for the *same* three-stage configuration, because per-contract cost
+varies by more than the effect being measured. GPU sat at 96% throughout. All
+stages are per-row checkpointed, so they were left running concurrently and no
+further scheduling decisions were made on that signal.
