@@ -41,6 +41,46 @@ Three labels are used throughout and they are not interchangeable:
 > Two fixes owed: store post-suppression findings in the checkpoint (or apply
 > suppression inside `verify_facts`), and relabel every "OR-gate" column below
 > according to which of the three rules it actually is.
+>
+> ### UPDATE 2026-10-23 — the third rule is not a third rule
+>
+> Replayed on the **full** corpus (2,142 rows, all asym-sound under
+> `guard.default_terminal`). The two reproducible rules move as expected, and
+> both are substantially worse than at n=1,154:
+>
+> | rule | tp/fp/tn/fn | recall | FPR | was (n=1,154) |
+> |---|--:|--:|--:|--:|
+> | pre-gate `n_findings > 0` | 1051 / 755 / 291 / 45 | 95.9% | **72.2%** | 59.0% |
+> | evidence gate `NO-GO` | 977 / 480 / 566 / 119 | 89.1% | **45.9%** | 37.5% |
+> | noisy-OR, τ = 0.925 | 977 / 480 / 566 / 119 | 89.1% | **45.9%** | 30.2% |
+>
+> The noisy-OR column is **identical to the evidence gate in every cell**, and
+> the two rules disagree on **0 of 2,142 contracts**. That is not a measurement,
+> it is an identity: `services/council.py:472` defines the shipped verdict as
+> `risk = 1 − Π(1 − conf_i)`, `NO-GO iff risk ≥ RISK_TAU`, and line 484 sets
+> `RISK_TAU = 0.925`. Recomputing a noisy-OR at τ = 0.925 over the stored
+> findings therefore re-derives the verdict rule by construction. A τ sweep
+> confirms it: disagreement is 191 rows at τ = 0.90, **0** at 0.925, 1 at 0.95,
+> 108 at 0.99 — the zero sits exactly on the shipped threshold.
+>
+> **So the published three-step decomposition cannot be replayed from the
+> checkpoints, and the earlier "2 contracts off" diagnosis understates it.** The
+> gap is not a 2-contract discrepancy; the third column is a *different
+> function* of data the checkpoints do not contain (post-suppression findings),
+> because any noisy-OR computed from data they *do* contain is the second
+> column. Until post-suppression findings are stored, the third step is
+> unverifiable.
+>
+> **Report two measured steps, not three:** 72.2% → 45.9% on identical
+> verdicts, a 26.3-point move attributable to the decision rule alone. This is
+> still the cleanest form of the paper's thesis — the aggregation rule is worth
+> more than most model changes — and it no longer credits a step we cannot
+> reproduce. Note also that a reader proposing noisy-OR pooling as an
+> improvement over this tool would be proposing the tool's own shipped rule.
+>
+> Both reproducible rules degrade at full corpus (FPR +13.2 and +8.4 points),
+> so every FPR figure in this file derived from the 1,154-row replay is
+> optimistic and must be regenerated before submission.
 
 ---
 
