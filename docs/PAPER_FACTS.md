@@ -293,6 +293,30 @@ so itself — but the original hypothesis ("the council raises precision") is
 calls, 205 S-class bugs. On the **34 gradable** shared projects: **33/34 vs
 31/34, intervals overlapping — no difference demonstrated.**
 
+**Council health on this corpus (added 2026-10-23, from `eval/audit.py`).**
+Of the 90 web3bugs contest rows, **only 25 ran with every slice intact — 65
+(72.2%) had at least one errored slice.** This is the most contaminated tree in
+the project and it had been **invisible**: `audit.py` keyed terminality on a
+`verdict` field that these rows do not have (they carry `detected` /
+`slices_errored`), so the corpus reported `terminal=0` — printed as a row of
+zeros that reads as "nothing to see" and actually meant "never audited."
+
+What survives and what does not:
+- **The contest-recall claim survives.** All 90 rows are sound under the
+  asymmetric rule (`asym=90`): a slice that errored can only fail to raise a
+  flag, never invent one, so a *detection* cannot be manufactured by a dead
+  slice. The 98.4% recall and the 33/34 head-to-head stand.
+- **No rate or paired claim on web3bugs may rest on this tree.** A
+  non-detection cannot be distinguished from a slice that never ran, so any
+  FPR-like or per-contest comparative figure is unsupported at 72.2%
+  contamination.
+
+Reported here rather than in a limitations footnote because the bias direction
+is the whole point: contamination on this corpus pushes toward *missing* bugs,
+which is the direction that would flatter a recall number if the rule were
+reversed, and the only reason we can state which way it cuts is that the field
+was recorded per row.
+
 ---
 
 ## 10. Engineering artefact

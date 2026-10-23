@@ -40,16 +40,16 @@ The four choices are: how the safe label was established (false alarms 15.7%
 code); what counts as a detection (recall 82.2% any-slice against 25.5%
 type-matched on 349 labelled contracts; 31.6 points survive on the 187 where
 the tool had a specialist for the labelled class); what the model was
-permitted to read (a silently truncating context window moves recall 12.5% →
-81.2%, McNemar *p* = 0.016, while running 4.01× *slower*); and which machine
+permitted to read (a silently truncating context window makes specialist calls
+fail outright at 39.1% against 3.2%, *p* < 1e-26, and returns twelve GO
+verdicts from councils in which one to three specialists never ran); and which machine
 produced the verdicts (0.735 agreement across two hosts on identical inputs, with
 batch parallelism excluded by a control, *p* = 0.75).
 
 We report what this costs us. Scored type-matched, our recall falls inside the
 band of the static analysers we set out to beat. Our original hypothesis — that a
 model-diverse council raises precision — is refuted on the one early corpus with
-a negative class. Adversarial arbitration, the standard precision mechanism,
-yields no held-out gain. We release the benchmark, per-contract checkpoints for
+a negative class. We release the benchmark, per-contract checkpoints for
 every run, and a decision log recording each correction made during the work.
 
 ---
@@ -259,9 +259,29 @@ available evidence that hypothesis is **refuted**. We report it because a paper
 about honest measurement that suppressed its own negative result would be
 self-refuting.
 
-Adversarial LLM-as-judge arbitration, the standard precision mechanism, wins
-**4 of 10** held-out splits — no gain, despite visibly reducing the FPR column.
-A reader shown only that column would have recorded it as a success.
+> **RETRACTED 2026-10-23 — this result was an artifact of our own harness and
+> is being re-measured.** We previously reported that adversarial LLM-as-judge
+> arbitration wins **4 of 10** held-out splits — no gain. That number was
+> produced by a judge that never answered. `LOCAL_JUDGE_MODEL` defaulted to a
+> model that was not installed on the evaluation host, every judge call
+> returned HTTP 404, and the unparseable-output path **failed open**: it
+> returned `verdict="real", upheld=True, confidence=0.4`. All 234 findings
+> received an identical verdict, identical confidence, and were upheld
+> unconditionally, so arbitration dropped nothing and "no gain" was true by
+> construction rather than by measurement. Nothing in the output distinguished
+> this from a judge that had adjudicated and agreed.
+>
+> With the model installed the judge discriminates (`not_a_bug` on 15 of 16
+> findings in a verification run, every call flagged `judge_ok`), so the
+> mechanism is *not* a no-op and the sign of the effect is unknown until the
+> sweep completes. The fail-open behaviour itself is correct for a security
+> tool — a judge that cannot be reached must not silently delete a candidate
+> bug — but it was indistinguishable from a verdict, and that is the defect.
+> Findings now carry `judge_ok`, so a fail-open can no longer be read as an
+> adjudication. This is the fifth instance in this project of an unreported
+> configuration detail silently converting a mechanism into a no-op while every
+> downstream number looked normal, and the fourth found in our own
+> infrastructure rather than in the tool under test.
 
 ---
 
