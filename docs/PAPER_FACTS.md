@@ -155,26 +155,55 @@ SmartBugs-curated scored recall **0** on bad_randomness (0/8), denial_of_service
 
 ---
 
-## 5. FINDING 3 — silent input truncation
+## 5. FINDING 3 — silent input truncation — SOUND, REFRAMED 2026-10-23
 
-**Vulnerable class — SOUND.** `ctx_compare_ctx4k_ctx16k.json`, 4,096 → 16,384.
+**The claim changed, and it got stronger.** Earlier drafts reported this as a
+recall effect (12.5% -> 81.2%, McNemar p = 0.0162, 4.01x slower). That figure
+rested on 20 paired rows **of which exactly ONE had an intact council in both
+arms** -- 27 of the 29 scored 4k rows had errored specialists. Since a dead
+specialist can only fail to raise a flag, never invent one, the contamination
+pushed 4k recall DOWN and therefore *manufactured* the effect. It is the same
+defect this file already caught in the safe arm, present unnoticed in the
+vulnerable arm. **Do not cite 12.5% -> 81.2%, and do not cite 4.01x: at 4k
+most specialist calls terminate on the client deadline, so the measured
+latency is the timeout, not the model.**
 
-| | value |
-|---|--:|
-| paired / scored in both | 36 / 20 |
-| McNemar b / c | 2 / 12 |
-| **p** | **0.0162** |
-| abstention | 44.4% → 0.0% |
-| recall | 12.5% → 81.2% |
-| accuracy | 25.0% → 75.0% |
-| speed | **4.01× faster** at the larger window, sign test p < 0.0001 |
+Re-run clean on 2026-10-23, the effect is not on recall but on whether the
+council *runs at all*, and it is measured per SPECIALIST CALL, so it does not
+depend on paired rows:
 
-**Safe class — UNSOUND, DO NOT CITE.** `ctx_ablation_safe.txt`, 2026-09-25 run.
-176 paired but only **31 scored in both**; 145/176 and 108/176 INCONCLUSIVE, and
-*every one* is "N/N specialists failed to run" — a backend outage, not
-abstention. The surviving 31 are whatever ran while Ollama was alive. Figures
-seen (FPR 9.7% → 54.8%, McNemar χ² = 12.07, p = 0.0005, 14 discordant pairs all
-one way, 3.73× speedup) are **not reportable**. Re-run required.
+| arm | specialist calls | failed | rate [95% Wilson] |
+|---|--:|--:|--:|
+| vulnerable, num_ctx 4,096 | 92 | 36 | **39.1% [29.8, 49.3]** |
+| vulnerable, num_ctx 16,384 | 437 | 14 | 3.2% [1.9, 5.3] |
+| safe, num_ctx 4,096 | 97 | 43 | **44.3% [34.8, 54.2]** |
+| safe, num_ctx 16,384 | 485 | 11 | 2.3% [1.3, 4.0] |
+
+Two-proportion test: vulnerable z = 10.71, **p = 9.5e-27**; safe z = 13.03,
+**p = 7.8e-39**. Both classes, same direction, order-of-magnitude effect.
+
+| | 4k | 16k |
+|---|--:|--:|
+| contracts with an intact council | 22.2% / 20.0% | 85.7% / 92.5% |
+| inconclusive | 33.3% / 45.0% | 1.1% / 1.7% |
+| **GO returned by a BROKEN council** | **7 / 5** | **0 / 0** |
+
+**The sentence for the abstract.** Twelve contracts at 4,096 tokens returned
+GO -- no vulnerability -- from a council in which one to three specialists
+never ran. At 16,384 that happened zero times. A silently truncating context
+window does not degrade detection gracefully: it makes specialist calls fail
+outright, and the harness reports the wreckage as a clean bill of health. The
+failure is both silent and biased toward false SAFETY.
+
+Provenance: `ctx_ctx4k` / `ctx_ctx16k` / `ctx_ctx4k_safe` / `ctx_ctx16k_safe`,
+all purged of pre-2026-10-23 rows, re-run with the 4k arms at concurrency 2
+and a 1,800s deadline so the failures are the model's and not the queue's.
+Verify with `python -m eval.audit`.
+
+**Known limit, state it.** The 4k arms are small (n = 18 and 20 contracts)
+*because* they fail -- 78% and 80% of attempted rows quarantined. That is the
+finding, not a sampling shortfall, but the per-CONTRACT rates carry wide
+intervals and only the per-CALL rates should be quoted as precise.
 
 ---
 
