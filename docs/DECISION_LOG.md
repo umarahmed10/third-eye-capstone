@@ -836,3 +836,38 @@ this exact failure mode:
 
 Still INTERIM: 41 of ~90 contracts, processed in sorted order, so not a random
 sample. Wilson intervals and the full sweep before anything is quoted.
+
+#### The fail-open caught in the act (a concrete artifact)
+
+At n=51 contracts the re-run produced its first unanswered judge call, and
+`judge_ok` caught it. The row, verbatim, from
+`arb_sweep/02_dappscan_bandpricefeed.json`:
+
+```json
+{"type": "arithmetic", "judge_verdict": "real", "judge_ok": false,
+ "conf": 0.4, "p_real": 0.4, "upheld": true}
+```
+
+This is worth quoting in the paper because of what it is: **apart from the flag,
+it is indistinguishable from a confident adjudication.** `verdict="real"`,
+`upheld=true`, a plausible `confidence=0.4` — all three are the hardcoded
+fail-open defaults, and nothing about the shape, the types, or the value ranges
+marks it as a non-answer. A reader, a reviewer, or a downstream aggregation
+script sees a judged finding.
+
+The base rate makes the contrast exact:
+
+| run | findings | fail-open | rate |
+|---|--:|--:|--:|
+| original (judge not installed) | 234 | 234 | **100%** |
+| re-run (judge installed) | 133 | 1 | **0.75%** |
+
+The same code, the same output schema, the same absence of any error, and a
+difference between a worthless result and a sound one. The only thing that
+separates them is a boolean that did not exist this morning.
+
+Note also that the fail-open is *correct behaviour* here and should not be
+"fixed" away: this finding is on a contract whose ground truth is vulnerable and
+whose council verdict is NO-GO, so upholding an unjudged finding is the safe
+action for a security tool. The defect was never the fail-open. It was that the
+fail-open was unobservable.
