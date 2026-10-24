@@ -497,6 +497,54 @@ Regenerated over 2,142 rows versus the n = 1,154 replay: pre-gate FPR
 not overlap, so this is not noise — the half-corpus numbers were optimistic.
 **Every FPR figure tracing to that replay must be regenerated.** *Phase 10.*
 
+### E9. The baseline report builder could not see 580 completed rows · **SOUND, fixed**
+Two independent loader defects, each individually sufficient to empty the
+baseline table, found while checking whether the council (278) and
+`single_llm` (301) arms were even being compared on the same contracts.
+
+1. **`_load_checkpoints` globbed one level too shallow.** `run_baselines
+   --seed N` writes `<baseline>/<dataset>/seedN/`; the loader matched
+   `*.json` directly under the dataset directory, so **every seeded arm
+   loaded zero rows.**
+2. **Lookups used the raw `contract_id` while filenames use `_safe_id()`**
+   (`:` → `_`). Every `sb:` / `w3b:` id missed its own checkpoint.
+   `smartbugs_curated` ids need no sanitizing, **so that one dataset worked
+   and the defect stayed invisible** — `access_control_slice` scored 0 of 148
+   council and 0 of 159 `single_llm` rows.
+
+Combined: **~580 rows hidden, including ~21 h of council GPU time.** The skip
+line read *"no checkpoints on this machine"* — false, and reassuring enough
+that it survived a day of active work. Now states where the loader looked and
+that the arm may have written elsewhere. `build_reports` imports `_safe_id`
+from `run_baselines` instead of re-implementing it, because two copies of a
+sanitizer drift and the drift presents as a missing row. Seeds are never
+pooled: two seeds hold rows for the same `contract_id`, so merging would let
+one overwrite the other and score a mixture no run produced.
+
+**A wrong intermediate diagnosis, recorded:** the id mismatch first looked like
+a changed dataset definition, i.e. 307 permanently orphaned rows and a council
+job 11 h from finishing unscoreable work. The colon→underscore test refuted
+that — 148/148 and 159/159 recover. Nothing was orphaned.
+
+**What became visible.** Four real table rows where these arms had none. On
+`access_control_slice` — the only one of the two datasets with a real negative
+class — **`single_llm` beats council on F1 (0.420 vs 0.363) and precision
+(0.268 vs 0.221) while council wins recall (1.000 vs 0.971).**
+
+**New instrument, `eval/baseline_parity.py`.** `build_reports` scores each arm
+on its own coverage and then prints the arms side by side; nothing restricted
+them to a common contract set, so two rows could be two benchmarks in one
+table. The checker rescores on the intersection and reports the movement:
+**≤ 0.7 points of F1/recall on both datasets, so the rows are comparable —
+measured, not assumed.** It also refuses to compare an arm with zero usable
+rows, which is how the dead slither arm (E8) would otherwise enter a table.
+
+Three regression tests cover all of it (seeded discovery, no seed pooling,
+sanitized-id lookup). The first version of the third used a hand-rolled item
+stub that drifted from `EvalItem` and failed inside `metrics` instead of
+testing the lookup — the same defect one layer up, so it now uses the real
+schema object. 50 tests pass.
+
 ### E7. Earlier discards · **UNSOUND, archived not deleted**
 - A 1,152-contract run at ~98% accuracy on safe tiers: `business_logic` pinned
   to an uninstalled `llama3.1:8b`, always selected by the router, so every

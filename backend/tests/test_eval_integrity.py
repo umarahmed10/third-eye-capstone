@@ -179,3 +179,88 @@ def test_gate_sample_is_bounded():
     council._aggregate(res, code)
     assert council._LAST_GATE["quote_not_in_code"] == 50
     assert len(council._LAST_GATE["fabricated_sample"]) == 8
+
+
+def test_load_checkpoints_finds_seeded_rows(tmp_path, monkeypatch):
+    """A seeded baseline run must not read as an absent one.
+
+    run_baselines --seed N writes <baseline>/<dataset>/seedN/. The loader
+    globbed one level above that and returned {}, which main() printed as
+    "no checkpoints on this machine" -- hiding ~580 completed rows including
+    21h of council GPU time."""
+    import json as _json
+    from eval import build_reports
+
+    root = tmp_path / "checkpoints"
+    d = root / "council" / "smartbugs_curated" / "seed0"
+    d.mkdir(parents=True)
+    (d / "abc.json").write_text(_json.dumps({"status": "ok", "predicted_label": "vulnerable"}))
+    monkeypatch.setattr(build_reports, "CHECKPOINT_ROOT", root)
+
+    got = build_reports._load_checkpoints("council", "smartbugs_curated")
+    assert set(got) == {"abc"}, "seeded rows must load"
+
+
+def test_load_checkpoints_does_not_pool_seeds(tmp_path, monkeypatch, capsys):
+    """Two seeds hold rows for the SAME contract, so pooling would let one
+    silently overwrite the other and score a mixture no run produced."""
+    import json as _json
+    from eval import build_reports
+
+    root = tmp_path / "checkpoints"
+    for s, label in ((0, "vulnerable"), (1, "likely_safe")):
+        d = root / "council" / "smartbugs_curated" / f"seed{s}"
+        d.mkdir(parents=True)
+        (d / "abc.json").write_text(_json.dumps({"status": "ok", "predicted_label": label}))
+    monkeypatch.setattr(build_reports, "CHECKPOINT_ROOT", root)
+
+    got = build_reports._load_checkpoints("council", "smartbugs_curated")
+    # Lowest seed, explicitly, and it must say so rather than pick quietly.
+    assert got["abc"]["predicted_label"] == "vulnerable"
+    assert "not pooled" in capsys.readouterr().out
+
+    got1 = build_reports._load_checkpoints("council", "smartbugs_curated", seed=1)
+    assert got1["abc"]["predicted_label"] == "likely_safe"
+
+
+def test_checkpoint_lookup_survives_id_sanitizing(tmp_path, monkeypatch):
+    """Filenames are _safe_id(contract_id); lookups used the raw id.
+
+    Every sb:/w3b: id therefore missed its own checkpoint. smartbugs_curated
+    ids need no sanitizing, so one dataset worked and the bug stayed hidden
+    while access_control_slice scored 0 of 307 rows."""
+    import json as _json
+    from eval import build_reports
+    from eval.run_baselines import _safe_id
+
+    raw = "sb:0xdeadbeef.sol"
+    assert _safe_id(raw) != raw, "precondition: this id needs sanitizing"
+
+    root = tmp_path / "checkpoints"
+    d = root / "council" / "access_control_slice" / "seed0"
+    d.mkdir(parents=True)
+    (d / f"{_safe_id(raw)}.json").write_text(
+        _json.dumps({"status": "ok", "predicted_label": "vulnerable",
+                     "predicted_categories": ["access_control"]}))
+    monkeypatch.setattr(build_reports, "CHECKPOINT_ROOT", root)
+
+    ck = build_reports._load_checkpoints("council", "access_control_slice")
+    assert ck.get(_safe_id(raw)) is not None
+    assert ck.get(raw) is None, "stored under the sanitized name, as run_baselines writes it"
+
+    # The REAL EvalItem, not a stub. A hand-rolled fake that drifts from the
+    # schema is the same defect this test exists to catch, one layer up: the
+    # first version of this test used a stub without vuln_categories and
+    # failed inside metrics rather than testing the lookup.
+    from eval.schema import EvalItem
+
+    item = EvalItem(
+        contract_id=raw,
+        source_dataset="access_control_slice",
+        code_paths=[],
+        ground_truth_label="vulnerable",
+    )
+    _, coverage = build_reports.build_baseline_dataset_report(
+        "council", "access_control_slice", [item])
+    assert coverage["n_ok"] == 1, "a sanitized id must resolve to its own row"
+    assert coverage["status_counts"].get("missing", 0) == 0
