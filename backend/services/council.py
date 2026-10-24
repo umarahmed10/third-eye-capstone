@@ -445,6 +445,12 @@ async def _run_specialist(spec: dict, provider: str, model: str, code: str, seed
 CONF_MIN = float(os.getenv("COUNCIL_CONF_MIN", "0.6"))
 
 
+# Populated by _aggregate on every call; read by _assemble_result immediately
+# after. Single-threaded per contract, same pattern as run_ablation's health
+# capture.
+_LAST_GATE: dict = {}
+
+
 def _aggregate(specialist_results: list[dict], code: str) -> list[dict]:
     """Pure-Python evidence gate — PER FINDING, no cross-class quorum.
 
@@ -457,12 +463,41 @@ def _aggregate(specialist_results: list[dict], code: str) -> list[dict]:
     Genuine precision is then applied by the adversarial arbitration stage
     (services/arbitration.py), which vets each surviving finding with a strong
     independent judge — real per-finding review, not a vote count."""
-    return [
-        r for r in specialist_results
-        if r["found"]
-        and r["confidence"] >= CONF_MIN
-        and quote_appears_in_code(r["evidence_quote"], code)
-    ]
+    # THE GATE MUST REPORT WHAT IT REJECTED. This function silently discarded
+    # every finding whose quote did not appear in the source, which made the
+    # fabrication question (F2: how often does a specialist invent a quote?)
+    # permanently unanswerable from cached data -- every surviving finding has
+    # a valid quote BY CONSTRUCTION, so the stored rows can only ever show a
+    # 0% fabrication rate. Three months of runs cannot answer it. Count the
+    # rejections by reason and keep a bounded sample.
+    kept, rej = [], {"proposed": len(specialist_results), "not_found": 0,
+                     "below_conf": 0, "quote_empty": 0, "quote_not_in_code": 0}
+    sample = []
+    for r in specialist_results:
+        if not r["found"]:
+            rej["not_found"] += 1
+            continue
+        if r["confidence"] < CONF_MIN:
+            rej["below_conf"] += 1
+            continue
+        q = r.get("evidence_quote") or ""
+        if not q.strip():
+            rej["quote_empty"] += 1
+            continue
+        if not quote_appears_in_code(q, code):
+            # A non-empty quote that is NOT in the source the model was shown.
+            # This is the fabrication signal; it is the whole point of F2.
+            rej["quote_not_in_code"] += 1
+            if len(sample) < 8:
+                sample.append({"role": r.get("type"), "confidence": r.get("confidence"),
+                               "severity": r.get("severity"), "model": r.get("model"),
+                               "quote": q[:200]})
+            continue
+        kept.append(r)
+    _LAST_GATE.clear()
+    _LAST_GATE.update(rej)
+    _LAST_GATE["fabricated_sample"] = sample
+    return kept
 
 
 # Contract-level risk threshold. THIS is the rule the paper's headline result
@@ -623,6 +658,8 @@ def _assemble_result(code: str, features: dict, specialist_results: list[dict], 
             "contract_risk": round(_contract_risk(confirmed), 4),
             "risk_tau": RISK_TAU,
             "findings_suppressed": len(suppressed),
+            # Evidence-gate accounting, so F2 is answerable offline.
+            "gate": dict(_LAST_GATE),
             "similar_in_db": len(similar_exploits) if similar_exploits else 0,
             "llm_error_detected": llm_error_detected, "tier": backend, "models_used": models,
         },

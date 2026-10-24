@@ -127,3 +127,55 @@ class TestCheckpointContract:
         """The asymmetry survives: a dead specialist can only suppress a
         flag, so an unrecorded council cannot have fabricated the NO-GO."""
         assert guard.default_terminal({"verdict": "NO-GO"})
+
+
+def test_evidence_gate_counts_fabricated_quotes():
+    """F2 was unanswerable because the gate discarded silently.
+
+    Stored rows are POST-gate: every surviving finding's quote appears in the
+    source BY CONSTRUCTION, so cached data can only ever show a 0% fabrication
+    rate however often a model invents a quote. The gate must therefore report
+    its own rejections, by reason."""
+    from services import council
+
+    code = "contract A { function f() public { uint x = 1; } }"
+    base = {"severity": "high", "model": "m", "llm_error": False,
+            "provider": "p", "property": ""}
+    res = [
+        {**base, "found": True, "confidence": 0.9, "type": "arithmetic",
+         "evidence_quote": "uint x = 1;"},                      # kept
+        {**base, "found": True, "confidence": 0.9, "type": "access_control",
+         "evidence_quote": "selfdestruct(msg.sender);"},        # FABRICATED
+        {**base, "found": True, "confidence": 0.9, "type": "dos_gas",
+         "evidence_quote": ""},                                 # no quote
+        {**base, "found": False, "confidence": 0.0, "type": "proxy",
+         "evidence_quote": ""},                                 # not found
+        {**base, "found": True, "confidence": 0.01, "type": "mev",
+         "evidence_quote": "uint x = 1;"},                      # below bar
+    ]
+    kept = council._aggregate(res, code)
+    assert [k["type"] for k in kept] == ["arithmetic"]
+
+    g = council._LAST_GATE
+    assert g["proposed"] == 5
+    assert g["not_found"] == 1
+    assert g["below_conf"] == 1
+    assert g["quote_empty"] == 1
+    # The number F2 asks for.
+    assert g["quote_not_in_code"] == 1
+    # And a sample, so the claim is inspectable and not just a count.
+    assert [s["role"] for s in g["fabricated_sample"]] == ["access_control"]
+    assert g["fabricated_sample"][0]["quote"] == "selfdestruct(msg.sender);"
+
+
+def test_gate_sample_is_bounded():
+    """A per-contract diagnostic must not grow without limit."""
+    from services import council
+
+    code = "contract A {}"
+    res = [{"found": True, "confidence": 0.9, "type": f"r{i}", "severity": "high",
+            "model": "m", "llm_error": False, "provider": "p", "property": "",
+            "evidence_quote": f"fabricated line {i};"} for i in range(50)]
+    council._aggregate(res, code)
+    assert council._LAST_GATE["quote_not_in_code"] == 50
+    assert len(council._LAST_GATE["fabricated_sample"]) == 8

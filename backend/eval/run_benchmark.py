@@ -157,12 +157,21 @@ async def _run_one(item, backend: str, seed: int, use_arbitration: bool = True) 
         findings = [
             {"type": v.get("type"), "severity": v.get("severity"),
              "confidence": v.get("confidence"), "source": v.get("source"),
-             "model": v.get("model")}
+             "model": v.get("model"),
+             # The quote is what makes a finding checkable by a human reader
+             # rather than just countable. Omitting it is why "are these
+             # quotes real?" needed a re-run; truncated, because the point is
+             # verification, not storing the contract twice.
+             "evidence_quote": (v.get("evidence_quote") or "")[:300]}
             for v in (result.get("vulnerabilities") or [])
         ]
+        # Rejections, by reason. Stored rows are POST-gate, so without this the
+        # fabrication rate reads as 0% no matter how often a model invents a
+        # quote.
+        gate = (result.get("stats") or {}).get("gate") or {}
     except Exception as e:  # noqa: BLE001 — a batch must not die on one contract
         verdict, n_findings, roles, arb = "INCONCLUSIVE", 0, [], {}
-        reason, n_errored, findings = "", 0, []
+        reason, n_errored, findings, gate = "", 0, [], {}
         err = str(e)[:300]
     dt = round(time.time() - t0, 1)
     calls = council.get_api_call_count()["total"] - before
@@ -184,7 +193,8 @@ async def _run_one(item, backend: str, seed: int, use_arbitration: bool = True) 
         "verdict_reason": reason,
         "specialists_errored": n_errored,
         "findings": findings,
-        "schema": 2,
+        "gate": gate,
+        "schema": 3,
     }
 
 
