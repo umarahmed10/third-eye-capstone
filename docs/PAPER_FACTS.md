@@ -119,6 +119,33 @@ column from these checkpoints gives 446/182/421/105 (FPR 30.2%) — 2 contracts
 off, unexplained, see the three-rule note at the top. **Cite the shipped column
 as 29.9% only alongside that caveat, or cite the replayable 30.2%.**
 
+### SUPERSEDED — regenerate from the full corpus (2026-10-24)
+
+The table above is the **n = 1,154** replay and is **optimistic**. Regenerated
+over all **2,142** rows (every one asym-sound under `guard.default_terminal`;
+1,046 safe / 1,096 vulnerable), Wilson intervals:
+
+| rule | tp / fp / tn / fn | false-alarm rate | recall |
+|---|--:|--:|--:|
+| pre-gate (`n_findings > 0`) | 1051 / 755 / 291 / 45 | **72.2% [69.4, 74.8]** | 95.9% [94.6, 96.9] |
+| evidence gate (`NO-GO`) | 977 / 480 / 566 / 119 | **45.9% [42.9, 48.9]** | 89.1% [87.2, 90.8] |
+
+The shipped/noisy-OR column is **deliberately absent**: at τ = 0.925 it is the
+evidence gate re-derived (0 disagreements in 2,142 — see the three-rule note at
+the top of this file), so printing it as a third column would double-count one
+rule.
+
+Both figures move against us, and the intervals do not overlap the old ones:
+false alarms are **+13.2 points** worse on the pre-gate and **+8.4 points**
+worse on the evidence gate than the half-corpus replay suggested. Recall rises
+slightly on both. **Every FPR number elsewhere in this file that traces to the
+1,154-row replay inherits this bias and must be regenerated before submission;
+the n = 1,154 table is retained above only to document what changed.**
+
+Regenerate with the snippet in the three-rule note, or re-derive from
+`eval/checkpoints/benchmark/*/seed*/` — no GPU required, it is arithmetic over
+cached rows.
+
 ---
 
 ## 3. FINDING 1 — label provenance — SOUND
