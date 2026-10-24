@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { C, F, S, sevColor } from "../design";
 import { Badge, Card, Caveat, P, Section, VerdictPill } from "../ui";
+import BUNDLED_SAMPLES from "../samples.json";
+import DEMO_CACHE from "../demo-cache.json";
 import {
   API,
   getSamples,
@@ -26,8 +28,49 @@ type Preflight = {
 
 type Phase = "idle" | "routing" | "scanning" | "done" | "error";
 
+/* A previously-measured local scan, shipped in the bundle.
+ *
+ * Without this, the deployed site's tool page can only say "no backend" --
+ * true, but it demonstrates nothing. These results were produced by
+ * backend/build_demo_cache.py against real local models, and are shown ONLY
+ * when a live scan is impossible, always labelled as cached. They are never
+ * presented as a live run, and a cached verdict that disagrees with the
+ * sample's expected answer is shown disagreeing. */
+type CachedResult = {
+  verdict: string;
+  expected: string;
+  agrees: boolean;
+  latency_s: number;
+  roles_routed: string[];
+  specialists_errored: number;
+  verdict_reason: string;
+  findings: {
+    type: string;
+    severity: string;
+    confidence: number;
+    evidence_quote: string;
+    description: string;
+  }[];
+};
+
+const CACHE = DEMO_CACHE as unknown as {
+  generated_at: string;
+  models: Record<string, string>;
+  results: Record<string, CachedResult>;
+};
+
 export function Tool() {
-  const [samples, setSamples] = useState<SampleContract[]>([]);
+  // Seeded from the bundle, NOT fetched-then-empty.
+  //
+  // The sample list used to come only from /api/samples, so with no backend
+  // the tool page rendered "SAMPLES · 0" and an empty picker -- which is what
+  // every visitor to the deployed site would see, since a public host cannot
+  // run Ollama. The same ten contracts now ship in the bundle; the API call
+  // still runs and replaces them when a backend IS present, so the local path
+  // stays the source of truth.
+  const [samples, setSamples] = useState<SampleContract[]>(
+    BUNDLED_SAMPLES as unknown as SampleContract[]
+  );
   const [active, setActive] = useState<SampleContract | null>(null);
   const [code, setCode] = useState("");
   const [pre, setPre] = useState<Preflight | null>(null);
@@ -39,6 +82,7 @@ export function Tool() {
   const [result, setResult] = useState<CouncilResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [cached, setCached] = useState<CachedResult | null>(null);
   const abort = useRef<AbortController | null>(null);
   const timer = useRef<number | null>(null);
 
@@ -56,15 +100,17 @@ export function Tool() {
 
   useEffect(() => {
     void refreshPreflight();
+    const seed = BUNDLED_SAMPLES as unknown as SampleContract[];
+    if (seed.length) {
+      setActive(seed[0]);
+      setCode(seed[0].code);
+    }
     getSamples()
       .then((s) => {
-        setSamples(s);
-        if (s.length) {
-          setActive(s[0]);
-          setCode(s[0].code);
-        }
+        if (s.length) setSamples(s);
       })
-      .catch(() => setSamples([]));
+      // Keep the bundled list on failure. Replacing it with [] was the bug.
+      .catch(() => undefined);
   }, [refreshPreflight]);
 
   useEffect(() => {
@@ -83,6 +129,7 @@ export function Tool() {
   function pick(s: SampleContract) {
     setActive(s);
     setCode(s.code);
+    setCached(null);
     setResult(null);
     setDone([]);
     setRoles([]);
@@ -95,6 +142,7 @@ export function Tool() {
     const ctl = new AbortController();
     abort.current = ctl;
     setPhase("routing");
+    setCached(null);
     setResult(null);
     setDone([]);
     setRoles([]);
@@ -132,6 +180,11 @@ export function Tool() {
   }
 
   const scanning = phase === "routing" || phase === "scanning";
+  const canScanLive = Boolean(pre?.ready);
+  // Only offer a cached result for UNEDITED sample code. Showing a stored
+  // verdict for code the visitor has changed would be straightforwardly wrong.
+  const cacheFor =
+    active && code === active.code ? (CACHE.results[active.id] ?? null) : null;
   const vulns: CouncilVuln[] = (result?.vulnerabilities as CouncilVuln[]) || [];
 
   return (
@@ -240,32 +293,60 @@ export function Tool() {
           />
 
           <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12 }}>
-            <button
-              onClick={scanning ? () => abort.current?.abort() : run}
-              disabled={!code.trim() || (!pre?.ready && !scanning)}
-              style={{
-                background: scanning ? "transparent" : C.accent,
-                color: scanning ? C.inkMid : C.bg,
-                border: `1px solid ${scanning ? C.line : C.accent}`,
-                borderRadius: 7,
-                padding: "10px 20px",
-                fontFamily: F.sans,
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: !code.trim() || (!pre?.ready && !scanning) ? "not-allowed" : "pointer",
-                opacity: !code.trim() || (!pre?.ready && !scanning) ? 0.45 : 1,
-              }}
-            >
-              {scanning ? "Stop" : "Run scan"}
-            </button>
+            {canScanLive || scanning ? (
+              <button
+                onClick={scanning ? () => abort.current?.abort() : run}
+                disabled={!code.trim()}
+                style={{
+                  background: scanning ? "transparent" : C.accent,
+                  color: scanning ? C.inkMid : C.bg,
+                  border: `1px solid ${scanning ? C.line : C.accent}`,
+                  borderRadius: 7,
+                  padding: "10px 20px",
+                  fontFamily: F.sans,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: code.trim() ? "pointer" : "not-allowed",
+                  opacity: code.trim() ? 1 : 0.45,
+                }}
+              >
+                {scanning ? "Stop" : "Run scan"}
+              </button>
+            ) : (
+              <button
+                onClick={() => setCached(cacheFor)}
+                disabled={!cacheFor}
+                title={
+                  cacheFor
+                    ? "Show the result a real local scan produced for this contract"
+                    : "No cached result for edited code — start the backend to scan it"
+                }
+                style={{
+                  background: "transparent",
+                  color: cacheFor ? C.accent : C.inkDim,
+                  border: `1px solid ${cacheFor ? C.accentDim : C.line}`,
+                  borderRadius: 7,
+                  padding: "10px 20px",
+                  fontFamily: F.sans,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: cacheFor ? "pointer" : "not-allowed",
+                  opacity: cacheFor ? 1 : 0.5,
+                }}
+              >
+                Show cached result
+              </button>
+            )}
             {scanning && (
               <span style={{ fontFamily: F.mono, fontSize: 13, color: C.inkMid }}>
                 {phase === "routing" ? "routing…" : "council running…"} {elapsed.toFixed(1)}s
               </span>
             )}
-            {!pre?.ready && !preLoading && (
+            {!canScanLive && !preLoading && (
               <span style={{ fontFamily: F.sans, fontSize: 13, color: C.inkDim }}>
-                Live scanning needs the local backend — see above.
+                {cacheFor
+                  ? "No local backend — showing a previously measured scan."
+                  : "No local backend, and this code has been edited, so there is no cached result for it."}
               </span>
             )}
           </div>
@@ -330,6 +411,87 @@ export function Tool() {
                   );
                 })}
               </div>
+            </Section>
+          )}
+
+          {/* ── cached verdict (only when a live scan is impossible) ── */}
+          {cached && !result && (
+            <Section title="Cached result">
+              <Card style={{ borderColor: C.lineHi }}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    marginBottom: 10,
+                  }}
+                >
+                  <Badge fg={C.inkDim} bg={C.inconcGhost}>
+                    not a live scan
+                  </Badge>
+                  <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
+                    measured {CACHE.generated_at.replace("T", " ")} · coder{" "}
+                    {CACHE.models.coder} · {cached.latency_s}s ·{" "}
+                    {cached.roles_routed.length} specialists
+                  </span>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                  <VerdictPill verdict={cached.verdict} />
+                  <span style={{ fontFamily: F.sans, fontSize: 13.5, color: C.inkMid }}>
+                    expected <strong style={{ color: C.ink }}>{cached.expected}</strong> ·{" "}
+                    {cached.agrees ? (
+                      <span style={{ color: C.go }}>match</span>
+                    ) : (
+                      <span style={{ color: C.nogo }}>mismatch</span>
+                    )}
+                  </span>
+                </div>
+
+                {cached.verdict_reason && (
+                  <P style={{ fontSize: 14, marginTop: 12 }}>{cached.verdict_reason}</P>
+                )}
+
+                {cached.findings.length > 0 && (
+                  <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+                    {cached.findings.map((f, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          background: C.bgAlt,
+                          border: `1px solid ${C.line}`,
+                          borderRadius: 8,
+                          padding: 14,
+                        }}
+                      >
+                        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                          <Badge fg={sevColor(f.severity)} bg={`${sevColor(f.severity)}22`}>
+                            {f.severity}
+                          </Badge>
+                          <strong style={{ fontSize: 14, color: C.ink }}>{f.type}</strong>
+                          <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
+                            confidence {f.confidence}
+                          </span>
+                        </div>
+                        {f.evidence_quote && (
+                          <pre style={{ ...S.code, marginTop: 10, marginBottom: 0 }}>
+                            {f.evidence_quote}
+                          </pre>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+
+              <Caveat title="Why a cached result is shown here">
+                This page is static and can be opened anywhere, but a live scan
+                needs Ollama running on the machine viewing it — a public host
+                cannot do that. The verdict above is what the real pipeline
+                returned on a local run, including where it disagreed with the
+                sample. Start the backend to replace it with a live scan.
+              </Caveat>
             </Section>
           )}
 

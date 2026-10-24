@@ -421,11 +421,23 @@ async def health():
     """Fail-LOUD readiness check — surfaces missing keys so a deploy doesn't
     silently return INCONCLUSIVE on every scan (critique #2/#20). `ready` is
     False when the configured tier can't actually run the council."""
+    from services.council import ALLOW_CLOUD
     backend = os.getenv("LLM_BACKEND", "ollama").lower()
     has_groq = bool(os.getenv("GROQ_API_KEY"))
     has_cerebras = bool(os.getenv("CEREBRAS_API_KEY"))
     problems = []
-    if backend in ("groq", "hosted"):
+    if backend in ("groq", "hosted") and not ALLOW_CLOUD:
+        # This endpoint used to answer purely from LLM_BACKEND and the presence
+        # of keys, so after the local-only gate landed it reported
+        # {ready: true, tier: "groq"} on a deployment where every scan would
+        # actually raise CloudDisabled. A readiness check that does not know
+        # about the rule deciding readiness is worse than none.
+        problems.append(
+            f"LLM_BACKEND={backend!r} but ThirdEye is in LOCAL-ONLY mode, so every "
+            f"scan will refuse. Either set LLM_BACKEND=ollama with Ollama running, "
+            f"or set THIRDEYE_ALLOW_CLOUD=1 to deliberately re-enable hosted models."
+        )
+    elif backend in ("groq", "hosted"):
         # hosted council needs Cerebras (dual) at minimum; Groq is optional.
         if not has_cerebras:
             problems.append("CEREBRAS_API_KEY missing — hosted council/judge cannot run")
@@ -433,6 +445,7 @@ async def health():
     return {
         "ready": not problems,
         "tier": backend,
+        "mode": "cloud-enabled" if ALLOW_CLOUD else "local-only",
         "providers": {"groq": has_groq, "cerebras": has_cerebras},
         "foundry": foundry_available(),
         "problems": problems,
