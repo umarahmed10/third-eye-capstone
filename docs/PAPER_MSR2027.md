@@ -247,17 +247,40 @@ Across 10 random dev/test splits (n = 233), thresholding wins 9 of 10. Per-class
 weighting beats a flat threshold on only 3 of 10, so we attribute the gain to
 **thresholding, not weighting**, and report the simpler mechanism.
 
-**Where the council genuinely helps, and where it does not.** On a balanced
-access-control slice (8 positive, 8 negative, seed 0) the council is a clear win
-over a single LLM: recall 0.125 → 0.750, F1 0.222 → 0.857, precision 1.000
-throughout. On Etherscan-50, the only other early corpus with a negative class,
+**Where the council genuinely helps, and where it does not.** On the
+access-control slice the council is a clear win over a single LLM. Re-run
+2026-10-24 at n = 52 paired contracts sound in all arms (superseding an n = 16
+pilot that reported recall 0.125 → 0.750, F1 0.222 → 0.857 and precision 1.000
+throughout — the precision figure in particular does not survive the larger
+sample):
+
+| arm | precision | recall | FPR | F1 |
+|---|--:|--:|--:|--:|
+| single LLM | 50.0% | 22.2% | 11.8% | 0.308 |
+| council | 58.3% | 77.8% | 29.4% | 0.667 |
+| council + arbitration | 92.3% | 66.7% | 2.9% | 0.774 |
+
+The gain is in **recall** (22.2% → 77.8%), not precision (50.0% → 58.3%), which
+is the distinction the refutation below turns on. On Etherscan-50, the only other
+early corpus with a negative class,
 **it loses**: precision 0.067 / recall 0.167, against a single LLM's 0.182 /
 0.667 and an LLM+Slither pipeline's 0.140 / 1.000. That corpus has scraped,
 noisy ground truth and we weight it accordingly — but the project's original
-hypothesis was that a model-diverse council raises precision, and on the
-available evidence that hypothesis is **refuted**. We report it because a paper
-about honest measurement that suppressed its own negative result would be
-self-refuting.
+hypothesis was that a model-diverse council raises **precision**, and on the
+available evidence that specific hypothesis is **refuted**. We report it because
+a paper about honest measurement that suppressed its own negative result would
+be self-refuting.
+
+The scope of that refutation matters, and we state it rather than leave a reader
+to find the apparent contradiction. It concerns **precision**: on the
+access-control slice the council moves precision only 50.0% → 58.3% while moving
+recall 22.2% → 77.8%, and on Etherscan-50 precision is worse than a single LLM's.
+What the council buys is recall, reliably and substantially; what it was adopted
+for was precision, and that it does not deliver. The mechanism is the same one
+either way — §5 shows the council is a logical OR over k detectors, so
+contract-level false positives grow as 1−(1−p)^k. Model diversity is
+simultaneously what buys the recall and what destroys the precision; they are not
+separable by prompt tuning, only by the aggregation rule.
 
 > **RETRACTED 2026-10-23 — this result was an artifact of our own harness and
 > is being re-measured.** We previously reported that adversarial LLM-as-judge
