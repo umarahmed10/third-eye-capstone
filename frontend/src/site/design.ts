@@ -1,65 +1,72 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// ThirdEye site design tokens.
+// ThirdEye site design tokens — "instrument readout".
 //
-// One palette, defined once, used everywhere. The visual language is an
-// INSTRUMENT, not a marketing page: this is a tool that returns a verdict on
-// code someone is about to deploy, and the site's job is to make the evidence
-// behind that verdict legible.
+// This is the exhibit's own palette (frontend/src/lib/exhibit-theme.ts, as of
+// 504d975), restored. It was built for exactly this audience and says so: a
+// panel review runs on a projector in a lit room, where dark themes wash out
+// and low-contrast text is unreadable from the back row. Every AI demo ships
+// dark violet; bone paper reads as a different kind of artefact.
 //
-// LIGHT — "bone paper". The ground is a warm off-white rather than pure #FFF:
-// a review room is a lit room with a projector, and flat bone survives both
-// without the banding a gradient gets and without the glare a pure white field
-// throws. Panels ARE pure white, so a card reads as a sheet laid on the desk —
-// that one step of separation is doing the work a border would otherwise do,
-// which is why the lines can stay hairline-faint and the page still reads crisp.
+// ONE HUE, AND IT MEANS SOMETHING. The signal is vermillion #B4351F and it is
+// the only chromatic colour in the chrome. Everything structural is bone, ink
+// and a hairline. Hue is therefore information rather than decoration, which is
+// why the page can carry eight pages of figures without looking like a
+// dashboard.
 //
-// Neutrals are warm-biased (hue pulled toward the paper, not pure grey) so the
-// greys look chosen rather than defaulted. Ink is near-black at #16150F, not
-// #000: full black on bone vibrates at body sizes.
+// NO BLUE. The exhibit paired vermillion with a validated data blue (#1F6FB2)
+// for series 1 and used a blue-grey #3E5772 for low severity. Both are gone:
+// series 2 is the warm grey #7C7466 and low severity is taupe #726B5E. The
+// pair still separates by lightness (4.24:1 against 5.55:1) rather than by hue
+// alone, which is the property that mattered about the validated pair.
 //
-// Verdict colours are NEVER reused for decoration. If something is green on
-// this site it means a contract passed, and nothing else. All five semantic
-// hues below are darkened relative to their dark-theme counterparts — a mid
-// green that read cleanly on near-black drops under 3:1 on white, and these
-// are the colours a reviewer has to read a verdict off.
+// COLOURS ARE MEASURED, NOT EYEBALLED. Against the bone surface:
+//   ink 16.79 · inkMid 7.97 · inkDim 5.18 · signal 5.55 · go 5.87 · nogo 7.98
+//   severity 7.98 / 6.28 / 6.20 / 4.84
+// hairline is 1.37:1 by intent — it is a rule, never information. These were
+// recomputed rather than copied: the exhibit's header claimed 16.8 / 5.2 / 5.5
+// and all three check out.
+//
+// The exhibit had no green, because the old page had no GO verdict. #2F6B3A is
+// the one addition — warm-leaning so it sits with vermillion rather than
+// fighting it.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const C = {
-  // ground
-  bg: "#F7F5F0",
-  bgAlt: "#EFECE3",
-  panel: "#FFFFFF",
-  panelHi: "#F4F1E9",
-  line: "rgba(22,21,15,0.11)",
-  lineHi: "rgba(22,21,15,0.24)",
+  // ground — the exhibit's bone paper, restored verbatim
+  bg: "#F7F5F0",      // surface
+  bgAlt: "#F1EEE6",   // surfaceAlt, recessed panel
+  panel: "#FFFFFF",   // surfaceLift, raised card
+  panelHi: "#F1EEE6",
+  line: "#D8D3C7",    // hairline — 1.37:1 BY INTENT, it is a rule, never information
+  lineHi: "#C7C0B1",  // tick, calibration marks
 
-  // ink
+  // ink — three steps, measured on bone: 16.79 / 7.97 / 5.18
   ink: "#16150F",
-  inkMid: "#4C483F",
-  inkDim: "#726C60",
+  inkMid: "#4F4B42",
+  inkDim: "#6B675C",  // the exhibit's inkMuted
 
-  // the one accent — ThirdEye's "signal". Carried over from the exhibit's
-  // validated data blue: #2C4A6B failed the palette validator twice (outside
-  // the lightness band, under the chroma floor — it rendered as grey, not as
-  // a hue), and this is its passing replacement.
-  accent: "#1F6FB2",
-  accentDim: "#7FA8CE",
-  accentGhost: "rgba(31,111,178,0.09)",
+  // THE SIGNAL — vermillion. One hue, and it means "look here".
+  accent: "#B4351F",
+  accentDim: "#7C7466",            // de-emphasised mark / second series, warm grey
+  accentGhost: "rgba(180,53,31,0.09)",
 
-  // semantic, verdicts ONLY
-  go: "#1C7A3C",
-  goGhost: "rgba(28,122,60,0.10)",
-  nogo: "#B4231D",
-  nogoGhost: "rgba(180,35,29,0.09)",
-  inconc: "#6E6A60",
-  inconcGhost: "rgba(110,106,96,0.10)",
+  // semantic, verdicts ONLY. Never colour alone: every verdict ships with its
+  // word and a mark, so these survive colourblindness and a greyscale print.
+  go: "#2F6B3A",
+  goGhost: "rgba(47,107,58,0.10)",
+  nogo: "#8E2417",                 // deeper than the signal, so chrome and alarm stay apart
+  nogoGhost: "rgba(142,36,23,0.09)",
+  inconc: "#726B5E",
+  inconcGhost: "rgba(114,107,94,0.10)",
 
-  // severity ramp (sequential, warm single-hue family, darkened for white)
+  // severity ramp — the exhibit's own steps, each re-tuned for bone and each
+  // clearing 4.5:1 on it. `low` was #3E5772, a blue-grey; it is warm taupe now
+  // so no blue survives anywhere in the palette.
   sev: {
-    critical: "#B4231D",
-    high: "#A8520C",
-    medium: "#7D6209",
-    low: "#726C60",
+    critical: "#8E2417",
+    high: "#8A4A12",
+    medium: "#6B5A1E",
+    low: "#726B5E",
   } as Record<string, string>,
 } as const;
 

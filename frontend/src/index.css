@@ -32,16 +32,15 @@
   --color-surface-2: #EDE9DF;   /* raised panels */
   --color-line: rgba(22,21,15,0.10);
 
-  /* Accent — the VALIDATED data blue, matching lib/theme.ts and the exhibit.
-     #2C4A6B was replaced because it failed the palette validator on two checks:
-     outside the lightness band and under the chroma floor, i.e. it rendered as
-     grey rather than as a hue. It survived here after lib/theme.ts was fixed,
-     which is why the deployed bundle still carried it. --color-gold is a
-     historical name; it has been the signal vermillion since the move off
-     violet, and renaming it would touch every call site for no gain. */
-  --color-accent: #1F6FB2;
-  --color-accent-soft: #4A88C4;
-  --color-accent-dim: rgba(31,111,178,0.08);
+  /* Accent — the signal vermillion, which is now the ONLY chromatic colour in
+     the chrome. The data blue that used to live here (#1F6FB2, itself a
+     validated replacement for #2C4A6B) is gone: one hue, carrying meaning,
+     reads as an instrument; two hues read as a dashboard. --color-gold is a
+     historical name that has been this same vermillion since the move off
+     violet, so the two now agree instead of competing. */
+  --color-accent: #B4351F;
+  --color-accent-soft: #C96A55;
+  --color-accent-dim: rgba(180,53,31,0.08);
   --color-gold: #B4351F;
 }
 
@@ -190,9 +189,9 @@ textarea:focus-visible,
 
 /* Ring pulse for live-status indicators */
 @keyframes ring-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(44,74,107,0.08); }
-  70% { box-shadow: 0 0 0 8px rgba(44,74,107,0.08); }
-  100% { box-shadow: 0 0 0 0 rgba(44,74,107,0.08); }
+  0% { box-shadow: 0 0 0 0 rgba(180,53,31,0.10); }
+  70% { box-shadow: 0 0 0 8px rgba(180,53,31,0.10); }
+  100% { box-shadow: 0 0 0 0 rgba(180,53,31,0.10); }
 }
 .animate-ring-pulse { animation: ring-pulse 1.8s ease-out infinite; }
 
@@ -226,8 +225,8 @@ textarea:focus-visible,
 /* Subtle background grid for hero panels */
 .bg-grid {
   background-image:
-    linear-gradient(rgba(196, 181, 253, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(196, 181, 253, 0.05) 1px, transparent 1px);
+    linear-gradient(rgba(22, 21, 15, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 21, 15, 0.045) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -302,7 +301,7 @@ html.lenis, html.lenis body { height: auto; }
 }
 .te-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(31, 111, 178, 0.32);
+  border-color: rgba(180, 53, 31, 0.30);
   box-shadow: 0 10px 28px -14px rgba(22, 21, 15, 0.18);
 }
 @media (prefers-reduced-motion: reduce) {
