@@ -253,3 +253,26 @@ that was **entirely invalid**, because 145 of 176 rows were backend failures
 silently checkpointed as results. The numbers looked better than the truth, not
 worse. That is why T0.4 and T1.1 exist: **check the quarantine count, not the
 p-value.**
+
+## Pulling results off the box (do this at the END of every session)
+
+Checkpoints are gitignored, so nothing on the box is backed up by committing.
+On 2026-10-24 every result of the day -- both held-out seeds, the whole basis
+for closing C3 -- lived ONLY on shared campus hardware for about seven hours.
+The box is rebooted and re-auth'd by other people; treat it as scratch.
+
+    ssh $THIRDEYE_DGX_HOST 'cd ~/thirdeye/backend/eval && tar czf - checkpoints'       > /tmp/dgx_ckpt.tgz
+    mkdir -p backend/eval/checkpoints/_dgx_snapshot_$(date +%Y%m%d)
+    tar xzf /tmp/dgx_ckpt.tgz -C backend/eval/checkpoints/_dgx_snapshot_$(date +%Y%m%d)
+
+26 MB on the box compresses to ~500 KB, so this costs seconds.
+
+**Pull into a DATED snapshot, never over the existing trees.** The local
+`council/` and `seed0` trees are from earlier, different runs; the counts
+differ because the runs differ. Merging to make two numbers agree destroys
+data.
+
+**Then read it back.** Re-score one known result off the copy and check it
+matches the box. A backup that has never been read is not a backup; the
+2026-10-24 snapshot was verified by reproducing C3's four dJ values exactly
+(+1.4, -2.7, +2.6, +0.6).
