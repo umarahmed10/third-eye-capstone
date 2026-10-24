@@ -61,6 +61,20 @@ def _verdict(r: dict) -> str:
         return ("NO-GO" if r.get("pred") else "GO") if r.get("ok") else ""
     if "detected" in r and "slices_errored" in r:      # web3bugs contest row
         return "NO-GO" if r.get("detected") else ("GO" if not r.get("slices_errored") else "")
+    # Static-analyser baseline rows (slither): no verdict, just a status. A
+    # `no_result` is an ABSTENTION and must never be read as a verdict -- on
+    # 2026-10-24 all 301 slither rows on the aarch64 box were
+    # status=no_result/reason=error (every solc binary in solc-select is
+    # x86-64, so the compiler could not execute), and because this function
+    # returned "" for them the whole arm printed as NOT AUDITED while progress
+    # probes reported "slither 301 done". A dead baseline that looks finished
+    # is worse than a missing one, so status is now read explicitly and
+    # `answered` is reported in the status line.
+    if "status" in r and ("slither_message" in r or "reason" in r):
+        st = str(r.get("status") or "").lower()
+        if st in ("no_result", "error", ""):
+            return ""                                   # abstention, not a verdict
+        return "NO-GO" if r.get("predicted_label") in (True, "vulnerable") else "GO"
     return ""
 
 
@@ -116,16 +130,33 @@ def classify(rows: list[dict]) -> dict:
             if k in r:
                 return k
         return None
-    unrecorded = [r for r in terminal if _health_key(r) is None]
-    intact = [r for r in terminal
-              if (k := _health_key(r)) is not None and not r[k]]
+
+    def _health_bad(r: dict) -> bool | None:
+        """How many sub-units failed, or None if the row records nothing.
+
+        The baseline runners express health as a SURVIVOR count rather than a
+        failure count: `n_slices_ok` out of `n_slices`. Reading only failure
+        keys made these rows look like they carried no health at all, when in
+        fact they carry it inverted.
+        """
+        k = _health_key(r)
+        if k is not None:
+            return bool(r[k])
+        if "n_slices" in r and "n_slices_ok" in r:
+            try:
+                return int(r["n_slices_ok"]) < int(r["n_slices"])
+            except (TypeError, ValueError):
+                return None
+        return None
+    unrecorded = [r for r in terminal if _health_bad(r) is None]
+    intact = [r for r in terminal if _health_bad(r) is False]
     # The asymmetric rule still holds on an unrecorded row: a NO-GO is sound
     # whatever the council did, because a dead specialist can only suppress a
     # flag. A GO with UNKNOWN health is not sound -- it is exactly the case the
     # rule excludes, so it must not pass merely because the field is missing.
     asym = [r for r in terminal
             if _verdict(r) == "NO-GO"
-            or ((k := _health_key(r)) is not None and not r[k])]
+            or _health_bad(r) is False]
     return {
         "n": n,
         "unreadable": unreadable,
@@ -134,6 +165,14 @@ def classify(rows: list[dict]) -> dict:
         "intact_council": len(intact),
         "unrecorded_health": len(unrecorded),
         "asym_sound": len(asym),
+        # Raw states, so a tree with no verdicts can be DIAGNOSED rather than
+        # merely flagged: "every row abstained" and "I do not understand this
+        # schema" need different fixes, and printing ['?'] for both sent the
+        # dead slither arm back to the same blind spot twice.
+        "raw_states": dict(Counter(
+            str(r.get("status") or r.get("reason") or
+                next((r[k] for k in VERDICT_KEYS if r.get(k)), "?"))
+            for r in rows).most_common(4)),
         "contaminated_pct": round(100 * (len(terminal) - len(intact)) / len(terminal), 1) if terminal else None,
     }
 
@@ -168,8 +207,19 @@ def verdict_line(label: str, s: dict) -> str:
         # FAILURE, not a clean result. Printing "terminal=0 intact=0" and
         # stopping is how arb_sweep, web3bugs and the ablation arms went
         # unaudited while appearing in this report as rows of harmless zeros.
+        states = s.get("raw_states") or {}
+        # One state covering every row, and it reads as a failure/abstention:
+        # the arm RAN and produced nothing. That is a dead arm, not a parsing
+        # gap, and it is the more dangerous of the two because the row count
+        # makes it look finished.
+        dead = (len(states) == 1 and next(iter(states)).lower()
+                in ("no_result", "error", "", "none", "inconclusive"))
+        if dead:
+            return (f"  {label:<34} n={s['n']:<5} *** DEAD ARM: every row is "
+                    f"{list(states)[0]!r} -- it RAN AND PRODUCED NOTHING. "
+                    f"Row count makes this look finished; it is not ***")
         return (f"  {label:<34} n={s['n']:<5} *** NOT AUDITED: no recognised verdict key "
-                f"(saw {sorted(s['verdicts'])[:3]}) -- THIS TREE IS UNVERIFIED ***")
+                f"(saw {list(states)[:3]}) -- THIS TREE IS UNVERIFIED ***")
     if u:
         # Loudest state in the report. "No errors recorded" and "no record of
         # errors" are different claims, and only one of them is evidence.
@@ -191,7 +241,15 @@ def main() -> int:
     print("  terminal = has a verdict | intact = no specialist errored | asym = NO-GO-or-clean-GO")
     print("=" * 94)
 
-    for pat in ("benchmark/*/seed*", "ctx_*", "parity_*", "web3bugs", "arb_sweep", "ablation/*/*"):
+    # The baseline trees were absent from this list until 2026-10-24, so
+    # slither / single_llm / council -- the entire baseline comparison table --
+    # had never been audited by the script whose job is to audit everything.
+    # Their rows also use a third naming scheme (`status` for terminality,
+    # n_slices/n_slices_ok for health), which is why they needed teaching
+    # rather than just listing. 14 of 273 council rows turned out to have
+    # failed slices.
+    for pat in ("benchmark/*/seed*", "ctx_*", "parity_*", "web3bugs", "arb_sweep",
+                "ablation/*/*", "slither/*/seed*", "single_llm/*/seed*", "council/*/seed*"):
         trees = load_tree(pat)
         if not trees:
             continue

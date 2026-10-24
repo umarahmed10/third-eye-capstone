@@ -451,3 +451,44 @@ weights (B3), the `dos_gas` precondition and severity policy (B4), extending
 parity beyond 184 intact pairs (p = 0.0303 already significant), the remaining
 ~1,177 contracts of the arbitration sweep (42 GPU-hours to narrow an interval on
 a null effect, D2/D3), and disabling judge thinking as a performance tweak (D6).
+
+### E8. The slither baseline arm on the campus box was 100% dead · **UNSOUND, quarantined**
+All **301 of 301** rows were `status=no_result, reason=error`, latency ~0.4 s.
+Slither never ran on a single contract.
+
+**Cause:** the box is **aarch64** (DGX GB10). All 76 solc binaries in
+`~/.solc-select/artifacts` are **x86-64 ELF** — solc ships official Linux
+builds for x86-64 only. No version was selected either (no `global-version`
+file), and selecting one gives `Exec format error`. No apt solc, no node, so
+the solcjs fallback is unavailable. **Slither cannot run on this machine.**
+
+**Why it went unnoticed for a full day.** Three independent instruments agreed
+it was fine: the row count (301/303) read as near-complete and was reported as
+"slither done ✓" in every progress update; `eval/audit.py` did not cover the
+baseline trees at all; and when it was taught to, slither rows carry no verdict
+key, so the arm printed as a parsing gap rather than a dead stage. A failed arm
+that writes one checkpoint per contract is indistinguishable from a finished one
+by volume, which is the only signal anyone was watching.
+
+**The danger beyond the lost data:** `run_baselines` skips any contract that
+already has a checkpoint, so those 301 files would have **permanently prevented
+the slither arm from being retried**, including on hardware where it works.
+Moved to `_slither_dead_aarch64_20261024_1258/` with a README, not deleted.
+
+**The paper is NOT affected.** Its slither baseline is `slither_bench.json` —
+150 contracts, 46 answered, 104 abstentions each diagnosed with solc and exactly
+1 attributed to our toolchain (`slither_failure_audit.json`) — produced on an
+x86 host. Only the attempted extension to the 303-contract corpus is lost, and
+**it must be run on x86**; no amount of GPU time on the campus box will produce
+it. The `single_llm` and `council` arms of the same run are unaffected, being
+pure LLM inference.
+
+**Fixed forward:** `eval/audit.py` now covers `slither/`, `single_llm/` and
+`council/`, reads the baseline schema (`status`, and health as the *survivor*
+count `n_slices_ok`/`n_slices` rather than a failure count), and distinguishes a
+**DEAD ARM** — every row a failure state, "it RAN AND PRODUCED NOTHING, row
+count makes this look finished" — from an unparseable schema, because the two
+need different fixes. Verified against the quarantined tree.
+
+This is the fifth and largest instance of the project's own thesis: not a wrong
+number, but a **missing** one that every available indicator reported as present.
