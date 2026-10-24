@@ -27,24 +27,40 @@ constructions, we find, dominate the numbers.
 
 We build a balanced benchmark of 2,250 Solidity contracts (1,125 safe : 1,125
 vulnerable) whose safe class is stratified by *how the safe label was obtained*,
-and evaluate a model-diverse LLM council on 1,154 of them. Holding the tool, the
-seed, the model digests and the machine fixed, four evaluation choices each move
+and evaluate a model-diverse LLM council on 2,142 of them. Holding the tool, the
+seed, the model digests and the machine fixed, five evaluation choices each move
 the headline metric by more than any tool-versus-tool difference we found in the
-literature. **The same 1,154 verdicts, scored two defensible ways, yield recall
-of 25.5% or 82.2%, and false-alarm rates of 15.7% or 37.5%.** Controlling for
-our own coverage gaps, 31.6 points of the recall spread remain attributable to
-the scoring protocol alone.
+literature. **The same verdicts, scored two defensible ways, yield recall of
+25.5% or 82.2%, and false-alarm rates of 45.9% or 72.2%.** Controlling for our
+own coverage gaps, 31.6 points of the recall spread remain attributable to the
+scoring protocol alone.
 
-The four choices are: how the safe label was established (false alarms 15.7%
-[11.0, 21.9] on audited libraries against 37.5% [31.6, 43.8] on audit-reviewed
-code); what counts as a detection (recall 82.2% any-slice against 25.5%
-type-matched on 349 labelled contracts; 31.6 points survive on the 187 where
-the tool had a specialist for the labelled class); what the model was
-permitted to read (a silently truncating context window makes specialist calls
-fail outright at 39.1% against 3.2%, *p* < 1e-26, and returns twelve GO
-verdicts from councils in which one to three specialists never ran); and which machine
-produced the verdicts (0.735 agreement across two hosts on identical inputs, with
-batch parallelism excluded by a control, *p* = 0.75).
+The choices are: how the safe label was established (false alarms 27.8%
+[22.9, 33.4] on audited libraries against 54.7% [50.7, 58.7] on audit-reviewed
+code — but see below, this one is confounded and we report it stratified);
+which rule reads the stored findings (72.2% [69.4, 74.8] against 45.9%
+[42.9, 48.9] on **identical verdicts**, and a third rule we had reported turns
+out to be the second one re-derived); what counts as a detection (recall 82.2%
+any-slice against 25.5% type-matched on 349 labelled contracts; 31.6 points
+survive on the 187 where the tool had a specialist for the labelled class);
+what the model was permitted to read (a silently truncating context window
+makes specialist calls fail outright at 39.1% against 3.2%, *p* < 1e-26, and
+returns twelve GO verdicts from councils in which one to three specialists
+never ran); and which machine produced the verdicts (0.735 agreement across two
+hosts on identical inputs, with batch parallelism excluded by a control,
+*p* = 0.75).
+
+**The largest effect we measure is one nobody chooses.** False alarms on the
+same safe contracts rise from 16.0% when the router fires one specialist to
+90.2% when it fires six, monotonically — the council is a logical OR over *k*
+detectors, so contract-level false positives grow as 1−(1−p)^*k*. This subsumes
+part of the label-provenance result: audited libraries draw a median of two
+specialists against three elsewhere, and **at matched *k* = 2 the three
+provenance tiers are statistically indistinguishable** (18.9%, 15.3%, 18.7%,
+intervals fully overlapping). Provenance survives as a within-stratum effect and
+is substantially smaller than the marginal comparison implies. We report it
+stratified rather than marginally, because we found the confound in our own
+headline claim.
 
 We report what this costs us. Scored type-matched, our recall falls inside the
 band of the static analysers we set out to beat. Our original hypothesis — that a
