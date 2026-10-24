@@ -96,10 +96,12 @@ inferred, and it is the mechanism underneath A1, C1 and C3:
   disproportionately many low-k contracts. A residual tier effect survives
   within each stratum (library stays lowest at k = 3, 4, 5), so provenance is
   real — but much smaller than the marginal 27.8% vs 54.7% implies.
-- **It explains C3.** `business_logic` is always selected by the static router,
-  so it adds 1 to k on *every* contract. Excluding it is equivalent to
-  reducing ensemble size by one corpus-wide, which is why it beat thresholding
-  at matched FPR (+8.3 points of recall).
+- **It predicts C3's mechanism (whose magnitude is retired).**
+  `business_logic` is always selected by the static router, so it adds 1 to k
+  on *every* contract; excluding it reduces ensemble size by one corpus-wide,
+  which is a topology change rather than a threshold change. The in-sample
+  **+8.3 points of recall did not reproduce out of sample** — see the C3
+  out-of-sample block (§C3). Mechanism stands, magnitude does not.
 - **It explains C1's floor.** Thresholding cannot undo an OR over k detectors;
   it can only raise the bar each detector must clear. The floor is a property of
   the aggregation topology, not of the threshold.
@@ -249,10 +251,14 @@ runs on every contract. *Phase 10.*
 | drop business_logic, τ = 0.99 | 81.5% [79.1, 83.7] | **32.6%** [29.8, 35.5] | **72.4%** | 0.767 | **48.9** |
 | all findings, τ = 0.9999 | 73.2% | 32.1% | 70.5% | 0.718 | 41.1 |
 
-The last two rows are the point: **at the same ~32% false-alarm rate, dropping
-the coin-flip specialist gives 81.5% recall against 73.2% — +8.3 points free.**
-Thresholding buys FPR by sacrificing recall; removing the bad specialist does
-not. At the shipped τ it is a straight Pareto gain.
+> **These are IN-SAMPLE (seed 0) figures and the +8.3 did not replicate.** Read
+> the out-of-sample block immediately below before citing anything here.
+
+The last two rows were the point: at the same ~32% false-alarm rate, dropping
+the coin-flip specialist gives 81.5% recall against 73.2% — +8.3 points,
+apparently free. The reasoning was that thresholding buys FPR by sacrificing
+recall while removing a bad specialist does not. **Held-out seed 1 refuted the
+magnitude**: the specialist also contributes true findings, so it is a trade.
 
 **Why HYPOTHESIS and not SOUND:** `business_logic` was selected by inspecting
 this data and the fix was scored on the same data. Part of the gain is fitted

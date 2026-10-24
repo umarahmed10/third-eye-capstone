@@ -995,6 +995,17 @@ for free.** Thresholding buys FPR by sacrificing recall; removing the bad
 specialist does not. At the shipped τ it is a straight Pareto gain (−6.3 FPR
 for −2.9 recall, with precision and F1 both up).
 
+> **OUTCOME, 2026-10-24 — this conclusion did not survive validation.** Held-out
+> seed 1 (n = 334) gives dJ **+1.4** at τ = 0.925 and **−2.7** at τ = 0.99: the
+> sign is threshold-dependent and the effect is inside noise. The "+8.3 points
+> for free" above is **retired** and C3 was **not promoted**; the shipped
+> configuration is unchanged. The mechanism did replicate — `business_logic`
+> still places 42.0% of its findings on safe contracts, CI [34.2, 50.2] — but a
+> noisy specialist is not a net-negative one, because excluding it also drops
+> true findings it alone caught (recall −2.9 / −7.0 against FPR −4.3 / −4.3).
+> Left in place as written, because the reasoning above is exactly what
+> selecting a configuration on its own test set looks like from the inside.
+
 ### NOT YET A RESULT — and the reason matters
 
 `business_logic` was selected **by inspecting this data**, and the fix was then
