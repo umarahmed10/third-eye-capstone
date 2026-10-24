@@ -923,3 +923,104 @@ and this log entry exists so the final number is not mistaken for a steady one.
 
 `judge_ok` False on 13 of 784 findings (1.7%) — real adjudications throughout,
 so none of the drift is fail-open contamination.
+
+---
+
+## Phase 10 — What is OUR best configuration? (2026-10-24)
+
+A fair challenge from the project owner: we have run many experiments; have any
+of them told us our own best operating point? Mostly **no**. Nearly everything
+measured *the measurement* — label provenance, matching rules, context windows,
+decision rules, machines. That is the paper's thesis and it is novel, but it is
+a different question from "what should we ship", and we had not answered it.
+
+Answering it took no GPU at all. Three offline analyses over cached checkpoints:
+
+### 1. The decision threshold is exhausted
+
+Sweeping τ over the shipped noisy-OR on 2,142 asym-sound rows:
+
+| τ | recall | FPR | Youden J |
+|--:|--:|--:|--:|
+| 0.5 | 95.9% | 72.2% | 23.7 |
+| 0.925 (shipped) | 89.1% | 45.9% | 43.3 |
+| 0.99 | 84.9% | 40.0% | **45.0** |
+| 0.9999 | 73.2% | 32.1% | 41.1 |
+
+The shipped τ is already near-optimal, and more importantly **FPR will not go
+below ~32% by thresholding at any τ**. About a third of safe contracts carry at
+least one *near-certain* false finding. The false alarms are not low-confidence
+noise that better aggregation can filter — they are confident and wrong. Every
+gate/threshold/pooling experiment we have run is downstream of finding
+generation and therefore capped by this floor.
+
+### 2. One specialist produces the floor
+
+Attributing findings on safe contracts (false by construction) by type and model:
+
+| finding type | on safe | on vuln | FP rate |
+|---|--:|--:|--:|
+| **business_logic** | 467 | 435 | **52%** |
+| arithmetic | 310 | 783 | 28% |
+| dos_gas | 208 | 544 | 28% |
+| access_control | 191 | 537 | 26% |
+| reentrancy | 75 | 538 | 12% |
+
+| model | on safe | on vuln | FP rate |
+|---|--:|--:|--:|
+| **llama3.2:3b** | 508 | 490 | **51%** |
+| gemma3:4b | 208 | 544 | 28% |
+| qwen2.5-coder:7b | 589 | 1879 | 24% |
+
+These two rows are the same fact: `business_logic` is pinned to
+`LOGIC_MODEL = llama3.2:3b`, and the static router **always** selects
+`business_logic`. So a specialist that runs on every contract and is barely
+better than a coin flip (52% of its findings land on safe contracts) generates
+roughly a third of all false findings. Note this is *not* an argument for the 8B
+model, which was measured worse on this role (p = 0.0303): the role is the
+problem, not only the model on it.
+
+### 3. Dropping it reaches the floor at much better recall
+
+| configuration | recall | FPR | precision | F1 | J |
+|---|--:|--:|--:|--:|--:|
+| shipped, τ = 0.925 | 89.1% | 45.9% | 67.1% | 0.765 | 43.3 |
+| drop business_logic, τ = 0.925 | 86.2% | 39.6% | 69.5% | 0.770 | 46.6 |
+| drop business_logic, τ = 0.99 | 81.5% | **32.6%** | 72.4% | 0.766 | **48.9** |
+| all findings, τ = 0.9999 | 73.2% | 32.1% | 70.5% | 0.718 | 41.1 |
+
+The last two rows are the point: at the SAME ~32% false-alarm rate, dropping
+the coin-flip specialist delivers **81.5% recall against 73.2% — +8.3 points
+for free.** Thresholding buys FPR by sacrificing recall; removing the bad
+specialist does not. At the shipped τ it is a straight Pareto gain (−6.3 FPR
+for −2.9 recall, with precision and F1 both up).
+
+### NOT YET A RESULT — and the reason matters
+
+`business_logic` was selected **by inspecting this data**, and the fix was then
+scored **on the same data**. That is post-hoc selection and some of the gain is
+fitted noise. A paper arguing that evaluation setup determines the answer cannot
+ship a configuration tuned on its own test set. Confirm on seeds 1–2, which are
+unstarted and now affordable (the arbitration sweep was stopped at 281 balanced
+rows for this reason: 42 further GPU-hours would only have narrowed an interval
+on a null effect).
+
+### Why arbitration is not the answer here
+
+At n = 281 the judge retains **32.9% of true flags and 29.3% of false flags** —
+nearly the same rate. Arbitration is approximately *uniform thinning*, which is
+why precision moved only +3.3 points. A threshold knob achieves the same trade
+more cheaply and controllably, which is the honest reading of the "no
+held-out gain" result rather than a defence of it.
+
+### Owed
+
+- `evidence_quote` is dropped when checkpoints are written (only
+  type/severity/confidence/source/model persist), so the obvious next test —
+  do the confident-wrong findings fabricate their evidence? — needs a re-run
+  with quotes stored. It cannot be answered from cache.
+- Retrieval grounding is wired to nothing: `run_ablation` notes that retrieved
+  precedents are surfaced in output but **not injected into specialist
+  prompts**. That is the one untested lever that changes *what the specialists
+  assert* rather than how findings are counted, so it is the only candidate we
+  have for moving the 32% floor itself.
