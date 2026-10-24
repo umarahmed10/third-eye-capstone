@@ -256,9 +256,50 @@ not. At the shipped τ it is a straight Pareto gain.
 
 **Why HYPOTHESIS and not SOUND:** `business_logic` was selected by inspecting
 this data and the fix was scored on the same data. Part of the gain is fitted
-noise. **Validation on seeds 1–2 is queued** (`after_council.sh`). A paper
-arguing that evaluation setup determines the answer cannot ship a configuration
-tuned on its own test set. *Phase 10.*
+noise. A paper arguing that evaluation setup determines the answer cannot ship
+a configuration tuned on its own test set. *Phase 10.*
+
+#### C3 OUT-OF-SAMPLE RESULT — seed 1, n = 334 · **NOT PROMOTED** (Oct 24)
+
+Held-out seed 1 (360 attempted, 334 terminal, 26 quarantined = 7.2%):
+
+| configuration | recall | FPR | precision | F1 | J | dJ |
+|---|--:|--:|--:|--:|--:|--:|
+| shipped, τ = 0.925 | 88.4% | 38.9% | 70.7% | 0.786 | 49.5 | |
+| drop business_logic, τ = 0.925 | 85.5% | 34.6% | 72.4% | 0.784 | 50.9 | **+1.4** |
+| shipped, τ = 0.99 | 79.7% | 29.0% | 74.5% | 0.770 | 50.6 | |
+| drop business_logic, τ = 0.99 | 72.7% | 24.7% | 75.8% | 0.742 | 48.0 | **−2.7** |
+
+**The sign depends on the threshold**, so there is no single "excluding
+`business_logic` is better". The effect out of sample is ±2–3 points of J, i.e.
+inside noise. Seed 0's headline — +8.3 recall at matched FPR — **does not
+reproduce.** C3 is not promoted and the shipped configuration stands unchanged.
+
+The mechanism/effect split is the reportable part:
+
+- **Mechanism replicates.** `business_logic` still places **42.0%** of its
+  findings on safe contracts, CI [34.2, 50.2], which contains seed 0's 52%.
+  The specialist is genuinely that noisy.
+- **Effect does not.** Excluding it also removes true findings it alone caught:
+  recall −2.9 / −7.0 against FPR −4.3 / −4.3. **A noisy specialist is not a
+  net-negative specialist**, and seed 0 structurally could not separate those
+  because the class was chosen there.
+
+Seed 2 supplies the two-seed agreement test. Whatever it says, the seed-0
+magnitude is retired.
+
+*Process note, recorded because it nearly produced a published error:* at
+n = 206 mid-run the validator printed **REFUTED** (dJ −1.7, −2.5). At the
+complete n = 334 the τ = 0.925 sign flipped positive. The minimum-n gate let a
+**partial** seed emit a verdict — thresholds being met is not the same as the
+run being done. The interim call was labelled provisional, so it cost nothing,
+but the gate needs a run-completion condition, not only a row count.
+
+The validator also *mis-named* this outcome: it printed "held-out seeds
+disagree" where the seeds agree and the **thresholds** disagree — a wrong
+diagnosis carrying the authority of a verdict, produced by the very instrument
+built to prevent that. Fixed (`3b490c2`) to distinguish within-seed threshold
+splits from across-seed splits.
 
 ### C4. 16k context is mandatory, not an optimisation · **SOUND**
 See A3. At 4k, 39–44% of specialist calls fail outright.
@@ -424,16 +465,48 @@ we have for moving the ~32% FPR floor (C1), because it changes what the
 specialists *assert* rather than how findings are counted. Scoped as future
 work, not this paper.
 
-### F2. Do the confident-wrong findings fabricate their evidence? · **OPEN**
+### F2. Do the confident-wrong findings fabricate their evidence? · **OPEN — now answerable** (Oct 24)
 `evidence_quote` is dropped when checkpoints are written (only
-type/severity/confidence/source/model persist), so the obvious test on the 755
-pre-gate false positives cannot be answered from cache. Needs a re-run with
-quotes stored. The machinery exists (`_normalize_for_quote_check`).
+type/severity/confidence/source/model persist). Confirmed on completed seed 1:
+**610 findings, 0 quotes** — the key does not exist on any row, while the
+verdicts read "nothing quote-backed above the confidence bar". The quotes
+existed at runtime, decided the verdict, and were discarded at serialization.
+`run_benchmark.py:151` even carries a comment reasoning that per-finding detail
+must be stored so future aggregation questions never need a re-run — and omits
+the one field this question needs.
+
+**The earlier remedy ("re-run with quotes stored") was wrong, and this is the
+substantive part.** `services/council.py::_aggregate` keeps a finding *iff* its
+quote appears in the submitted source, and recorded nothing about the rejects.
+Stored rows are therefore **post-gate**: every surviving finding has a genuine
+quote **by construction**, so the measured fabrication rate is 0% however often
+a model invents one. No volume of cached runs — and no re-run that merely stored
+quotes — could have answered F2. **The question was unmeasurable, not
+unmeasured**: the strongest form of this project's thesis so far, since the
+instrument could not produce the number at all rather than producing a wrong one.
+
+Fixed (`2a7a6f7`): the gate now reports its own rejections by reason —
+`not_found` / `below_conf` / `quote_empty` / **`quote_not_in_code`** — and keeps
+≤ 8 fabricated samples with role, confidence, model and the quote text.
+`quote_not_in_code` *is* the F2 number. Rows additionally carry `evidence_quote`
+(300 chars) and the `gate` block; schema 2 → 3, and nothing branches on schema
+so old rows still load. Verified end-to-end on synthetic input (5 findings → 1
+kept, the fabricated `selfdestruct` counted and sampled); 47 tests pass,
+including a bound on the sample so a diagnostic cannot grow without limit.
+
+**Still OPEN.** This does not retrofit seeds 0–2, and seed 2 was deliberately
+not restarted to pick it up — a schema change mid-validation would cost the
+two-seed comparison, which is worth more. Answerable on the next run.
 
 ### F3. Does the `business_logic` exclusion hold out of sample? · **OPEN, queued**
-Seeds 1–2, launching automatically after the seed-0 council arm
-(`after_council.sh`). Decides whether C3 becomes SOUND and whether the shipped
-configuration changes.
+**ANSWERED for seed 1 (Oct 24): no.** See the C3 out-of-sample block. 334
+terminal rows; dJ +1.4 at τ = 0.925 and −2.7 at τ = 0.99, so the sign is
+threshold-dependent and the effect sits inside noise. C3 is **not promoted**;
+the shipped configuration is **unchanged**. The mechanism replicates (42.0% of
+`business_logic` findings land on safe contracts) but the specialist is noisy
+rather than net-negative. Seed 2 running, ETA ~15:00, for the two-seed
+agreement test; it can no longer rescue seed 0's +8.3 magnitude, only decide
+whether the small effect is consistent.
 
 ### F4. Reconcile "the council hypothesis is refuted" with D4/C2 · **OPEN**
 The paper states flatly that a model-diverse council raising precision is
