@@ -130,11 +130,24 @@ _SPECIALIST_BY_ROLE = {s["role"]: s for s in SPECIALISTS}
 # Set OLLAMA_LOGIC_MODEL=llama3.1:8b on a bigger GPU to restore the 8B.
 LOGIC_MODEL = os.getenv("OLLAMA_LOGIC_MODEL", "llama3.2:3b")
 
+# The code-reading slot, split out for the same reason as LOGIC_MODEL: model
+# SIZE is the binding constraint on a small GPU, not model quality.
+# qwen2.5-coder:7b is 4.68 GB against 4 GB of VRAM on the demo laptop, and
+# under memory pressure it does not merely run slowly -- it dies with
+# "CUDA error: shared object initialization failed", erroring one specialist on
+# EVERY scan. Measured on this machine: 1 of 4 routed specialists errored on
+# both smoke-test contracts.
+#
+# Set OLLAMA_CODER_MODEL=qwen2.5-coder:3b on a <=4 GB GPU, or leave the 7b on a
+# bigger card. Three distinct model families (qwen / llama / gemma) are
+# preserved either way, so the model-diversity claim is unaffected by the swap.
+CODER_MODEL = os.getenv("OLLAMA_CODER_MODEL", "qwen2.5-coder:7b")
+
 OLLAMA_ASSIGNMENTS = {
-    "reentrancy": "qwen2.5-coder:7b",
-    "access_control": "qwen2.5-coder:7b",
-    "arithmetic": "qwen2.5-coder:7b",
-    "proxy_upgradeability": "qwen2.5-coder:7b",
+    "reentrancy": CODER_MODEL,
+    "access_control": CODER_MODEL,
+    "arithmetic": CODER_MODEL,
+    "proxy_upgradeability": CODER_MODEL,
     "business_logic": LOGIC_MODEL,
     "oracle_price_manipulation": LOGIC_MODEL,
     "flashloan_mev": LOGIC_MODEL,
@@ -181,6 +194,15 @@ def specialist_assignments(backend: str) -> dict:
         # throughput — use for thousands-scale runs, not for the headline
         # diversity claim.
         return {s["role"]: ("cerebras", CEREBRAS_MODEL) for s in SPECIALISTS}
+    if backend in ("groq", "hosted") and not ALLOW_CLOUD:
+        # Fail loudly rather than quietly running a different tier than asked.
+        # A silent downgrade is how a run gets labelled "hosted" in its
+        # provenance while every call actually went somewhere else.
+        raise CloudDisabled(
+            f"tier {backend!r} needs a hosted provider, but ThirdEye is in "
+            f"LOCAL-ONLY mode. Use the 'ollama' tier, or set "
+            f"THIRDEYE_ALLOW_CLOUD=1 to reproduce the paper's hosted runs."
+        )
     if backend in ("groq", "hosted"):
         return dict(GROQ_CEREBRAS_ASSIGNMENTS if _HAS_GROQ else CEREBRAS_DUAL_ASSIGNMENTS)
     return {role: ("ollama", model) for role, model in OLLAMA_ASSIGNMENTS.items()}
@@ -301,7 +323,34 @@ def get_api_call_count() -> dict:
     return {"total": _API_CALL_COUNT["total"], "by_provider": dict(_API_CALL_COUNT["by_provider"])}
 
 
+# LOCAL-ONLY BY DEFAULT.
+#
+# ThirdEye now runs entirely on the machine in front of you: Ollama, no API
+# key, no network, no per-call cost, and nothing leaves the laptop. That last
+# property is the one that matters for the actual use case -- you are handing
+# this tool unaudited, often proprietary, Solidity source. Shipping it to a
+# third-party inference API by default was always the wrong default for a
+# security tool, independent of cost.
+#
+# The hosted providers are not deleted, because the paper reports measurements
+# taken on them and those numbers must stay reproducible. They are GATED: a
+# cloud call raises unless THIRDEYE_ALLOW_CLOUD=1 is set explicitly. An absent
+# or empty key no longer silently changes which models run -- it refuses.
+ALLOW_CLOUD = os.getenv("THIRDEYE_ALLOW_CLOUD", "").strip().lower() in ("1", "true", "yes")
+
+
+class CloudDisabled(RuntimeError):
+    """Raised when something asks for a hosted provider in local-only mode."""
+
+
 async def _query(provider: str, model: str, prompt: str, timeout: int | None = None, seed: int | None = None) -> str:
+    if provider != "ollama" and not ALLOW_CLOUD:
+        raise CloudDisabled(
+            f"provider {provider!r} requested but ThirdEye is in LOCAL-ONLY mode. "
+            f"Everything runs on Ollama; no contract source leaves this machine. "
+            f"Set THIRDEYE_ALLOW_CLOUD=1 only if you are deliberately reproducing "
+            f"the paper's hosted-tier measurements."
+        )
     _API_CALL_COUNT["total"] += 1
     _API_CALL_COUNT["by_provider"][provider] = _API_CALL_COUNT["by_provider"].get(provider, 0) + 1
     if provider == "ollama":

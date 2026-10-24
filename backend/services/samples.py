@@ -141,5 +141,16 @@ contract Lottery {
 
 
 def list_samples() -> list[dict]:
-    """Public list (includes code so the UI can load it directly)."""
-    return SAMPLES
+    """Public list (includes code so the UI can load it directly).
+
+    Ordered SAFE-first. The original set was 4 NO-GO to 1 GO, so a demo run
+    top-to-bottom only ever showed the tool finding bugs -- which proves very
+    little, since flagging everything achieves it. Leading with contracts that
+    SHOULD come back clean puts the harder claim first.
+    """
+    from services.samples_extra import EXTRA_SAMPLES
+
+    all_samples = SAMPLES + EXTRA_SAMPLES
+    ids = [s["id"] for s in all_samples]
+    assert len(ids) == len(set(ids)), f"duplicate sample id: {ids}"
+    return sorted(all_samples, key=lambda s: (s["expected"] != "GO", s["name"]))

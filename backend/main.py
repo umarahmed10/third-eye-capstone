@@ -319,7 +319,11 @@ async def analyze_council_stream(req: AnalyzeReq, request: Request, uid: int | N
                 if final_result.get("vulnerabilities") and final_result.get("final_verdict") != "INCONCLUSIVE":
                     try:
                         from services.arbitration import run_arbitration
-                        ab = "cerebras" if os.getenv("CEREBRAS_API_KEY") else None
+                        # Local-only: the judge is the local model, never a
+                        # hosted one picked up merely because a key happens to
+                        # sit in the environment.
+                        from services.council import ALLOW_CLOUD as _cloud_ok
+                        ab = "cerebras" if (_cloud_ok and os.getenv("CEREBRAS_API_KEY")) else None
                         yield f"data: {json.dumps({'event': 'arbitrating', 'count': len(final_result['vulnerabilities'])})}\n\n"
                         final_result = await run_arbitration(code, final_result, backend=ab)
                         survivors = final_result.get("vulnerabilities") or []
@@ -403,6 +407,14 @@ async def download_report(req: ReportReq):
 @app.get("/api/ollama-status")
 async def ollama_status():
     return await check_ollama()
+
+@app.get("/api/preflight")
+async def preflight_endpoint():
+    """Can this machine run a live scan right now? Checks the council's models
+    BY NAME -- see services/preflight.py for the incident that motivated it."""
+    from services.preflight import preflight
+    return await preflight()
+
 
 @app.get("/api/health")
 async def health():
