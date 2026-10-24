@@ -871,3 +871,55 @@ Note also that the fail-open is *correct behaviour* here and should not be
 whose council verdict is NO-GO, so upholding an unjudged finding is the safe
 action for a security tool. The defect was never the fail-open. It was that the
 fail-open was unobservable.
+
+#### n = 280: the precision gain does not survive, and the retraction was right
+
+Final correction, and it reverses two earlier entries in this log. On the full
+sweep corpus:
+
+| | tp | fp | tn | fn | recall | FPR | **precision** |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| council (pre-arbitration) | 131 | 133 | 7 | 9 | 93.6% | 95.0% | **49.6%** |
+| post-arbitration | 46 | 41 | 99 | 94 | 32.9% | 29.3% | **52.9%** |
+
+**Precision moves 49.6% → 52.9%: +3.3 points, not the +37.5 recorded at
+n = 41.** Arbitration drops 83% of findings (784 → 135), costs 61 points of
+recall, and cuts FPR by 66 points — but barely touches precision, the quantity
+it exists to improve.
+
+The full sequence of readings taken during one evening, on the same mechanism:
+
+| n | precision | what we concluded |
+|--:|---|---|
+| 13 | 50.0% → 50.0% | "a sensitivity dial, not a precision mechanism" |
+| 41 | 50.0% → 87.5% | "a real precision mechanism; the concession becomes a result" |
+| 280 | 49.6% → 52.9% | +3.3 points — essentially the original claim |
+
+**So the retracted conclusion was substantively correct.** "Adversarial
+arbitration yields no held-out gain" was reported from a judge that never
+answered — the method was worthless — but the number it accidentally produced
+is close to what a working judge gives on this corpus. The retraction stands as
+a methodological correction; it does NOT license claiming the opposite result.
+
+The two experiments disagree at full sample, and that is the finding:
+
+| experiment | corpus | n | precision |
+|---|---|--:|---|
+| ablation | access_control_slice | 52 | 58.3% → **92.3%** |
+| sweep | dappclean / dappscan | 280 | 49.6% → **52.9%** |
+
+Same mechanism, same judge, same code — a +34-point gain on one corpus and
++3.3 on another. Reported as corpus dependence, not resolved by picking the
+flattering one.
+
+**The methodological lesson, recorded against ourselves.** Three times in one
+evening a conclusion was drawn from a sample that then reversed it, and each
+intermediate reading was confidently stated. The n=41 figure was quoted to the
+project owner as "refuted from two independent designs." Nothing was wrong with
+the arithmetic at any step; what was wrong was treating a partial sweep of a
+*sorted* corpus as a sample of it. A paper whose thesis is that evaluation
+setup determines the answer has no excuse for quoting an interim as a result,
+and this log entry exists so the final number is not mistaken for a steady one.
+
+`judge_ok` False on 13 of 784 findings (1.7%) — real adjudications throughout,
+so none of the drift is fail-open contamination.
