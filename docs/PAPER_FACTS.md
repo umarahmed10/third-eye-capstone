@@ -179,10 +179,33 @@ findings in this file:
 2. **It explains the ~32% FPR floor.** Thresholding cannot undo an OR over k
    detectors; it only raises the bar each detector must clear. The floor is a
    property of the aggregation *topology*, not of τ.
-3. **It explains why excluding `business_logic` beats thresholding.** That
-   specialist is always selected by the router, so dropping it reduces k by one
-   corpus-wide — a topology change, not a threshold change. Hence +8.3 points of
-   recall at matched false-alarm rate.
+3. **It predicts that excluding `business_logic` is a topology change, not a
+   threshold change.** That specialist is always selected by the router, so
+   dropping it reduces k by one corpus-wide. **The +8.3-recall figure that
+   originally appeared here is RETIRED** — it did not reproduce out of sample
+   (C3, FINDINGS.md: dJ +1.4 at τ = 0.925, −2.7 at τ = 0.99 on held-out seed 1,
+   so the sign is threshold-dependent and the effect is inside noise). The
+   mechanism stands and the magnitude does not: reducing k does move the
+   operating point, but `business_logic` also contributes true findings, so the
+   net is a trade rather than the free gain seed 0 suggested.
+
+**Replication, held-out seed 1 (n = 162 sound safe rows, Oct 24).** Pooled
+across tiers, against seed 0 pooled the same way:
+
+| k | seed 0 | seed 1 (held-out) |
+|--:|--:|--:|
+| 1 | 12.2% (n=82) | 0.0% (n=15) |
+| 2 | 18.0% (n=272) | 17.4% (n=46) |
+| 3 | 39.2% (n=265) | 33.3% (n=39) |
+| 4 | 61.9% (n=202) | 58.1% (n=31) |
+| 5 | 80.7% (n=135) | 70.0% (n=20) |
+| 6 | 90.1% (n=71) | 100.0% (n=9) |
+
+Monotone on both seeds, tracking within a few points at every k with n ≥ 20.
+**This is the one headline claim that replicated on the day C3 failed to**, and
+it is the relevant contrast: C3 was selected by inspecting seed 0, FINDING 0 is
+a structural property of the aggregation that seed 0 merely made visible.
+(k = 7–8 cells are n ≤ 15 and carry no weight.)
 
 Reproduce offline from `eval/checkpoints/benchmark/*/seed*/` — no GPU, no
 re-run; `n_specialists_run` is recorded per row.
