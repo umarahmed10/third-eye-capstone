@@ -497,6 +497,48 @@ Regenerated over 2,142 rows versus the n = 1,154 replay: pre-gate FPR
 not overlap, so this is not noise — the half-corpus numbers were optimistic.
 **Every FPR figure tracing to that replay must be regenerated.** *Phase 10.*
 
+### E10. Council slice failures are strongly size-correlated · **SOUND**
+Across the 148 access-control-slice council rows (seed 0), rows with at least
+one failed slice:
+
+| contract family | rows | rows with a failed slice | |
+|---|--:|--:|--:|
+| `sb_*` (single-file) | 133 | **2** | 1.5% |
+| `w3b_*` (multi-file projects) | 15 | **14** | **93.3%** |
+
+Per-slice detail on the five rows completed after 12:54 — 0/23, 5/29, 1/40,
+5/40, 4/15 failed — is ~10% of slices on the large contracts. The failures are
+`gemma3:4b` and `llama3.2:3b` HTTP 500s ("model runner has unexpectedly
+stopped", "unexpected EOF") and 600 s timeouts, i.e. resource exhaustion on
+large inputs, not a logic error.
+
+**Why this is sound rather than disqualifying:** all 148 rows are NO-GO, and
+under the asymmetric terminal rule a dead specialist can only fail to raise a
+flag, never invent one — so a NO-GO with errored slices stands. This is the
+case that rule was adopted for, and it earns its keep here.
+
+**Why it still matters for the paper:** on the largest contracts the council is
+not the ensemble it is advertised as. Model diversity — a headline property of
+the design — **degrades silently as contract size grows**, and the degradation
+is invisible in the verdict. It is the same shape as FINDING 0 (the ensemble is
+not the size you think) measured on the other axis: there, k varies by router
+selection; here, effective k varies by whether the specialist survived the
+input. Any claim about council model diversity must be stated for single-file
+contracts, or stratified by size.
+
+Cost note: each `w3b_*` row is 15–40 slices and takes 14–60 min (815–3626 s
+measured), which is why the baseline tail runs ~35 min/contract.
+
+### E10a. A buffered log was read as live · **process error, recorded**
+While diagnosing the above I tailed `~/thirdeye_logs/baselines.log`, found
+`gemma3:4b` timeouts, and reported them as currently happening. **The log was
+last written at 12:54, over three hours earlier** — Python block-buffers stdout
+to a file without `-u`, which this project had already documented and annotated
+in `status.sh` today. Checkpoints (15:13) and the ollama log (live) were the
+authoritative sources and said the run was progressing normally. The faults are
+real; their timing was not established. Corrected within minutes, recorded
+because the same trap has now been hit twice in one day.
+
 ### E9. The baseline report builder could not see 580 completed rows · **SOUND, fixed**
 Two independent loader defects, each individually sufficient to empty the
 baseline table, found while checking whether the council (278) and
