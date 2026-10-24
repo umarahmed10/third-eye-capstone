@@ -1,13 +1,20 @@
 # A False-Alarm Rate Is Not a Property of the Tool
 
-### The Same Verdicts, Two Defensible Scores: Four Unreported Choices in LLM Smart-Contract Audit Evaluation
+### The Same Verdicts, Two Defensible Scores: Five Unreported Choices in LLM Smart-Contract Audit Evaluation
 
 **Umar Ahmed, Anvita Agarwal, Tarun B, V Lakshitha**
 Department of Computer Science and Engineering, PES University, Bengaluru, India
 `{PES2UG23CS662, PES2UG23CS085, PES2UG23CS644, PES2UG23CS665}`
 
-> **Target:** MSR 2027 Technical Papers. Abstract 20 Oct 2026, full paper 23 Oct 2026, 10 pp + 2 refs.
-> **Draft status:** v1, 2026-09-25. Every figure traces to `docs/PAPER_FACTS.md`.
+> **Target:** MSR 2027 Technical Papers, 10 pp + 2 refs. **The 2026-10-20 /
+> 2026-10-23 deadlines were MISSED**; no submission clock is currently running,
+> so the venue is open for reselection.
+> **Draft status:** v1 abstract (2026-09-25) + validation through 2026-10-24.
+> Every figure traces to `docs/PAPER_FACTS.md`. Two claims moved on 2026-10-24:
+> **C3 (`business_logic` exclusion) failed out-of-sample validation and is not
+> promoted**, and **FINDING 0 (ensemble size) replicated** on held-out seed 1 —
+> the abstract already leads with FINDING 0 and never cited C3, so no abstract
+> text depends on the retraction.
 > Author order is a proposal, not a decision — see the note at the end of §11.
 
 ---
