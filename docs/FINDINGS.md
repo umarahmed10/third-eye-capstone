@@ -28,18 +28,83 @@ Last updated 2026-10-24. Cross-references are to `DECISION_LOG.md` phases.
 
 ## A. Headline results — the paper's spine
 
-### A1. Safe-label provenance changes the false-alarm rate · **SOUND**
+### A1. Safe-label provenance changes the false-alarm rate · **SOUND (effect)** / **RETRACTED (interpretation)**
 Same tool, same contracts, same decision rule. Only the *origin* of the "safe"
-label varies, and the false-alarm rate moves **15.7% → 37.5%**. Per safe tier
-the residual tracks label trust in the expected order — 19% audited libraries,
-25% audit-reviewed-clean, 34% real-world-no-bug-reported — which is what you
-would see if the weakest-labelled tier contains unreported real bugs rather
-than tool errors. *Phase 8.*
+label varies. Regenerated 2026-10-24 on all 1,046 safe rows of the full corpus
+(evidence gate, Wilson intervals):
+
+| safe tier | n | FPR |
+|---|--:|--:|
+| audited_library | 273 | **27.8%** [22.9, 33.4] |
+| realworld_no_bug_reported | 192 | **44.8%** [37.9, 51.9] |
+| audit_reviewed_clean | 581 | **54.7%** [50.7, 58.7] |
+
+**The effect is real and larger than reported**: a 26.9-point spread against the
+earlier 21.8, and the `audited_library` / `audit_reviewed_clean` intervals do not
+overlap. The claim that label provenance moves the headline more than
+tool-versus-tool differences stands, and strengthens.
+
+> **The interpretation does not survive.** Phase 8 reported the per-tier
+> residual as 19% / 25% / 34% — **monotonic in label trust** — and that
+> monotonicity was the whole argument that the residual is *unreported real
+> bugs* rather than tool error: the weakest-labelled tier should carry the most
+> hidden bugs. At full corpus the ordering **inverts**: `audit_reviewed_clean`
+> is the *worst* tier (54.7%), above `realworld_no_bug_reported` (44.8%).
+> Whatever drives the spread, it is not a clean gradient in label quality.
+> Do not cite the "residual tracks label trust" reading. The superseded figures
+> came from the n = 1,154 replay (see E6); the earlier ordering was an artifact
+> of the half corpus.
+>
+> **Confound found and measured — see A4.** `audited_library` runs a median of
+> **2** specialists against **3** for both other tiers, and false alarms
+> compound with ensemble size (B1). Stratifying by k, the tier effect
+> **vanishes at k = 2** (18.9 / 15.3 / 18.7, intervals fully overlapping) and
+> appears only at k ≥ 3. Provenance survives as a within-stratum effect but is
+> **substantially smaller** than the marginal comparison shows, and the
+> inversion of the ordering is plausibly a composition artifact. **A1 must be
+> reported stratified by k, or with ensemble size as a stated covariate — the
+> marginal 27.8% vs 54.7% overstates it.**
+
+*Phase 8, regenerated Phase 10.*
 
 ### A2. The decision rule moves the headline more than any model change · **SOUND**
 On **identical verdicts** over 2,142 asym-sound contracts, false alarms move
 **72.2% [69.4, 74.8] → 45.9% [42.9, 48.9]** depending only on which rule reads
 the stored findings. Recall 95.9% → 89.1%. *Phase 9, regenerated Phase 10.*
+
+### A4. How many specialists ran dominates the false-alarm rate · **SOUND**
+On the same safe contracts, scored the same way, false alarms rise
+monotonically with the number of specialists the router actually fired:
+
+| k (specialists run) | audited_library | realworld_no_bug | audit_reviewed_clean |
+|--:|--:|--:|--:|
+| 1 | 16.0% [8.3, 28.5] | 11.1% [3.1, 32.8] | — |
+| 2 | 18.9% [12.1, 28.2] | 15.3% [8.2, 26.5] | 18.7% [12.8, 26.5] |
+| 3 | 26.8% [17.9, 38.1] | 53.1% [36.4, 69.1] | 42.0% [34.6, 49.7] |
+| 4 | 41.9% [28.4, 56.7] | 62.2% [47.6, 74.9] | 69.3% [60.3, 77.0] |
+| 5 | 68.8% [44.4, 85.8] | 75.0% [56.6, 87.3] | 84.6% [75.8, 90.6] |
+| 6 | — | — | 90.2% [80.2, 95.4] |
+
+**16% at k = 1 to 90.2% at k = 6** — a larger movement than any other single
+factor in this register, on a quantity the user never sees and never chooses.
+This is B1's OR-gate compounding (FP ≈ 1−(1−p)^k) measured directly rather than
+inferred, and it is the mechanism underneath A1, C1 and C3:
+
+- **It confounds A1.** At k = 2 the three provenance tiers are
+  indistinguishable (18.9 / 15.3 / 18.7, intervals fully overlapping). The tier
+  spread only appears at k ≥ 3, and `audited_library` carries
+  disproportionately many low-k contracts. A residual tier effect survives
+  within each stratum (library stays lowest at k = 3, 4, 5), so provenance is
+  real — but much smaller than the marginal 27.8% vs 54.7% implies.
+- **It explains C3.** `business_logic` is always selected by the static router,
+  so it adds 1 to k on *every* contract. Excluding it is equivalent to
+  reducing ensemble size by one corpus-wide, which is why it beat thresholding
+  at matched FPR (+8.3 points of recall).
+- **It explains C1's floor.** Thresholding cannot undo an OR over k detectors;
+  it can only raise the bar each detector must clear. The floor is a property of
+  the aggregation topology, not of the threshold.
+
+*Phase 10, 2026-10-24. Offline over `eval/checkpoints/benchmark/*/seed*/`.*
 
 ### A3. A silently truncating context window breaks the council structurally · **SOUND**
 Measured per specialist *call*, not per contract:
