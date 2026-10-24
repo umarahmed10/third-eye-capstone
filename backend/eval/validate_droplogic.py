@@ -227,8 +227,22 @@ def main() -> int:
         print("  REFUTED. The sign flips out of sample: the seed-0 gain was fitted")
         print("  noise. Report C3 as refuted and keep the shipped configuration.")
     else:
-        print("  INCONCLUSIVE — held-out seeds disagree. Do not promote C3. Report the")
-        print("  disagreement; seed-dependence is itself a finding for this paper.")
+        # Two DIFFERENT disagreements both land here, and saying "seeds disagree"
+        # when the seeds agree and the thresholds do not is a wrong diagnosis
+        # printed with the authority of a verdict. Name which one happened.
+        per_seed_sign = {s: {d > 0 for d in deltas[s].values()} for s in held}
+        split_within = [s for s in held if len(per_seed_sign[s]) > 1]
+        seed_means = {s: sum(deltas[s].values()) / len(deltas[s]) for s in held}
+        split_across = len({m > 0 for m in seed_means.values()}) > 1
+        print("  INCONCLUSIVE. Do not promote C3.")
+        if split_within:
+            print(f"  The sign is THRESHOLD-DEPENDENT within seed(s) {split_within}: the")
+            print("  exclusion helps at one tau and hurts at another, so there is no single")
+            print("  'excluding business_logic is better'. The effect is inside noise.")
+        if split_across:
+            print("  The sign also differs BETWEEN held-out seeds, which is the stronger")
+            print("  form of the same problem.")
+        print("  Report the disagreement; it is itself a finding for this paper.")
     return 0
 
 
