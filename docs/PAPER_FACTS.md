@@ -148,7 +148,58 @@ cached rows.
 
 ---
 
-## 3. FINDING 1 — label provenance — SOUND
+## 2b. FINDING 0 — ensemble size — SOUND (new, 2026-10-24)
+
+**The largest single effect in this file, on a quantity no user selects.** Same
+safe contracts, same rule; the only variable is how many specialists the static
+router actually fired. All 1,046 asym-sound safe rows of the full corpus,
+evidence gate, Wilson intervals:
+
+| k = specialists run | audited_library | realworld_no_bug | audit_reviewed_clean |
+|--:|--:|--:|--:|
+| 1 | 16.0% [8.3, 28.5] (n=50) | 11.1% [3.1, 32.8] (n=18) | — |
+| 2 | 18.9% [12.1, 28.2] (n=90) | 15.3% [8.2, 26.5] (n=59) | 18.7% [12.8, 26.5] (n=123) |
+| 3 | 26.8% [17.9, 38.1] (n=71) | 53.1% [36.4, 69.1] (n=32) | 42.0% [34.6, 49.7] (n=162) |
+| 4 | 41.9% [28.4, 56.7] (n=43) | 62.2% [47.6, 74.9] (n=45) | 69.3% [60.3, 77.0] (n=114) |
+| 5 | 68.8% [44.4, 85.8] (n=16) | 75.0% [56.6, 87.3] (n=28) | 84.6% [75.8, 90.6] (n=91) |
+| 6 | — | — | 90.2% [80.2, 95.4] (n=61) |
+
+**16.0% at k = 1 to 90.2% at k = 6, monotone.** This is §7's OR-gate
+compounding (contract-level FP ≈ 1−(1−p)^k) measured directly rather than
+inferred from the aggregate, and it is the mechanism beneath three other
+findings in this file:
+
+1. **It confounds FINDING 1 (§3).** `audited_library` draws a median of **2**
+   specialists; both other tiers draw **3**. At matched k = 2 the three tiers
+   are statistically indistinguishable — 18.9% / 15.3% / 18.7%, intervals fully
+   overlapping. The provenance spread appears only at k ≥ 3. A within-stratum
+   effect survives (library stays lowest at k = 3, 4, 5), so provenance is real,
+   but it is **substantially smaller than the marginal comparison shows** and
+   must be reported stratified by k or with k as a stated covariate.
+2. **It explains the ~32% FPR floor.** Thresholding cannot undo an OR over k
+   detectors; it only raises the bar each detector must clear. The floor is a
+   property of the aggregation *topology*, not of τ.
+3. **It explains why excluding `business_logic` beats thresholding.** That
+   specialist is always selected by the router, so dropping it reduces k by one
+   corpus-wide — a topology change, not a threshold change. Hence +8.3 points of
+   recall at matched false-alarm rate.
+
+Reproduce offline from `eval/checkpoints/benchmark/*/seed*/` — no GPU, no
+re-run; `n_specialists_run` is recorded per row.
+
+---
+
+## 3. FINDING 1 — label provenance — SOUND (effect) / CONFOUNDED (magnitude)
+
+> **Read §2b first.** The marginal spread below is partly an ensemble-size
+> artifact: these tiers differ in how many specialists the router fires, and at
+> matched k = 2 they are statistically indistinguishable. The provenance effect
+> is real but smaller than this table implies. The n = 1,154 figures here are
+> also superseded — at full corpus the tiers measure 27.8% [22.9, 33.4]
+> (audited_library), 44.8% [37.9, 51.9] (realworld_no_bug_reported) and 54.7%
+> [50.7, 58.7] (audit_reviewed_clean), which **inverts** the ordering below and
+> therefore retires the "residual tracks label trust" interpretation, since that
+> argument rested on monotonicity.
 
 Same tool, seed, machine, contracts. Only how the *safe* label was obtained changes.
 
