@@ -271,10 +271,19 @@ self-refuting.
 > construction rather than by measurement. Nothing in the output distinguished
 > this from a judge that had adjudicated and agreed.
 >
-> With the model installed the judge discriminates (`not_a_bug` on 15 of 16
-> findings in a verification run, every call flagged `judge_ok`), so the
-> mechanism is *not* a no-op and the sign of the effect is unknown until the
-> sweep completes. The fail-open behaviour itself is correct for a security
+> **Re-measured on 280 contracts with a working judge, the original conclusion
+> holds.** Precision moves 49.6% → 52.9% (+3.3 points) while 83% of findings
+> are dropped, recall falls 93.6% → 32.9%, and FPR falls 95.0% → 29.3%. The
+> mechanism is emphatically *not* a no-op — it is the single largest
+> intervention we measure — but it does not buy precision, which is the
+> property it was adopted for. The retraction is therefore a correction of
+> method, not of conclusion: the earlier number was unearned, and it was also
+> approximately right.
+>
+> On a second corpus the same mechanism behaves differently: in the
+> access-control ablation (n = 52) precision moves 58.3% → 92.3%. Same judge,
+> same code, +34 points on one corpus and +3.3 on another. We report the
+> disagreement rather than the flattering half of it. The fail-open behaviour itself is correct for a security
 > tool — a judge that cannot be reached must not silently delete a candidate
 > bug — but it was indistinguishable from a verdict, and that is the defect.
 > Findings now carry `judge_ok`, so a fail-open can no longer be read as an
