@@ -76,4 +76,10 @@ backend/eval/SESSION_NOTES.md
 
 # Local, uncommitted: the campus box address, sourced by scripts/GO.sh.
 #   THIRDEYE_DGX_HOST=user@host
-.dgx_host
+# Every variant, not just the bare name. `.dgx_host.campus` -- holding the
+# real `student-9@10.1.72.54` -- was swept into a commit by `git add -A` on
+# 2026-10-24 because only the exact filename was ignored, while the sibling
+# `.dgx_host.example` documents in its own text that the address is
+# deliberately NOT committed. Negate the example so the template stays.
+.dgx_host*
+!.dgx_host.example
