@@ -1,4 +1,15 @@
-# ThirdEye — paper draft (working)
+# ThirdEye — paper draft (SUPERSEDED, kept for its reasoning trail)
+
+> **SUPERSEDED 2026-10-24 by `PAPER_MSR2027.md`. Do not cite numbers from this
+> file.** It was last substantively updated 2026-09-25 and therefore predates:
+> the full-corpus regeneration (E6: FPR 59.0% → 72.2% pre-gate, 37.5% → 45.9%
+> at the gate), FINDING 0 (ensemble size, which confounds the label-provenance
+> magnitude), the arbitration retraction, and the C3 refutation. Any FPR or
+> recall figure here that traces to the n=1,154 replay is optimistic.
+>
+> Kept rather than deleted because the "Which paper to write" section below is
+> the record of how the framing was chosen and which two framings died — that
+> reasoning is not reproduced in PAPER_MSR2027 and is worth keeping.
 
 Status: draft skeleton with REAL measured numbers as of 2026-08-06.
 Every number below is traceable to a checkpoint file. Nothing is estimated.

@@ -681,7 +681,7 @@ including a bound on the sample so a diagnostic cannot grow without limit.
 not restarted to pick it up — a schema change mid-validation would cost the
 two-seed comparison, which is worth more. Answerable on the next run.
 
-### F3. Does the `business_logic` exclusion hold out of sample? · **OPEN, queued**
+### F3. Does the `business_logic` exclusion hold out of sample? · **CLOSED — answered: no**
 **CLOSED (Oct 24): no — both held-out seeds in, C3 not promoted.** Final dJ
 across all four held-out cells: +1.4, −2.7, +2.6, +0.6 (mean ≈ +0.5), sign
 varying both across τ within a seed and between seeds. The mechanism replicated
