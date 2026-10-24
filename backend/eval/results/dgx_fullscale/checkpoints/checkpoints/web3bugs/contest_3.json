@@ -1,0 +1,252 @@
+{
+ "contest_id": "3",
+ "detected": true,
+ "n_slices_scanned": 19,
+ "n_slices_available": 19,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/Admin.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BaseLending.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/CrossMarginLiquidation.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/CrossMarginTrading.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Fund.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/HourlyBondSubscriptionLending.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IncentiveDistribution.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IncentivizedHolder.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginAccounts.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginLiquidation.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginTrading.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Lending.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MarginRouter.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/UniswapStyleLib.sol",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/Admin.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BaseLending.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/BondLending.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/CrossMarginAccounts.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CrossMarginLiquidation.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/CrossMarginTrading.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Fund.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/HourlyBondSubscriptionLending.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IncentiveDistribution.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IncentivizedHolder.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginAccounts.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginLiquidation.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/IsolatedMarginTrading.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Lending.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MarginRouter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PriceAware.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/RoleAware.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Roles.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/UniswapStyleLib.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "api_calls": 64,
+ "latency_s": 147.9,
+ "schema": 1
+}

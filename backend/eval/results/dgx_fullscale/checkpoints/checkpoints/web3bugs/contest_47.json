@@ -1,0 +1,63 @@
+{
+ "contest_id": "47",
+ "detected": true,
+ "n_slices_scanned": 4,
+ "n_slices_available": 4,
+ "n_files_out_of_scope": 83,
+ "flagged": [
+  {
+   "slice": "contracts/WrappedIbbtc.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/WrappedIbbtcEth.sol",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/ICore.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ICoreOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/WrappedIbbtc.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/WrappedIbbtcEth.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 17,
+ "latency_s": 34.0,
+ "schema": 1
+}

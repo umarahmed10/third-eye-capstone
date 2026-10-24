@@ -1,0 +1,208 @@
+{
+ "contest_id": "70",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 79,
+ "n_files_out_of_scope": 14,
+ "flagged": [
+  {
+   "slice": "libraries/UniswapV2OracleLibrary.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "tokens/Vader.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "x-vader/XVader.sol",
+   "types": [
+    "business_logic",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "reserve/VaderReserve.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "governance/Timelock.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "converter/Converter.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "staking-rewards/StakingRewards.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/BasePoolV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/UniswapV2ERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "x-vader/IXVader.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/UniswapV2OracleLibrary.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "tokens/Vader.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "wrapper/LPToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/BasePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/GasThrottle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "staking-rewards/IStakingRewards.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/BitMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "x-vader/XVader.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "libraries/Babylonian.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "tokens/IVader.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/IBasePoolV2.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "uniswap/IUniswapV2Router02.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "synths/SynthFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/UniswapV2Pair.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "synths/Synth.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "reserve/VaderReserve.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "queue/IGasQueue.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/ITimelock.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/Timelock.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "libraries/TransferHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "converter/Converter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 81,
+ "latency_s": 345.6,
+ "schema": 1
+}

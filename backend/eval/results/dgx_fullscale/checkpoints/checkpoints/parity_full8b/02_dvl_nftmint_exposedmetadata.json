@@ -1,0 +1,46 @@
+{
+ "contract_id": "02_dvl_nftmint_exposedmetadata",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 16,
+ "latency_s": 26.1,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic, dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  },
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 134.6,
+ "bucket": "02_vuln_labelled",
+ "tier": "curated",
+ "expected": "vulnerable",
+ "agrees": true
+}

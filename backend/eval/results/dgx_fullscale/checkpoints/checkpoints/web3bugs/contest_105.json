@@ -1,0 +1,144 @@
+{
+ "contest_id": "105",
+ "detected": true,
+ "n_slices_scanned": 19,
+ "n_slices_available": 19,
+ "n_files_out_of_scope": 4,
+ "flagged": [
+  {
+   "slice": "open-zeppelin/ERC20.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "utils/MerkleProof.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "utils/Strings.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 5,
+ "per_slice": [
+  {
+   "slice": "contracts/HolyPaladinToken.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/PaladinRewardReserve.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "open-zeppelin/AccessControl.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "open-zeppelin/ERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAccessControl.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC165.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20Metadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IMerkleDistributor.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/SafeERC20.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "utils/Address.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Context.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/ECDSA.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/ERC165.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Math.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/MerkleProof.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "utils/Ownable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "utils/ReentrancyGuard.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "utils/Strings.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 42,
+ "latency_s": 316.3,
+ "schema": 1
+}

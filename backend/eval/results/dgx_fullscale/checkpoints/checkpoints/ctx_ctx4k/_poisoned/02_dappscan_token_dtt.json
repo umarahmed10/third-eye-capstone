@@ -1,0 +1,29 @@
+{
+ "contract_id": "02_dappscan_token_dtt",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 22,
+ "latency_s": 703.9,
+ "error": null,
+ "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

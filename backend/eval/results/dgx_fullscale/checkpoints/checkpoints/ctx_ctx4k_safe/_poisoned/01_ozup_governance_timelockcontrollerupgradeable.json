@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_ozup_governance_timelockcontrollerupgradeable",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 49,
+ "latency_s": 1306.2,
+ "error": null,
+ "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 3,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audited_library"
+}

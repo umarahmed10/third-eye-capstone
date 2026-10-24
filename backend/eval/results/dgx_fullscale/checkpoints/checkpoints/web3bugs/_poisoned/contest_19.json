@@ -1,0 +1,31 @@
+{
+ "contest_id": "19",
+ "detected": false,
+ "n_slices_scanned": 3,
+ "n_slices_available": 3,
+ "n_files_out_of_scope": 3,
+ "flagged": [],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/TransactionManager.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFulfillHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITransactionManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 8,
+ "latency_s": 91.1,
+ "schema": 1
+}

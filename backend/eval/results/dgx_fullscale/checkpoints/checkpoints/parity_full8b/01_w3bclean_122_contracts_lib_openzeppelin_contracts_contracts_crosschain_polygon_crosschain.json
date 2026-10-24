@@ -1,0 +1,46 @@
+{
+ "contract_id": "01_w3bclean_122_contracts_lib_openzeppelin_contracts_contracts_crosschain_polygon_crosschain",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 3,
+ "roles": [
+  "business_logic",
+  "flashloan_mev",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 13.3,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic, flashloan mev.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  },
+  {
+   "type": "flashloan_mev",
+   "severity": "high",
+   "confidence": 0.9,
+   "source": "council:flashloan_mev",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 65.0,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": true
+}

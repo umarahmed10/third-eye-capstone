@@ -1,0 +1,38 @@
+{
+ "contract_id": "01_w3bclean_59_src_contracts_abstracttransferverification",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 7,
+ "latency_s": 10.5,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.600 is below the 0.925 bar: business logic. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "low",
+   "confidence": 0.6,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 32.9,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": true
+}

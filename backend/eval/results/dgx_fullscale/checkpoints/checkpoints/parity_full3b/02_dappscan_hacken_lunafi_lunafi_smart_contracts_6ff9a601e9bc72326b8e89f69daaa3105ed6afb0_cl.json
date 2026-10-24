@@ -1,0 +1,38 @@
+{
+ "contract_id": "02_dappscan_hacken_lunafi_lunafi_smart_contracts_6ff9a601e9bc72326b8e89f69daaa3105ed6afb0_cl",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "access_control",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 3,
+ "latency_s": 8.4,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 25.6,
+ "bucket": "02_vuln_labelled",
+ "tier": "audit_report",
+ "expected": "vulnerable",
+ "agrees": false
+}

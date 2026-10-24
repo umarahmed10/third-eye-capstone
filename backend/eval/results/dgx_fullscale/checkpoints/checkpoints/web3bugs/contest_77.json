@@ -1,0 +1,47 @@
+{
+ "contest_id": "77",
+ "detected": true,
+ "n_slices_scanned": 4,
+ "n_slices_available": 4,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "contracts/Exchange.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/Exchange.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ExchangeFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IExchangeFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/MathLib.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 11,
+ "latency_s": 77.9,
+ "schema": 1
+}

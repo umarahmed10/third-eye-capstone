@@ -1,0 +1,129 @@
+{
+ "contest_id": "67",
+ "detected": true,
+ "n_slices_scanned": 16,
+ "n_slices_available": 16,
+ "n_files_out_of_scope": 9,
+ "flagged": [
+  {
+   "slice": "strategy/BaseStrategy.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "vault/Claimers.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/SandclockFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Vault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "integrations/IIntegration.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategy/BaseStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "strategy/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategy/NonUSTStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategy/USTStrategy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "anchor/IConversionPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "anchor/IEthAnchorRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "anchor/IExchangeRateFeeder.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "curve/ICurve.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vault/Claimers.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vault/Depositors.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IClaimers.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IVault.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "vault/IVaultSponsoring.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 35,
+ "latency_s": 134.4,
+ "schema": 1
+}

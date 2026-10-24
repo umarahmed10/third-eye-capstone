@@ -1,0 +1,36 @@
+{
+ "contract_id": "01_oz_utils_math_math",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 3,
+ "roles": [
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 15,
+ "latency_s": 54.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 0.990 is at or above the 0.925 bar: dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.99,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

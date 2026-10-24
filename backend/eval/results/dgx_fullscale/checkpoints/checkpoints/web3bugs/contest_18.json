@@ -1,0 +1,200 @@
+{
+ "contest_id": "18",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 29,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/RewardDistribution.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/InterestRateModel.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/LPTokenMaster.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "external/ERC20.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "interfaces/IUniswapV3Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/Math.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "external/Clones.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IInterestRateModel.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILPTokenMaster.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/RewardDistribution.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/InterestRateModel.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IUniswapPair.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWETH.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TransferHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV3Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IFeeConverter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/Ownable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPairFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/LPTokenMaster.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "external/ERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/LendingPair.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILinkOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPriceOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILendingPair.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFeeRecipient.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/UniswapV3Oracle.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "api_calls": 55,
+ "latency_s": 257.6,
+ "schema": 1
+}

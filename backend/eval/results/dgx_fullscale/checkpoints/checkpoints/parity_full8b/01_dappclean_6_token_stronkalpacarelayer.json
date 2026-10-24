@@ -1,0 +1,47 @@
+{
+ "contract_id": "01_dappclean_6_token_stronkalpacarelayer",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 15,
+ "latency_s": 21.3,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 0.8,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 54.4,
+ "bucket": "01_safe",
+ "tier": "audit_reviewed_clean",
+ "expected": "safe",
+ "agrees": true
+}

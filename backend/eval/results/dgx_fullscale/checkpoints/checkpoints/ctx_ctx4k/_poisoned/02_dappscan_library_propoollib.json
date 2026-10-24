@@ -1,0 +1,31 @@
+{
+ "contract_id": "02_dappscan_library_propoollib",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 52,
+ "latency_s": 645.2,
+ "error": null,
+ "verdict_reason": "4/6 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 4,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

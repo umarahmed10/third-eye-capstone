@@ -1,0 +1,47 @@
+{
+ "contract_id": "01_ozup_token_erc721_extensions_erc721enumerableupgradeable",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 17,
+ "latency_s": 37.1,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic, dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  },
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 199.2,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": true
+}

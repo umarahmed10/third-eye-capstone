@@ -1,0 +1,39 @@
+{
+ "contract_id": "01_w3bclean_31_vecvx_deps_openzeppelin_upgrades_utils_address",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 3,
+ "roles": [
+  "arithmetic",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 8,
+ "latency_s": 11.6,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.900 is below the 0.925 bar: business logic. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 0.9,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 26.6,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": false
+}

@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_w3bclean_28_contracts_helper_misohelper",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 18,
+ "latency_s": 59.0,
+ "error": null,
+ "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "realworld_no_bug_reported"
+}

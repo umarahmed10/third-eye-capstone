@@ -1,0 +1,190 @@
+{
+ "contest_id": "107",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 33,
+ "n_files_out_of_scope": 10,
+ "flagged": [
+  {
+   "slice": "helpers/EtherRocksHelper.sol",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "farming/LPFarming.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "lock/JPEGLock.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "farming/yVaultLPFarming.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "helpers/CryptoPunksHelper.sol",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 4,
+ "per_slice": [
+  {
+   "slice": "interfaces/IUniswapV2Router.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IBaseRewardPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAggregatorV3Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "helpers/EtherRocksHelper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Decimals.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICryptoPunks.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategies/StrategyPUSDConvex.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "farming/LPFarming.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IJPEGLock.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "tokens/JPEG.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISwapRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "lock/JPEGLock.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IWETH.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IYVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFloorOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFungibleAssetVaultForDAO.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICurve.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yVault/Controller.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "tokens/StableCoin.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStableCoin.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "farming/yVaultLPFarming.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "helpers/CryptoPunksHelper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "api_calls": 54,
+ "latency_s": 150.9,
+ "schema": 1
+}

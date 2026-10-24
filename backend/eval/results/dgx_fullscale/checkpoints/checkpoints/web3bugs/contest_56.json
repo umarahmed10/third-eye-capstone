@@ -1,0 +1,190 @@
+{
+ "contest_id": "56",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 98,
+ "n_files_out_of_scope": 28,
+ "flagged": [
+  {
+   "slice": "v3/Vault.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "strategies/MIMConvexStrategy.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "governance/YaxisVotePower.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "token/MerkleDistributor.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "alchemix/Transmuter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/LinkERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IHarvester.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "v3/Vault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IYearnVault.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "strategies/MIMConvexStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Burnable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMasterChef.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISwap.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "legacy/IMetaVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Yfii.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStableSwap2Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IDetailedERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStablesOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IVaultAdapter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/FlamIncome.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/YaxisVotePower.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "legacy/IVaultManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVoteProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStableSwapPool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICurve3Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/YaxisToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/MerkleDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 80,
+ "latency_s": 406.9,
+ "schema": 1
+}

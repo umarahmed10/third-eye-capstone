@@ -1,0 +1,220 @@
+{
+ "contest_id": "131",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 134,
+ "n_files_out_of_scope": 28,
+ "flagged": [
+  {
+   "slice": "tokenomics/BkdToken.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/DummyErc20.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BkdLocker.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/GasBank.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "vault/VaultReserve.sol",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "libraries/EnumerableExtensions.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "interfaces/IAdmin.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "actions/IAction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "tokenomics/BkdToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "profiling/TopUpActionProfiler.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "tokenomics/IRewardsGauge.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "topup/TopUpKeeperHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/Errors.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/IPausable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/DummyErc20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPreparable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vendor/ILendingPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "vault/Vault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "profiling/LiquidityPoolProfiler.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BkdLocker.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/GasBank.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "profiling/StakerVaultProfiler.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vault/VaultReserve.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "topup/ITopUpAction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/EnumerableExtensions.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vault/VaultStorage.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Full.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFeeBurner.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AddressProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Preparable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISwapperRouter.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 56,
+ "latency_s": 433.7,
+ "schema": 1
+}

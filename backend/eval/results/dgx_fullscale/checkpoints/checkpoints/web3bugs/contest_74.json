@@ -1,0 +1,232 @@
+{
+ "contest_id": "74",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 71,
+ "n_files_out_of_scope": 30,
+ "flagged": [
+  {
+   "slice": "libraries/MsgValue.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/Withdraw.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/LendMath.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Insurance.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/PayMath.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/Burn.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "base/ERC20.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/Borrow.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "libraries/SafeMetadata.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/TimeswapConvenience.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/MsgValue.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/CollateralizedDebt.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IMint.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/Lend.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/SafeCast.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/Withdraw.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IDeployNative.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/DeployERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/LendMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Insurance.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/DeployNative.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/PayMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/Math.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC721Extended.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/Burn.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/ConstantProduct.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/PayMath.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "callback/ITimeswapBorrowCallback.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "base/ERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "callback/ITimeswapMintCallback.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/DeployERC721.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/BurnMath.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/Borrow.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 53,
+ "latency_s": 333.1,
+ "schema": 1
+}

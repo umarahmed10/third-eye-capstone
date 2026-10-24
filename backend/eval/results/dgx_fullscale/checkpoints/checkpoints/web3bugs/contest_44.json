@@ -1,0 +1,49 @@
+{
+ "contest_id": "44",
+ "detected": true,
+ "n_slices_scanned": 4,
+ "n_slices_available": 4,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "swap/Swap.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "governance/EmergencyGovernable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/EmergencyPausable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "swap/Swap.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "utils/Math.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 12,
+ "latency_s": 24.8,
+ "schema": 1
+}

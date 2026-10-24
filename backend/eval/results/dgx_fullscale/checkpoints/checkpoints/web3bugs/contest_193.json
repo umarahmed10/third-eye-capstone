@@ -1,0 +1,109 @@
+{
+ "contest_id": "193",
+ "detected": true,
+ "n_slices_scanned": 14,
+ "n_slices_available": 14,
+ "n_files_out_of_scope": 20,
+ "flagged": [
+  {
+   "slice": "script/CreateFakeMoonbirds.s.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "script/CreateFakePudgyPenguins.s.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "script/CreatePair.s.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 7,
+ "per_slice": [
+  {
+   "slice": "script/CreateFakeAzukis.s.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeBasedGhouls.s.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeBeanz.s.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeBoredApeYachtClub.s.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeDoodles.s.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeInvisibleFriends.s.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "script/CreateFakeMoonbirds.s.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "script/CreateFakePudgyPenguins.s.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "script/CreateFakeWrappedPunks.s.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "script/CreatePair.s.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "script/Deploy.s.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Caviar.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/LpToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Pair.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  }
+ ],
+ "api_calls": 29,
+ "latency_s": 213.8,
+ "schema": 1
+}

@@ -1,0 +1,31 @@
+{
+ "contract_id": "01_w3bclean_52_repo_vader_bond_contracts_ownable",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 10,
+ "latency_s": 10.7,
+ "error": null,
+ "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 1,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 59.7,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": false
+}

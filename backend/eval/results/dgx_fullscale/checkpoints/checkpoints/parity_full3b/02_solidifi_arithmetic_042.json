@@ -1,0 +1,77 @@
+{
+ "contract_id": "02_solidifi_arithmetic_042",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 6,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "flashloan_mev",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 13,
+ "latency_s": 40.0,
+ "error": null,
+ "verdict_reason": "6 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, arithmetic, business logic, dos gas, flashloan mev, reentrancy.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "reentrancy",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:reentrancy",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "arithmetic",
+   "severity": "medium",
+   "confidence": 0.9,
+   "source": "council:arithmetic",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 0.9,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  },
+  {
+   "type": "flashloan_mev",
+   "severity": "high",
+   "confidence": 0.9,
+   "source": "council:flashloan_mev",
+   "model": "llama3.2:3b"
+  },
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.99,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 68.8,
+ "bucket": "02_vuln_labelled",
+ "tier": "injected",
+ "expected": "vulnerable",
+ "agrees": true
+}

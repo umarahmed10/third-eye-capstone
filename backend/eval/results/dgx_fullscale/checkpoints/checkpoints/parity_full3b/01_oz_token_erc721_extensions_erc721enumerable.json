@@ -1,0 +1,46 @@
+{
+ "contract_id": "01_oz_token_erc721_extensions_erc721enumerable",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 9,
+ "latency_s": 25.0,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 0.980 is at or above the 0.925 bar: business logic, dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "low",
+   "confidence": 0.6,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  },
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 32.5,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": true
+}

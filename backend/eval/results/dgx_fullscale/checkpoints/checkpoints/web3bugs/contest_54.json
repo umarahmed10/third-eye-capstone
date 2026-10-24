@@ -1,0 +1,228 @@
+{
+ "contest_id": "54",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 51,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "test-artifacts/TestErc20PausableToken.sol",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "mixins/MixinDisable.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "test-artifacts/TestErc20Noop.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Migrations.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "test-artifacts/TestEventHooks.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/UnlockProtocolGovernor.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinERC721Enumerable.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/MixinTransfer.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "mixins/MixinLockMetadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "test-artifacts/TestErc20PausableToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "mixins/MixinDisable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "test-artifacts/TestErc20Noop.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "test-artifacts/TestNoop.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::MathUpgradeable",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Migrations.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::SafeCastUpgradeable",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::ECDSAUpgradeable",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Clone2Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "test-artifacts/TestEventHooks.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::Roles",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/UnlockProtocolGovernor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPublicLock.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::ERC20Upgradeable",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinRoles.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinFunds.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::IERC20Upgradeable",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinERC721Enumerable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/MixinLockCore.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::ERC20VotesUpgradeable",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinTransfer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::CountersUpgradeable",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Patched.sol::IERC20PermitUpgradeable",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hooks/ILockKeyPurchaseHook.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 69,
+ "latency_s": 381.8,
+ "schema": 1
+}

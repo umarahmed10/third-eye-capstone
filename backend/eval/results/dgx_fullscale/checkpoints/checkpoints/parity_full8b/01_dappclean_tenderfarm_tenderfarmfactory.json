@@ -1,0 +1,38 @@
+{
+ "contract_id": "01_dappclean_tenderfarm_tenderfarmfactory",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 4,
+ "latency_s": 17.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 22.9,
+ "bucket": "01_safe",
+ "tier": "audit_reviewed_clean",
+ "expected": "safe",
+ "agrees": false
+}

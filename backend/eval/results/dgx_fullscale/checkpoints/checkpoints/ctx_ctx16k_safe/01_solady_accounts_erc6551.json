@@ -1,0 +1,28 @@
+{
+ "contract_id": "01_solady_accounts_erc6551",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 13,
+ "latency_s": 37.6,
+ "error": null,
+ "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

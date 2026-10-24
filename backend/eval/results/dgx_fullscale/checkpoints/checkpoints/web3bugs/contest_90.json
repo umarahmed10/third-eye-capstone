@@ -1,0 +1,250 @@
+{
+ "contest_id": "90",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 46,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/TopNMarketCapIndex.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IndexLogic.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IvToken.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/vToken.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/TrackedIndexReweightingLogic.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/TopNMarketCapReweightingLogic.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "libraries/FullMath.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/NAV.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "interfaces/ITopNMarketCapIndexReweightingLogic.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IIndexLayout.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ITopNMarketCapIndexFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IFeePool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IManagedIndexReweightingLogic.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/INameRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TopNMarketCapIndex.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IndexLogic.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/ManagedIndex.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPhuturePriceOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IvToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IvTokenFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PhutureIndex.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/vToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IIndexLogic.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ManagedIndexReweightingLogic.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/TrackedIndexReweightingLogic.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/TopNMarketCapReweightingLogic.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "libraries/AUMCalculationLibrary.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/FullMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/BP.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/IChainLinkFeed.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IIndexRegistry.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/NAV.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IReweightableIndex.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 60,
+ "latency_s": 107.0,
+ "schema": 1
+}

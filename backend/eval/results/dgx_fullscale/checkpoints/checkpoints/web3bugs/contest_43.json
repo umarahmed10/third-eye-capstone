@@ -1,0 +1,19 @@
+{
+ "contest_id": "43",
+ "detected": false,
+ "n_slices_scanned": 1,
+ "n_slices_available": 1,
+ "n_files_out_of_scope": 0,
+ "flagged": [],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/DelegatedStaking.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 6,
+ "latency_s": 171.6,
+ "schema": 1
+}

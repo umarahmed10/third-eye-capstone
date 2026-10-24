@@ -1,0 +1,38 @@
+{
+ "contract_id": "01_dappclean_balancer_core_v2_lib_openzeppelin_safecast",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 7,
+ "latency_s": 14.2,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.750 is below the 0.925 bar: business logic. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "medium",
+   "confidence": 0.75,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 25.3,
+ "bucket": "01_safe",
+ "tier": "audit_reviewed_clean",
+ "expected": "safe",
+ "agrees": false
+}

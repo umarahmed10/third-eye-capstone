@@ -1,0 +1,31 @@
+{
+ "contract_id": "02_dappscan_quillaudits_amplify_child_token_smart_contract_contracts_31526ea5e5c5a1c308d0065",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "flashloan_mev",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 19,
+ "latency_s": 314.5,
+ "error": null,
+ "verdict_reason": "3/6 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 3,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

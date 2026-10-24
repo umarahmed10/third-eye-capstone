@@ -1,0 +1,46 @@
+{
+ "contract_id": "01_dappclean_angelbase",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 6,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "flashloan_mev",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 20,
+ "latency_s": 398.2,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 0.960 is at or above the 0.925 bar: flashloan mev, oracle price manipulation.",
+ "specialists_errored": 1,
+ "findings": [
+  {
+   "type": "oracle_price_manipulation",
+   "severity": "critical",
+   "confidence": 0.9,
+   "source": "council:oracle_price_manipulation",
+   "model": "llama3.2:3b"
+  },
+  {
+   "type": "flashloan_mev",
+   "severity": "medium",
+   "confidence": 0.6,
+   "source": "council:flashloan_mev",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

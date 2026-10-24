@@ -1,0 +1,196 @@
+{
+ "contest_id": "81",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 33,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "stubs/TokenHandler.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "stubs/BalanceHandler.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "compound/CTokenInterface.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/TreasuryManager.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "compound/CErc20Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "stubs/TokenHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "global/LibStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "global/Types.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/EIP1271Wallet.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "stubs/BalanceHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "balancer/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "global/StorageLayoutV1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/FloatingPoint56.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/WETH9.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "compound/ComptrollerInterface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/EmptyProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/nProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "global/Constants.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "0x/ERC20Proxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "compound/CTokenInterface.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/WETH9_07.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "notional/NotionalTreasury.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/BoringOwnable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "balancer/IWeightedPool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/SafeInt256.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "notional/NotionalTreasuryAction.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "balancer/IPriceOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/TreasuryManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "contracts/ActionGuards.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 63,
+ "latency_s": 94.3,
+ "schema": 1
+}

@@ -1,0 +1,90 @@
+{
+ "contest_id": "80",
+ "detected": true,
+ "n_slices_scanned": 11,
+ "n_slices_available": 11,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/ConvexStakingWrapper.sol",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/ConvexModule.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ConvexStakingWrapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/ConvexYieldWrapper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Cvx3CrvOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CvxMining.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/AggregatorV3Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IConvexDeposits.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IConvexYieldWrapper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICurvePool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICvx.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRewardStaking.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 22,
+ "latency_s": 55.4,
+ "schema": 1
+}

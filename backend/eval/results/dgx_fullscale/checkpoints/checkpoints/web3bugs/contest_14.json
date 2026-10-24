@@ -1,0 +1,131 @@
+{
+ "contest_id": "14",
+ "detected": true,
+ "n_slices_scanned": 10,
+ "n_slices_available": 10,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/Ticket.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield-source/ATokenYieldSource.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "yield-source/BadgerYieldSource.sol",
+   "types": [
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield-source/IdleYieldSource.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield-source/SushiYieldSource.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield-source/YearnV2YieldSource.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/ControlledToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PrizePool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/StakePrizePool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Ticket.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/YieldSourcePrizePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yield-source/ATokenYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "yield-source/BadgerYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield-source/IdleYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield-source/SushiYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield-source/YearnV2YieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 50,
+ "latency_s": 376.2,
+ "schema": 1
+}

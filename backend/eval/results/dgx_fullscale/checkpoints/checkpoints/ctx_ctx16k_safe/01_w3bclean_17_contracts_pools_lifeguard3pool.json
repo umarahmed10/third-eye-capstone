@@ -1,0 +1,38 @@
+{
+ "contract_id": "01_w3bclean_17_contracts_pools_lifeguard3pool",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 19,
+ "latency_s": 46.3,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.800 is below the 0.925 bar: access control. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "medium",
+   "confidence": 0.8,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "realworld_no_bug_reported"
+}

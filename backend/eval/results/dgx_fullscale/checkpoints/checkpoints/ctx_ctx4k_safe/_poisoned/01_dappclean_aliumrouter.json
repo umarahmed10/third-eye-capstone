@@ -1,0 +1,31 @@
+{
+ "contract_id": "01_dappclean_aliumrouter",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 17,
+ "latency_s": 0.4,
+ "error": null,
+ "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 6,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

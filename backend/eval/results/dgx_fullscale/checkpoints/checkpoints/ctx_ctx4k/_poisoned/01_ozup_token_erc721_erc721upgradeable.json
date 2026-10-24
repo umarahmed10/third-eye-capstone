@@ -1,0 +1,29 @@
+{
+ "contract_id": "01_ozup_token_erc721_erc721upgradeable",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 17,
+ "latency_s": 519.3,
+ "error": null,
+ "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 1,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audited_library"
+}

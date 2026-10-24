@@ -1,0 +1,41 @@
+{
+ "contract_id": "02_dvl_uninitialized_variables",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "business_logic",
+  "flashloan_mev",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 15,
+ "latency_s": 21.1,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: proxy upgradeability.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "proxy_upgradeability",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:proxy_upgradeability",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 55.9,
+ "bucket": "02_vuln_labelled",
+ "tier": "curated",
+ "expected": "vulnerable",
+ "agrees": true
+}

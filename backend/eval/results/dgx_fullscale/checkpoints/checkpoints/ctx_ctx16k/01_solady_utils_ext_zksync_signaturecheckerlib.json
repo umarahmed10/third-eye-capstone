@@ -1,0 +1,35 @@
+{
+ "contract_id": "01_solady_utils_ext_zksync_signaturecheckerlib",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 4,
+ "latency_s": 32.5,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

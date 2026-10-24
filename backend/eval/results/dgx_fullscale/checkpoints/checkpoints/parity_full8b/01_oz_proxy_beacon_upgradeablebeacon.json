@@ -1,0 +1,40 @@
+{
+ "contract_id": "01_oz_proxy_beacon_upgradeablebeacon",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "flashloan_mev",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 9,
+ "latency_s": 18.5,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 28.9,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": true
+}

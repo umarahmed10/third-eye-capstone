@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_w3bclean_70_contracts_dex_v2_pool_basepoolv2",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 19,
+ "latency_s": 635.0,
+ "error": null,
+ "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 5,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "realworld_no_bug_reported"
+}

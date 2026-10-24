@@ -1,0 +1,97 @@
+{
+ "contest_id": "38",
+ "detected": true,
+ "n_slices_scanned": 8,
+ "n_slices_available": 8,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/Identity.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IdentityFactory.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "wallet/QuickAccManager.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "wallet/Zapper.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/Identity.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/IdentityFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniV3SwapRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libs/BytesLib.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libs/SignatureValidatorV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "wallet/QuickAccManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "wallet/Zapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 27,
+ "latency_s": 56.5,
+ "schema": 1
+}

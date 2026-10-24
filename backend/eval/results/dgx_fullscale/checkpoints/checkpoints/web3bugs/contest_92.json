@@ -1,0 +1,94 @@
+{
+ "contest_id": "92",
+ "detected": true,
+ "n_slices_scanned": 13,
+ "n_slices_available": 13,
+ "n_files_out_of_scope": 10,
+ "flagged": [
+  {
+   "slice": "src/TurboMaster.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "src/TurboMaster.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "src/TurboRouter.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/TurboSafe.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deploy/Deployer.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/CERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Comptroller.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/Fei.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/FuseAdmin.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/PriceFeed.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "modules/TurboBooster.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "modules/TurboClerk.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "modules/TurboGibber.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "modules/TurboSavior.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 27,
+ "latency_s": 50.1,
+ "schema": 1
+}

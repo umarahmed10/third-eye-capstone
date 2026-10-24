@@ -1,0 +1,40 @@
+{
+ "contract_id": "01_w3bclean_122_contracts_lib_openzeppelin_contracts_contracts_proxy_proxy",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "flashloan_mev",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 8,
+ "latency_s": 8.2,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.900 is below the 0.925 bar: flashloan mev. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "flashloan_mev",
+   "severity": "high",
+   "confidence": 0.9,
+   "source": "council:flashloan_mev",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 31.6,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": true
+}

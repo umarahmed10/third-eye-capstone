@@ -1,0 +1,276 @@
+{
+ "contest_id": "68",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 36,
+ "n_files_out_of_scope": 8,
+ "flagged": [
+  {
+   "slice": "singleJoinExit/SingleNativeTokenExitV2.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "callManagers/RebalanceManager.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "factories/PieFactoryContract.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "proxy_upgradeability",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/EthSingleTokenJoin.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "ERC20/ERC20Facet.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "Basket/BasketFacet.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/SingleTokenJoinV2.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/EthSingleTokenJoinV2.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "amunBasketBridge/PolygonERC20Wrapper.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "callManagers/RebalanceManagerV3.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Call/CallFacet.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/SingleNativeTokenExit.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "interfaces/IPolygonERC20Wrapper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/SingleNativeTokenExitV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "callManagers/RebalanceManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "amunBasketBridge/MintableERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "factories/PieFactoryContract.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "proxy_upgradeability",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IRebalanceManagerV3.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "singleJoinExit/EthSingleTokenJoin.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Imports.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Basket/LibBasketStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IBridgeToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ERC20/ERC20Facet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "Basket/BasketFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Facet.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ERC20/LibERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IExperiPie.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWrappedNativeToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "singleJoinExit/SingleTokenJoinV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRebalanceManagerV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "singleJoinExit/EthSingleTokenJoinV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "amunBasketBridge/PolygonERC20Wrapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Access/CallProtection.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICallFacet.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "callManagers/RebalanceManagerV3.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Call/CallFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "singleJoinExit/SingleNativeTokenExit.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 89,
+ "latency_s": 175.7,
+ "schema": 1
+}

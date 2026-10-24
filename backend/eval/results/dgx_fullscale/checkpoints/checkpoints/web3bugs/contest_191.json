@@ -1,0 +1,92 @@
+{
+ "contest_id": "191",
+ "detected": true,
+ "n_slices_scanned": 9,
+ "n_slices_available": 9,
+ "n_files_out_of_scope": 5,
+ "flagged": [
+  {
+   "slice": "src/VRFNFTRandomDrawFactory.sol",
+   "types": [
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IVRFNFTRandomDraw.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IVRFNFTRandomDrawFactory.sol",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "script/SetupContractsScript.s.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/VRFNFTRandomDraw.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/VRFNFTRandomDrawFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "src/VRFNFTRandomDrawFactoryProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVRFNFTRandomDraw.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IVRFNFTRandomDrawFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "ownable/IOwnableUpgradeable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "ownable/OwnableUpgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Version.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 24,
+ "latency_s": 41.4,
+ "schema": 1
+}

@@ -1,0 +1,41 @@
+{
+ "contract_id": "02_smartbugs_access_control_006",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 18,
+ "latency_s": 16.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 0.950 is at or above the 0.925 bar: dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 167.2,
+ "bucket": "02_vuln_labelled",
+ "tier": "curated",
+ "expected": "vulnerable",
+ "agrees": true
+}

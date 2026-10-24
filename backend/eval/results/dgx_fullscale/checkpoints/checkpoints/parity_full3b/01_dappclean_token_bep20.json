@@ -1,0 +1,40 @@
+{
+ "contract_id": "01_dappclean_token_bep20",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 10,
+ "latency_s": 13.5,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: arithmetic.",
+ "specialists_errored": 1,
+ "findings": [
+  {
+   "type": "arithmetic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:arithmetic",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 48.4,
+ "bucket": "01_safe",
+ "tier": "audit_reviewed_clean",
+ "expected": "safe",
+ "agrees": true
+}

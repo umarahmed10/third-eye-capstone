@@ -1,0 +1,218 @@
+{
+ "contest_id": "22",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 35,
+ "n_files_out_of_scope": 9,
+ "flagged": [
+  {
+   "slice": "oracles/OracleManagerFlippening_V0.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "testing/LongShortInternalStateSetters.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Migrations.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Staker.sol::which",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "testing/StakerInternalStateSetters.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/YieldManagerAave.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "contracts/Treasury_v0.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IYieldManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "generated/StakerForInternalMocking.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/LongShort.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracles/OracleManagerFlippening_V0.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "oracles/OracleManagerEthKillerChainlinkTestnet.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Staker.sol::Staker",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILongShort.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracles/OracleManagerChainlink.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITokenFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/LongShortInternalStateSetters.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IOracleManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracles/OracleManagerEthVsBtc.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Migrations.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "aave/ILendingPoolAddressesProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Staker.sol::which",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "oracles/OracleManagerEthKiller.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracles/OracleManagerEthKillerChainlink.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TokenFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/StakerInternalStateSetters.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IStaker.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "generated/LongShortMockable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/YieldManagerAave.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "aave/ILendingPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "aave/IAaveIncentivesController.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 78,
+ "latency_s": 670.7,
+ "schema": 1
+}

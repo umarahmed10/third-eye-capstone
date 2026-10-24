@@ -1,0 +1,200 @@
+{
+ "contest_id": "12",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 58,
+ "n_files_out_of_scope": 16,
+ "flagged": [
+  {
+   "slice": "chainlink/ChainlinkMultiOracle.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "compound/CompoundMultiOracle.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "utils/AddressStringUtil.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yieldspace/PoolFactory.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Join.sol",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  }
+ ],
+ "slices_errored": 6,
+ "per_slice": [
+  {
+   "slice": "yieldspace/Math64x64.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "compound/CTokenInterface.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/CastBytes32Bytes6.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "vault/IJoin.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/RevertMsgExtractor.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "math/CastI128U128.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "vault/DataTypes.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/TransferHelper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Ladle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "access/AccessControl.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "chainlink/ChainlinkMultiOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "compound/CompoundMultiOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yieldspace/IPoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yieldspace/PoolDataTypes.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IJoinFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IFYToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JoinFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/MinimalTransferHelper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/AddressStringUtil.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yieldspace/PoolFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Cauldron.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "math/CastU256U128.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/Join.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "yieldspace/Pool.sol::Pool",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IMultiOracleGov.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 62,
+ "latency_s": 415.8,
+ "schema": 1
+}

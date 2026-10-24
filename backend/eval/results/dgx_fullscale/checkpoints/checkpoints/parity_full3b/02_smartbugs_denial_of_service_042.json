@@ -1,0 +1,40 @@
+{
+ "contract_id": "02_smartbugs_denial_of_service_042",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 4,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 9.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: reentrancy.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "reentrancy",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:reentrancy",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 38.3,
+ "bucket": "02_vuln_labelled",
+ "tier": "curated",
+ "expected": "vulnerable",
+ "agrees": false
+}

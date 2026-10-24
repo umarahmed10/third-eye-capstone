@@ -1,0 +1,31 @@
+{
+ "contract_id": "02_solidifi_reentrancy_029",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "flashloan_mev",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 31,
+ "latency_s": 289.1,
+ "error": null,
+ "verdict_reason": "3/6 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 3,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "injected"
+}

@@ -1,0 +1,29 @@
+{
+ "contract_id": "01_oz_utils_cryptography_p256",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 4,
+ "roles": [
+  "arithmetic",
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 16,
+ "latency_s": 0.4,
+ "error": null,
+ "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 4,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audited_library"
+}

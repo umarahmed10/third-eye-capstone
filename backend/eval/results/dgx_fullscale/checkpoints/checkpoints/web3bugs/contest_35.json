@@ -1,0 +1,230 @@
+{
+ "contest_id": "35",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 64,
+ "n_files_out_of_scope": 4,
+ "flagged": [
+  {
+   "slice": "deployer/MasterDeployer.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BaseBoringBatchable",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "concentrated/ConcentratedLiquidityPosition.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "utils/TridentOwnable.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/TridentHelper.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "concentratedPool/SwapLib.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::RebaseLibrary",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "concentratedPool/Ticks.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 4,
+ "per_slice": [
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IWETH",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringFactory",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "pool/TridentERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/ITridentRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deployer/MasterDeployer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "concentrated/TridentNFT.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BaseBoringBatchable",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IPoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "concentrated/ConcentratedLiquidityPosition.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "utils/TridentOwnable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringOwnable",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath32",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "franchised/FranchisedIndexPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath128",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "utils/TridentHelper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "concentratedPool/SwapLib.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IBentoBoxMinimal.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::RebaseLibrary",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "pool/HybridPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "examples/PoolTemplate.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringBatchable",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BentoBoxV1",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IERC20",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "concentratedPool/Ticks.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "concentratedPool/TickMath.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "api_calls": 79,
+ "latency_s": 392.7,
+ "schema": 1
+}

@@ -1,0 +1,258 @@
+{
+ "contest_id": "64",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 57,
+ "n_files_out_of_scope": 19,
+ "flagged": [
+  {
+   "slice": "contracts/PrizeTierHistory.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionSplitter.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeTierHistoryV2.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionFactoryV2.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionBuffer.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributor.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/ObservationLib.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "prize-strategy/PrizeSplit.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/BinarySearchLib.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "in_scope/Ticket.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/PrizeTierHistory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "prize-strategy/PrizeSplitStrategy.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionSplitter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IReserve.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISingleMessageDispatcher.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PrizeTierHistoryV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionFactoryV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "in_scope/ITwabRewards.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "abstract/ExecutorAware.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionBuffer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPrizeFlush.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "prize-pool/StakePrizePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "prize-pool/PrizePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/TwabLib.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PrizeDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/ObservationLib.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IControlledToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "harness/TwabRewardsHarness.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "prize-strategy/PrizeSplit.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/DrawBeacon.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "permit/EIP2612PermitAndDeposit.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPrizeTierHistoryV2.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/BinarySearchLib.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "in_scope/Ticket.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/DrawRingBufferLib.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 74,
+ "latency_s": 596.7,
+ "schema": 1
+}

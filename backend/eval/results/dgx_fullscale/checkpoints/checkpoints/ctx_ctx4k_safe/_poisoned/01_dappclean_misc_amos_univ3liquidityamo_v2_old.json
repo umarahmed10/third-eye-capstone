@@ -1,0 +1,32 @@
+{
+ "contract_id": "01_dappclean_misc_amos_univ3liquidityamo_v2_old",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 7,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 16,
+ "latency_s": 632.1,
+ "error": null,
+ "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

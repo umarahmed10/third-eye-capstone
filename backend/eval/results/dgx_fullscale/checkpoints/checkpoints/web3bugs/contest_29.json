@@ -1,0 +1,168 @@
+{
+ "contest_id": "29",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 49,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BaseBoringBatchable",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/MathUtils.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "interfaces/ITridentRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "franchised/FranchisedConstantProductPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath128",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BaseBoringBatchable",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "pool/ConstantProductPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "franchised/FranchisedHybridPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "workInProgress/Migrator.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/MathUtils.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "workInProgress/IMigrator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/HybridPoolFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IWETH",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IStrategy",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/ConstantProductPoolFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath32",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/IndexPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringFactory",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IWhiteListManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IBatchFlashBorrower",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringBatchable",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::IERC20",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BoringMath64",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "flat/BentoBoxV1Flat.sol::BentoBoxV1",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "examples/PoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 75,
+ "latency_s": 1104.3,
+ "schema": 1
+}

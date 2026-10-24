@@ -1,0 +1,184 @@
+{
+ "contest_id": "17",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 39,
+ "n_files_out_of_scope": 23,
+ "flagged": [
+  {
+   "slice": "insurance/Exposure.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "common/Controllable.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "oracle/Buoy3Pool.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/DepositHandler.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "insurance/Exposure.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IChainPrice.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "tokens/NonRebasingGToken.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IEmergencyHandler.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "common/Whitelist.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "insurance/Allocation.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "v032/IYearnV2Strategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAllocation.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pools/LifeGuard3Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pnl/PnL.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "common/Controllable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IExposure.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "common/FixedContracts.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "insurance/Insurance.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/Buoy3Pool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "common/StructDefinitions.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IBuoy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/DepositHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IPnL.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPausable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWithdrawHandler.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Controller.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  }
+ ],
+ "api_calls": 85,
+ "latency_s": 560.6,
+ "schema": 1
+}

@@ -1,0 +1,200 @@
+{
+ "contest_id": "25",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 64,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "token/ERC20Rewards.sol",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "access/AccessControl.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yieldspace/Strategy.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "yieldspace/PoolFactory.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/SafeERC20Namer.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Wand.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 5,
+ "per_slice": [
+  {
+   "slice": "token/ERC20Rewards.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "vault/IFYToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "access/AccessControl.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yieldspace/Strategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "yieldspace/PoolFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "external/IERC2612.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/CastI128U128.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "math/CastU128I128.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "math/CastBytes32Bytes6.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "vault/IFYTokenFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/SafeERC20Namer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "vault/IJoinFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IJoin.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yieldspace/Math64x64.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/CastU256I256.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "token/MinimalTransferHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/ICauldronGov.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yieldspace/Pool.sol::SafeCast128",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/IMultiOracleGov.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/IERC20Metadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Witch.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vault/ILadleGov.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/CastU256U128.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "yieldspace/PoolDataTypes.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Wand.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 46,
+ "latency_s": 108.2,
+ "schema": 1
+}

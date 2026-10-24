@@ -1,0 +1,240 @@
+{
+ "contest_id": "103",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 28,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "Facets/DiamondLoupeFacet.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Facets/CBridgeFacet.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Facets/HopFacet.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Facets/Swapper.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Facets/WithdrawFacet.sol",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Libraries/LibDiamond.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Facets/GenericSwapFacet.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Facets/DexManagerFacet.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Interfaces/ITransactionManager.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "Facets/DiamondLoupeFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Libraries/LibSwap.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Facets/CBridgeFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Libraries/LibUtil.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Facets/HopFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Interfaces/IAnyswapToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Facets/Swapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Facets/WithdrawFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Libraries/LibAsset.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ICBridge.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IDiamondCut.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Libraries/LibStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Facets/OwnershipFacet.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Libraries/LibBytes.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IAnyswapRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/LiFiDiamond.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/IERC165.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Libraries/LibDiamond.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Interfaces/IERC173.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IHopBridge.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IDiamondLoupe.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Facets/GenericSwapFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Facets/DexManagerFacet.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Interfaces/ITransactionManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Interfaces/ILiFi.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 60,
+ "latency_s": 137.7,
+ "schema": 1
+}

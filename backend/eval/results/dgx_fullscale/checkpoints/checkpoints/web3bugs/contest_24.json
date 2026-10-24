@@ -1,0 +1,70 @@
+{
+ "contest_id": "24",
+ "detected": true,
+ "n_slices_scanned": 5,
+ "n_slices_available": 5,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "in_scope/SwappableYieldSource.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "contracts/SwappableYieldSource.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "in_scope/MStableYieldSource.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "in_scope/SwappableYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "yield-source/MStableYieldSource.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SwappableYieldSource.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "access/AssetManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 21,
+ "latency_s": 46.5,
+ "schema": 1
+}

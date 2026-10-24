@@ -1,0 +1,93 @@
+{
+ "paired": 176,
+ "scored_both": 31,
+ "mcnemar_b": 14,
+ "mcnemar_c": 0,
+ "p": 0.0005120045221899043,
+ "flips": [
+  {
+   "id": "01_dappclean_baserewardescrowv2",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_custompoatoken",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_exchanger",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_financial_templates_demo_depositbox",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_misc_amos_univ3liquidityamo_v2",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_misc_amos_univ3liquidityamo_v2_old",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_modules_staking_pooledstaking",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_pancakeswapcompoundingstrategytoken",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_slowmist_wault_finance_wusd_smart_contract_security_audit_report_wusd_91c541c2f1",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_dappclean_src_mixinmatchorders",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_ozup_access_manager_accessmanagerupgradeable",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_ozup_governance_governorupgradeable",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_solady_tokens_erc721",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  },
+  {
+   "id": "01_solady_tokens_ext_zksync_erc721",
+   "a": "GO",
+   "b": "NO-GO",
+   "expected": "safe"
+  }
+ ]
+}

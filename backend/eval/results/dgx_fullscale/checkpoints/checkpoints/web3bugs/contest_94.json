@@ -1,0 +1,208 @@
+{
+ "contest_id": "94",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 31,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "contracts/FNDNFTMarket.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketFees.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketPrivateSale.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketCore.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "OZ/ERC165Checker.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/AccountMigrationLibrary.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "interfaces/IOperatorRole.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/FNDNFTMarket.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/WithdrawFromEscrow.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/NFTMarketCreators.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "OZ/AccessControlUpgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISendValueWithFallbackWithdraw.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOwnable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketFees.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketPrivateSale.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IFethMarket.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/NFTMarketAuction.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketOffer.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/FoundationTreasury.sol",
+   "verdict": "GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "roles/AdminRole.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketCore.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "OZ/ERC165Checker.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/NFTMarketBuyPrice.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITokenCreator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IGetRoyalties.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/Constants.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/FoundationTreasuryNode.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAdminRole.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "roles/OperatorRole.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/AccountMigrationLibrary.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mixins/CollateralManagement.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 70,
+ "latency_s": 613.7,
+ "schema": 1
+}

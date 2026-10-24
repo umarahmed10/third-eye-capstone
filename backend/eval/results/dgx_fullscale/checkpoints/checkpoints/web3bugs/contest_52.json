@@ -1,0 +1,204 @@
+{
+ "contest_id": "52",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 74,
+ "n_files_out_of_scope": 12,
+ "flagged": [
+  {
+   "slice": "x-vader/XVader.sol",
+   "types": [
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "twap/TwapOracle.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/UniswapV2OracleLibrary.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/VaderBond.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Ownable.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "pool/VaderPoolFactory.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "x-vader/XVader.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "pool/IVaderPoolV2.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "reserve/IVaderReserve.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "router/IVaderRouterV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITreasury.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "queue/IGasQueue.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "synth/ISynthFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "twap/TwapOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "utils/GasThrottle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/IBasePoolV2.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/UniswapV2OracleLibrary.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/AggregatorV3Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "router/VaderRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "router/IVaderRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/VaderBond.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "chainlink/IAggregator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Ownable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "staking-rewards/Pausable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "staking-rewards/Owned.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "converter/Converter.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "governance/ITimelock.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "pool/VaderPoolFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "x-vader/IXVader.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/UQ112x112.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2ERC20.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 71,
+ "latency_s": 130.4,
+ "schema": 1
+}

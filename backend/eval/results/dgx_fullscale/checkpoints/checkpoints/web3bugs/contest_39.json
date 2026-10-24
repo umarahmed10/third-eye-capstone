@@ -1,0 +1,117 @@
+{
+ "contest_id": "39",
+ "detected": true,
+ "n_slices_scanned": 14,
+ "n_slices_available": 14,
+ "n_files_out_of_scope": 25,
+ "flagged": [
+  {
+   "slice": "marketplace/MarketPlace.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "marketplace/PErc20.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "marketplace/ZcToken.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "marketplace/Abstracts.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "marketplace/Erc2612.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "marketplace/Hash.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "marketplace/IErc2612.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "marketplace/IPErc20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "marketplace/IZcToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "marketplace/MarketPlace.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "marketplace/PErc20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "marketplace/VaultTracker.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "marketplace/ZcToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "swivel/Abstracts.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "swivel/Hash.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "swivel/Sig.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "swivel/Swivel.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  }
+ ],
+ "api_calls": 34,
+ "latency_s": 226.9,
+ "schema": 1
+}

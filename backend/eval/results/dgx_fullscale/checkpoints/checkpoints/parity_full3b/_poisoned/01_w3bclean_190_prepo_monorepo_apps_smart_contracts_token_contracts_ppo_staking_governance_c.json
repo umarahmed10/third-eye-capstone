@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_w3bclean_190_prepo_monorepo_apps_smart_contracts_token_contracts_ppo_staking_governance_c",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 2,
+ "roles": [
+  "access_control",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 8,
+ "latency_s": 10.7,
+ "error": null,
+ "verdict_reason": "1/2 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 1,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 70.0,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": false
+}

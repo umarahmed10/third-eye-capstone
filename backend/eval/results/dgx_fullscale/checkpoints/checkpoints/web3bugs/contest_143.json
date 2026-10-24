@@ -1,0 +1,162 @@
+{
+ "contest_id": "143",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 92,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "contracts/JBOperatorStore.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 4,
+ "per_slice": [
+  {
+   "slice": "structs/JBRedeemParamsData.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/JBETHERC20SplitsPayer.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/JBTokens.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBETHPaymentTerminal.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IJBPayoutTerminal.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IJBDirectory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/JBDidPayData.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/JBFundingCycleMetadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IJBSingleTokenPaymentTerminalStore.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBOperatorStore.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/JBGlobalFundingCycleMetadataResolver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "structs/JBFundAccessConstraints.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/JBPayParamsData.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IJBPayoutRedemptionPaymentTerminal.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/JBSplit.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBFundingCycleStore.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "enums/JBBallotState.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "helpers/AccessJBLib.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBTokenStore.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/JBReconfigurationBufferBallot.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/JBSingleTokenPaymentTerminalStore.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IJBOperatable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/JBFee.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "structs/JBFundingCycleData.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 48,
+ "latency_s": 536.1,
+ "schema": 1
+}

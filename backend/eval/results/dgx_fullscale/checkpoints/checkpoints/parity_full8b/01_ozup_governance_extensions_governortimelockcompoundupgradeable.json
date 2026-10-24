@@ -1,0 +1,47 @@
+{
+ "contract_id": "01_ozup_governance_extensions_governortimelockcompoundupgradeable",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 21,
+ "latency_s": 74.5,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 98.6,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": false
+}

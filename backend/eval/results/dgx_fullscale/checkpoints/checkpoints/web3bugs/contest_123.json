@@ -1,0 +1,274 @@
+{
+ "contest_id": "123",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 45,
+ "n_files_out_of_scope": 16,
+ "flagged": [
+  {
+   "slice": "contracts/AuraMerkleDrop.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/ArbitartorVault.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/AuraClaimZap.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/CrvDepositor.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BalLiquidityProvider.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BoosterOwner.sol",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/VirtualBalanceRewardPool.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AuraBalRewardPool.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/CrvDepositorWrapper.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Aura.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PoolManagerProxy.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/ConvexMasterChef.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IProxyFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC4626.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AuraMinter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRewardHook.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/AuraMerkleDrop.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/ArbitartorVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/AuraClaimZap.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/TokenFactory.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/Interfaces.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IGaugeController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CrvDepositor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PoolManagerSecondaryProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Metadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BalLiquidityProvider.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BoosterOwner.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/AuraVestedEscrow.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/VirtualBalanceRewardPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AuraBalRewardPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/MathUtil.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CrvDepositorWrapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BaseRewardPool4626.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Aura.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PoolManagerProxy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/cCrv.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 87,
+ "latency_s": 185.1,
+ "schema": 1
+}

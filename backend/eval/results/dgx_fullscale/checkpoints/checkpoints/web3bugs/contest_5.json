@@ -1,0 +1,244 @@
+{
+ "contest_id": "5",
+ "detected": true,
+ "n_slices_scanned": 23,
+ "n_slices_available": 23,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/Factory.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Pools.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Synth.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Token1.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Token2.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/USDV.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Vader.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Vault.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Vether.sol",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "contracts/Attack.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/DAO.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Factory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Pools.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Router.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/Synth.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Token1.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Token2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/USDV.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Utils.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Vader.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Vault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Vether.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/iERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iFACTORY.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iPOOLS.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iROUTER.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iSYNTH.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iUSDV.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iUTILS.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iVADER.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iVAULT.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iVETHER.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 70,
+ "latency_s": 206.6,
+ "schema": 1
+}

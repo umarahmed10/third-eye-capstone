@@ -1,0 +1,186 @@
+{
+ "contest_id": "110",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 25,
+ "n_files_out_of_scope": 580,
+ "flagged": [
+  {
+   "slice": "src/GlobalAccessControl.sol",
+   "types": [
+    "access_control",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "src/SupplySchedule.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "badger/IVault.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "src/CitadelMinter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/CitadelToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Funding.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/GlobalAccessControl.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "src/KnightingRound.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "src/StakedCitadel.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/StakedCitadelVester.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "src/SupplySchedule.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "badger/IBadgerGuestlist.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IBadgerVipGuestlist.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IEmptyStrategy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IStrategy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "citadel/ICitadelToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "citadel/IGac.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "citadel/IMedianOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "citadel/IStakedCitadelLocker.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "citadel/ISupplySchedule.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "citadel/IVesting.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "convex/BoringMath.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "convex/IRewardStaking.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "convex/IStakingProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "convex/MathUtil.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "erc20/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracles/MedianOracle.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 79,
+ "latency_s": 337.7,
+ "schema": 1
+}

@@ -1,0 +1,21 @@
+{
+ "arm": "smoketest",
+ "num_ctx": 16384,
+ "sampling": {
+  "label": "safe",
+  "n_requested": 1,
+  "max_tokens": 12230,
+  "sample_seed": 0,
+  "seed": 0,
+  "pool_size": 176,
+  "excluded_extreme_tail": 14,
+  "chars_per_token": 4,
+  "rng_key": "ctxablation:0",
+  "note": "Sample is pool[:n] after a seeded shuffle, so a larger n with identical label/max_tokens is a strict SUPERSET of this run."
+ },
+ "contract_ids": [
+  "01_dappclean_tokengrant"
+ ],
+ "concurrency": 1,
+ "rows": []
+}

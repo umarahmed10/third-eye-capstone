@@ -1,0 +1,83 @@
+{
+ "contest_id": "41",
+ "detected": true,
+ "n_slices_scanned": 6,
+ "n_slices_available": 6,
+ "n_files_out_of_scope": 1,
+ "flagged": [
+  {
+   "slice": "contracts/Auction.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Basket.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IFactory.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/Auction.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Basket.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Factory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAuction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IBasket.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 17,
+ "latency_s": 38.0,
+ "schema": 1
+}

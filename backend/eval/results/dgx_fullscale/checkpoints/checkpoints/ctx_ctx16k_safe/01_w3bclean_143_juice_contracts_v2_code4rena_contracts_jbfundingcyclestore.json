@@ -1,0 +1,35 @@
+{
+ "contract_id": "01_w3bclean_143_juice_contracts_v2_code4rena_contracts_jbfundingcyclestore",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 2,
+ "roles": [
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 7,
+ "latency_s": 16.6,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 0.950 is at or above the 0.925 bar: business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "realworld_no_bug_reported"
+}

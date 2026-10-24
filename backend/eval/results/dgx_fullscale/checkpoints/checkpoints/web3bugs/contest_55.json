@@ -1,0 +1,64 @@
+{
+ "contest_id": "55",
+ "detected": true,
+ "n_slices_scanned": 7,
+ "n_slices_available": 7,
+ "n_files_out_of_scope": 6,
+ "flagged": [
+  {
+   "slice": "contracts/DebtLocker.sol",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/DebtLocker.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/DebtLockerFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/DebtLockerInitializer.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/DebtLockerStorage.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IDebtLocker.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IDebtLockerFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Interfaces.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 20,
+ "latency_s": 35.3,
+ "schema": 1
+}

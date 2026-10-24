@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_dappclean_external_erc20_chitoken",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 24,
+ "latency_s": 0.8,
+ "error": null,
+ "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 5,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

@@ -1,0 +1,173 @@
+{
+ "contest_id": "10",
+ "detected": true,
+ "n_slices_scanned": 22,
+ "n_slices_available": 22,
+ "n_files_out_of_scope": 4,
+ "flagged": [
+  {
+   "slice": "contracts/Mainframe.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "hypervisor/RewardPool.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "visor/VisorFactory.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/Mainframe.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/RewardsToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/StakingToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "factory/IFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "factory/InstanceRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "factory/ProxyFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "hypervisor/Hypervisor.sol::IRageQuit",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/Hypervisor.sol::IHypervisor",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/Hypervisor.sol::Hypervisor",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/PowerSwitch.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/PowerSwitchFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/Powered.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hypervisor/RewardPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "hypervisor/RewardPoolFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC721Receiver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniversalVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVisorService.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "visor/EIP712.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "visor/ERC1271.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "visor/OwnableERC721.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "visor/Visor.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "visor/VisorFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 78,
+ "latency_s": 351.3,
+ "schema": 1
+}

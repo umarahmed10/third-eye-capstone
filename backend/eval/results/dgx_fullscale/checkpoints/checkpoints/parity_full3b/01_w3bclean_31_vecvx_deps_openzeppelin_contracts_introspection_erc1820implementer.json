@@ -1,0 +1,31 @@
+{
+ "contract_id": "01_w3bclean_31_vecvx_deps_openzeppelin_contracts_introspection_erc1820implementer",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "arithmetic",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 17.9,
+ "error": null,
+ "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 25.4,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": false
+}

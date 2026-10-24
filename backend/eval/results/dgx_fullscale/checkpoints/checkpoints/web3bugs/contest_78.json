@@ -1,0 +1,212 @@
+{
+ "contest_id": "78",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 89,
+ "n_files_out_of_scope": 8,
+ "flagged": [
+  {
+   "slice": "Morgoth/LimboAddTokenToBehodlerPower.sol",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "realUniswap/UniswapV2ERC20.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "DAO/FlashGovernanceArbiter.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "facades/TokenProxyLike.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "realBehodler/LiquidityReceiver.sol::PyroToken",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "realBehodler/PyroWethProxy.sol::IERC2612",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Proposals/ToggleWhitelistProposalProposal.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "realBehodler/PyroWethProxy.sol::WETH10",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Morgoth/LimboAddTokenToBehodlerPower.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/UniswapHelper.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TokenProxyRegistry.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "realBehodler/PyroWethProxy.sol::IWETH10",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Limbo.sol::MigrationLib",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "facades/AngbandLike.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "realUniswap/UniswapV2ERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "Proposals/AdjustFlanFeeOnTransferProposal.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ERC677/IERC677Receiver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Proposals/TurnOnFateMintingProposal.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "DAO/FlashGovernanceArbiter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "libraries/UQ112x112.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "facades/UniPairLike.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "facades/LimboAddTokenToBehodlerPowerLike.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "DAO/Governable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/UniswapPair.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "facades/TokenProxyLike.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Proposals/BurnFlashStakeDeposit.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "realBehodler/LiquidityReceiver.sol::LiquidiyReceiverLike",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "realBehodler/LiquidityReceiver.sol::PyroToken",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 65,
+ "latency_s": 270.2,
+ "schema": 1
+}

@@ -1,0 +1,39 @@
+{
+ "contract_id": "02_dvl_immunefi_ch2",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 16.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.800 is below the 0.925 bar: proxy upgradeability. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "proxy_upgradeability",
+   "severity": "low",
+   "confidence": 0.8,
+   "source": "council:proxy_upgradeability",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 67.5,
+ "bucket": "02_vuln_labelled",
+ "tier": "curated",
+ "expected": "vulnerable",
+ "agrees": false
+}

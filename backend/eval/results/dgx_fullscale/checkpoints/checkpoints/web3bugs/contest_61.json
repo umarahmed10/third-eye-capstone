@@ -1,0 +1,226 @@
+{
+ "contest_id": "61",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 37,
+ "n_files_out_of_scope": 7,
+ "flagged": [
+  {
+   "slice": "Invest/ICEther.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield/YearnYield.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Verification/Verification.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "yield/CompoundYield.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield/StrategyRegistry.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "yield/AaveYield.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield/NoYield.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "CreditLine/CreditLine.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRepayment.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Invest/ICToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Invest/IScaledBalanceToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Invest/ICEther.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield/YearnYield.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Verification/Verification.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IYield.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Invest/DataTypes.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVerifier.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVerification.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPriceOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yield/CompoundYield.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Invest/IyVault.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "yield/StrategyRegistry.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IExtension.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISavingsAccount.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "Invest/IProtocolDataProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Invest/ILendingPoolAddressesProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "SavingsAccount/SavingsAccount.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Invest/AaveLendingPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PriceOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Pool/Pool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "yield/AaveYield.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "proxy_upgradeability",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "yield/NoYield.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "api_calls": 96,
+ "latency_s": 1181.2,
+ "schema": 1
+}

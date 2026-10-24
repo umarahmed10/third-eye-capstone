@@ -1,0 +1,184 @@
+{
+ "contest_id": "30",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 68,
+ "n_files_out_of_scope": 22,
+ "flagged": [
+  {
+   "slice": "governance/YaxisVotePower.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "converters/StablesConverter.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "strategies/BaseStrategy.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "token/Rewards.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "v3/VaultToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/YaxisVotePower.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/MStable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Chainlink.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/ERC677.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Balancer.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ILegacyVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2Pair.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "controllers/Controller.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "converters/StablesConverter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/Gauge.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "legacy/IMetaVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "legacy/IVaultManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategies/BaseStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IYaxisBar.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILiquidityGaugeV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/dYdXSoloMargin.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/Rewards.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "legacy/MetaVaultNonConverter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICurve3Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/YaxisVoteProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IVoteProxy.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 83,
+ "latency_s": 399.6,
+ "schema": 1
+}

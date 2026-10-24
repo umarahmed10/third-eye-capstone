@@ -1,0 +1,210 @@
+{
+ "contest_id": "31",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 64,
+ "n_files_out_of_scope": 154,
+ "flagged": [
+  {
+   "slice": "deps/Controller.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "bCVX/StrategyCvxHelper.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "deps/BaseStrategy.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "deps/UniSwapper.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "deps/BaseStrategy.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "deps/SettV3.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "badger/IStakingRewardsSignalOnly.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deps/Controller.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "badger/IMerkleAddressWhitelist.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "badger/IDefender.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "badger/IConverter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yearn/BadgerWrapperApi.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "erc20/IERC20Detailed.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "bCVX/StrategyCvxHelper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IMintr.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "badger/IPing.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deps/BaseStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "yearn/BadgerGuestlistApi.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniswap/IUniswapRouterV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniswap/IUniswapExchange.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deps/UniSwapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "badger/IPausable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "cvx/BoringMath.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deps/BaseStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "deps/SettAccessControlDefended.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "badger/IMerkleDistributor.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/AdminUpgradeabilityProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "deps/SettV3.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "badger/IAccessControl.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yearn/VaultApi.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 79,
+ "latency_s": 155.2,
+ "schema": 1
+}

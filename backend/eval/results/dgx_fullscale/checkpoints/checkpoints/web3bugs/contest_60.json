@@ -1,0 +1,220 @@
+{
+ "contest_id": "60",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 32,
+ "n_files_out_of_scope": 5,
+ "flagged": [
+  {
+   "slice": "interfaces/IFactory.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "factory/Factory.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "oracle/ChainlinkOracle.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "types/UFixed18.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "incentivizer/Incentivizer.sol",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "accumulator/VersionedAccumulator.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "position/AccountPosition.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "examples/Squeeth.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ICollateral.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "examples/ShortEther.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "accumulator/Accumulator.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "types/ProductProvider.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "position/VersionedPosition.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "factory/Factory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "types/Fixed18.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "types/Program.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/ChainlinkOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "examples/LeveragedEther.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "types/OptimisticLedger.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "position/PrePosition.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "types/UFixed18.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IIncentivizer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "unstructured/UOwnable.sol",
+   "verdict": "GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "position/Position.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "incentivizer/Incentivizer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IProductProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "accumulator/AccountAccumulator.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "product/Product.sol",
+   "verdict": "GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "api_calls": 51,
+ "latency_s": 97.0,
+ "schema": 1
+}

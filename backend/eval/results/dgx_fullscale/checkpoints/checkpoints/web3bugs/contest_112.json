@@ -1,0 +1,242 @@
+{
+ "contest_id": "112",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 129,
+ "n_files_out_of_scope": 30,
+ "flagged": [
+  {
+   "slice": "contracts/Controller.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IBkdLocker.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/CvxCrvRewardsLocker.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "tokenomics/KeeperGauge.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/LpToken.sol",
+   "types": [
+    "access_control",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "libraries/AddressProviderHelpers.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IStakerVault.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/GasBank.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "contracts/Controller.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "tokenomics/IBkdToken.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/SwapperRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IBkdLocker.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "profiling/StakerVaultProfiler.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "tokenomics/VestedEscrow.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "pool/LiquidityPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "swappers/Swapper3Crv.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "access/AuthorizationBase.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "strategies/ConvexStrategyBase.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CvxCrvRewardsLocker.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "tokenomics/KeeperGauge.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ISwapperRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "profiling/LiquidityPoolProfiler.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "oracles/IOracleProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Pausable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/LpToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "libraries/DecimalScale.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/AddressProviderHelpers.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IStakerVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "oracles/IChainlinkOracleProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/GasBank.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "vendor/ICurveSwap.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/Errors.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 64,
+ "latency_s": 479.7,
+ "schema": 1
+}

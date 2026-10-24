@@ -1,0 +1,36 @@
+{
+ "contract_id": "01_solady_tokens_erc20",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 19,
+ "latency_s": 94.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.900 is below the 0.925 bar: access control. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "medium",
+   "confidence": 0.9,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

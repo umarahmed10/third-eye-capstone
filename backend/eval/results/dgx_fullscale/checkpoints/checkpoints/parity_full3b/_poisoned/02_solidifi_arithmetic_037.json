@@ -1,0 +1,33 @@
+{
+ "contract_id": "02_solidifi_arithmetic_037",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 41,
+ "latency_s": 126.3,
+ "error": null,
+ "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 1,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 236.0,
+ "bucket": "02_vuln_labelled",
+ "tier": "injected",
+ "expected": "vulnerable",
+ "agrees": true
+}

@@ -1,0 +1,244 @@
+{
+ "contest_id": "115",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 131,
+ "n_files_out_of_scope": 15,
+ "flagged": [
+  {
+   "slice": "liquidityMining/MIMODistributorV2.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "liquidityMining/BaseDistributor.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "liquidityMining/DistributorManager.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "upgrade/RepayVault.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "liquidityMining/PolygonDistributor.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "liquidityMining/MIMOBuybackUniswapV2.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "v1/VaultsDataProviderV1.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "v1/ConfigProviderV1.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "liquidityMining/DemandMiner.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "liquidityMining/MIMODistributorV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IConfigProvider.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IBalancerPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Stabilizer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "liquidityMining/BaseDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "liquidityMining/DistributorManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "upgrade/RepayVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IVotingMinerV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFeeDistributorV1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "liquidityMining/PolygonDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "priceFeed/ChainlinkInceptionPriceFeed.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/ABDKMath64x64.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "liquidityMining/MIMOBuybackUniswapV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IDebtNotifier.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2Router02.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "v1/VaultsDataProviderV1.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "v1/ConfigProviderV1.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "inception/BoringOwnable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "liquidityMining/DemandMiner.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "v2/SupplyMinerV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IMIMODistributor.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IGovernorAlpha.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IUniswapV2Router01.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "liquidityMining/DebtNotifier.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 78,
+ "latency_s": 172.9,
+ "schema": 1
+}

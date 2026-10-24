@@ -1,0 +1,39 @@
+{
+ "contract_id": "01_ozup_utils_multicallupgradeable",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 3,
+ "roles": [
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 15,
+ "latency_s": 29.0,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 0.950 is at or above the 0.925 bar: dos gas.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 32.0,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": true
+}

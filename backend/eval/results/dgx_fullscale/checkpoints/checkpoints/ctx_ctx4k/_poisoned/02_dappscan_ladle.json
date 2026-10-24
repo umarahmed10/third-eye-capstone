@@ -1,0 +1,31 @@
+{
+ "contract_id": "02_dappscan_ladle",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 26,
+ "latency_s": 239.5,
+ "error": null,
+ "verdict_reason": "All 6 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

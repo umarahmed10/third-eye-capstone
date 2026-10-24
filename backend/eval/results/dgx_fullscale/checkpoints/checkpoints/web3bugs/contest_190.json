@@ -1,0 +1,180 @@
+{
+ "contest_id": "190",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 179,
+ "n_files_out_of_scope": 38,
+ "flagged": [
+  {
+   "slice": "interfaces/IRootChainManager.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "mini-sales/MiniSalesFlag.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "nexus/Nexus.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "interfaces/IStakingRewardsWithPlatformToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISafeOwnableCaller.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "staking/PPOGamifiedToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC721Mintable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRevenueRecipient.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IDepositHook.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ppo/PPO.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "shared/PublicStableMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "staking/PPOStaking.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRootChainManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IPPOStaking.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUnwrapper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mini-sales/MiniSalesFlag.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMasset.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "versions/MV2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Aave/IAave.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILongShortToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "shared/IBasicToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "staking/PlatformTokenVendor.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "nexus/Nexus.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "migrate2/InitializableModuleV1.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/INFTScoreRequirement.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "shared/InitializableERC20Detailed.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "staking/GamifiedToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TokenSenderCaller.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 58,
+ "latency_s": 357.0,
+ "schema": 1
+}

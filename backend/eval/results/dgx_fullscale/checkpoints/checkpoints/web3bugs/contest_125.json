@@ -1,0 +1,84 @@
+{
+ "contest_id": "125",
+ "detected": true,
+ "n_slices_scanned": 5,
+ "n_slices_available": 5,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "smart-contracts/ConvexCurveLPVault.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "smart-contracts/GeneralVault.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "smart-contracts/LidoVault.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "smart-contracts/CollateralAdapter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "smart-contracts/ConvexCurveLPVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "smart-contracts/GeneralVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "smart-contracts/LidoVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "smart-contracts/YieldManager.sol",
+   "verdict": "GO",
+   "types": [
+    "oracle_price_manipulation"
+   ]
+  }
+ ],
+ "api_calls": 22,
+ "latency_s": 52.4,
+ "schema": 1
+}

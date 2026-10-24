@@ -1,0 +1,206 @@
+{
+ "contest_id": "73",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 73,
+ "n_files_out_of_scope": 38,
+ "flagged": [
+  {
+   "slice": "token/ArbitrumLivepeerToken.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "libraries/EarningsPool.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinTicketBrokerCore.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/PreciseMathUtils.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinReserve.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "mixins/MixinWrappers.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "gateway/IL1LPTGateway.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/ArbitrumLivepeerToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ManagerProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "libraries/EarningsPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "arbitrum/IInbox.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/MixinTicketBrokerCore.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "zeppelin/Pausable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "gateway/L1LPTGateway.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/PreciseMathUtils.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "arbitrum/IOutbox.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/MContractRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ManagerProxyTarget.sol",
+   "verdict": "GO",
+   "types": [
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "arbitrum/INodeInterface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ServiceRegistry.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "deprecated/EarningsPoolPreLIP36.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/MixinReserve.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "arbitrum/IMessageProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ControlledGateway.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "snapshots/MerkleSnapshot.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "mixins/MixinWrappers.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "bonding/IBondingManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Controller.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/IManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "gateway/L2LPTGateway.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 64,
+ "latency_s": 141.5,
+ "schema": 1
+}

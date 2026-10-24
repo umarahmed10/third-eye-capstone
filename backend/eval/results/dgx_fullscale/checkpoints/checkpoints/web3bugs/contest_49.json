@@ -1,0 +1,188 @@
+{
+ "contest_id": "49",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 52,
+ "n_files_out_of_scope": 6,
+ "flagged": [
+  {
+   "slice": "UniswapV3OracleLibrary/TickMath.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/OverlayV1UniswapV3Market.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "UniswapV3OracleLibrary/FullMath.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Scratchpad.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "uniV3Pool/IUniswapV3PoolImmutables.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniV3Pool/IUniswapV3PoolOwnerActions.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Context.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "UniswapV3OracleLibrary/LowGasSafeMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IOverlayV1OVLCollateral.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOverlayToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/IERC165.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IUniV3Oracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IMirinFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "shims/UniTest.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "market/OverlayV1PricePoint.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "UniswapV3OracleLibrary/TickMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/OverlayV1UniswapV3Market.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "uniV3Pool/IUniswapV3PoolEvents.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "UniswapV3OracleLibrary/PoolAddress.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/OverlayToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "UniswapV3OracleLibrary/FullMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/FixedPoint.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/UniswapV3Listener.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/LogExpMath.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOverlayTokenNew.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/IAccessControl.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Scratchpad.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IOverlayV1Mothership.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniV3Factory.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 45,
+ "latency_s": 76.3,
+ "schema": 1
+}

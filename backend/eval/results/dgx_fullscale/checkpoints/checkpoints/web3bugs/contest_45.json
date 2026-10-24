@@ -1,0 +1,196 @@
+{
+ "contest_id": "45",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 31,
+ "n_files_out_of_scope": 14,
+ "flagged": [
+  {
+   "slice": "market/MarketRegistry.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "asset/PureTokenAdapter.sol",
+   "types": [
+    "access_control",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "token/Whitelistable.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/Comptroller.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "market/MarketRegistry.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IComptroller.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "market/FixedInterestRateModel.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Controller.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IUToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IUErc20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/WadRayMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "treasury/TreasuryVester.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "treasury/Treasury.sol",
+   "verdict": "GO",
+   "types": [
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "asset/PureTokenAdapter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "interfaces/IAssetManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICreditLimitModel.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/UnionToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "user/UserManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/Whitelistable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IDai.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IMoneyMarketAdapter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "market/UToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "user/CreditLimitByMedian.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IInterestRateModel.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUserManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/UUPSProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/UnionGovernor.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "token/Comptroller.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "market/UErc20.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 61,
+ "latency_s": 378.9,
+ "schema": 1
+}

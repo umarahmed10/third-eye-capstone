@@ -1,0 +1,31 @@
+{
+ "contract_id": "01_oz_access_extensions_accesscontroldefaultadminrules",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 14,
+ "latency_s": 30.6,
+ "error": null,
+ "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 275.8,
+ "bucket": "01_safe",
+ "tier": "audited_library",
+ "expected": "safe",
+ "agrees": false
+}

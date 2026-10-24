@@ -1,0 +1,272 @@
+{
+ "contest_id": "59",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 59,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/FaucetTwo.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/ForfeitHandler.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/RewardReinvestor.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "RewardSystem/RewardDistributor.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/AuctionParticipant.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Permit.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Permissions.sol",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/AuctionPool.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/MiningService.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/UniswapV2Library.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "RewardSystem/RewardThrottle.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/FaucetTwo.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IMiningService.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PoolTransferVerification.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAuctionStartController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ForfeitHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/RewardReinvestor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "RewardSystem/RewardDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/AuctionParticipant.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/ERC20Permit.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AbstractTransferVerification.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Permissions.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20Permit.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRewardMine.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AuctionPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/StabilizerNode.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/Malt.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MiningService.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IForfeit.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/AuctionBurnReserveSkew.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMalt.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAuction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/UniswapV2Library.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMaltDataLab.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISupplyDistributionController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "RewardSystem/RewardThrottle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 94,
+ "latency_s": 424.0,
+ "schema": 1
+}

@@ -1,0 +1,212 @@
+{
+ "contest_id": "58",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 148,
+ "n_files_out_of_scope": 36,
+ "flagged": [
+  {
+   "slice": "contracts/AaveVault.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/VaultRegistry.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "libraries/CommonLibrary.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/YearnVault.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20VaultGovernance.sol",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "contracts/AaveVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AaveVaultFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/VaultRegistry.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IProtocolGovernance.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVaultRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/CommonLibrary.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "pool/IUniswapV3PoolImmutables.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IChiefTrader.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/ExceptionsLibrary.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "univ3/IUniswapV3Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/TraderExceptionsLibrary.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/GatewayVault.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/YearnVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IUniV3VaultGovernance.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/LpIssuerGovernance.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IGatewayVault.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IProtocolGovernance.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/LpIssuerFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "external/LiquidityAmounts.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aave/ILendingPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20VaultGovernance.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/DefaultAccessControl.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IVaultFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yearn/IYearnVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/UniV3Vault.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 52,
+ "latency_s": 469.9,
+ "schema": 1
+}

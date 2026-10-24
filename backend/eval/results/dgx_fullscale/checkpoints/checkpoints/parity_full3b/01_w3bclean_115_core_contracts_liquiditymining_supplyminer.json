@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_w3bclean_115_core_contracts_liquiditymining_supplyminer",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 2,
+ "roles": [
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 8,
+ "latency_s": 8.8,
+ "error": null,
+ "verdict_reason": "All 2 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 57.3,
+ "bucket": "01_safe",
+ "tier": "realworld_no_bug_reported",
+ "expected": "safe",
+ "agrees": false
+}

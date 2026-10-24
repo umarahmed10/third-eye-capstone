@@ -1,0 +1,111 @@
+{
+ "contest_id": "13",
+ "detected": true,
+ "n_slices_scanned": 16,
+ "n_slices_available": 16,
+ "n_files_out_of_scope": 7,
+ "flagged": [
+  {
+   "slice": "nfthubs/RCNftHubL2.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "contracts/Migrations.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/RCFactory.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/RCMarket.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/RCOrderbook.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/RCTreasury.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20Dai.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRCBridge.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRCFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRCMarket.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRCNftHubL1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRCNftHubL2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRCOrderbook.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRCTreasury.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRealitio.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "nfthubs/RCNftHubL1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "nfthubs/RCNftHubL2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 47,
+ "latency_s": 362.0,
+ "schema": 1
+}

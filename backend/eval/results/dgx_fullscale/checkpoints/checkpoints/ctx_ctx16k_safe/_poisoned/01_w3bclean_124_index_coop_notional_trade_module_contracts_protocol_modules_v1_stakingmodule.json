@@ -1,0 +1,28 @@
+{
+ "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_contracts_protocol_modules_v1_stakingmodule",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 18,
+ "latency_s": 0.4,
+ "error": null,
+ "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 3,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "realworld_no_bug_reported"
+}

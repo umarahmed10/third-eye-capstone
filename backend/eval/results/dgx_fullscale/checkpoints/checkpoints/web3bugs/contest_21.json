@@ -1,0 +1,210 @@
+{
+ "contest_id": "21",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 49,
+ "n_files_out_of_scope": 1,
+ "flagged": [
+  {
+   "slice": "facets/Payout.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "facets/PoolStrategy.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISherX.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "strategies/AaveV2.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "libraries/LibSherXERC20.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/ILock.sol",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "facets/Payout.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "facets/PoolStrategy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISherlock.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aaveV2/IAaveDistributionManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISherX.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IRemove.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPoolStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aaveV2/DataTypes.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "aaveV2/IAaveIncentivesController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "strategies/AaveV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "aaveV2/ILendingPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "util/Import.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IManager.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/LibSherX.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "libraries/LibSherXERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "storage/SherXStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "storage/GovStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "storage/SherXERC20Storage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aaveV2/IAToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ILock.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "facets/SherXERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "aaveV2/IExecutorWithTimelock.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISherXERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aaveV2/IGovernanceV2Helper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 77,
+ "latency_s": 386.4,
+ "schema": 1
+}

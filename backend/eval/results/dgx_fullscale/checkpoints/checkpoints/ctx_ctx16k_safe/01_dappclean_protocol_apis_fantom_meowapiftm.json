@@ -1,0 +1,38 @@
+{
+ "contract_id": "01_dappclean_protocol_apis_fantom_meowapiftm",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 23,
+ "latency_s": 96.3,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.900 is below the 0.925 bar: business logic. Reported for review, not blocking.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 0.9,
+   "source": "council:business_logic",
+   "model": "llama3.2:3b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

@@ -1,0 +1,174 @@
+{
+ "contest_id": "8",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 72,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "util/EnumerableSetUpgradeable.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "util/EnumerableMapUpgradeable.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/Strings.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "interface/INFTXEligibilityManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "util/EnumerableSetUpgradeable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "util/ContextUpgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "eligibility/NFTXListEligibility.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "proxy/Initializable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interface/IRewardDistributionToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/ERC1155.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interface/INFTXVaultFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/IERC1155.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/EnumerableMapUpgradeable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interface/IERC165Upgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/SafeMathInt.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/PausableUpgradeable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "util/SafeMathUpgradeable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "eligibility/NFTXDeferEligibility.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/ERC721.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/Strings.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/Address.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/ERC20FlashMintUpgradeable.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "token/IERC1155ReceiverUpgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/IBeacon.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/SafeERC20Upgradeable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interface/INFTXFeeDistributor.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/IERC1155MetadataURI.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "proxy/UpgradeableBeacon.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 81,
+ "latency_s": 240.2,
+ "schema": 1
+}

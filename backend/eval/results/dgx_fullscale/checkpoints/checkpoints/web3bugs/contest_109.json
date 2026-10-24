@@ -1,0 +1,207 @@
+{
+ "contest_id": "109",
+ "detected": true,
+ "n_slices_scanned": 22,
+ "n_slices_available": 22,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "src/AdminMultisigBase.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "src/AxelarGatewayProxy.sol",
+   "types": [
+    "access_control",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "src/AxelarGatewaySinglesig.sol",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "src/DepositHandler.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "src/ERC20.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/MintableCappedERC20.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "util/AddressFormat.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "src/AdminMultisigBase.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "src/AxelarGateway.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/AxelarGatewayMultisig.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/AxelarGatewayProxy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "src/AxelarGatewaySinglesig.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "src/BurnableMintableCappedERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/Context.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/DepositHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "src/ECDSA.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/ERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/ERC20Permit.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/EternalStorage.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/MintableCappedERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "src/Ownable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/TokenDeployer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAxelarExecutable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAxelarGateway.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAxelarGatewayMultisig.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IAxelarGatewaySinglesig.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20BurnFrom.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/AddressFormat.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 56,
+ "latency_s": 289.2,
+ "schema": 1
+}

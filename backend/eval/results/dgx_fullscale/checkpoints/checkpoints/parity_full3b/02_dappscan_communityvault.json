@@ -1,0 +1,31 @@
+{
+ "contract_id": "02_dappscan_communityvault",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 3,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 10,
+ "latency_s": 17.7,
+ "error": null,
+ "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 0,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 72.8,
+ "bucket": "02_vuln_labelled",
+ "tier": "audit_report",
+ "expected": "vulnerable",
+ "agrees": false
+}

@@ -1,0 +1,62 @@
+{
+ "contract_id": "02_dappscan_openzeppelin_arcade_city_token_ac_token_dd4207e1538f96eb3cbbf9e714eb38015bfe7c5a",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 4,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 65,
+ "latency_s": 156.5,
+ "error": null,
+ "verdict_reason": "4 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, arithmetic, business logic, reentrancy.",
+ "specialists_errored": 1,
+ "findings": [
+  {
+   "type": "reentrancy",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:reentrancy",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "access_control",
+   "severity": "low",
+   "confidence": 0.9,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "arithmetic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:arithmetic",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 89.4,
+ "bucket": "02_vuln_labelled",
+ "tier": "audit_report",
+ "expected": "vulnerable",
+ "agrees": true
+}

@@ -1,0 +1,56 @@
+{
+ "contract_id": "02_dappscan_contract_token_rockettokenreth",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 3,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "flashloan_mev",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 20,
+ "latency_s": 38.5,
+ "error": null,
+ "verdict_reason": "3 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, flashloan mev, reentrancy.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "reentrancy",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:reentrancy",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "flashloan_mev",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:flashloan_mev",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 62.2,
+ "bucket": "02_vuln_labelled",
+ "tier": "audit_report",
+ "expected": "vulnerable",
+ "agrees": true
+}

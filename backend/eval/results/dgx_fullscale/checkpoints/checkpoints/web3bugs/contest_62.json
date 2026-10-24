@@ -1,0 +1,60 @@
+{
+ "contest_id": "62",
+ "detected": true,
+ "n_slices_scanned": 7,
+ "n_slices_available": 7,
+ "n_files_out_of_scope": 44,
+ "flagged": [
+  {
+   "slice": "src/LockeERC20.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "src/Locke.sol::Governed",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Locke.sol::IGoverned",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Locke.sol::ExternallyGoverned",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/Locke.sol::LockeCallee",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "src/Locke.sol::Stream",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "src/Locke.sol::StreamFactory",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "src/LockeERC20.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "api_calls": 17,
+ "latency_s": 112.7,
+ "schema": 1
+}

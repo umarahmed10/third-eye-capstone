@@ -1,0 +1,62 @@
+{
+ "contract_id": "02_solidifi_time_manipulation_039",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 4,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 25.7,
+ "error": null,
+ "verdict_reason": "4 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, business logic, dos gas, reentrancy.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "reentrancy",
+   "severity": "high",
+   "confidence": 1.0,
+   "source": "council:reentrancy",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "access_control",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  },
+  {
+   "type": "dos_gas",
+   "severity": "critical",
+   "confidence": 0.95,
+   "source": "council:dos_gas",
+   "model": "gemma3:4b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 157.7,
+ "bucket": "02_vuln_labelled",
+ "tier": "injected",
+ "expected": "vulnerable",
+ "agrees": true
+}

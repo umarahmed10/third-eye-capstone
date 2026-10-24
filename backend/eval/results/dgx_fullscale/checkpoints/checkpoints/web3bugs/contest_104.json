@@ -1,0 +1,176 @@
+{
+ "contest_id": "104",
+ "detected": true,
+ "n_slices_scanned": 23,
+ "n_slices_available": 23,
+ "n_files_out_of_scope": 10,
+ "flagged": [
+  {
+   "slice": "contracts/CoreCollection.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/ERC721Claimable.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/RoyaltyVault.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Splitter.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/CoreCollection.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/CoreFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CoreMultiSig.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/CoreProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ERC721Claimable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/ERC721Payable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MultiSigWallet.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structs/Collection.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICoreCollection.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ICoreFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ProxyVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/RoyaltyVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/RoyaltyVaultFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/VaultStorage.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IRoyaltyVault.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ISplitter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVaultFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SplitFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SplitProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SplitStorage.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Splitter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ICoreCollection.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWETH.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 58,
+ "latency_s": 112.4,
+ "schema": 1
+}

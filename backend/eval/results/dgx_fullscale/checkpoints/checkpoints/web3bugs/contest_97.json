@@ -1,0 +1,164 @@
+{
+ "contest_id": "97",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 33,
+ "n_files_out_of_scope": 5,
+ "flagged": [
+  {
+   "slice": "svg-helpers/SvgHelperBase.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "hyphen/WhitelistPeriodManager.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 11,
+ "per_slice": [
+  {
+   "slice": "interfaces/IExecutorManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWhiteListPeriodManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Polygon/Polygon.USDT.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Polygon/Polygon.USDC.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISvgHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "svg-helpers/SvgHelperBase.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ILiquidityPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hyphen/LiquidityProviders.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "structures/LpTokenMetadata.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Ethereum/Ethereum.ETH.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Avalanche/Avalanche.ETH.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Avalanche/Avalanche.BICO.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Avalanche/Avalanche.USDT.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "hyphen/LiquidityPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITokenManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/LiquidityPoolProxy.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Ethereum/Ethereum.USDT.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Avalanche/Avalanche.USDC.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILPToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "hyphen/WhitelistPeriodManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Ethereum/Ethereum.BICO.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "token/TokenManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Ethereum/Ethereum.USDC.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "metatx/ERC2771Context.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ILiquidityProviders.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 48,
+ "latency_s": 424.1,
+ "schema": 1
+}

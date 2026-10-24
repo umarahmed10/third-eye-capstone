@@ -1,0 +1,208 @@
+{
+ "contest_id": "23",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 72,
+ "n_files_out_of_scope": 26,
+ "flagged": [
+  {
+   "slice": "actions/nTokenRedeemAction.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "adapters/NotionalV1ToNotionalV2.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/Bitmap.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "balances/Incentives.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "portfolio/PortfolioHandler.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "governance/Reservoir.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "governance/NoteERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "valuation/FreeCollateral.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "actions/nTokenRedeemAction.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "balances/BalanceHandler.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/Proxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "internal/AccountContextHandler.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "actions/InitializeMarketsAction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/nProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/FloatingPoint56.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "adapters/NotionalV1ToNotionalV2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/Bitmap.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "math/SafeInt256.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "notional/INoteERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/ABDKMath64x64.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "ERC1967/ERC1967Upgrade.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "liquidation/LiquidatefCash.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "markets/CashGroup.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "balances/Incentives.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "portfolio/PortfolioHandler.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "notional/nTokenERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "actions/GovernanceAction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/FreeCollateralExternal.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "chainlink/AggregatorV3Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "governance/Reservoir.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "global/Constants.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 87,
+ "latency_s": 848.2,
+ "schema": 1
+}

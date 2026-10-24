@@ -1,0 +1,202 @@
+{
+ "contest_id": "51",
+ "detected": true,
+ "n_slices_scanned": 21,
+ "n_slices_available": 21,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "sol/BTCPoolDelegator.sol",
+   "types": [
+    "dos_gas",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "sol/ETHPoolDelegator.sol",
+   "types": [
+    "business_logic",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "contracts/LPToken.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/PublicSaleBatchWithdraw.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/InvestorDistribution.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Vesting.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "utils/Token.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "sol/BTCPoolDelegator.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "sol/ETHPoolDelegator.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "flashloan_mev"
+   ]
+  },
+  {
+   "slice": "sol/USDPoolDelegator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/LPToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/MathUtils.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/OwnerPausable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Swap.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SwapUtils.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "hardhat/console.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "helper/GenericERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISwap.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PublicSale.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/PublicSaleBatchWithdraw.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC721.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/IERC165.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/AirdropDistribution.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/InvestorDistribution.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Vesting.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IVesting.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/Token.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 81,
+ "latency_s": 861.1,
+ "schema": 1
+}

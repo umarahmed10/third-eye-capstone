@@ -1,0 +1,41 @@
+{
+ "contract_id": "02_solidifi_unchecked_low_level_calls_027",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 1,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 20,
+ "latency_s": 64.8,
+ "error": null,
+ "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.800 is below the 0.925 bar: access control. Reported for review, not blocking.",
+ "specialists_errored": 1,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "low",
+   "confidence": 0.8,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 83.2,
+ "bucket": "02_vuln_labelled",
+ "tier": "injected",
+ "expected": "vulnerable",
+ "agrees": false
+}

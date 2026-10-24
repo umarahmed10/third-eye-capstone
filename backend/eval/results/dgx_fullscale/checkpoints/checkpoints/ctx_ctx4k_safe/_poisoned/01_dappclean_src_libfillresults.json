@@ -1,0 +1,27 @@
+{
+ "contract_id": "01_dappclean_src_libfillresults",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 2,
+ "roles": [
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 11,
+ "latency_s": 0.4,
+ "error": null,
+ "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

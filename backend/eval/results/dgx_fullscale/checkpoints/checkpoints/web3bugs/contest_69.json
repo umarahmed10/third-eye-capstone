@@ -1,0 +1,254 @@
+{
+ "contest_id": "69",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 110,
+ "n_files_out_of_scope": 3,
+ "flagged": [
+  {
+   "slice": "proxy/ProxyControllerSimple.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "tools/NFTXFlashSwipe.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interface/INFTXLPStaking.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "token/ERC20Upgradeable.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "eligibility/NFTXUniqueEligibility.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "solidity/NFTXEligibilityManager.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/NFTXLPStaking2.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "util/EnumerableSetUpgradeable.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/DummyXToken.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "solidity/NFTXVaultFactoryUpgradeable.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "proxy/ProxyControllerSimple.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "util/SafeMathInt.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "tools/NFTXFlashSwipe.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "eligibility/NFTXGen0Eligibility.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "testing/IERC1155.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interface/INFTXLPStaking.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "token/ERC20Upgradeable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "eligibility/NFTXUniqueEligibility.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/ERC165.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "solidity/NFTXEligibilityManager.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/NFTXLPStaking2.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "eligibility/NFTXRangeExtendedEligibility.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/IERC721Enumerable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/Create2BeaconProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "util/EnumerableSetUpgradeable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "util/SafeMathUpgradeable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "proxy/UpgradeableBeacon.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "eligibility/NFTXRangeEligibility.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/IERC721Receiver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/NFTXVaultFactoryUpgradeable2.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interface/INFTXSimpleFeeDistributor.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/ERC1155Receiver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "testing/DummyXToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "solidity/NFTXVaultFactoryUpgradeable.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "testing/DummyToken.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 64,
+ "latency_s": 111.2,
+ "schema": 1
+}

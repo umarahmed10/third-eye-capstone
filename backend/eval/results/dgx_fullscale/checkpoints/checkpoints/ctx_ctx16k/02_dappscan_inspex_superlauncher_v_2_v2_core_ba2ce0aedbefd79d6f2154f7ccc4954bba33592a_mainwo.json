@@ -1,0 +1,37 @@
+{
+ "contract_id": "02_dappscan_inspex_superlauncher_v_2_v2_core_ba2ce0aedbefd79d6f2154f7ccc4954bba33592a_mainwo",
+ "ground_truth": "vulnerable",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 1,
+ "n_specialists_run": 4,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 20,
+ "latency_s": 175.9,
+ "error": null,
+ "verdict_reason": "1 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: arithmetic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "arithmetic",
+   "severity": "critical",
+   "confidence": 1.0,
+   "source": "council:arithmetic",
+   "model": "qwen2.5-coder:7b"
+  }
+ ],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

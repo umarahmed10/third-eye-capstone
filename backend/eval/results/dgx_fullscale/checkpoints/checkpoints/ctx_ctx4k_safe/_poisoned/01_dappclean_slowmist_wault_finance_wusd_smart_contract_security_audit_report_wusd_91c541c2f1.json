@@ -1,0 +1,31 @@
+{
+ "contract_id": "01_dappclean_slowmist_wault_finance_wusd_smart_contract_security_audit_report_wusd_91c541c2f1",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 6,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "flashloan_mev",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 16,
+ "latency_s": 195.9,
+ "error": null,
+ "verdict_reason": "All 6 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

@@ -1,0 +1,179 @@
+{
+ "contest_id": "100",
+ "detected": true,
+ "n_slices_scanned": 18,
+ "n_slices_available": 18,
+ "n_files_out_of_scope": 4,
+ "flagged": [
+  {
+   "slice": "core/AccountAccessController.sol",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "core/Collateral.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "core/CollateralDepositRecord.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "core/PrePOMarket.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "core/PrePOMarketFactory.sol",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "core/WithdrawHook.sol",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "core/AccountAccessController.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "core/Collateral.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "core/CollateralDepositRecord.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "core/DepositHook.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "core/LongShortToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "core/PrePOMarket.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "core/PrePOMarketFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "core/SingleStrategyController.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "core/WithdrawHook.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IAccountAccessController.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICollateral.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICollateralDepositRecord.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IHook.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ILongShortToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPrePOMarket.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPrePOMarketFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IStrategyController.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 51,
+ "latency_s": 96.4,
+ "schema": 1
+}

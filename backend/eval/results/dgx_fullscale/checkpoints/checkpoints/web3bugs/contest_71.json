@@ -1,0 +1,162 @@
+{
+ "contest_id": "71",
+ "detected": true,
+ "n_slices_scanned": 21,
+ "n_slices_available": 21,
+ "n_files_out_of_scope": 9,
+ "flagged": [
+  {
+   "slice": "contracts/CDSTemplate.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "PremiumModels/BondingPremium.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Vault.sol",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPoolTemplate.sol",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/CDSTemplate.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/IndexTemplate.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/InsureDAOERC20.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/Ownership.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Parameters.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PoolTemplate.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "PremiumModels/BondingPremium.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Registry.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Vault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICDSTemplate.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IFactory.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IIndexTemplate.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOwnership.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IParameters.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPoolTemplate.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPremiumModel.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniversalMarket.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 55,
+ "latency_s": 370.2,
+ "schema": 1
+}

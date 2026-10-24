@@ -1,0 +1,172 @@
+{
+ "contest_id": "16",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 29,
+ "n_files_out_of_scope": 14,
+ "flagged": [
+  {
+   "slice": "contracts/Insurance.sol",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "oracle/ChainlinkOracleAdapter.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "deployers/PricingDeployerV1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Trader.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "deployers/IPricingDeployer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ITrader.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deployers/InsuranceDeployerV1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deployers/PerpsDeployerV1.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Pricing.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Insurance.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/TracerPerpetualsFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ILiquidation.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TestToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/InsurancePoolToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TracerPerpetualSwaps.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deployers/IPerpsDeployer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "deployers/LiquidationDeployerV1.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/IChainlinkOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/Oracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/GasOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "deployers/IInsuranceDeployer.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IPricing.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ITracerPerpetualSwaps.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/Types.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ISafetyWithdraw.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/ChainlinkOracleAdapter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 55,
+ "latency_s": 156.3,
+ "schema": 1
+}

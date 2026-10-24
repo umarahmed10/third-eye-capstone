@@ -1,0 +1,200 @@
+{
+ "contest_id": "101",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 43,
+ "n_files_out_of_scope": 107,
+ "flagged": [
+  {
+   "slice": "Verification/twitterVerifier.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "yield/StrategyRegistry.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Pool/PoolEthUtils.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Pool/Beacon.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "SavingsAccount/SavingsAccountUtil.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "interfaces/IPool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ITwitterVerifier.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISavingsAccount.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVerifier.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/SublimeProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Verification/twitterVerifier.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "CreditLine/CreditLine.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILimitsManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "yield/StrategyRegistry.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ICreditLine.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "SavingsAccount/SavingsAccount.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILenderPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPooledCreditLineEnums.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Pool/Repayments.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Pool/PoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPooledCreditLine.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IYield.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IWETH9.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Pool/PoolEthUtils.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Pool/Beacon.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PriceOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "interfaces/IPoolFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IVerification.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "SavingsAccount/SavingsAccountUtil.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Pool/Pool.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 86,
+ "latency_s": 789.3,
+ "schema": 1
+}

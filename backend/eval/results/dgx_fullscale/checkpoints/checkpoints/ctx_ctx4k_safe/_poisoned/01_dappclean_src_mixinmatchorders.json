@@ -1,0 +1,29 @@
+{
+ "contract_id": "01_dappclean_src_mixinmatchorders",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 319.3,
+ "error": null,
+ "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 1,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_solady_accounts_ext_ithaca_erc7821",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 21,
+ "latency_s": 0.5,
+ "error": null,
+ "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 5,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

@@ -1,0 +1,30 @@
+{
+ "contract_id": "01_dappclean_consensys_modular_interactive_crowdsale_ethereum_libraries_73abc22623e0841b8ea67",
+ "ground_truth": "likely_safe",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 22,
+ "latency_s": 848.0,
+ "error": null,
+ "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "safe",
+ "tier": "audit_reviewed_clean"
+}

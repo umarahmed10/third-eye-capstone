@@ -1,0 +1,174 @@
+{
+ "contest_id": "113",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 29,
+ "n_files_out_of_scope": 12,
+ "flagged": [
+  {
+   "slice": "contracts/BentoBoxFlat.sol::MasterContractManager",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BaseBoringBatchable",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::RebaseLibrary",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringMath128",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/NFTPairWithOracle.sol::NFTPairWithOracle",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/NFTPair.sol::INFTPair",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/NFTPairWithOracle.sol::ILendingClub",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::IFlashBorrower",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringOwnable",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/NFTPair.sol::ILendingClub",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BentoBoxV1",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::MasterContractManager",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::IWETH",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringOwnableData",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::IMasterContract",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringBatchable",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringMath64",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BaseBoringBatchable",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringMath32",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringMath",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/NFTPair.sol::NFTPair",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ISwapperGeneric.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::IStrategy",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::IERC20",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::BoringERC20",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/BentoBoxFlat.sol::RebaseLibrary",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/INFTOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/NFTPairWithOracle.sol::INFTPair",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 77,
+ "latency_s": 460.9,
+ "schema": 1
+}

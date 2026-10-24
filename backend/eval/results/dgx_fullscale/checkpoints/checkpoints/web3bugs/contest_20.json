@@ -1,0 +1,244 @@
+{
+ "contest_id": "20",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 29,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "outside-scope/Reserve.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/synthFactory.sol",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/DaoVault.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Utils.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BondVault.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/synthVault.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/poolFactory.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "outside-scope/FallenSpartans.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "interfaces/iBONDVAULT.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "outside-scope/Reserve.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/synthFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/iRESERVE.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/DaoVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Utils.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "outside-scope/Sparta.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/iSYNTHFACTORY.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/iUTILS.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iDAOVAULT.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/BondVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/synthVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/iROUTER.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iPOOL.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iSYNTHVAULT.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Dao.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iBEP677.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/poolFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/iBASE.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iBEP20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/Router.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/iWBNB.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "outside-scope/FallenSpartans.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/iPOOLFACTORY.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 69,
+ "latency_s": 594.5,
+ "schema": 1
+}

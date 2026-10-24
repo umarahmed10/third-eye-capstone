@@ -1,0 +1,47 @@
+{
+ "contract_id": "01_dappclean_basesynthetix",
+ "ground_truth": "likely_safe",
+ "verdict": "NO-GO",
+ "predicted": "vulnerable",
+ "n_findings": 2,
+ "n_specialists_run": 4,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "proxy_upgradeability"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 37.3,
+ "error": null,
+ "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 0.960 is at or above the 0.925 bar: access control, business logic.",
+ "specialists_errored": 0,
+ "findings": [
+  {
+   "type": "access_control",
+   "severity": "medium",
+   "confidence": 0.8,
+   "source": "council:access_control",
+   "model": "qwen2.5-coder:7b"
+  },
+  {
+   "type": "business_logic",
+   "severity": "high",
+   "confidence": 0.8,
+   "source": "council:business_logic",
+   "model": "llama3.1:8b"
+  }
+ ],
+ "schema": 2,
+ "baseline_verdict": "GO",
+ "baseline_latency_s": 270.4,
+ "bucket": "01_safe",
+ "tier": "audit_reviewed_clean",
+ "expected": "safe",
+ "agrees": false
+}

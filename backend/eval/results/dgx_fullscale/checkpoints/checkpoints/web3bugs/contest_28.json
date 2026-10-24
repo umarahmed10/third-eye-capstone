@@ -1,0 +1,226 @@
+{
+ "contest_id": "28",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 107,
+ "n_files_out_of_scope": 19,
+ "flagged": [
+  {
+   "slice": "Helper/MISOHelper.sol::MISOHelper",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Helper/PairsHelper.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Tokens/SushiToken.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Utils/Timelock.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MISOFarmFactory.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/MISOTokenFactory.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::FarmHelper",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "Auctions/BatchAuction.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Utils/SafeMathPlus.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::ICrowdsale",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/TransferHelper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::MISOHelper",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Vault/GnosisSafeFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/PairsHelper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Auctions/HyperbolicAuction.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Tokens/SushiToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMisoTemplate.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Utils/BoringOwnable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IPointList.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Utils/Timelock.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMisoCrowdsale.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapV2Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/MISOFermenter.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/MISOFarmFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IMisoFermenter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::IUniswapFactory",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::IBatchAuction",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Utils/BoringMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MISOTokenFactory.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "ERC20/ERC20Pausable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::IUniswapPair",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Helper/MISOHelper.sol::FarmHelper",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 84,
+ "latency_s": 489.4,
+ "schema": 1
+}

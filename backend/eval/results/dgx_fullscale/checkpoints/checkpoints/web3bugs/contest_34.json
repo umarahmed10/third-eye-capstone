@@ -1,0 +1,210 @@
+{
+ "contest_id": "34",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 41,
+ "n_files_out_of_scope": 20,
+ "flagged": [
+  {
+   "slice": "contracts/DrawCalculatorTimelock.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IDrawBeacon.sol",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Reserve.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributionBuffer.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeFlush.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributor.sol",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "slices_errored": 2,
+ "per_slice": [
+  {
+   "slice": "interfaces/IDrawBuffer.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "prize-pool/PrizePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/L1TimelockTrigger.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/OverflowSafeComparatorLib.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IControlledToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "compound/CTokenInterface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/DrawBeacon.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ControlledToken.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/IReserve.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/DrawCalculatorTimelock.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IStrategy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IDrawBeacon.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/Reserve.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "prize-strategy/PrizeSplitStrategy.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/RingBufferLib.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "compound/ICompLike.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PrizeDistributionBuffer.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "prize-pool/StakePrizePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "prize-pool/YieldSourcePrizePool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/PrizeFlush.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/DrawCalculator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IReserve.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/PrizeDistributor.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "libraries/TwabLib.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 69,
+ "latency_s": 409.8,
+ "schema": 1
+}

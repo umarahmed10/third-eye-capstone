@@ -1,0 +1,186 @@
+{
+ "contest_id": "83",
+ "detected": true,
+ "n_slices_scanned": 15,
+ "n_slices_available": 15,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/ConcurRewardPool.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/ConvexStakingWrapper.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/EasySign.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MasterChef.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Shelter.sol",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/USDMPegRecovery.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/VoteProxy.sol",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "external/ConvexInterfaces.sol",
+   "types": [
+    "dos_gas"
+   ]
+  }
+ ],
+ "slices_errored": 0,
+ "per_slice": [
+  {
+   "slice": "contracts/ConcurRewardPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/ConvexStakingWrapper.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/EasySign.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MasterChef.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/Shelter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "contracts/StakingRewards.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/USDMPegRecovery.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/VoteProxy.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "external/ConvexInterfaces.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "external/CurveInterfaces.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IConcurRewardClaim.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IShelter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IShelterClient.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/Iauction.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "library/CvxMining.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 46,
+ "latency_s": 90.0,
+ "schema": 1
+}

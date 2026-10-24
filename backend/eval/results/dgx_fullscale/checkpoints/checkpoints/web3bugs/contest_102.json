@@ -1,0 +1,198 @@
+{
+ "contest_id": "102",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 39,
+ "n_files_out_of_scope": 21,
+ "flagged": [
+  {
+   "slice": "external/WETH9.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "volt/Volt.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/IGlobalRateLimitedMinter.sol",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "external/WETH9.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "minter/RateLimitedMinter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "refs/CoreRef.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/MultiRateLimited.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "oracle/IOraclePassThrough.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/OraclePassThrough.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "refs/ICoreRef.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "peg/INonCustodialPSM.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "compound/ERC20CompoundPCVDeposit.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/ScalingPriceOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "utils/Deviation.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/IOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "refs/IOracleRef.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "core/Permissions.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "volt/IVolt.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "calendar/BokkyPooBahsDateTimeLibrary.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "core/TribeRoles.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "volt/Volt.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/RateLimited.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/Timed.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "oracle/IScalingPriceOracle.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "vcon/Vcon.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "pcv/IPCVDeposit.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/IGlobalRateLimitedMinter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "compound/CompoundPCVDepositBase.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 53,
+ "latency_s": 188.9,
+ "schema": 1
+}

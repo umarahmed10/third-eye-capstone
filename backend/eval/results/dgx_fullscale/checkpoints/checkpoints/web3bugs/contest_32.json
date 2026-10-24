@@ -1,0 +1,172 @@
+{
+ "contest_id": "32",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 40,
+ "n_files_out_of_scope": 0,
+ "flagged": [
+  {
+   "slice": "contracts/UniswapV3Oracle.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/InterestRateModel.sol",
+   "types": [
+    "arithmetic"
+   ]
+  }
+ ],
+ "slices_errored": 3,
+ "per_slice": [
+  {
+   "slice": "uniV3/IUniswapV3PoolActions.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/UniswapV3Oracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "interfaces/ILendingController.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/SafeERC20.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOwnable.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "uniV3/ISwapRouter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniV3/IUniswapV3Helper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/SafeMath.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/PoolAddress.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/TransferHelper.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IUniswapPriceConverter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/InterestRateModel.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic"
+   ]
+  },
+  {
+   "slice": "interfaces/IPriceOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IInterestRateModel.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/LPTokenMaster.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/ILinkOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniV3/IUniswapV3Pool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "external/Ownable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IERC721Permit.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "uniV3/INonFungiblePositionManager.sol",
+   "verdict": "GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "interfaces/ILendingPair.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniV3/IUniswapV3Factory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILPTokenMaster.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "uniV3/IPeripheryImmutableState.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 54,
+ "latency_s": 82.0,
+ "schema": 1
+}

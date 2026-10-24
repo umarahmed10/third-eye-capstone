@@ -1,0 +1,33 @@
+{
+ "contract_id": "02_solidifi_transaction_order_dependence_026",
+ "ground_truth": "vulnerable",
+ "verdict": "GO",
+ "predicted": "likely_safe",
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 81,
+ "latency_s": 284.7,
+ "error": null,
+ "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "baseline_verdict": "NO-GO",
+ "baseline_latency_s": 142.4,
+ "bucket": "02_vuln_labelled",
+ "tier": "injected",
+ "expected": "vulnerable",
+ "agrees": false
+}

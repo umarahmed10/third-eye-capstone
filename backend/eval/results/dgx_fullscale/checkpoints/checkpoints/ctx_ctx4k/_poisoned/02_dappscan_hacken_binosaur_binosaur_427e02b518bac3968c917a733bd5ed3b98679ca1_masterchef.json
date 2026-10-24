@@ -1,0 +1,30 @@
+{
+ "contract_id": "02_dappscan_hacken_binosaur_binosaur_427e02b518bac3968c917a733bd5ed3b98679ca1_masterchef",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "oracle_price_manipulation",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 13,
+ "latency_s": 241.2,
+ "error": null,
+ "verdict_reason": "4/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 4,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "audit_report"
+}

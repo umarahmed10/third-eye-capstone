@@ -1,0 +1,194 @@
+{
+ "contest_id": "98",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 40,
+ "n_files_out_of_scope": 14,
+ "flagged": [
+  {
+   "slice": "options/CollateralToken.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "utils/EIP712MetaTransaction.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/IOracleRegistry.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "timelock/TimelockController.sol",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "contracts/Controller.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOracleFallbackMechanism.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOperateProxy.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "oracle/ChainlinkOracleManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/OptionsUtils.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IEIP712MetaTransaction.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ITimelockedConfig.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IController.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "oracle/ChainlinkFixedTimeOracleManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "libraries/ProtocolValue.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "options/CollateralToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "options/AssetsRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "options/OptionsFactory.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "libraries/QuantMath.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IChainlinkOracleManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IProviderOracleManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/EIP712MetaTransaction.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "chainlink/IEACAggregatorProxy.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IAssetsRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IOracleRegistry.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "pricing/PriceRegistry.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IQuantCalculator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "timelock/TimelockController.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/IQToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "options/QTokenStringUtils.sol",
+   "verdict": "GO",
+   "types": []
+  }
+ ],
+ "api_calls": 58,
+ "latency_s": 244.5,
+ "schema": 1
+}

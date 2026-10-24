@@ -1,0 +1,192 @@
+{
+ "contest_id": "37",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 29,
+ "n_files_out_of_scope": 11,
+ "flagged": [
+  {
+   "slice": "pools/CompoundTempusPool.sol",
+   "types": [
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "amm/VecMath.sol",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/ITempusPool.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/ERC20OwnerMintableToken.sol",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "slices_errored": 4,
+ "per_slice": [
+  {
+   "slice": "interfaces/IRateProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "utils/PermanentlyOwnable.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "token/PoolShare.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "aave/IAToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "math/Fixed256xVar.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "amm/TempusAMM.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "pools/CompoundTempusPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "amm/VecMath.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "pools/AaveTempusPool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/AMMBalancesHelper.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "compound/ICErc20.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/UntrustedERC20.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/ITempusPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ITempusAMM.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/IPoolShare.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TempusController.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "contracts/TempusPool.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "aave/ILendingPool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "amm/TempusAMMUserDataHelpers.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "token/ERC20FixedSupply.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/ERC20OwnerMintableToken.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "pools/LidoTempusPool.sol",
+   "verdict": "GO",
+   "types": [
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "interfaces/IVault.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "token/YieldShare.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "compound/ICToken.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 63,
+ "latency_s": 585.7,
+ "schema": 1
+}

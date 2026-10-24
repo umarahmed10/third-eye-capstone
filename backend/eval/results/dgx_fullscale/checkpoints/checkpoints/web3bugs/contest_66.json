@@ -1,0 +1,210 @@
+{
+ "contest_id": "66",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 142,
+ "n_files_out_of_scope": 2,
+ "flagged": [
+  {
+   "slice": "YETI/LockupContract.sol",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/HintHelpers.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "TestContracts/CommunityIssuanceTester.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Oracles/AAVETokenOracle.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Oracles/BQITokenOracle.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 4,
+ "per_slice": [
+  {
+   "slice": "contracts/BorrowerOperations.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Dependencies/AggregatorV3Interface.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "YETI/LockupContract.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic",
+    "dos_gas",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "Interfaces/ISortedTroves.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "BoringCrypto/Domain.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/IMasterChefJoeV2.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Dependencies/CheckContract.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IERC20_8.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IStabilityPool.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Proxy/TroveManagerScript.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IUnipool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/IYUSDToken.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "Interfaces/ILockupContractFactory.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/YetiFinanceTreasury.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/HintHelpers.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "AssetWrappers/SafeERC20.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "TestContracts/CommunityIssuanceTester.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "Oracles/AAVETokenOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/ISYETI.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/TroveManager.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "contracts/PriceFeed.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "TestContracts/LUSDTokenCaller.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Interfaces/ITroveManager.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "Oracles/BQITokenOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 80,
+ "latency_s": 507.5,
+ "schema": 1
+}

@@ -1,0 +1,282 @@
+{
+ "contest_id": "42",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 58,
+ "n_files_out_of_scope": 9,
+ "flagged": [
+  {
+   "slice": "adapter/ChainlinkAdapter.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "emission/VestedRewardPool.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/UniswapV2Library.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "treasury/MochiTreasuryV0.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "adapter/SushiswapV2LPAdapter.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "contracts/MerklePatriciaVerifier.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "feePool/NoMochiFeePool.sol",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "adapter/UniswapV2LPAdapter.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "feePool/ReferralFeePoolV0.sol",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "vault/MochiVault.sol",
+   "types": [
+    "arithmetic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "contracts/SushiswapV2Library.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "adapter/ChainlinkAdapter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "emission/VestedRewardPool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "oracle_price_manipulation",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/UniswapV2Library.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "interfaces/ICSSRAdapter.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "cssr/SushiswapV2CSSR.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/UQ112x112.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "treasury/MochiTreasuryV0.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "contracts/MochiEngine.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/Create2BeaconMaker.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/IReferralFeePool.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/ILiquidator.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "adapter/SushiswapV2LPAdapter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "vault/MochiNft.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": [
+    "access_control"
+   ]
+  },
+  {
+   "slice": "contracts/BeaconProxyDeployer.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "interfaces/ICSSRRouter.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "contracts/MerklePatriciaVerifier.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "feePool/NoMochiFeePool.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "contracts/Beacon.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "curve/ICurveAddressProvider.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "adapter/UniswapV2LPAdapter.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "flashloan_mev",
+    "oracle_price_manipulation"
+   ]
+  },
+  {
+   "slice": "feePool/ReferralFeePoolV0.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "interfaces/ICurveVotingEscrow.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "interfaces/IGovernanceOwned.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "vault/MochiVault.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ]
+  },
+  {
+   "slice": "contracts/SushiswapV2Library.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  }
+ ],
+ "api_calls": 76,
+ "latency_s": 141.9,
+ "schema": 1
+}

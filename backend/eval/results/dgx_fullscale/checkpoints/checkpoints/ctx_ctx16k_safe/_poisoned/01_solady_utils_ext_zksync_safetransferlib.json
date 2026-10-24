@@ -1,0 +1,27 @@
+{
+ "contract_id": "01_solady_utils_ext_zksync_safetransferlib",
+ "ground_truth": "likely_safe",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 2,
+ "roles": [
+  "access_control",
+  "business_logic"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 12,
+ "latency_s": 0.4,
+ "error": null,
+ "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 2,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 16384,
+ "expected": "safe",
+ "tier": "audited_library"
+}

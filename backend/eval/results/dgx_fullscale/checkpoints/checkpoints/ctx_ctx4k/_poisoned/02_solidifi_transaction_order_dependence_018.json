@@ -1,0 +1,30 @@
+{
+ "contract_id": "02_solidifi_transaction_order_dependence_018",
+ "ground_truth": "vulnerable",
+ "verdict": "INCONCLUSIVE",
+ "predicted": null,
+ "n_findings": 0,
+ "n_specialists_run": 5,
+ "roles": [
+  "reentrancy",
+  "access_control",
+  "arithmetic",
+  "business_logic",
+  "dos_gas"
+ ],
+ "arbitration": {
+  "reviewed": 0,
+  "upheld": 0,
+  "dropped": 0
+ },
+ "api_calls": 35,
+ "latency_s": 850.5,
+ "error": null,
+ "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+ "specialists_errored": 3,
+ "findings": [],
+ "schema": 2,
+ "num_ctx": 4096,
+ "expected": "vulnerable",
+ "tier": "injected"
+}

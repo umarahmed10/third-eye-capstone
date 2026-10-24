@@ -1,0 +1,230 @@
+{
+ "contest_id": "145",
+ "detected": true,
+ "n_slices_scanned": 25,
+ "n_slices_available": 80,
+ "n_files_out_of_scope": 11,
+ "flagged": [
+  {
+   "slice": "registry/TestRegistrar.sol",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "digests/DummyDigest.sol",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "ethregistrar/LinearPremiumPriceOracle.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/NameEncoder.sol",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "ethregistrar/BulkRenewal.sol",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "ethregistrar/StablePriceOracle.sol",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "wrapper/ERC1155Fuse.sol",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "dnssec-oracle/DNSSECImpl.sol",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "slices_errored": 1,
+ "per_slice": [
+  {
+   "slice": "profiles/IInterfaceResolver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "profiles/IExtendedResolver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "digests/SHA256Digest.sol",
+   "verdict": "INCONCLUSIVE",
+   "types": []
+  },
+  {
+   "slice": "algorithms/RSASHA256Algorithm.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "profiles/IDNSRecordResolver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ethregistrar/IPriceOracle.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "resolvers/Resolver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "profiles/IContentHashResolver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "registry/TestRegistrar.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "registry/ENS.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "profiles/INameResolver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ethregistrar/IBulkRenewal.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "profiles/TextResolver.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "root/Root.sol",
+   "verdict": "GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "digests/DummyDigest.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "ethregistrar/LinearPremiumPriceOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "utils/NameEncoder.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "ethregistrar/BulkRenewal.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "reentrancy"
+   ]
+  },
+  {
+   "slice": "wrapper/BytesUtil.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "ethregistrar/StablePriceOracle.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "arithmetic",
+    "business_logic"
+   ]
+  },
+  {
+   "slice": "resolvers/OwnedResolver.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "wrapper/ERC1155Fuse.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "dos_gas"
+   ]
+  },
+  {
+   "slice": "resolvers/IMulticallable.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "registry/IReverseRegistrar.sol",
+   "verdict": "GO",
+   "types": []
+  },
+  {
+   "slice": "dnssec-oracle/DNSSECImpl.sol",
+   "verdict": "NO-GO",
+   "types": [
+    "access_control"
+   ]
+  }
+ ],
+ "api_calls": 47,
+ "latency_s": 73.6,
+ "schema": 1
+}

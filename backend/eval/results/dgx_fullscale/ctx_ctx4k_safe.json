@@ -1,0 +1,5183 @@
+{
+ "arm": "ctx4k_safe",
+ "num_ctx": 4096,
+ "rows": [
+  {
+   "contract_id": "01_dappclean_tokengrant",
+   "ground_truth": "likely_safe",
+   "verdict": "NO-GO",
+   "predicted": "vulnerable",
+   "n_findings": 2,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 79.7,
+   "error": null,
+   "verdict_reason": "2 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, business logic.",
+   "specialists_errored": 1,
+   "findings": [
+    {
+     "type": "access_control",
+     "severity": "medium",
+     "confidence": 0.9,
+     "source": "council:access_control",
+     "model": "qwen2.5-coder:7b"
+    },
+    {
+     "type": "business_logic",
+     "severity": "high",
+     "confidence": 1.0,
+     "source": "council:business_logic",
+     "model": "llama3.2:3b"
+    }
+   ],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_external_contracts_aave_v1_aavegovernancev2",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 36,
+   "latency_s": 850.3,
+   "error": null,
+   "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_exchanger",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 23,
+   "latency_s": 355.2,
+   "error": null,
+   "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_curve_curveamo_v2_non_impl",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 40,
+   "latency_s": 859.4,
+   "error": null,
+   "verdict_reason": "6/7 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_herofarmv3",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 27,
+   "latency_s": 796.7,
+   "error": null,
+   "verdict_reason": "6/7 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_jsonparserlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 2,
+   "latency_s": 37.6,
+   "error": null,
+   "verdict_reason": "1/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_oz_token_erc721_erc721",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 20,
+   "latency_s": 616.3,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_oz_governance_governor",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 29,
+   "latency_s": 786.5,
+   "error": null,
+   "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_28_contracts_helper_misohelper",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 32,
+   "latency_s": 845.4,
+   "error": null,
+   "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_solady_utils_erc1967factory",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 664.4,
+   "error": null,
+   "verdict_reason": "2/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_ozup_governance_governorupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 414.3,
+   "error": null,
+   "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_tokens_ext_zksync_erc721",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 235.8,
+   "error": null,
+   "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_gcdelegatedreservemanager",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 157.1,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_vaults_vestingvault",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 1,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 53,
+   "latency_s": 729.5,
+   "error": null,
+   "verdict_reason": "3/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [
+    {
+     "type": "flashloan_mev",
+     "severity": "medium",
+     "confidence": 0.6,
+     "source": "council:flashloan_mev",
+     "model": "llama3.2:3b"
+    }
+   ],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_webauthn",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 140.3,
+   "error": null,
+   "verdict_reason": "1/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc1155",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 146.0,
+   "error": null,
+   "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_angelbase",
+   "ground_truth": "likely_safe",
+   "verdict": "NO-GO",
+   "predicted": "vulnerable",
+   "n_findings": 3,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 46.9,
+   "error": null,
+   "verdict_reason": "3 finding(s) cleared the evidence gate and their combined risk 0.996 is at or above the 0.925 bar: business logic, flashloan mev, oracle price manipulation.",
+   "specialists_errored": 0,
+   "findings": [
+    {
+     "type": "business_logic",
+     "severity": "critical",
+     "confidence": 0.9,
+     "source": "council:business_logic",
+     "model": "llama3.2:3b"
+    },
+    {
+     "type": "oracle_price_manipulation",
+     "severity": "critical",
+     "confidence": 0.9,
+     "source": "council:oracle_price_manipulation",
+     "model": "llama3.2:3b"
+    },
+    {
+     "type": "flashloan_mev",
+     "severity": "medium",
+     "confidence": 0.6,
+     "source": "council:flashloan_mev",
+     "model": "llama3.2:3b"
+    }
+   ],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_protocol_apis_fantom_meowapiftm",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 142.9,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_feepool",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 206.8,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_modules_staking_pooledstaking",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 246.5,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_utils_math_math",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 205.6,
+   "error": null,
+   "verdict_reason": "2/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_custompoatoken",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 268.8,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_23_contracts_external_actions_batchaction",
+   "ground_truth": "likely_safe",
+   "verdict": "NO-GO",
+   "predicted": "vulnerable",
+   "n_findings": 3,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 7,
+   "latency_s": 65.5,
+   "error": null,
+   "verdict_reason": "3 finding(s) cleared the evidence gate and their combined risk 1.000 is at or above the 0.925 bar: access control, business logic, dos gas.",
+   "specialists_errored": 0,
+   "findings": [
+    {
+     "type": "access_control",
+     "severity": "critical",
+     "confidence": 1.0,
+     "source": "council:access_control",
+     "model": "qwen2.5-coder:7b"
+    },
+    {
+     "type": "business_logic",
+     "severity": "high",
+     "confidence": 0.9,
+     "source": "council:business_logic",
+     "model": "llama3.2:3b"
+    },
+    {
+     "type": "dos_gas",
+     "severity": "critical",
+     "confidence": 0.95,
+     "source": "council:dos_gas",
+     "model": "gemma3:4b"
+    }
+   ],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_solady_utils_safecastlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 587.6,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_70_contracts_dex_v2_pool_basepoolv2",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 635.0,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_ozup_governance_timelockcontrollerupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 49,
+   "latency_s": 1306.2,
+   "error": null,
+   "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_misc_amos_univ3liquidityamo_v2_old",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 632.1,
+   "error": null,
+   "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_collateralmanager",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 458.0,
+   "error": null,
+   "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_auth_ownableroles",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 31,
+   "latency_s": 609.0,
+   "error": null,
+   "verdict_reason": "2/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_redblacktreelib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 306.3,
+   "error": null,
+   "verdict_reason": "2/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_libzip",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 3,
+   "latency_s": 76.0,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_basesynthetix",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 1,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 4,
+   "latency_s": 23.7,
+   "error": null,
+   "verdict_reason": "1 finding(s) quoted real code but their combined risk 0.800 is below the 0.925 bar: access control. Reported for review, not blocking.",
+   "specialists_errored": 0,
+   "findings": [
+    {
+     "type": "access_control",
+     "severity": "medium",
+     "confidence": 0.8,
+     "source": "council:access_control",
+     "model": "qwen2.5-coder:7b"
+    }
+   ],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_signaturecheckerlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 142.9,
+   "error": null,
+   "verdict_reason": "1/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_ext_delegatexyz_delegatecheckerlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "flashloan_mev"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 2,
+   "latency_s": 57.9,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_clz_librlp",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 1,
+   "latency_s": 20.8,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_ozup_metatx_erc2771forwarderupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 51,
+   "latency_s": 697.9,
+   "error": null,
+   "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_misc_amos_univ3liquidityamo_v2",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 288.6,
+   "error": null,
+   "verdict_reason": "All 7 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_src_mixinmatchorders",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 319.3,
+   "error": null,
+   "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_143_juice_contracts_v2_code4rena_contracts_jbfundingcyclestore",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 227.4,
+   "error": null,
+   "verdict_reason": "1/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_w3bclean_12_contracts_yieldspace_pool",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 20,
+   "latency_s": 228.4,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_starkverifier",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 152.8,
+   "error": null,
+   "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_dynamicbufferlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 3,
+   "latency_s": 29.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_accounts_erc1271",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 58.5,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_accounts_timelock",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 48,
+   "latency_s": 754.7,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_redblacktreelib",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 105.4,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_ext_zksync_erc1967factory",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 123.7,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_misc_amos_mim_convex_amo",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 277.6,
+   "error": null,
+   "verdict_reason": "4/7 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_23_contracts_internal_balances_balancehandler",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 269.3,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_pancakeswapcompoundingstrategytoken",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 265.3,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_g_libbytes",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 4,
+   "latency_s": 30.1,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_ozup_access_manager_accessmanagerupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 185.9,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_oz_utils_structs_enumerablemap",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 6,
+   "latency_s": 85.3,
+   "error": null,
+   "verdict_reason": "All 3 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_accounts_erc6551",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 32,
+   "latency_s": 622.5,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_inspex_wusdmaster_wusd_91c541c2f1c0ac781ddcfb2be6a62555a5e1e8d1_wusd",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 6,
+   "latency_s": 73.7,
+   "error": null,
+   "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_clz_g_librlp",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 2,
+   "latency_s": 27.7,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_libprng",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 3,
+   "latency_s": 19.2,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_accounts_erc4337",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 200.3,
+   "error": null,
+   "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc721",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 262.6,
+   "error": null,
+   "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_baserewardescrowv2",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 24,
+   "latency_s": 387.8,
+   "error": null,
+   "verdict_reason": "All 6 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_common_implementation_fixedpoint",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 276.8,
+   "error": null,
+   "verdict_reason": "All 4 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_financial_templates_demo_depositbox",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 22,
+   "latency_s": 299.4,
+   "error": null,
+   "verdict_reason": "All 5 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_shibarouter",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 24,
+   "latency_s": 260.0,
+   "error": null,
+   "verdict_reason": "3/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_utils_packing",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 1,
+   "latency_s": 21.0,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_17_contracts_pools_lifeguard3pool",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 290.3,
+   "error": null,
+   "verdict_reason": "3/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_solady_utils_efficienthashlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 1,
+   "latency_s": 22.5,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_slowmist_wault_finance_wusd_smart_contract_security_audit_report_wusd_91c541c2f1",
+   "ground_truth": "likely_safe",
+   "verdict": "GO",
+   "predicted": "likely_safe",
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 195.9,
+   "error": null,
+   "verdict_reason": "All 6 specialists that ran found nothing quote-backed above the confidence bar.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_metatx_erc2771forwarder",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 243.3,
+   "error": null,
+   "verdict_reason": "2/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_libbytes",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 9,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_legacy_libcwia",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "business_logic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_governance_election",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_binaryoptionmarketmanager",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc4626",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_collateral",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 23,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_external_contracts_balancer_bpool",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 22,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_comptrollerg1",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 22,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_balancer_core_v2_pools_weighted_weightedpool",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 20,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_56_contracts_v3_alchemix_transmuter",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_oz_governance_extensions_governortimelockaccess",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "reentrancy",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_ozup_governance_extensions_governortimelockaccessupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc20votes",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "flashloan_mev"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_swap_stableswap",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_consensys_modular_interactive_crowdsale_ethereum_libraries_73abc22623e0841b8ea67",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_balancer_core_v2_lib_helpers_enumerablemap",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_dynamicarraylib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_dynamicarraylib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc6909",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_72_openleverage_contracts_contracts_openlevv1",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 8,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "8/8 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 8,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_oz_utils_cryptography_p256",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_accounts_ext_ithaca_erc7821",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_libraries_impossiblelibrary",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_solidified_aztec_lido_bridge_aztec_connect_bridges_d5aca13d4d0a17b21eeddf77f49f4",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_enumerablemaplib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_libtransient",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_ethercollateral",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "7/7 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 7,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_8_10_grasshouse",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_g_webauthn",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_dynamicbufferlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_lens_atlantislens",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 22,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_depot",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_inspex_thorusdummy_contracts_main_thorusrouter",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_utils_cryptography_merkleproof",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 20,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_minheaplib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_abep20delegator",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_8_7_xalpaca",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_inspex_tokens_farm_shop_speedstar_audit_3e39d7acf9c1aa9f3a5511c161c2035ba7d6bc1f",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 16,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_librlp",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_src_libfillresults",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_src_v06_libbytesv06",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_verified_dark",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 11,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_staking_stakingrewardsdual",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 22,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_oraclizeapi",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_external_contracts_uniswap_v2_uniswapv2rout",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_oz_governance_timelockcontroller",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_35_trident_contracts_pool_franchised_franchisedconstantproductpool",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_w3bclean_115_core_contracts_libraries_abdkmath64x64",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_w3bclean_23_contracts_external_actions_tradingaction",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_contracts_protocol_modules_v1_ammmodule",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_fritransform",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_access_manager_accessmanager",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_26_contracts_rcmarket",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_ethercollateralsusd",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_tokens_erc20",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 6,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_libtransient",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 8,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_ext_zksync_safetransferlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "access_control",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_src_multiassetproxy",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_0_4_24_oracle_lidooracle",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_6_protocol_apis_pancakev2_pancakerouterv2",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 23,
+   "latency_s": 0.6,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_101_sublime_v1_contracts_pool_poolfactory",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_solady_utils_g_enumerablesetlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_pools_nftearnerc20pool",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_contracts_protocol_modules_v1_notionaltrade",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 24,
+   "latency_s": 0.8,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_external_erc20_chitoken",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 24,
+   "latency_s": 0.8,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_w3bclean_19_contracts_transactionmanager",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.6,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_issuer",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_ext_zksync_signaturecheckerlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_librlp",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 1,
+   "latency_s": 0.2,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_balancer_core_v2_vault_poolregistry",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_ozup_token_erc1155_erc1155upgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_124_index_coop_notional_trade_module_contracts_protocol_modules_v1_stakingmodule",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_migrations_migration_nunkioptimism",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_utils_arrays",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_72_openleverage_contracts_contracts_gov_governoralpha",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_dappclean_ace_validators_publicrange_publicrange",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 18,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_schainsfunctionalityinternal",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_oz_utils_structs_checkpoints",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_safetransferlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "access_control",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_solympuserc20",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 7,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "7/7 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 7,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_minheaplib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_tokens_star",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_libraries_operator_groupselection",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_uniswap_uniswapv2router02",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_ozup_token_erc721_erc721upgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_w3bclean_102_contracts_vcon_vcon",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 4,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 15,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "4/4 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 4,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "realworld_no_bug_reported"
+  },
+  {
+   "contract_id": "01_ozup_access_extensions_accesscontroldefaultadminrulesupgradeable",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_src_libs_libfixedmath",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_g_libprng",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_g_jsonparserlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 13,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_8_10_protocol_workers_deltaneutralmdexworker02",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_peckshield_kaoyaswap_contracts_8273073f1d6914f372790399378f177573c52e37_router",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_bondingcalculator",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 23,
+   "latency_s": 0.5,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_protocol_pool_poolconfigurator",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 21,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_modules_delegates_iexecpocodelegate",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 20,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_g_enumerablemaplib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 19,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_datetimelib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 4,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_libraries_vaultlifecycle",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 51,
+   "latency_s": 134.7,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_enumerablesetlib",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 6,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_ecdsa",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 6,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_oz_utils_math_safecast",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 1,
+   "roles": [
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 5,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "1/1 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 1,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_src_assetbalance",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_peckshield_kaoyaswap_contracts_8273073f1d6914f372790399378f177573c52e37_factory",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 12,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_libstring",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_aliumrouter",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 6,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "6/6 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 6,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_dappclean_modules_token_tokencontroller",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 5,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "dos_gas"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 17,
+   "latency_s": 0.4,
+   "error": null,
+   "verdict_reason": "5/5 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 5,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  },
+  {
+   "contract_id": "01_solady_utils_g_libstring",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 3,
+   "roles": [
+    "arithmetic",
+    "business_logic",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 14,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "3/3 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 3,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_solady_utils_libsort",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 2,
+   "roles": [
+    "arithmetic",
+    "business_logic"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "2/2 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 2,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audited_library"
+  },
+  {
+   "contract_id": "01_dappclean_verified_boardroom",
+   "ground_truth": "likely_safe",
+   "verdict": "INCONCLUSIVE",
+   "predicted": null,
+   "n_findings": 0,
+   "n_specialists_run": 8,
+   "roles": [
+    "reentrancy",
+    "access_control",
+    "arithmetic",
+    "business_logic",
+    "oracle_price_manipulation",
+    "flashloan_mev",
+    "dos_gas",
+    "proxy_upgradeability"
+   ],
+   "arbitration": {
+    "reviewed": 0,
+    "upheld": 0,
+    "dropped": 0
+   },
+   "api_calls": 10,
+   "latency_s": 0.3,
+   "error": null,
+   "verdict_reason": "8/8 specialists failed to run \u2014 result is not trustworthy.",
+   "specialists_errored": 8,
+   "findings": [],
+   "schema": 2,
+   "num_ctx": 4096,
+   "expected": "safe",
+   "tier": "audit_reviewed_clean"
+  }
+ ]
+}
