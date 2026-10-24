@@ -497,6 +497,44 @@ Regenerated over 2,142 rows versus the n = 1,154 replay: pre-gate FPR
 not overlap, so this is not noise — the half-corpus numbers were optimistic.
 **Every FPR figure tracing to that replay must be regenerated.** *Phase 10.*
 
+### E11. The guard reported a 100% dead arm as 100% sound · **SOUND, fixed**
+The sharpest instance of this project's thesis, committed by the component
+whose entire purpose is to prevent it. From one run log, two lines apart:
+
+```
+[slither/smartbugs_curated] done: {'ok': 0, 'skipped_checkpoint': 1, 'no_result': 143, 'error': 0}
+[baseline:slither/smartbugs_curated] sound=142 quarantined=0 (0%) 159.0/min
+```
+
+**`ok: 0` and `sound=142`.** Also 159 rows/min — 0.4 s per contract, which is
+the dead-arm signature on its face.
+
+**Cause.** `run_baselines` set `terminal_fn = status in TERMINAL_STATUSES`, and
+`no_result` was in that set with the documented reasoning that it means *"a
+missing source file — a permanent property of the corpus, not a symptom of the
+backend."* That reasoning is correct for its real case and conflates two
+opposite things, because both write the same status:
+
+| meaning | terminal? |
+|---|---|
+| the corpus genuinely lacks the file | **yes** — re-running changes nothing |
+| the **tool could not run at all** (x86-64 solc on aarch64) | **no** — says nothing about the corpus |
+
+So an arm that answered nothing, 303 times, certified as healthy.
+
+**Fix, two layers** (a per-row rule alone is still gameable):
+1. `_baseline_terminal()` — only a `reason` naming an absent source counts as
+   terminal for a `no_result`; a tool failure is quarantined.
+2. `Guard` now counts **answers** separately from soundness and sets
+   `dead_arm` when a run finishes with rows but zero answers. The line prints a
+   loud `!!! DEAD ARM` block. This fires even when every row is legitimately
+   terminal — an arm of nothing but corpus gaps is 100% sound and still
+   answered nothing, so **soundness can never stand in for a result.**
+
+Verified by replaying the exact 143 dead rows: `sound=0 quarantined=143 (100%)
+answers=0` plus the alarm, against the original `sound=142 quarantined=0 (0%)`.
+Four regression tests; 54 pass.
+
 ### E10. Council slice failures are strongly size-correlated · **SOUND**
 Across the 148 access-control-slice council rows (seed 0), rows with at least
 one failed slice:

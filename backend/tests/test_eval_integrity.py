@@ -264,3 +264,74 @@ def test_checkpoint_lookup_survives_id_sanitizing(tmp_path, monkeypatch):
         "council", "access_control_slice", [item])
     assert coverage["n_ok"] == 1, "a sanitized id must resolve to its own row"
     assert coverage["status_counts"].get("missing", 0) == 0
+
+
+def test_tool_failure_no_result_is_not_sound():
+    """The guard certified a 100% dead arm as 100% sound.
+
+    `no_result` means two opposite things: the corpus lacks the file
+    (terminal), or the tool could not run at all (not terminal). Both write
+    the same status, so treating the status as terminal reported the slither
+    arm -- 303 rows, every one a solc architecture failure -- as
+    `sound=142 quarantined=0 (0%)`, two lines below `ok: 0`."""
+    from eval import guard
+    from eval.run_baselines import _baseline_terminal
+
+    g = guard.Guard("t", terminal_fn=_baseline_terminal,
+                    max_consecutive=10 ** 9, window=10 ** 9, max_rate=1.0)
+    dead = {"status": "no_result", "reason": "error",
+            "slither_message": "", "latency_s": 0.39}
+    for _ in range(143):
+        g.observe(dead)
+
+    s = g.summary()
+    assert s["sound"] == 0, "a tool failure must never count as sound"
+    assert s["quarantined"] == 143
+    assert s["answers"] == 0
+    assert s["dead_arm"] is True
+    assert "DEAD ARM" in g.line()
+
+
+def test_corpus_absent_no_result_is_still_sound():
+    """The original rule's real case must keep working: a contract genuinely
+    missing from the corpus is a permanent property of the dataset, and
+    re-running will never change it."""
+    from eval import guard
+    from eval.run_baselines import _baseline_terminal
+
+    g = guard.Guard("t", terminal_fn=_baseline_terminal,
+                    max_consecutive=10 ** 9, window=10 ** 9, max_rate=1.0)
+    for _ in range(5):
+        g.observe({"status": "no_result", "reason": "missing source file(s)"})
+    assert g.summary()["sound"] == 5
+    assert g.summary()["quarantined"] == 0
+
+
+def test_dead_arm_fires_even_when_every_row_is_terminal():
+    """The whole-arm check must not be satisfiable by a per-row rule.
+
+    An arm of nothing but corpus gaps is 100% sound and still answered
+    nothing, so soundness alone can never stand in for a result."""
+    from eval import guard
+    from eval.run_baselines import _baseline_terminal
+
+    g = guard.Guard("t", terminal_fn=_baseline_terminal,
+                    max_consecutive=10 ** 9, window=10 ** 9, max_rate=1.0)
+    for _ in range(5):
+        g.observe({"status": "no_result", "reason": "missing source file(s)"})
+    s = g.summary()
+    assert s["quarantine_rate"] == 0.0 and s["dead_arm"] is True
+    assert "DEAD ARM" in g.line()
+
+
+def test_answers_counts_real_verdicts():
+    from eval import guard
+    from eval.run_baselines import _baseline_terminal
+
+    g = guard.Guard("t", terminal_fn=_baseline_terminal,
+                    max_consecutive=10 ** 9, window=10 ** 9, max_rate=1.0)
+    g.observe({"status": "ok", "predicted_label": "vulnerable"})
+    g.observe({"status": "no_result", "reason": "missing source file(s)"})
+    s = g.summary()
+    assert s["answers"] == 1 and s["sound"] == 2 and s["dead_arm"] is False
+    assert "DEAD ARM" not in g.line()

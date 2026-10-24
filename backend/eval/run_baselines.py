@@ -51,6 +51,39 @@ CHECKPOINT_ROOT = REPO_ROOT / "backend" / "eval" / "checkpoints"
 # wound a multi-day checkpointed run can't afford.
 TERMINAL_STATUSES = {"ok", "no_result", "too_large_for_backend"}
 
+# `no_result` means two OPPOSITE things and the guard could not tell them apart.
+#
+#   (a) the corpus genuinely lacks the source file -> terminal. A permanent
+#       property of the dataset; re-running will never change it.
+#   (b) the TOOL could not run at all -> NOT terminal, and not the corpus's
+#       fault in any way.
+#
+# Both write status="no_result", so treating the status as terminal certified
+# (b) as healthy. On 2026-10-24 the slither arm emitted 303 rows of (b) --
+# every solc binary on the box is x86-64 on an aarch64 host -- and the guard
+# printed, two lines below `ok: 0`:
+#
+#     [baseline:slither/smartbugs_curated] sound=142 quarantined=0 (0%) 159.0/min
+#
+# A 100% dead arm reported as 100% sound, at 159 rows/min, by the very
+# component whose job is to notice that. Only a `reason` naming an absent
+# source counts as terminal now; anything else is quarantined.
+_CORPUS_ABSENT_REASONS = ("missing source file", "no contracts", "empty source")
+
+
+def _baseline_terminal(row: dict) -> bool:
+    """Terminal iff the result is a real answer, or a real property of the corpus."""
+    st = row.get("status")
+    if st == "ok":
+        return True
+    if st == "too_large_for_backend":
+        # A genuine, reproducible limit of the backend for that input.
+        return True
+    if st == "no_result":
+        reason = str(row.get("reason") or "").lower()
+        return any(k in reason for k in _CORPUS_ABSENT_REASONS)
+    return False
+
 # The benchmark BACKBONE (the restructured set). Etherscan-50 is intentionally
 # NOT here: its ground truth is heuristic/scraped ("vulnerabilities not checked
 # yet"), it was a pre-existing convenience set, and it carries no research
@@ -302,7 +335,7 @@ async def run_dataset_baseline(baseline: str, dataset_name: str, items: list[Eva
     # must not trip the breaker: it is a permanent property of the corpus, not
     # a symptom of the backend.
     g = guard.Guard(f"baseline:{baseline}/{dataset_name}",
-                    terminal_fn=lambda r: r.get("status") in TERMINAL_STATUSES)
+                    terminal_fn=_baseline_terminal)
 
     for i, item in enumerate(items):
         ckpt_path = _checkpoint_path(baseline, dataset_name, item.contract_id, seed=seed)

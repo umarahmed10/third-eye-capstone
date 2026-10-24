@@ -108,9 +108,18 @@ class Guard:
 
     def __init__(self, label: str, max_consecutive: int = 15,
                  window: int = 50, max_rate: float = 0.25,
-                 terminal_fn=None) -> None:
+                 terminal_fn=None, answer_fn=None) -> None:
         self.label = label
         self.terminal_fn = terminal_fn or default_terminal
+        # A row can be legitimately TERMINAL while containing no answer -- a
+        # contract absent from the corpus, for instance. Counting answers
+        # separately is the whole-arm check that no per-row rule can fake: if
+        # an arm finished with zero answers, it did not run, whatever its
+        # soundness rate says. See _baseline_terminal in run_baselines.
+        self.answer_fn = answer_fn or (lambda r: r.get("status") == "ok"
+                                       or r.get("verdict") in ("GO", "NO-GO")
+                                       or r.get("final_verdict") in ("GO", "NO-GO"))
+        self.answers = 0
         self.max_consecutive = max_consecutive
         self.window = window
         self.max_rate = max_rate
@@ -135,6 +144,11 @@ class Guard:
         re-run resumes, so aborting is always cheaper than continuing.
         """
         ok = self.is_terminal(row)
+        try:
+            if self.answer_fn(row):
+                self.answers += 1
+        except Exception:  # noqa: BLE001 — a diagnostic must never break a run
+            pass
         self._recent.append(ok)
         if ok:
             self.sound += 1
@@ -190,6 +204,9 @@ class Guard:
             "sound": self.sound,
             "quarantined": self.quarantined,
             "quarantine_rate": round(self.quarantined / total, 4) if total else 0.0,
+            "answers": self.answers,
+            # The number that would have caught the dead slither arm instantly.
+            "dead_arm": bool(total and not self.answers),
             "aborted": self.aborted,
             "minutes": round(mins, 1),
             "rows_per_min": round(total / mins, 2) if mins > 0.1 else None,
@@ -197,9 +214,21 @@ class Guard:
 
     def line(self) -> str:
         s = self.summary()
-        return (f"[{self.label}] sound={s['sound']} quarantined={s['quarantined']} "
-                f"({s['quarantine_rate']:.0%}) {s['rows_per_min'] or '—'}/min"
-                + (f"  ABORTED: {s['aborted']}" if s["aborted"] else ""))
+        out = (f"[{self.label}] sound={s['sound']} quarantined={s['quarantined']} "
+               f"({s['quarantine_rate']:.0%}) answers={s['answers']} "
+               f"{s['rows_per_min'] or '—'}/min")
+        if s["dead_arm"]:
+            # Loud, because the quiet version of this line read
+            # "sound=142 quarantined=0 (0%)" for an arm that answered nothing.
+            out += (
+                "\n  !!! DEAD ARM — "
+                f"{s['sound'] + s['quarantined']} rows, ZERO answers. "
+                "This arm RAN AND PRODUCED NOTHING; the row count makes it look "
+                "finished. Do not score it, and do not let a soundness rate "
+                "computed over empty rows stand in for a result.")
+        if s["aborted"]:
+            out += f"  ABORTED: {s['aborted']}"
+        return out
 
 
 STAGE_LOG = Path(__file__).resolve().parent / "results" / "stage_health.jsonl"
