@@ -37,7 +37,7 @@ const STAGES = [
     n: "06",
     name: "Verdict",
     what: "GO, NO-GO, or INCONCLUSIVE — with the quotes, the per-specialist health, and the reason attached.",
-    why: "INCONCLUSIVE exists so a broken run cannot masquerade as a clean one. If more than half the specialists that ran errored, you get INCONCLUSIVE, never a green GO.",
+    why: "INCONCLUSIVE exists so a broken run cannot masquerade as a clean one. If half or more of the specialists that ran errored, you get INCONCLUSIVE, never a green GO — two dead out of four is already enough.",
   },
 ];
 
@@ -97,10 +97,14 @@ export function HowItWorks() {
 
       <Section title="The eight specialists">
         <P>
-          Each covers one DASP-10 class and is asked exactly one question. The
-          model assignment is by role, not by convenience — the code-reading
-          roles go to a code-tuned model, the judgement roles to a general
-          reasoner.
+          Each is asked exactly one question. Five map onto an unambiguous
+          DASP-10 class; <code style={{ fontFamily: F.mono, fontSize: 12.5 }}>business_logic</code>,{" "}
+          <code style={{ fontFamily: F.mono, fontSize: 12.5 }}>oracle_price_manipulation</code> and{" "}
+          <code style={{ fontFamily: F.mono, fontSize: 12.5 }}>proxy_upgradeability</code> are
+          deliberately left unmapped, which is why a class-matched recall figure
+          is a lower bound rather than a like-for-like score. The model
+          assignment is by role, not by convenience — the code-reading roles go
+          to a code-tuned model, the judgement roles to a general reasoner.
         </P>
         <Table
           head={["Specialist", "Model family", "Local model"]}
@@ -157,8 +161,9 @@ export function HowItWorks() {
 
       <Section title="What the verdict does not mean">
         <Caveat title="GO is not a safety certificate">
-          A GO means no specialist that ran could quote a line supporting a
-          finding above the confidence bar. On the benchmark the tool misses
+          A GO means no specialist that ran — and the router fires a subset, not all
+          eight — could quote a line supporting a finding above the confidence
+          bar. On the benchmark the tool misses
           roughly 11% of genuinely vulnerable contracts at the shipped setting.
           It is a filter that catches most things cheaply and locally — not a
           replacement for an audit.

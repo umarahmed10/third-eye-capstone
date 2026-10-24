@@ -1,6 +1,7 @@
 import { C, F, S } from "../design";
 import { Badge, Card, Caveat, Grid, P, Section, Stat, Table } from "../ui";
-import { CORPUS, SCORING_RULES } from "../facts";
+import { CORPUS, SCORING_RULES, TESTING } from "../facts";
+import HISTORY from "../history.json";
 
 export function Overview({ go }: { go: (route: string) => void }) {
   return (
@@ -12,9 +13,9 @@ export function Overview({ go }: { go: (route: string) => void }) {
           A smart-contract auditor that runs entirely on your machine
         </h1>
         <P style={{ fontSize: 17, maxWidth: "62ch" }}>
-          Eight specialist models read a Solidity contract, each must quote the
-          line it is accusing, and the surviving findings are pooled into one
-          verdict: <strong style={{ color: C.go }}>GO</strong>,{" "}
+          A router picks which of eight specialist models should read a Solidity
+          contract, each must quote the line it is accusing, and the surviving
+          findings are pooled into one verdict: <strong style={{ color: C.go }}>GO</strong>,{" "}
           <strong style={{ color: C.nogo }}>NO-GO</strong>, or{" "}
           <strong style={{ color: C.inconc }}>INCONCLUSIVE</strong>. No API key,
           no network call, no contract source leaving the laptop.
@@ -57,7 +58,7 @@ export function Overview({ go }: { go: (route: string) => void }) {
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 20 }}>
           <Badge>local-only</Badge>
-          <Badge>8 DASP-10 specialists</Badge>
+          <Badge>8 specialist roles</Badge>
           <Badge>3 model families</Badge>
           <Badge>{CORPUS.total.toLocaleString()}-contract benchmark</Badge>
         </div>
@@ -133,11 +134,11 @@ export function Overview({ go }: { go: (route: string) => void }) {
           {[
             ["how", "How it works", "Six stages, the eight specialists, and the one rule that does the real work."],
             ["datasets", "Datasets", "2,250 contracts with a real safe class, stratified by how each label was obtained."],
-            ["testing", "Testing", "54 tests, most of them aimed at catching our own measurement errors."],
+            ["testing", "Testing", `${TESTING.tests} tests, most of them aimed at catching our own measurement errors.`],
             ["findings", "Findings", "Every claim with a status — including the ones we refuted ourselves."],
             ["tool", "The tool", "Run a live scan locally on ten sample contracts, or paste your own."],
             ["team", "Team", "Four subsystems, four owners."],
-            ["history", "History", "All 125 commits, generated from the git log."],
+            ["history", "History", `All ${HISTORY.total} commits, generated from the git log.`],
           ].map(([route, title, blurb]) => (
             <Card
               key={route}

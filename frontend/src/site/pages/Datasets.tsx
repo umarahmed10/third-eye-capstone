@@ -47,8 +47,8 @@ export function Datasets() {
           ])}
         />
         <P style={{ marginTop: 14 }}>
-          Same tool, same settings, same day: <strong style={{ color: C.ink }}>15.7%</strong> on
-          audited libraries against <strong style={{ color: C.ink }}>37.5%</strong> on
+          Same tool, same settings, same corpus: <strong style={{ color: C.ink }}>27.8%</strong> on
+          audited libraries against <strong style={{ color: C.ink }}>54.7%</strong> on
           audit-reviewed code. Choosing which of these to call "the safe class"
           moves the headline number by more than most published tool-versus-tool
           comparisons.
@@ -85,7 +85,9 @@ export function Datasets() {
           Even with fixed verdicts, the matching rule changes the answer. If a
           flagged contract counts as detected when any specialist fires, recall
           is 82.2%. If the finding's class must match the labelled bug class,
-          recall is 25.5% — on the same 349 labelled contracts.
+          recall is 25.5% — on the same 349 labelled contracts. 25.5% is a
+          lower bound: only 5 of our 8 roles have an unambiguous DASP-10 slot,
+          so three specialists can never score a class match.
         </P>
         <Card>
           <Table
@@ -93,7 +95,8 @@ export function Datasets() {
             rows={[
               ["Any specialist fires on the contract", "82.2%"],
               ["Finding class must match the labelled class", "25.5%"],
-              ["Restricted to the 187 contracts with a matching specialist", "31.6 points of the gap survives"],
+              ["Any specialist fires — restricted to the 187 contracts carrying only covered classes", "77.0%"],
+              ["Class must match — same 187 contracts", "45.5%"],
             ]}
           />
         </Card>
@@ -117,8 +120,10 @@ export function Datasets() {
           compilation unit.
         </Caveat>
         <Caveat title="Class labels are incomplete">
-          Of the vulnerable contracts, 349 carry a mapped DASP-10 class and 202
-          carry none. Any class-level claim is made only over the 349.
+          Of the 551 vulnerable contracts in the class-coverage run, 349 carry a
+          mapped DASP-10 class and 202 carry none. Any class-level claim is made
+          only over the 349, and 158 of those (45.3%) carry only classes the
+          council has no specialist for at all.
         </Caveat>
       </Section>
     </div>

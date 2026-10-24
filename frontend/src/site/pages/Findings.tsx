@@ -77,7 +77,7 @@ export function Findings() {
         <Card>
           <BarPair
             rows={kRows}
-            labelA="seed 0 (n = 1,046 safe contracts)"
+            labelA="seed 0 (1,027 of 1,046 safe contracts; k = 7–8 omitted, n ≤ 15)"
             labelB="held-out seed 1 (n = 162)"
           />
         </Card>

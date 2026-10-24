@@ -4,53 +4,69 @@
 // One palette, defined once, used everywhere. The visual language is an
 // INSTRUMENT, not a marketing page: this is a tool that returns a verdict on
 // code someone is about to deploy, and the site's job is to make the evidence
-// behind that verdict legible. Hence the dark technical ground, the single
-// cyan accent, and semantic colours reserved strictly for verdicts.
+// behind that verdict legible.
+//
+// LIGHT — "bone paper". The ground is a warm off-white rather than pure #FFF:
+// a review room is a lit room with a projector, and flat bone survives both
+// without the banding a gradient gets and without the glare a pure white field
+// throws. Panels ARE pure white, so a card reads as a sheet laid on the desk —
+// that one step of separation is doing the work a border would otherwise do,
+// which is why the lines can stay hairline-faint and the page still reads crisp.
+//
+// Neutrals are warm-biased (hue pulled toward the paper, not pure grey) so the
+// greys look chosen rather than defaulted. Ink is near-black at #16150F, not
+// #000: full black on bone vibrates at body sizes.
 //
 // Verdict colours are NEVER reused for decoration. If something is green on
-// this site it means a contract passed, and nothing else.
+// this site it means a contract passed, and nothing else. All five semantic
+// hues below are darkened relative to their dark-theme counterparts — a mid
+// green that read cleanly on near-black drops under 3:1 on white, and these
+// are the colours a reviewer has to read a verdict off.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const C = {
   // ground
-  bg: "#0B0E14",
-  bgAlt: "#10141C",
-  panel: "#151A24",
-  panelHi: "#1B2230",
-  line: "#242C3A",
-  lineHi: "#33405A",
+  bg: "#F7F5F0",
+  bgAlt: "#EFECE3",
+  panel: "#FFFFFF",
+  panelHi: "#F4F1E9",
+  line: "rgba(22,21,15,0.11)",
+  lineHi: "rgba(22,21,15,0.24)",
 
   // ink
-  ink: "#E8ECF4",
-  inkMid: "#A8B2C4",
-  inkDim: "#6B7689",
+  ink: "#16150F",
+  inkMid: "#4C483F",
+  inkDim: "#726C60",
 
-  // the one accent — ThirdEye's "signal"
-  accent: "#3DD8D0",
-  accentDim: "#1E8E89",
-  accentGhost: "rgba(61,216,208,0.10)",
+  // the one accent — ThirdEye's "signal". Carried over from the exhibit's
+  // validated data blue: #2C4A6B failed the palette validator twice (outside
+  // the lightness band, under the chroma floor — it rendered as grey, not as
+  // a hue), and this is its passing replacement.
+  accent: "#1F6FB2",
+  accentDim: "#7FA8CE",
+  accentGhost: "rgba(31,111,178,0.09)",
 
   // semantic, verdicts ONLY
-  go: "#3FB950",
-  goGhost: "rgba(63,185,80,0.12)",
-  nogo: "#F0535F",
-  nogoGhost: "rgba(240,83,95,0.12)",
-  inconc: "#8B94A6",
-  inconcGhost: "rgba(139,148,166,0.12)",
+  go: "#1C7A3C",
+  goGhost: "rgba(28,122,60,0.10)",
+  nogo: "#B4231D",
+  nogoGhost: "rgba(180,35,29,0.09)",
+  inconc: "#6E6A60",
+  inconcGhost: "rgba(110,106,96,0.10)",
 
-  // severity ramp (sequential, single hue family)
+  // severity ramp (sequential, warm single-hue family, darkened for white)
   sev: {
-    critical: "#F0535F",
-    high: "#FF8A4C",
-    medium: "#E3B341",
-    low: "#6B7689",
+    critical: "#B4231D",
+    high: "#A8520C",
+    medium: "#7D6209",
+    low: "#726C60",
   } as Record<string, string>,
 } as const;
 
 export const F = {
   sans: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
   mono: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace",
-  serif: "'Source Serif 4', Georgia, serif",
+  serif: "'Source Serif 4', 'Iowan Old Style', Charter, Georgia, serif",
 } as const;
 
 export function sevColor(severity?: string | null): string {
@@ -72,30 +88,35 @@ export const S = {
     padding: "0 28px 96px",
   } as React.CSSProperties,
 
+  // Headings take the serif. The site is a lab report: prose and headings
+  // carry the argument, sans is reserved for chrome, mono for measurements.
   h1: {
-    fontFamily: F.sans,
+    fontFamily: F.serif,
     fontSize: 40,
-    lineHeight: 1.12,
+    lineHeight: 1.1,
     fontWeight: 600,
-    letterSpacing: "-0.02em",
+    letterSpacing: "-0.015em",
     color: C.ink,
     textWrap: "balance",
     margin: "0 0 14px",
+    fontOpticalSizing: "auto",
   } as React.CSSProperties,
 
   h2: {
-    fontFamily: F.sans,
-    fontSize: 23,
+    fontFamily: F.serif,
+    fontSize: 24,
     fontWeight: 600,
     letterSpacing: "-0.01em",
     color: C.ink,
     margin: "44px 0 14px",
+    fontOpticalSizing: "auto",
   } as React.CSSProperties,
 
   h3: {
     fontFamily: F.sans,
     fontSize: 15,
     fontWeight: 600,
+    letterSpacing: "-0.005em",
     color: C.ink,
     margin: "0 0 8px",
   } as React.CSSProperties,
@@ -118,6 +139,8 @@ export const S = {
     margin: "0 0 12px",
   } as React.CSSProperties,
 
+  // A card is a white sheet on bone. One hairline plus the surface step is
+  // enough; a shadow on top of both would read as a dark-theme habit.
   card: {
     background: C.panel,
     border: `1px solid ${C.line}`,
@@ -162,6 +185,7 @@ export const S = {
     textTransform: "uppercase",
     borderBottom: `1px solid ${C.line}`,
     whiteSpace: "nowrap",
+    background: C.panelHi,
   } as React.CSSProperties,
 
   td: {

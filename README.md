@@ -17,24 +17,32 @@ the tool. They are substantially properties of the **evaluation harness**.
 
 We evaluate a council of eight OWASP/DASP specialists — each pinned to a
 different base model, run locally on free tiers — against a purpose-built
-benchmark of **1,154 scored Solidity contracts** (603 audited-safe across three
-provenance tiers, 551 known-vulnerable), and isolate three unreported choices,
-each with a controlled experiment on the same corpus.
+benchmark of **2,142 scored Solidity contracts** (1,046 audited-safe across
+three provenance tiers, 1,096 known-vulnerable), and isolate three unreported
+choices, each with a controlled experiment on the same corpus.
 
-**1. What the "safe" label means.** The false-alarm rate is 29.9% overall, but
+**1. What the "safe" label means.** The false-alarm rate is 45.9% overall, but
 it decomposes by how much the safe label can be trusted:
 
 | safe tier | n | false-alarm rate (95% Wilson) |
 |---|--:|---|
-| Audited libraries (OpenZeppelin / Solady) | 172 | **15.7%** [11.0, 21.9] |
-| Audit-reviewed, clean | 240 | 37.5% [31.6, 43.8] |
-| Real-world, no bug reported | 191 | 33.0% [26.7, 39.9] |
+| Audited libraries (OpenZeppelin / Solady) | 172 | **27.8%** [22.9, 33.4] |
+| Audit-reviewed, clean | 240 | 54.7% [50.7, 58.7] |
+| Real-world, no bug reported | 191 | 44.8% [37.9, 51.9] |
 
 Same tool, same seed, same machine, same contracts. Only the provenance of the
 label changes. The effect is **two-level, not a gradient** — audited libraries
-separate from both weaker tiers, which are indistinguishable from each other.
-Hand review of 21 blocked safe contracts finds roughly 70% are genuine tool
-errors, which bounds how much of this is label noise.
+separate from both weaker tiers, which are not cleanly distinguishable from each
+other. Hand review of 21 blocked safe contracts finds roughly 70% are genuine
+tool errors, which bounds how much of this is label noise.
+
+**This spread is partly confounded, and we report it stratified.** Audited
+libraries also draw fewer specialists — a median of 2 against 3 for both other
+tiers — and ensemble size drives false alarms on its own (12.2% at k = 1 rising
+monotonically to 90.1% at k = 6). At matched k = 2 the three tiers are
+statistically indistinguishable: 18.9% / 15.3% / 18.7%, intervals fully
+overlapping. The provenance effect survives within strata but is substantially
+smaller than the marginal table above implies.
 
 **2. What the harness silently discards.** Ollama truncates any prompt over
 `num_ctx` without erroring, and abstentions are excluded from scoring — so a
@@ -47,7 +55,7 @@ from 12.5% to 81.2% (McNemar p = 0.016) while running **4.01× faster**.
 model digests, verdict agreement across two machines is 0.735. A
 `num_parallel=1` control excludes batch parallelism as the cause (p = 0.75).
 
-## Is 29.9% good?
+## Is 45.9% good?
 
 There is no single answer, because the published reference band is **20× wide
 and not internally commensurable**. Every figure below was verified against the
@@ -57,8 +65,8 @@ source paper's own text:
 |---|--:|---|
 | GPTScan (ICSE'24), self-reported | 4.39% | FP/(FP+TN) |
 | Slither (WETSEB'19), self-reported | 10.9% | **1 − precision** |
-| **ThirdEye, audited-library tier** | **15.7%** | FP/(FP+TN) |
-| **ThirdEye, overall (shipped rule)** | **29.9%** | FP/(FP+TN) |
+| **ThirdEye, audited-library tier** | **27.8%** | FP/(FP+TN) |
+| **ThirdEye, overall (shipped rule)** | **45.9%** | FP/(FP+TN) |
 | COMPSAC'26, local 4-bit models | 34.09% | FP/(FP+TN) |
 | GPTScan, measured independently (Heimdallr) | 97.50% | FP/(FP+TN) |
 
@@ -67,7 +75,7 @@ change to the tool. Slither's much-cited 10.9% is the share of *flagged*
 contracts manual review found wrong, on one detector class, with no
 true-negative set — it is not the same quantity it gets compared against.
 
-We do not claim 29.9% is good. We claim it is **interpretable**: it carries a
+We do not claim 45.9% is good. We claim it is **interpretable**: it carries a
 stated negative class, a per-tier decomposition, a hand-audited label-noise
 estimate, and a confidence interval.
 
@@ -92,7 +100,7 @@ demonstrated, and it is reported that way rather than as a win.
 
 ## What this is not
 
-- Not a claim that ThirdEye is the best available auditor. A 29.9% false-alarm
+- Not a claim that ThirdEye is the best available auditor. A 45.9% false-alarm
   rate is not deployable unattended, and we say so.
 - Not a claim that the benchmark is representative of all Solidity.
 - The `dynamic` auto-generated harness is a **scaffold**: it emits a log line

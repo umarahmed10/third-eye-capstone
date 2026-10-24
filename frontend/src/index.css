@@ -259,17 +259,22 @@ body.exhibit-mode {
 }
 body.exhibit-mode ::selection { background: #F6E7E2; }
 
-/* ─── Site shell ──────────────────────────────────────────────────────
-   The rebuilt site (src/site/) is dark and paints its own surfaces via
-   inline tokens. The sheet above still themes the older product views as
-   light "bone paper", so without this the browser paints a light ground
-   behind a dark page -- visible as a flash on load and as light bars
-   beyond the content on short pages.                                   */
+/* ─── Site shell ──────────────────────────────────────
+   The rebuilt site (src/site/) paints its own surfaces via inline tokens;
+   these three rules only make the browser's own ground match, so overscroll
+   and short pages don't show a different colour beyond the content.
+
+   This block used to force #0B0E14 near-black here, which fought the bone
+   paper the sheet above sets for the older product views -- two themes in one
+   stylesheet, last-wins. Now there is one ground and the conflict is gone. */
 html, body, #root {
-  background: #0B0E14;
-  color: #E8ECF4;
+  background: #F7F5F0;
+  color: #16150F;
   margin: 0;
   min-height: 100%;
 }
 *, *::before, *::after { box-sizing: border-box; }
-:focus-visible { outline: 2px solid #3DD8D0; outline-offset: 2px; }
+
+/* Ink at full strength, not the accent: a 2px blue ring on bone is ~3:1 and
+   keyboard users navigate by this one indicator. */
+:focus-visible { outline: 2px solid rgba(22,21,15,0.75); outline-offset: 2px; }

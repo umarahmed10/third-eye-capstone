@@ -8,6 +8,13 @@
 // 37.5% -> 45.9%, with non-overlapping intervals. A figure scattered across
 // six components is a figure that gets half-updated. Import from here.
 //
+// The same trap caught the per-tier figures a second time, after this header
+// was written: TIERS.fprShipped still held the n = 1,154 values (15.7 / 37.5 /
+// 33.0) while the n column beside them was already full-corpus, so the table
+// displayed two different denominators as one row. They are now the 2,142-row
+// figures (27.8 / 54.7 / 44.8). The lesson the file was created for applies to
+// the file itself: a superseded number survives wherever nobody re-reads it.
+//
 // Sources: docs/PAPER_FACTS.md, docs/FINDINGS.md, docs/PAPER_MSR2027.md.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -38,7 +45,7 @@ export const TIERS: Tier[] = [
     n: 172,
     klass: "safe",
     how: "OpenZeppelin and Solady releases — code that has been through repeated professional audit and very wide production use.",
-    fprShipped: "15.7% [11.0, 21.9]",
+    fprShipped: "27.8% [22.9, 33.4]",
   },
   {
     key: "audit_reviewed_clean",
@@ -46,7 +53,7 @@ export const TIERS: Tier[] = [
     n: 240,
     klass: "safe",
     how: "Contracts that appeared in a published audit report and received no finding. Reviewed by humans, but once, and under time pressure.",
-    fprShipped: "37.5% [31.6, 43.8]",
+    fprShipped: "54.7% [50.7, 58.7]",
   },
   {
     key: "realworld_no_bug_reported",
@@ -54,7 +61,7 @@ export const TIERS: Tier[] = [
     n: 191,
     klass: "safe",
     how: "Deployed contracts with no public disclosure against them. The weakest safe label in the set: absence of a report is not evidence of absence.",
-    fprShipped: "33.0% [26.7, 39.9]",
+    fprShipped: "44.8% [37.9, 51.9]",
   },
   {
     key: "curated",
@@ -168,8 +175,8 @@ export const FINDINGS: Finding[] = [
     title: "Label provenance moves the false-alarm rate — but less than it first appeared",
     status: "SOUND (scoped)",
     body:
-      "Audited libraries draw a 15.7% false-alarm rate against 37.5% on audit-reviewed code. The effect is real but partly confounded by ensemble size: audited libraries draw a median of 2 specialists against 3 elsewhere, and at matched k = 2 the three tiers are statistically indistinguishable. Reported stratified by k.",
-    evidence: "Wilson intervals on 1,046 safe contracts; the k = 2 intervals fully overlap.",
+      "Audited libraries draw a 27.8% false-alarm rate against 54.7% on audit-reviewed code. The effect is real but partly confounded by ensemble size: audited libraries draw a median of 2 specialists against 3 elsewhere, and at matched k = 2 the three tiers are statistically indistinguishable — 18.9% / 15.3% / 18.7%, intervals fully overlapping. The spread appears only at k ≥ 3, so it is reported stratified by k.",
+    evidence: "Wilson intervals on the 1,046 asym-sound safe contracts of the full corpus; the k = 2 intervals fully overlap.",
   },
   {
     id: "F3",
@@ -184,7 +191,7 @@ export const FINDINGS: Finding[] = [
     title: "Dropping the noisiest specialist does not generalise",
     status: "REFUTED",
     body:
-      "Excluding business_logic — which places ~42% of its findings on safe contracts — improved the recall/false-alarm trade by 8.3 points in-sample. On two held-out seeds the sign flipped with the threshold (+1.4, −2.7, +2.6, +0.6). The mechanism replicated; the benefit did not. A noisy specialist is not the same as a net-negative one, and we did not ship the change.",
+      "Excluding business_logic — which places ~42% of its findings on safe contracts — bought +8.3 points of recall at a matched ~32% false-alarm rate in-sample. On two held-out seeds the sign flipped with the threshold (+1.4, −2.7, +2.6, +0.6). The mechanism replicated; the benefit did not. A noisy specialist is not the same as a net-negative one, and we did not ship the change.",
     evidence: "Two held-out seeds, 334 and 332 scored contracts, pre-registered validator.",
   },
   {
@@ -192,8 +199,8 @@ export const FINDINGS: Finding[] = [
     title: "Adversarial arbitration costs more than it returns on this corpus",
     status: "SOUND (scoped)",
     body:
-      "A stronger independent judge re-reading each finding against its quote adds +3.3 points of precision. On the access-control slice it adds 34. It is shipped OFF by default: on a local machine the judge model is the slowest component by an order of magnitude, and the average gain does not justify it.",
-    evidence: "n = 280 paired contracts; judge latency measured at 83 s/call on a 4 GB laptop GPU.",
+      "A stronger independent judge re-reading each finding against its quote moves precision 49.6% → 52.9% (+3.3 points) while discarding 83% of all findings — recall collapses 93.6% → 32.9%. It retains 32.9% of true flags and 29.3% of false ones, i.e. near-uniform thinning, which is why precision barely moves: it does not buy the property it was adopted for, and a threshold achieves the same trade more cheaply. On the access-control slice it does add 34 points of precision, so the effect is corpus-dependent and we report both. Shipped OFF.",
+    evidence: "n = 281 class-balanced contracts; the access-control ablation is n = 52 sound in all arms. Judge cost: 23.2 s/call as measured in the sweep, 83 s/call for qwen3:8b on the 4 GB demo laptop.",
   },
   {
     id: "F6",

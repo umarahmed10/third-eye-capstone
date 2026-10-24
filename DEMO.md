@@ -109,8 +109,9 @@ live timer and each specialist turning from *waiting* to *clean* or *flagged*,
 so the wait is legible rather than a frozen screen.
 
 **The tool will get some samples "wrong", and that is the demo.** It raises a
-false alarm on 45.9% of safe contracts on the full benchmark, and the sample
-set is deliberately weighted toward safe contracts to make that visible. When
+false alarm on 45.9% of safe contracts on the full benchmark, and four of the
+ten samples are safe specifically so a false alarm can show up live rather than
+being something you only read about on the Findings page. When
 a verdict disagrees with the sample's expected answer, the page says so and
 links to why.
 
@@ -127,7 +128,7 @@ result this project is actually about.
 |---|---|---|
 | Preflight red, "models not in the store it is serving" | Ollama started with `OLLAMA_MODELS` pointing at a different model directory | Restart Ollama with that variable unset |
 | `CUDA error: shared object initialization failed` | Coder model too big for VRAM | `OLLAMA_CODER_MODEL=qwen2.5-coder:3b` |
-| Every verdict is INCONCLUSIVE | More than half the specialists errored — this is the fail-closed rule working | Check preflight; usually a missing model |
+| Every verdict is INCONCLUSIVE | Half or more of the specialists errored — this is the fail-closed rule working | Check preflight; usually a missing model |
 | Scan hangs past ~90 s | A model is loading cold, or another process holds the GPU | Wait once; if it repeats, restart Ollama |
 | Tool page says "backend not reachable" | Only the frontend is running | Start `uvicorn` in the second terminal |
 

@@ -48,8 +48,8 @@ export function Testing() {
             ],
             [
               "Contract-level",
-              "SARIF output validates against the schema CI consumers expect",
-              "schema validation in CI",
+              "SARIF output is accepted by GitHub code scanning, which rejects a malformed file",
+              "codeql-action/upload-sarif in the audit workflow",
             ],
           ]}
         />

@@ -75,7 +75,7 @@ function Nav({ route, go }: { route: string; go: (id: string) => void }) {
         position: "sticky",
         top: 0,
         zIndex: 20,
-        background: "rgba(11,14,20,0.88)",
+        background: "rgba(247,245,240,0.86)",
         backdropFilter: "blur(10px)",
         borderBottom: `1px solid ${C.line}`,
       }}

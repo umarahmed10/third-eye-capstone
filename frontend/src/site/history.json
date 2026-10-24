@@ -1,7 +1,7 @@
 {
   "first_commit": "2026-05-25",
   "last_commit": "2026-10-24",
-  "total": 125,
+  "total": 127,
   "months": [
     {
       "month": "2026-05",
@@ -67,14 +67,15 @@
     },
     {
       "month": "2026-10",
-      "n": 60,
+      "n": 62,
       "kinds": {
         "evaluation": 16,
-        "other": 21,
+        "other": 22,
         "writing": 13,
         "fix": 2,
         "integrity": 4,
-        "testing": 4
+        "testing": 4,
+        "maintenance": 1
       },
       "milestones": [
         {
@@ -101,6 +102,11 @@
           "sha": "3b490c2",
           "date": "2026-10-24",
           "label": "Out-of-sample validation refutes our own tuned configuration"
+        },
+        {
+          "sha": "cae2a41",
+          "date": "2026-10-24",
+          "label": "Tool goes local-only: no key, no network, nothing leaves the machine"
         }
       ]
     }
@@ -979,6 +985,20 @@
       "date": "2026-10-24",
       "subject": "docs: close F3's stale tag; mark PAPER_DRAFT superseded",
       "kind": "writing",
+      "milestone": null
+    },
+    {
+      "sha": "cae2a41",
+      "date": "2026-10-24",
+      "subject": "local-only tool + rebuilt site: eight pages, live demo, generated history",
+      "kind": "other",
+      "milestone": "Tool goes local-only: no key, no network, nothing leaves the machine"
+    },
+    {
+      "sha": "9853fe3",
+      "date": "2026-10-24",
+      "subject": "deploy: make the hosted site useful without a backend; fix a lying health check",
+      "kind": "maintenance",
       "milestone": null
     }
   ]
