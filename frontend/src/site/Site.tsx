@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { C, F } from "./design";
+import { ScrollProgress, SmoothScroll, scrollToTopImmediate } from "./motion";
 import { Overview } from "./pages/Overview";
 import { HowItWorks } from "./pages/HowItWorks";
 import { Datasets } from "./pages/Datasets";
@@ -40,7 +41,7 @@ export function Site() {
   useEffect(() => {
     const onHash = () => {
       setRoute(currentRoute());
-      window.scrollTo({ top: 0 });
+      scrollToTopImmediate();
     };
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
@@ -51,20 +52,23 @@ export function Site() {
   }
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", color: C.ink }}>
-      <Nav route={route} go={go} />
-      <main>
-        {route === "overview" && <Overview go={go} />}
-        {route === "how" && <HowItWorks />}
-        {route === "datasets" && <Datasets />}
-        {route === "testing" && <Testing />}
-        {route === "findings" && <Findings />}
-        {route === "tool" && <Tool />}
-        {route === "team" && <Team />}
-        {route === "history" && <History />}
-      </main>
-      <Footer />
-    </div>
+    <SmoothScroll>
+      <div style={{ background: C.bg, minHeight: "100vh", color: C.ink }}>
+        <div className="te-grain" aria-hidden />
+        <Nav route={route} go={go} />
+        <main style={{ position: "relative", zIndex: 2 }}>
+          {route === "overview" && <Overview go={go} />}
+          {route === "how" && <HowItWorks />}
+          {route === "datasets" && <Datasets />}
+          {route === "testing" && <Testing />}
+          {route === "findings" && <Findings />}
+          {route === "tool" && <Tool />}
+          {route === "team" && <Team />}
+          {route === "history" && <History />}
+        </main>
+        <Footer />
+      </div>
+    </SmoothScroll>
   );
 }
 
@@ -80,6 +84,7 @@ function Nav({ route, go }: { route: string; go: (id: string) => void }) {
         borderBottom: `1px solid ${C.line}`,
       }}
     >
+      <ScrollProgress color={C.accent} />
       <nav
         style={{
           maxWidth: 1120,
@@ -126,6 +131,8 @@ function Nav({ route, go }: { route: string; go: (id: string) => void }) {
               <button
                 key={r.id}
                 onClick={() => go(r.id)}
+                className="te-nav-link"
+                data-on={on ? "1" : "0"}
                 style={{
                   background: on ? C.accentGhost : "transparent",
                   border: hl && !on ? `1px solid ${C.accentDim}` : "1px solid transparent",

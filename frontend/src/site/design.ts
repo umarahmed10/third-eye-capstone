@@ -92,7 +92,7 @@ export const S = {
   // carry the argument, sans is reserved for chrome, mono for measurements.
   h1: {
     fontFamily: F.serif,
-    fontSize: 40,
+    fontSize: "clamp(30px, 5.4vw, 40px)",
     lineHeight: 1.1,
     fontWeight: 600,
     letterSpacing: "-0.015em",
@@ -104,7 +104,7 @@ export const S = {
 
   h2: {
     fontFamily: F.serif,
-    fontSize: 24,
+    fontSize: "clamp(20px, 3.2vw, 24px)",
     fontWeight: 600,
     letterSpacing: "-0.01em",
     color: C.ink,

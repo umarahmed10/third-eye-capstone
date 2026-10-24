@@ -1,5 +1,7 @@
 import { C, F, S } from "../design";
 import { Badge, Card, Caveat, Grid, P, Section, Stat, Table } from "../ui";
+import { CouncilEye } from "../CouncilEye";
+import { SplitWords } from "../motion";
 import { CORPUS, SCORING_RULES, TESTING } from "../facts";
 import HISTORY from "../history.json";
 
@@ -9,8 +11,8 @@ export function Overview({ go }: { go: (route: string) => void }) {
       {/* ── hero ── */}
       <div style={{ paddingTop: 64, paddingBottom: 8 }}>
         <div style={S.eyebrow}>ThirdEye · PES University capstone</div>
-        <h1 style={{ ...S.h1, fontSize: 48, maxWidth: "18ch" }}>
-          A smart-contract auditor that runs entirely on your machine
+        <h1 style={{ ...S.h1, fontSize: "clamp(32px, 6.4vw, 54px)", maxWidth: "19ch" }}>
+          <SplitWords text="A smart-contract auditor that runs entirely on your machine" />
         </h1>
         <P style={{ fontSize: 17, maxWidth: "62ch" }}>
           A router picks which of eight specialist models should read a Solidity
@@ -56,6 +58,21 @@ export function Overview({ go }: { go: (route: string) => void }) {
           </button>
         </div>
 
+        {/* The hero visual IS the headline finding, played from its measured
+            rows -- see CouncilEye. A reviewer who only watches the loop has
+            still read FINDING 0. */}
+        <div
+          style={{
+            marginTop: 40,
+            padding: "26px 28px",
+            background: C.panel,
+            border: `1px solid ${C.line}`,
+            borderRadius: 14,
+          }}
+        >
+          <CouncilEye />
+        </div>
+
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 20 }}>
           <Badge>local-only</Badge>
           <Badge>8 specialist roles</Badge>
@@ -66,7 +83,7 @@ export function Overview({ go }: { go: (route: string) => void }) {
 
       {/* ── the honest headline ── */}
       <Section title="Where it stands">
-        <Grid min={210}>
+        <Grid min={210} stagger>
           <Stat value="89.1%" label="Recall" sub="vulnerable contracts caught, shipped setting" tone={C.go} />
           <Stat value="45.9%" label="False-alarm rate" sub="safe contracts wrongly flagged" tone={C.nogo} />
           <Stat value={CORPUS.scored.toLocaleString()} label="Contracts scored" sub="balanced safe / vulnerable" />

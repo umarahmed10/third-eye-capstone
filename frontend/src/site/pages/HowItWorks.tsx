@@ -1,8 +1,9 @@
 import { C, F, S } from "../design";
 import { Badge, Card, Caveat, Grid, P, Section, Table } from "../ui";
+import { Pipeline } from "../Pipeline";
 import { SPECIALISTS } from "../facts";
 
-const STAGES = [
+const STAGES: import("../Pipeline").Stage[] = [
   {
     n: "01",
     name: "Static pre-pass",
@@ -57,42 +58,7 @@ export function HowItWorks() {
       </div>
 
       <Section title="The pipeline">
-        <div style={{ display: "grid", gap: 12 }}>
-          {STAGES.map((s) => (
-            <Card key={s.n}>
-              <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                <div
-                  style={{
-                    fontFamily: F.mono,
-                    fontSize: 13,
-                    color: C.accent,
-                    paddingTop: 2,
-                    flexShrink: 0,
-                  }}
-                >
-                  {s.n}
-                </div>
-                <div>
-                  <div style={S.h3}>{s.name}</div>
-                  <P style={{ margin: "0 0 10px", fontSize: 14.5 }}>{s.what}</P>
-                  <div
-                    style={{
-                      borderLeft: `2px solid ${C.lineHi}`,
-                      paddingLeft: 12,
-                      fontFamily: F.sans,
-                      fontSize: 13.5,
-                      lineHeight: 1.6,
-                      color: C.inkDim,
-                      maxWidth: "64ch",
-                    }}
-                  >
-                    {s.why}
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+        <Pipeline stages={STAGES} />
       </Section>
 
       <Section title="The eight specialists">

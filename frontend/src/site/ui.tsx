@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { C, F, S, verdictColor } from "./design";
+import { CountUp, Reveal, prefersReducedMotion } from "./motion";
 
 /* ── primitives shared by every page ─────────────────────────────────────── */
 
@@ -16,9 +17,11 @@ export function Section({
 }) {
   return (
     <section id={id} style={{ marginTop: 56 }}>
-      {eyebrow && <div style={S.eyebrow}>{eyebrow}</div>}
-      {title && <h2 style={{ ...S.h2, marginTop: 0 }}>{title}</h2>}
-      {children}
+      <Reveal>
+        {eyebrow && <div style={S.eyebrow}>{eyebrow}</div>}
+        {title && <h2 style={{ ...S.h2, marginTop: 0 }}>{title}</h2>}
+        {children}
+      </Reveal>
     </section>
   );
 }
@@ -30,11 +33,19 @@ export function P({ children, style }: { children: React.ReactNode; style?: Reac
 export function Card({
   children,
   style,
+  flat,
 }: {
   children: React.ReactNode;
   style?: React.CSSProperties;
+  /** Opt out of the hover lift for cards that are not themselves a unit of
+   *  content (chart frames, wrappers around a table). */
+  flat?: boolean;
 }) {
-  return <div style={{ ...S.card, ...style }}>{children}</div>;
+  return (
+    <div className={flat ? undefined : "te-card"} style={{ ...S.card, ...style }}>
+      {children}
+    </div>
+  );
 }
 
 export function Grid({
@@ -42,13 +53,17 @@ export function Grid({
   gap = 16,
   children,
   min = 240,
+  stagger,
 }: {
   cols?: number;
   gap?: number;
   min?: number;
   children: React.ReactNode;
+  /** Reveal the cells in sequence instead of as one block. Worth it for a row
+   *  of headline stats; noise on a grid of twelve. */
+  stagger?: boolean;
 }) {
-  return (
+  const inner = (
     <div
       style={{
         display: "grid",
@@ -60,6 +75,22 @@ export function Grid({
     >
       {children}
     </div>
+  );
+  // The Reveal must BE the grid for stagger to see the cells as its direct
+  // children, so the grid styles move onto it rather than wrapping it.
+  if (!stagger) return inner;
+  return (
+    <Reveal
+      stagger={0.085}
+      style={{
+        display: "grid",
+        gap,
+        gridTemplateColumns: `repeat(auto-fit, minmax(${min}px, 1fr))`,
+        maxWidth: cols <= 2 ? 820 : undefined,
+      }}
+    >
+      {children}
+    </Reveal>
   );
 }
 
@@ -86,7 +117,7 @@ export function Stat({
           fontVariantNumeric: "tabular-nums",
         }}
       >
-        {value}
+        <CountUp value={value} />
       </div>
       <div style={{ ...S.h3, marginTop: 8, marginBottom: 4 }}>{label}</div>
       {sub && (
@@ -275,6 +306,69 @@ export function BarPair({
 }
 
 function Bar({ value, max, color }: { value: number | null; max: number; color: string }) {
+  const fill = useRef<HTMLDivElement>(null);
+  const num = useRef<HTMLSpanElement>(null);
+
+  /* Bars grow from the axis and the label counts with them, so the monotone
+   * climb in FINDING 0 is something you watch rather than read off six static
+   * rows. scaleX, not width: compositor-only, and there are twelve on screen.
+   *
+   * Same guarantee as CountUp -- the final state is forced by a timer, because
+   * a bar left at scaleX(0) with the label reading "0.0%" would not be a
+   * missing animation, it would be a wrong number on a results page. */
+  useEffect(() => {
+    const f = fill.current;
+    if (!f || value == null || prefersReducedMotion()) return;
+
+    let raf = 0;
+    let safety = 0;
+    let done = false;
+    const DUR = 950;
+
+    const finish = () => {
+      if (done) return;
+      done = true;
+      cancelAnimationFrame(raf);
+      clearTimeout(safety);
+      f.style.transform = "scaleX(1)";
+      if (num.current) num.current.textContent = `${value.toFixed(1)}%`;
+    };
+
+    const run = () => {
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - t0) / DUR);
+        const e = 1 - Math.pow(1 - t, 3);
+        f.style.transform = `scaleX(${e})`;
+        if (num.current) num.current.textContent = `${(value * e).toFixed(1)}%`;
+        if (t < 1) raf = requestAnimationFrame(step);
+        else finish();
+      };
+      f.style.transform = "scaleX(0)";
+      raf = requestAnimationFrame(step);
+      safety = window.setTimeout(finish, DUR + 400);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((x) => x.isIntersecting)) {
+          io.disconnect();
+          run();
+        }
+      },
+      { threshold: 0.25 }
+    );
+    io.observe(f);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+      clearTimeout(safety);
+      f.style.transform = "";
+      if (num.current) num.current.textContent = `${value.toFixed(1)}%`;
+    };
+  }, [value, max]);
+
   if (value == null) {
     return (
       <div style={{ height: 13, display: "flex", alignItems: "center" }}>
@@ -290,12 +384,25 @@ function Bar({ value, max, color }: { value: number | null; max: number; color: 
         style={{
           height: 11,
           width: `${Math.max(1, (value / max) * 100)}%`,
-          background: color,
           borderRadius: 2,
           minWidth: 2,
+          overflow: "hidden",
         }}
-      />
+      >
+        <div
+          ref={fill}
+          style={{
+            height: "100%",
+            width: "100%",
+            background: color,
+            borderRadius: 2,
+            transformOrigin: "0 50%",
+            willChange: "transform",
+          }}
+        />
+      </div>
       <span
+        ref={num}
         style={{
           fontFamily: F.mono,
           fontSize: 11,
