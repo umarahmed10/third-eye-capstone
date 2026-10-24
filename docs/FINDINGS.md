@@ -241,7 +241,7 @@ runs on every contract. *Phase 10.*
 > with it, the only planned remedy. The specialist was never addressed. The
 > simpler option (exclude the class) was not considered for two months.
 
-### C3. Dropping `business_logic` reaches the FPR floor at far better recall · **HYPOTHESIS**
+### C3. Dropping `business_logic` reaches the FPR floor at far better recall · **REFUTED as stated; survives as a precision/recall trade**
 
 | configuration | recall | FPR | precision | F1 | J |
 |---|--:|--:|--:|--:|--:|
@@ -291,8 +291,57 @@ The mechanism/effect split is the reportable part:
   net-negative specialist**, and seed 0 structurally could not separate those
   because the class was chosen there.
 
-Seed 2 supplies the two-seed agreement test. Whatever it says, the seed-0
-magnitude is retired.
+#### C3 FINAL — both held-out seeds, n = 666 · **NOT PROMOTED, CLOSED** (Oct 24)
+
+Seed 2 completed (360 attempted, 332 terminal, 28 quarantined = 7.8%):
+
+| configuration | recall | FPR | precision | F1 | J | dJ |
+|---|--:|--:|--:|--:|--:|--:|
+| shipped, τ = 0.925 | 81.8% | 34.0% | 71.6% | 0.764 | 47.8 | |
+| drop business_logic, τ = 0.925 | 79.4% | 29.0% | 74.2% | 0.767 | 50.4 | **+2.6** |
+| shipped, τ = 0.99 | 69.4% | 21.0% | 77.6% | 0.733 | 48.4 | |
+| drop business_logic, τ = 0.99 | 68.8% | 19.8% | 78.5% | 0.734 | 49.1 | **+0.6** |
+
+All four held-out dJ values: **+1.4, −2.7 (seed 1), +2.6, +0.6 (seed 2).** Three
+positive, one negative, mean ≈ +0.5. The sign varies **both** within a seed
+across τ and between seeds, so **C3 is not promoted and the shipped
+configuration stands unchanged.** This is the final answer; C3 is closed.
+
+**The mechanism replicated almost exactly on both seeds** — `business_logic`
+places **42.0%** [34.2, 50.2] and **42.9%** [34.1, 52.1] of its findings on safe
+contracts. That is a stable, reproducible property.
+
+**What is reliable is a trade, not a gain.** Across all four held-out cells the
+direction is perfectly consistent in the components, and only the *summary*
+statistic is ambiguous:
+
+| | seed 1 τ=.925 | seed 1 τ=.99 | seed 2 τ=.925 | seed 2 τ=.99 |
+|---|--:|--:|--:|--:|
+| Δ precision | +1.7 | +1.3 | +2.6 | +0.9 |
+| Δ FPR | −4.3 | −4.3 | −5.0 | −1.2 |
+| Δ recall | −2.9 | −7.0 | −2.4 | −0.6 |
+
+Precision up 4/4, FPR down 4/4, recall down 4/4. **Excluding `business_logic`
+reliably buys precision with recall** — which is exactly what thresholding does,
+and the original claim was that it was *better* than thresholding because it was
+free. It is not free. Report it as an operating-point choice available to a
+deployer who prefers precision, never as a Pareto improvement.
+
+#### Resolution limit at n ≈ 333 — **CAUTION, not a finding**
+
+The two held-out seeds differ on the **shipped** configuration by **6.6 points
+of recall** (88.4% vs 81.8%) and **4.9 points of FPR** (38.9% vs 34.0%) with
+tool, models, machine and τ all fixed — the only difference is which contracts
+the sampler drew. **The Wilson intervals overlap in both cases**, so this is
+sampling noise and **not** evidence that seed is a sixth unreported choice; it
+must not be reported as one.
+
+It is still worth stating as a bound: at n ≈ 333 the headline metrics carry
+roughly ±6 points of sampling slop, so any claim resolving two configurations
+closer than that at this n is not resolvable at all. C3's ±2–3 points of J sit
+**inside** that bound, which is the quantitative reason C3 is inconclusive
+rather than merely small. Demonstrating a genuine seed effect would need either
+far more seeds or the full 2,250-contract corpus per seed.
 
 *Process note, recorded because it nearly produced a published error:* at
 n = 206 mid-run the validator printed **REFUTED** (dJ −1.7, −2.5). At the
@@ -505,7 +554,15 @@ not restarted to pick it up — a schema change mid-validation would cost the
 two-seed comparison, which is worth more. Answerable on the next run.
 
 ### F3. Does the `business_logic` exclusion hold out of sample? · **OPEN, queued**
-**ANSWERED for seed 1 (Oct 24): no.** See the C3 out-of-sample block. 334
+**CLOSED (Oct 24): no — both held-out seeds in, C3 not promoted.** Final dJ
+across all four held-out cells: +1.4, −2.7, +2.6, +0.6 (mean ≈ +0.5), sign
+varying both across τ within a seed and between seeds. The mechanism replicated
+on both (42.0% / 42.9% of `business_logic` findings on safe contracts) and the
+component directions are 4/4 consistent — precision up, FPR down, recall down —
+so the honest residual claim is a **trade**, not the free gain seed 0 showed.
+Shipped configuration unchanged. Detail in §C3.
+
+*Superseded first answer, kept for the record:* See the C3 out-of-sample block. 334
 terminal rows; dJ +1.4 at τ = 0.925 and −2.7 at τ = 0.99, so the sign is
 threshold-dependent and the effect sits inside noise. C3 is **not promoted**;
 the shipped configuration is **unchanged**. The mechanism replicates (42.0% of
