@@ -5,6 +5,7 @@ import BUNDLED_SAMPLES from "../samples.json";
 import { AuditStages } from "../AuditStages";
 import { ArchitectureFlow, type FlowFinding } from "../ArchitectureFlow";
 import { STAGES } from "../stages";
+import { SPECIALISTS } from "../facts";
 import DEMO_CACHE from "../demo-cache.json";
 import {
   API,
@@ -307,6 +308,26 @@ export function Tool() {
      * claims no others. */
     const flaggedRoles = new Set(findings.map((f) => f.type));
 
+    /* Which model answered for a role, in the recording.
+     *
+     * The cache stores one model per FAMILY (coder / logic / dos), not per
+     * role, because that is how the pipeline assigns them: the code roles share
+     * a coder, business_logic and the oracle roles share a logic model, dos_gas
+     * gets its own. Labelling all four with the coder -- which the first cut of
+     * this did -- told the reader business_logic ran on qwen when it ran on
+     * llama. */
+    const recordedModel = (role: string) => {
+      const cfg = SPECIALISTS.find((s2) => s2.role === role)?.model || "";
+      const fam = cfg.startsWith("qwen")
+        ? "coder"
+        : cfg.startsWith("llama")
+          ? "logic"
+          : cfg.startsWith("gemma")
+            ? "dos"
+            : "";
+      return (fam && CACHE.models[fam]) || cfg;
+    };
+
     // 01 static -> 02 router
     at(800, () => {
       setStage(1);
@@ -320,7 +341,7 @@ export function Tool() {
       at(COUNCIL_AT + PER * (i + 1), () =>
         setDone((d) => [
           ...d,
-          { role: r, found: flaggedRoles.has(r), model: CACHE.models.coder },
+          { role: r, found: flaggedRoles.has(r), model: recordedModel(r) },
         ])
       );
     });
