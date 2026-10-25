@@ -10,7 +10,7 @@
 // ONE HUE, AND IT MEANS SOMETHING. The signal is vermillion #B4351F and it is
 // the only chromatic colour in the chrome. Everything structural is bone, ink
 // and a hairline. Hue is therefore information rather than decoration, which is
-// why the page can carry eight pages of figures without looking like a
+// why the page can carry seven pages of figures without looking like a
 // dashboard.
 //
 // NO BLUE. The exhibit paired vermillion with a validated data blue (#1F6FB2)

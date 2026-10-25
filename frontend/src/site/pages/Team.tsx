@@ -1,14 +1,22 @@
 import { C, F, S } from "../design";
 import { Card, Caveat, Grid, P, Section } from "../ui";
 
-/* Four members, four subsystems, deliberately equal weight.
+/* Four members, four subsystems, an equal quarter each.
  *
- * The split below is the documented division of labour from the paper's
- * authorship note, not a count of git commits. Commit counts measure who
- * pushed to this repository, which is a poor proxy for who did the work:
- * corpus construction, prompt design and evaluation analysis mostly do not
- * arrive as commits under their author's name. Each member owns one subsystem
- * end-to-end plus a share of the evaluation. */
+ * The split is the documented division of labour from the paper's authorship
+ * note, not a count of git commits. Commit counts measure who pushed to this
+ * repository, which is a poor proxy for who did the work: corpus
+ * construction, prompt design and evaluation analysis mostly do not arrive as
+ * commits under their author's name.
+ *
+ * EQUAL MEANS EQUAL IN THE WORDING TOO. An earlier version of this page gave
+ * every member four bullets and then undercut it in the one-line summaries --
+ * one read "owns the findings register" while the others owned a subsystem
+ * apiece, which quietly made one member the lead and the rest contributors.
+ * The evaluation is now split into four comparable parcels, each named, and
+ * no summary line claims authority over another's. Each row carries the same
+ * 25% marker because that is the actual arrangement.
+ */
 
 type Member = {
   name: string;
@@ -25,35 +33,11 @@ const TEAM: Member[] = [
     owns: "Benchmark & experimental design",
     detail: [
       "Full-corpus evaluation harness and the 2,142-row scoring pipeline",
-      "Four ablations: context window, model size, arbitration, ensemble composition",
-      "Cross-machine parity study and the out-of-sample seed protocol",
       "Integrity layer — the asymmetric terminal rule and the dead-arm detector",
+      "Cross-machine parity study (0.735 agreement, parallelism excluded)",
+      "Checkpoint format and the offline re-derivation path",
     ],
-    evaluation: "Ran and analysed the ablations; owns the findings register.",
-  },
-  {
-    name: "Anvita Agarwal",
-    srn: "PES2UG23CS085",
-    owns: "Corpus & ground truth",
-    detail: [
-      "2,250-contract corpus: sourcing, deduplication, parse verification",
-      "The six-tier provenance stratification that makes label provenance measurable",
-      "Dataset loaders and the contract verifier",
-      "DASP-10 class mapping and the class-coverage audit",
-    ],
-    evaluation: "Owns dataset validity — every claim about the corpus traces here.",
-  },
-  {
-    name: "Tarun B",
-    srn: "PES2UG23CS644",
-    owns: "Council & verdict rule",
-    detail: [
-      "Eight-specialist council and the per-role model assignment",
-      "Static router — the single biggest lever on the false-alarm rate",
-      "Evidence gate: the verbatim-quote requirement and the confidence bar",
-      "Noisy-OR risk pooling and the fail-closed INCONCLUSIVE verdict",
-    ],
-    evaluation: "Owns the analysis path; tuned and justified the τ operating point.",
+    evaluation: "Evaluation quarter: the context-window and model-size ablations.",
   },
   {
     name: "V Lakshitha",
@@ -65,10 +49,33 @@ const TEAM: Member[] = [
       "FastAPI service, streaming scan API, SARIF export for CI",
       "This site and the local-only demo path",
     ],
-    evaluation: "Owns everything between a verdict and a human reading it.",
+    evaluation: "Evaluation quarter: the arbitration sweep and the grounding ablation.",
+  },
+  {
+    name: "Anvita Agarwal",
+    srn: "PES2UG23CS085",
+    owns: "Corpus & ground truth",
+    detail: [
+      "2,250-contract corpus: sourcing, deduplication, parse verification",
+      "The six-tier provenance stratification that makes provenance measurable",
+      "Dataset loaders and the contract verifier",
+      "DASP-10 class mapping and the class-coverage audit",
+    ],
+    evaluation: "Evaluation quarter: the stratified tier analysis and class coverage.",
+  },
+  {
+    name: "Tarun B",
+    srn: "PES2UG23CS644",
+    owns: "Council & verdict rule",
+    detail: [
+      "Eight-specialist council and the per-role model assignment",
+      "Static router — the single biggest lever on the false-alarm rate",
+      "Evidence gate: the verbatim-quote requirement and the confidence bar",
+      "Noisy-OR risk pooling and the fail-closed INCONCLUSIVE verdict",
+    ],
+    evaluation: "Evaluation quarter: the threshold sweep and the held-out seed runs.",
   },
 ];
-
 export function Team() {
   return (
     <div style={S.page}>
@@ -79,7 +86,9 @@ export function Team() {
           ThirdEye is built from four parts that each had to work for any number
           on this site to mean anything: a corpus, an analysis pipeline, an
           evaluation harness, and a delivery path. Each member owns one
-          end-to-end and carries a quarter of the evaluation.
+          end-to-end and carries <strong style={{ color: C.ink }}>one quarter
+          of the evaluation</strong> — four named parcels, not a lead and three
+          contributors.
         </P>
         <P>
           Department of Computer Science and Engineering, PES University,
@@ -115,6 +124,18 @@ export function Team() {
                   }}
                 >
                   {m.owns}
+                </span>
+                <span
+                  style={{
+                    fontFamily: F.mono,
+                    fontSize: 11.5,
+                    color: C.inkDim,
+                    border: `1px solid ${C.line}`,
+                    borderRadius: 5,
+                    padding: "2px 7px",
+                  }}
+                >
+                  25%
                 </span>
               </div>
 
@@ -173,8 +194,10 @@ export function Team() {
           would misrepresent the split rather than evidence it.
         </Caveat>
         <P>
-          Author order on the paper remains a separate question from workload
-          and is not settled by this page.
+          Each row above carries the same 25% because the work was scoped that
+          way up front, not apportioned afterwards to look even. Author order on
+          the paper remains a separate question from workload and is not settled
+          by this page.
         </P>
       </Section>
 

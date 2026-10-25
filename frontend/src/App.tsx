@@ -9,7 +9,7 @@ import { Site } from "./site/Site";
  *
  * For a capstone demo and a public write-up that is all cost and no benefit:
  * there is no multi-user deployment, the backend runs on localhost, and the
- * scan endpoint never needed an account. One URL, eight pages, the tool on
+ * scan endpoint never needed an account. One URL, seven pages, the tool on
  * one of them, nothing to log into.
  *
  * The old views remain in src/views/ (Analyze, History, Login) for the

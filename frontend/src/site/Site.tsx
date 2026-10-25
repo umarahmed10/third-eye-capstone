@@ -8,12 +8,11 @@ import { Testing } from "./pages/Testing";
 import { Findings } from "./pages/Findings";
 import { Tool } from "./pages/Tool";
 import { Team } from "./pages/Team";
-import { History } from "./pages/History";
 
 /* Hash routing, no dependency.
  *
  * react-router would be the obvious choice and is not worth 15 kB here: there
- * are eight static routes and no nesting, params or guards. Hash routes also
+ * are seven static routes and no nesting, params or guards. Hash routes also
  * survive being opened from the filesystem, which matters because this deck of
  * pages has to work from a USB stick in a review room with no network. */
 
@@ -25,7 +24,6 @@ const ROUTES = [
   { id: "findings", label: "Findings" },
   { id: "tool", label: "Tool", highlight: true },
   { id: "team", label: "Team" },
-  { id: "history", label: "History" },
 ] as const;
 
 type RouteId = (typeof ROUTES)[number]["id"];
@@ -64,7 +62,6 @@ export function Site() {
           {route === "findings" && <Findings />}
           {route === "tool" && <Tool />}
           {route === "team" && <Team />}
-          {route === "history" && <History />}
         </main>
         <Footer />
       </div>

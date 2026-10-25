@@ -22,7 +22,8 @@ import { C, F, S } from "./design";
 import { P } from "./ui";
 import { ScrollTrigger, gsap, prefersReducedMotion } from "./motion";
 
-export type Stage = { n: string; name: string; what: string; why: string };
+import type { Stage } from "./stages";
+export type { Stage };
 
 export function Pipeline({ stages }: { stages: Stage[] }) {
   const [pinnable, setPinnable] = useState(false);

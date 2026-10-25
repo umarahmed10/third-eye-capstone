@@ -3,7 +3,6 @@ import { Badge, Card, Caveat, Grid, P, Section, Stat, Table } from "../ui";
 import { CouncilEye } from "../CouncilEye";
 import { SplitWords } from "../motion";
 import { CORPUS, SCORING_RULES, TESTING } from "../facts";
-import HISTORY from "../history.json";
 
 export function Overview({ go }: { go: (route: string) => void }) {
   return (
@@ -153,9 +152,8 @@ export function Overview({ go }: { go: (route: string) => void }) {
             ["datasets", "Datasets", "2,250 contracts with a real safe class, stratified by how each label was obtained."],
             ["testing", "Testing", `${TESTING.tests} tests, most of them aimed at catching our own measurement errors.`],
             ["findings", "Findings", "Every claim with a status — including the ones we refuted ourselves."],
-            ["tool", "The tool", "Run a live scan locally on ten sample contracts, or paste your own."],
+            ["tool", "The tool", "Audit six sample contracts locally — three safe, three vulnerable — or paste your own."],
             ["team", "Team", "Four subsystems, four owners."],
-            ["history", "History", `All ${HISTORY.total} commits, generated from the git log.`],
           ].map(([route, title, blurb]) => (
             <Card
               key={route}

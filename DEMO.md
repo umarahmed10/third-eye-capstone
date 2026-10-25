@@ -42,7 +42,7 @@ set by `OLLAMA_CODER_MODEL`.
 | ≥ 8 GB | *(leave default)* `qwen2.5-coder:7b` | What the published benchmark used |
 | ≤ 4 GB | `OLLAMA_CODER_MODEL=qwen2.5-coder:3b` | The 7B does not fit and degrades badly |
 
-**Measured on the demo laptop (RTX 3050, 4 GB), same ten contracts:**
+**Measured on the demo laptop (RTX 3050, 4 GB), same contracts:**
 
 | | latency | specialist errors | agreed with expected |
 |---|--:|--:|--:|
@@ -62,7 +62,16 @@ mid-scan. A dead specialist cannot raise a flag, so the verdict degrades.
 
 ## 3. Start it
 
-Two terminals.
+Three things, in this order. **Ollama first** — if it is not serving, preflight
+reports "Ollama is not reachable at http://localhost:11434" and every scan
+fails, which is the single most likely thing to go wrong.
+
+```bash
+# terminal 0 — the engine
+ollama serve
+```
+
+Then two more terminals.
 
 ```bash
 # terminal 1 — backend
@@ -89,7 +98,7 @@ cd backend
 OLLAMA_CODER_MODEL=qwen2.5-coder:3b python -u build_demo_cache.py
 ```
 
-It scans all ten samples, prints what each returned, and writes
+It scans all six samples, prints what each returned, and writes
 `frontend/src/site/demo-cache.json`. Two reasons to run it:
 
 1. **It proves the machine works** right now, with the models actually
@@ -109,9 +118,11 @@ live timer and each specialist turning from *waiting* to *clean* or *flagged*,
 so the wait is legible rather than a frozen screen.
 
 **The tool will get some samples "wrong", and that is the demo.** It raises a
-false alarm on 45.9% of safe contracts on the full benchmark, and four of the
-ten samples are safe specifically so a false alarm can show up live rather than
-being something you only read about on the Findings page. When
+false alarm on 45.9% of safe contracts on the full benchmark, and the sample
+set is a deliberate 3 safe / 3 vulnerable so a false alarm can show up live
+rather than being something you only read about on the Findings page. On the
+last recorded run it did exactly that: 4 of 6 matched, with two safe contracts
+flagged. When
 a verdict disagrees with the sample's expected answer, the page says so and
 links to why.
 
@@ -131,6 +142,8 @@ result this project is actually about.
 | Every verdict is INCONCLUSIVE | Half or more of the specialists errored — this is the fail-closed rule working | Check preflight; usually a missing model |
 | Scan hangs past ~90 s | A model is loading cold, or another process holds the GPU | Wait once; if it repeats, restart Ollama |
 | Tool page says "backend not reachable" | Only the frontend is running | Start `uvicorn` in the second terminal |
+| Preflight says Ollama unreachable at :11434 | `ollama serve` is not running | Start it; this is the most common failure |
+| A scan never finishes and the stage rail sits on "council" | Arbitration is on; the local judge is ~83 s per finding | Unset `THIRDEYE_ARBITRATION` — it is OFF by default |
 
 **Offline fallback:** every other page on the site is static and needs no
 backend at all. If the backend cannot start, the content pages still present

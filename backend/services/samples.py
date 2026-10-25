@@ -140,6 +140,32 @@ contract Lottery {
 ]
 
 
+# The demo set: three GO, three NO-GO.
+#
+# Ten samples was too many to walk a panel through in the time available, and a
+# balanced six makes the point faster: the tool is shown as likely to raise a
+# false alarm as to catch a bug, which is the actual result. Each half spans
+# three different patterns rather than three flavours of the same one --
+# reentrancy / access control / bad randomness against guarded-withdraw /
+# checks-effects-interactions / pull-payment.
+#
+# `safe-guarded-withdraw` is the one that must stay: it is the deliberate
+# false-positive probe, raw .call{value:} with the state zeroed first AND a
+# guard, so a pattern matcher flags it and a reader of the logic should not.
+#
+# The contracts dropped from the demo are NOT deleted -- they are still defined
+# above and in samples_extra, still exercised by the test suite, and restoring
+# one is a single line here.
+DEMO_SET = (
+    "safe-guarded-withdraw",
+    "safe-vault",
+    "safe-pull-payment",
+    "reentrancy-bank",
+    "access-control-drain",
+    "bad-randomness-lottery",
+)
+
+
 def list_samples() -> list[dict]:
     """Public list (includes code so the UI can load it directly).
 
@@ -153,4 +179,14 @@ def list_samples() -> list[dict]:
     all_samples = SAMPLES + EXTRA_SAMPLES
     ids = [s["id"] for s in all_samples]
     assert len(ids) == len(set(ids)), f"duplicate sample id: {ids}"
-    return sorted(all_samples, key=lambda s: (s["expected"] != "GO", s["name"]))
+
+    by_id = {s["id"]: s for s in all_samples}
+    missing = [i for i in DEMO_SET if i not in by_id]
+    assert not missing, f"DEMO_SET names a sample that does not exist: {missing}"
+    chosen = [by_id[i] for i in DEMO_SET]
+
+    n_go = sum(1 for s in chosen if s["expected"] == "GO")
+    assert n_go == 3 and len(chosen) - n_go == 3, (
+        f"demo set must stay 3 GO / 3 NO-GO, got {n_go} GO of {len(chosen)}"
+    )
+    return sorted(chosen, key=lambda s: (s["expected"] != "GO", s["name"]))

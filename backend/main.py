@@ -26,6 +26,34 @@ ALLOWED_ORIGINS = [
     o.strip() for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",") if o.strip()
 ]
 
+# ── Arbitration gate ─────────────────────────────────────────────────────────
+#
+# OFF unless THIRDEYE_ARBITRATION is set, which is what the findings register
+# has claimed all along ("shipped OFF by default", F5) and what the code did
+# NOT do: the streaming endpoint arbitrated unconditionally whenever a scan
+# produced findings.
+#
+# Two reasons that was wrong, beyond the documentation mismatch:
+#
+#  1. It hangs the demo. The local judge is qwen3:8b, measured at 83 s/call on
+#     a 4 GB laptop GPU, and it is called once per surviving finding. A scan
+#     that flags four findings therefore withholds its `final` event for
+#     minutes while the UI sits on "council running" -- observed here, which is
+#     how the gate came to be written.
+#
+#  2. The measured result does not justify the cost. Arbitration retains 32.9%
+#     of true flags against 29.3% of false ones -- near-uniform thinning -- so
+#     precision moves 49.6% -> 52.9% while recall collapses 93.6% -> 32.9%. It
+#     does not buy the property it was adopted for, and a threshold achieves
+#     the same trade far more cheaply (docs/FINDINGS.md D2, D3).
+#
+# Set THIRDEYE_ARBITRATION=1 to reproduce the arbitration experiments.
+ARBITRATION_ON = os.getenv("THIRDEYE_ARBITRATION", "").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+)
+
 app = FastAPI(title="ThirdEye", version="3.0")
 app.add_middleware(
     CORSMiddleware,
@@ -235,7 +263,10 @@ class PipelineReq(BaseModel):
     session_id: str | None = None
     user_id: str | None = None
     use_retrieval: bool = True
-    use_arbitration: bool = True
+    # None = follow the shipped default (ARBITRATION_ON, i.e. off). An explicit
+    # true/false still wins, because this endpoint exists to produce ablation
+    # configurations and an ablation must be able to turn the stage ON.
+    use_arbitration: bool | None = None
     use_dynamic: bool = True
 
 
@@ -262,7 +293,9 @@ async def analyze_pipeline(req: PipelineReq, request: Request, uid: int | None =
     result = await run_thirdeye(
         code,
         use_retrieval=req.use_retrieval,
-        use_arbitration=req.use_arbitration,
+        use_arbitration=(
+            ARBITRATION_ON if req.use_arbitration is None else req.use_arbitration
+        ),
         use_dynamic=req.use_dynamic,
     )
     try:
@@ -316,7 +349,11 @@ async def analyze_council_stream(req: AnalyzeReq, request: Request, uid: int | N
                 final_result = ev["result"]
                 # 2. Precision gate — arbitrate the council's findings with a
                 # strong judge, then emit the arbitrated final (the real pipeline).
-                if final_result.get("vulnerabilities") and final_result.get("final_verdict") != "INCONCLUSIVE":
+                if (
+                    ARBITRATION_ON
+                    and final_result.get("vulnerabilities")
+                    and final_result.get("final_verdict") != "INCONCLUSIVE"
+                ):
                     try:
                         from services.arbitration import run_arbitration
                         # Local-only: the judge is the local model, never a

@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { C, F, S, sevColor } from "../design";
 import { Badge, Card, Caveat, P, Section, VerdictPill } from "../ui";
 import BUNDLED_SAMPLES from "../samples.json";
+import { AuditStages } from "../AuditStages";
+import { STAGES } from "../stages";
 import DEMO_CACHE from "../demo-cache.json";
 import {
   API,
@@ -27,6 +29,27 @@ type Preflight = {
 };
 
 type Phase = "idle" | "routing" | "scanning" | "done" | "error";
+
+/* Is the backend we are asking actually on this machine?
+ *
+ * This decides whether "no live scan" is a FAULT or just the situation. On a
+ * laptop with the backend down it is a fault, and the fix is one command. On a
+ * public host it is neither: that host can never run Ollama, so a red "not
+ * ready" panel reports a problem nobody can act on and makes a working page
+ * look broken -- which is exactly what the deployed site was doing, because
+ * VITE_API_URL points it at a hosted backend that then truthfully reports
+ * Ollama missing at localhost:11434.
+ *
+ * "/api" counts as local: that is the dev-server proxy to 127.0.0.1:8000. */
+function apiIsLocal(): boolean {
+  if (!API || API.startsWith("/")) return true;
+  try {
+    const h = new URL(API, window.location.href).hostname;
+    return h === "localhost" || h === "127.0.0.1" || h === "[::1]" || h.endsWith(".localhost");
+  } catch {
+    return false;
+  }
+}
 
 /* A previously-measured local scan, shipped in the bundle.
  *
@@ -65,7 +88,7 @@ export function Tool() {
   // The sample list used to come only from /api/samples, so with no backend
   // the tool page rendered "SAMPLES · 0" and an empty picker -- which is what
   // every visitor to the deployed site would see, since a public host cannot
-  // run Ollama. The same ten contracts now ship in the bundle; the API call
+  // run Ollama. The same six contracts now ship in the bundle; the API call
   // still runs and replaces them when a backend IS present, so the local path
   // stays the source of truth.
   const [samples, setSamples] = useState<SampleContract[]>(
@@ -85,6 +108,14 @@ export function Tool() {
   const [cached, setCached] = useState<CachedResult | null>(null);
   const abort = useRef<AbortController | null>(null);
   const timer = useRef<number | null>(null);
+  /* Which pipeline stage the audit has reached. -1 = not started. */
+  const [stage, setStage] = useState(-1);
+  const walkTimers = useRef<number[]>([]);
+
+  const clearWalk = useCallback(() => {
+    walkTimers.current.forEach((t) => window.clearTimeout(t));
+    walkTimers.current = [];
+  }, []);
 
   const refreshPreflight = useCallback(async () => {
     setPreLoading(true);
@@ -127,6 +158,8 @@ export function Tool() {
   }, [phase]);
 
   function pick(s: SampleContract) {
+    clearWalk();
+    setStage(-1);
     setActive(s);
     setCode(s.code);
     setCached(null);
@@ -148,6 +181,8 @@ export function Tool() {
     setRoles([]);
     setErr(null);
     setElapsed(0);
+    clearWalk();
+    setStage(0); // static pre-pass
     try {
       await streamCouncil(
         code,
@@ -156,6 +191,10 @@ export function Tool() {
           if (e.event === "routing") {
             setRoles((e.roles as string[]) || []);
             setPhase("scanning");
+            setStage(1); // router has chosen
+            // The council is the long stage; move onto it shortly after the
+            // router reports, rather than pretending it is instant.
+            walkTimers.current.push(window.setTimeout(() => setStage(2), 420));
           } else if (e.event === "specialist_done") {
             setDone((d) => [
               ...d,
@@ -166,8 +205,19 @@ export function Tool() {
               },
             ]);
           } else if (e.event === "final") {
-            setResult(e.result as CouncilResult);
-            setPhase("done");
+            /* The gate, the pooling and the verdict all happen server-side
+               between the last specialist and this event, so they are shown
+               completing in sequence rather than all at once. */
+            setStage(3);
+            walkTimers.current.push(window.setTimeout(() => setStage(4), 260));
+            walkTimers.current.push(window.setTimeout(() => setStage(5), 520));
+            walkTimers.current.push(
+              window.setTimeout(() => {
+                setResult(e.result as CouncilResult);
+                setPhase("done");
+                setStage(STAGES.length);
+              }, 780)
+            );
           }
         },
         { signal: ctl.signal }
@@ -179,12 +229,47 @@ export function Tool() {
     }
   }
 
-  const scanning = phase === "routing" || phase === "scanning";
   const canScanLive = Boolean(pre?.ready);
   // Only offer a cached result for UNEDITED sample code. Showing a stored
   // verdict for code the visitor has changed would be straightforwardly wrong.
   const cacheFor =
     active && code === active.code ? (CACHE.results[active.id] ?? null) : null;
+
+  /* Recorded run: walk every stage, then reveal the stored verdict.
+   *
+   * The previous build dumped the cached result the instant the button was
+   * clicked, which showed none of the pipeline the page spends eight hundred
+   * words describing. Walking the stages makes the same data demonstrate the
+   * process. Paced at 520ms a stage -- about three seconds total, slow enough
+   * to read each label, fast enough not to stall a live demo. */
+  const startRecorded = useCallback(() => {
+    if (!cacheFor) return;
+    clearWalk();
+    setResult(null);
+    setCached(null);
+    setErr(null);
+    setDone([]);
+    setRoles(cacheFor.roles_routed);
+    setElapsed(0);
+    setPhase("scanning");
+    setStage(0);
+
+    const STEP = 520;
+    for (let i = 1; i < STAGES.length; i++) {
+      walkTimers.current.push(window.setTimeout(() => setStage(i), STEP * i));
+    }
+    walkTimers.current.push(
+      window.setTimeout(() => {
+        setCached(cacheFor);
+        setPhase("done");
+        setStage(STAGES.length);
+      }, STEP * STAGES.length)
+    );
+  }, [cacheFor, clearWalk]);
+
+  useEffect(() => () => clearWalk(), [clearWalk]);
+
+  const scanning = phase === "routing" || phase === "scanning";
   const vulns: CouncilVuln[] = (result?.vulnerabilities as CouncilVuln[]) || [];
 
   return (
@@ -292,67 +377,81 @@ export function Tool() {
             }}
           />
 
-          <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12 }}>
-            {canScanLive || scanning ? (
-              <button
-                onClick={scanning ? () => abort.current?.abort() : run}
-                disabled={!code.trim()}
-                style={{
-                  background: scanning ? "transparent" : C.accent,
-                  color: scanning ? C.inkMid : C.bg,
-                  border: `1px solid ${scanning ? C.line : C.accent}`,
-                  borderRadius: 7,
-                  padding: "10px 20px",
-                  fontFamily: F.sans,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: code.trim() ? "pointer" : "not-allowed",
-                  opacity: code.trim() ? 1 : 0.45,
-                }}
-              >
-                {scanning ? "Stop" : "Run scan"}
-              </button>
-            ) : (
-              <button
-                onClick={() => setCached(cacheFor)}
-                disabled={!cacheFor}
-                title={
-                  cacheFor
-                    ? "Show the result a real local scan produced for this contract"
-                    : "No cached result for edited code — start the backend to scan it"
-                }
-                style={{
-                  background: "transparent",
-                  color: cacheFor ? C.accent : C.inkDim,
-                  border: `1px solid ${cacheFor ? C.accentDim : C.line}`,
-                  borderRadius: 7,
-                  padding: "10px 20px",
-                  fontFamily: F.sans,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: cacheFor ? "pointer" : "not-allowed",
-                  opacity: cacheFor ? 1 : 0.5,
-                }}
-              >
-                Show cached result
-              </button>
-            )}
+          <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }}>
+            {/* ONE button, one label.
+             *
+             * It used to read "Run scan" with a backend and "Show cached
+             * result" without one, which made the second path look like a
+             * consolation prize for a broken page. Both run the same six
+             * stages and end on the same verdict panel; whether the models are
+             * executing now or the run was recorded is reported where it
+             * belongs -- on the result, with its timestamp. */}
+            <button
+              onClick={
+                scanning
+                  ? () => {
+                      abort.current?.abort();
+                      clearWalk();
+                      setPhase("idle");
+                      setStage(-1);
+                    }
+                  : canScanLive
+                    ? run
+                    : startRecorded
+              }
+              disabled={!code.trim() || (!canScanLive && !cacheFor && !scanning)}
+              title={
+                canScanLive
+                  ? "Run the full pipeline on this contract now"
+                  : cacheFor
+                    ? "Replay this contract's audit stage by stage"
+                    : "This code has been edited and no backend is running, so there is nothing to audit it with"
+              }
+              style={{
+                background: scanning ? "transparent" : C.accent,
+                color: scanning ? C.inkMid : C.bg,
+                border: `1px solid ${scanning ? C.line : C.accent}`,
+                borderRadius: 7,
+                padding: "10px 20px",
+                fontFamily: F.sans,
+                fontSize: 14,
+                fontWeight: 600,
+                cursor:
+                  code.trim() && (canScanLive || cacheFor || scanning)
+                    ? "pointer"
+                    : "not-allowed",
+                opacity:
+                  code.trim() && (canScanLive || cacheFor || scanning) ? 1 : 0.45,
+              }}
+            >
+              {scanning ? "Stop" : "Start audit"}
+            </button>
+
             {scanning && (
               <span style={{ fontFamily: F.mono, fontSize: 13, color: C.inkMid }}>
-                {phase === "routing" ? "routing…" : "council running…"} {elapsed.toFixed(1)}s
+                {stage >= 0 && stage < STAGES.length
+                  ? STAGES[stage].name.toLowerCase()
+                  : "running"}
+                {canScanLive ? ` · ${elapsed.toFixed(1)}s` : ""}
               </span>
             )}
-            {!canScanLive && !preLoading && (
+
+            {!canScanLive && !preLoading && !cacheFor && (
               <span style={{ fontFamily: F.sans, fontSize: 13, color: C.inkDim }}>
-                {cacheFor
-                  ? "No local backend — showing a previously measured scan."
-                  : "No local backend, and this code has been edited, so there is no cached result for it."}
+                Edited code needs a running backend — start it to audit this.
               </span>
             )}
           </div>
 
+          {/* ── the six stages, highlighted as the audit walks them ── */}
+          {stage >= 0 && (
+            <div style={{ marginTop: 18 }}>
+              <AuditStages active={stage} complete={stage >= STAGES.length} />
+            </div>
+          )}
+
           {/* expected scan cost, so nobody thinks it hung */}
-          {scanning && (
+          {scanning && canScanLive && (
             <P style={{ fontSize: 13, color: C.inkDim, marginTop: 10 }}>
               On a 4&nbsp;GB laptop GPU a scan measured 55–66&nbsp;s for a small
               contract. The models load one at a time, so the first call of a
@@ -414,9 +513,9 @@ export function Tool() {
             </Section>
           )}
 
-          {/* ── cached verdict (only when a live scan is impossible) ── */}
+          {/* ── recorded verdict (shown when the models cannot run here) ── */}
           {cached && !result && (
-            <Section title="Cached result">
+            <Section title="Audit result">
               <Card style={{ borderColor: C.lineHi }}>
                 <div
                   style={{
@@ -427,11 +526,12 @@ export function Tool() {
                     marginBottom: 10,
                   }}
                 >
-                  <Badge fg={C.inkDim} bg={C.inconcGhost}>
-                    not a live scan
-                  </Badge>
+                  {/* Provenance, stated as instrumentation rather than as an
+                      apology. A live run reads "just now"; this one carries
+                      the date it was measured, which is the honest difference
+                      and the only one a reader needs. */}
                   <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
-                    measured {CACHE.generated_at.replace("T", " ")} · coder{" "}
+                    recorded run · {CACHE.generated_at.slice(0, 10)} · coder{" "}
                     {CACHE.models.coder} · {cached.latency_s}s ·{" "}
                     {cached.roles_routed.length} specialists
                   </span>
@@ -485,13 +585,6 @@ export function Tool() {
                 )}
               </Card>
 
-              <Caveat title="Why a cached result is shown here">
-                This page is static and can be opened anywhere, but a live scan
-                needs Ollama running on the machine viewing it — a public host
-                cannot do that. The verdict above is what the real pipeline
-                returned on a local run, including where it disagreed with the
-                sample. Start the backend to replace it with a live scan.
-              </Caveat>
             </Section>
           )}
 
@@ -569,23 +662,55 @@ function Preflight({
   loading: boolean;
   onRetry: () => void;
 }) {
+  const local = apiIsLocal();
+
   if (loading) {
     return (
-      <Card style={{ marginTop: 24 }}>
+      <Card flat style={{ marginTop: 24 }}>
         <span style={{ fontFamily: F.mono, fontSize: 13, color: C.inkDim }}>
-          checking local backend…
+          checking for a local engine…
         </span>
       </Card>
     );
   }
 
+  /* Remote or unreachable backend: one quiet line, no alarm. The audit button
+   * still works -- it replays a recorded run -- so there is nothing here for
+   * the reader to fix and nothing to warn them about. */
+  if (!pre || !pre.ready) {
+    if (!local) {
+      return (
+        <div
+          style={{
+            marginTop: 24,
+            display: "flex",
+            gap: 10,
+            alignItems: "baseline",
+            flexWrap: "wrap",
+            fontFamily: F.sans,
+            fontSize: 13.5,
+            color: C.inkDim,
+          }}
+        >
+          <Badge>local-only</Badge>
+          <span>
+            The models run on the machine viewing this page, so a live scan
+            needs ThirdEye started locally. Start audit replays a recorded run
+            of the same pipeline.
+          </span>
+        </div>
+      );
+    }
+  }
+
+  /* From here: the backend IS local, so anything wrong is actionable. */
   if (!pre) {
     return (
-      <Card style={{ marginTop: 24, borderColor: C.lineHi }}>
+      <Card flat style={{ marginTop: 24, borderColor: C.lineHi }}>
         <div style={{ ...S.h3 }}>Backend not reachable</div>
         <P style={{ fontSize: 14, margin: "6px 0 10px" }}>
-          The pages on this site are static and work anywhere, but a live scan
-          needs the ThirdEye backend running locally. Start it and reload:
+          Every other page works without it, but a live scan needs the ThirdEye
+          backend on this machine. Start it and retry:
         </P>
         <pre style={S.code}>
 {`cd backend
@@ -599,6 +724,7 @@ uvicorn main:app --reload --port 8000`}
   const ok = pre.ready;
   return (
     <Card
+      flat
       style={{
         marginTop: 24,
         borderColor: ok ? `${C.go}55` : `${C.nogo}55`,
@@ -610,7 +736,7 @@ uvicorn main:app --reload --port 8000`}
           style={{ width: 8, height: 8, borderRadius: 99, background: ok ? C.go : C.nogo }}
         />
         <strong style={{ fontSize: 14.5, color: C.ink }}>
-          {ok ? "Ready to scan locally" : "Not ready for a live scan"}
+          {ok ? "Ready to scan locally" : "Engine not ready"}
         </strong>
         <Badge>{pre.mode}</Badge>
         {pre.required_models.map((m) => (
