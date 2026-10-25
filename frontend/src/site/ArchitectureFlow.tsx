@@ -30,6 +30,7 @@
 // driven by the browser's own compositor, neither dependent on a JS clock.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { useEffect, useState } from "react";
 import { C, F } from "./design";
 import { SPECIALISTS } from "./facts";
 import { prefersReducedMotion } from "./motion";
@@ -119,6 +120,25 @@ export function ArchitectureFlow({
   const reduced = prefersReducedMotion();
   const routed = new Set(roles);
 
+  /* Narrow viewports get nothing from this, and that is the honest answer.
+   *
+   * The schematic is 980 units wide. Scaled into a phone it draws its model
+   * names at under 4px -- not a smaller diagram, an unreadable one. The
+   * alternative, a horizontal scrollbar, is worse: it asks the reader to drag
+   * a FLOW past its own verdict to see the end of it. So below 760px the stage
+   * rail underneath carries the audit on its own, which is what it was built
+   * to do. Same reasoning as the pinned pipeline's narrow fallback. */
+  const [wide, setWide] = useState(
+    typeof window === "undefined" ? true : window.innerWidth >= 760
+  );
+  useEffect(() => {
+    const decide = () => setWide(window.innerWidth >= 760);
+    decide();
+    window.addEventListener("resize", decide);
+    return () => window.removeEventListener("resize", decide);
+  }, []);
+  if (!wide) return null;
+
   /* A specialist's state, read off real events only. */
   const stateOf = (role: string) => {
     if (!routed.has(role)) return "skipped" as const;
@@ -160,12 +180,17 @@ export function ArchitectureFlow({
         borderRadius: 10,
         background: C.panel,
         padding: "14px 12px 10px",
-        overflowX: "auto",
       }}
+      className="te-flow-in"
     >
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        style={{ width: "100%", minWidth: 760, display: "block" }}
+        /* Scales to the column, never scrolls. A minWidth floor here put a
+           horizontal scrollbar under the panel at every realistic width, which
+           is the one interaction a diagram of a FLOW must not ask for -- the
+           reader would have had to drag the pipeline past its own verdict. The
+           viewBox does the fitting instead. */
+        style={{ width: "100%", display: "block" }}
       >
         <defs>
           {ROLES.map((r, i) => (
@@ -200,6 +225,7 @@ export function ArchitectureFlow({
           label="Source"
           sub=".sol"
           state={stage >= 0 ? "done" : "idle"}
+          delay={0}
         />
         <Node
           {...PRE}
@@ -207,6 +233,7 @@ export function ArchitectureFlow({
           label="Static"
           sub="features"
           state={stage === 0 ? "active" : stage > 0 ? "done" : "idle"}
+          delay={70}
         />
 
         {/* ── stage 02 · router ── */}
@@ -217,6 +244,7 @@ export function ArchitectureFlow({
           label="Router"
           sub={roles.length ? `${roles.length} of 8` : "selects k"}
           state={stage === 1 ? "active" : stage > 1 ? "done" : "idle"}
+          delay={140}
         />
 
         {/* ── stage 03 · the council ── */}
@@ -245,6 +273,7 @@ export function ArchitectureFlow({
               />
               <SpecialistNode
                 i={i}
+                delay={210 + i * 45}
                 label={r.label}
                 /* The model that ACTUALLY answered, once it has. The config
                    pairs this role with a 7b coder; a 4GB laptop GPU serves the
@@ -261,6 +290,7 @@ export function ArchitectureFlow({
 
         {/* ── stage 04 · evidence gate ── */}
         <GateNode
+          delay={600}
           state={stage === 3 ? "active" : stage > 3 ? "done" : "idle"}
           passed={gateKnown ? findings.length : null}
           dropped={gateKnown ? dropped.length : null}
@@ -269,6 +299,7 @@ export function ArchitectureFlow({
         {/* ── stage 05 · risk pooling ── */}
         <Edge id="te-pool" on={stage >= 4} live={liveEdge(4)} tone={C.accent} />
         <PoolNode
+          delay={670}
           state={stage === 4 ? "active" : stage > 4 ? "done" : "idle"}
           fill={poolFill}
           risk={riskShown}
@@ -278,6 +309,7 @@ export function ArchitectureFlow({
         {/* ── stage 06 · verdict ── */}
         <Edge id="te-ver" on={stage >= 5} live={liveEdge(5)} tone={C.accent} />
         <VerdictNode
+          delay={740}
           state={stage === 5 ? "active" : complete ? "done" : "idle"}
           verdict={complete ? verdict : null}
         />
@@ -370,6 +402,7 @@ function Node({
   label,
   sub,
   state,
+  delay,
 }: {
   x: number;
   y: number;
@@ -379,10 +412,11 @@ function Node({
   label: string;
   sub?: string;
   state: NodeState;
+  delay?: number;
 }) {
   const on = state === "active";
   return (
-    <g>
+    <g className="te-pop" style={{ animationDelay: `${delay ?? 0}ms` }}>
       {on && (
         <rect
           x={x - 4}
@@ -453,11 +487,13 @@ function SpecialistNode({
   label,
   model,
   state,
+  delay,
 }: {
   i: number;
   label: string;
   model: string;
   state: "skipped" | "selected" | "running" | "flagged" | "clean";
+  delay?: number;
 }) {
   const y = specY(i);
   const skipped = state === "skipped";
@@ -465,7 +501,12 @@ function SpecialistNode({
   const tone =
     state === "flagged" ? C.nogo : state === "clean" ? C.go : running ? C.accent : C.line;
 
+  /* The entrance lives on an OUTER group. A `both`-filled animation settles on
+   * opacity 1, so putting it on the same element that carries the not-routed
+   * dimming would have un-dimmed every skipped specialist the moment the
+   * entrance finished. */
   return (
+    <g className="te-pop" style={{ animationDelay: `${delay ?? 0}ms` }}>
     <g opacity={skipped ? 0.42 : 1} style={{ transition: "opacity 320ms ease" }}>
       {running && (
         <rect
@@ -531,6 +572,7 @@ function SpecialistNode({
         {skipped ? "not routed" : model}
       </text>
     </g>
+    </g>
   );
 }
 
@@ -539,14 +581,16 @@ function GateNode({
   state,
   passed,
   dropped,
+  delay,
 }: {
   state: NodeState;
   passed: number | null;
   dropped: number | null;
+  delay?: number;
 }) {
   const on = state === "active";
   return (
-    <g>
+    <g className="te-pop" style={{ animationDelay: `${delay ?? 0}ms` }}>
       {on && (
         <rect
           x={GATE.x - 4}
@@ -653,18 +697,20 @@ function PoolNode({
   fill,
   risk,
   show,
+  delay,
 }: {
   state: NodeState;
   fill: number;
   risk: number;
   show: boolean;
+  delay?: number;
 }) {
   const on = state === "active";
   const h = POOL.h * fill;
   const tauY = POOL.y + POOL.h * (1 - TAU);
   const over = risk >= TAU;
   return (
-    <g>
+    <g className="te-pop" style={{ animationDelay: `${delay ?? 0}ms` }}>
       {on && (
         <rect
           x={POOL.x - 4}
@@ -762,7 +808,15 @@ function PoolNode({
   );
 }
 
-function VerdictNode({ state, verdict }: { state: NodeState; verdict?: string | null }) {
+function VerdictNode({
+  state,
+  verdict,
+  delay,
+}: {
+  state: NodeState;
+  verdict?: string | null;
+  delay?: number;
+}) {
   const on = state === "active";
   const tone =
     verdict === "GO" ? C.go : verdict === "NO-GO" ? C.nogo : verdict ? C.inconc : C.line;
@@ -777,7 +831,7 @@ function VerdictNode({ state, verdict }: { state: NodeState; verdict?: string | 
             ? C.accentGhost
             : C.panel;
   return (
-    <g>
+    <g className="te-pop" style={{ animationDelay: `${delay ?? 0}ms` }}>
       {on && !verdict && (
         <rect
           x={VER.x - 4}

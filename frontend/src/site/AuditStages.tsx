@@ -38,7 +38,11 @@ export function AuditStages({
         margin: "0 0 4px",
         padding: 0,
         display: "grid",
-        gridTemplateColumns: `repeat(${STAGES.length}, 1fr)`,
+        /* minmax(0,1fr), not 1fr. A 1fr track floors at its content's
+           min-width, and "Model-diverse council" cannot wrap below its longest
+           word -- so on a phone the six tracks summed past the viewport and
+           pushed the whole page 50px sideways. */
+        gridTemplateColumns: `repeat(${STAGES.length}, minmax(0, 1fr))`,
         gap: 8,
       }}
     >
@@ -96,6 +100,7 @@ export function AuditStages({
                 fontFamily: F.sans,
                 fontSize: 11.5,
                 lineHeight: 1.35,
+                overflowWrap: "anywhere",
                 fontWeight: on ? 600 : 400,
                 color: on ? C.ink : fg,
                 transition: "color 300ms ease",

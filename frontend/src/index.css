@@ -405,3 +405,34 @@ html.te-io-dead [data-reveal] {
 @media (max-width: 680px) {
   .te-eye { grid-template-columns: 1fr; gap: 20px; }
 }
+
+/* ── the architecture schematic's entrance ────────────────────────────────────
+ * The panel arrives rather than appearing: the frame lifts in, then each piece
+ * of the pipeline pops in left to right, so the reader's eye is walked along
+ * the flow once before anything starts moving through it.
+ *
+ * `both` fill, so a node is invisible during its delay rather than flashing in
+ * at full opacity and then animating. Transform-box fill-box because an SVG <g>
+ * has no box of its own to scale about. */
+@keyframes te-flow-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+.te-flow-in { animation: te-flow-in 560ms cubic-bezier(.22,1,.36,1) both; }
+
+@keyframes te-pop {
+  from { opacity: 0; transform: translateY(10px) scale(.94); }
+  to   { opacity: 1; transform: none; }
+}
+.te-pop {
+  animation: te-pop 440ms cubic-bezier(.22,1,.36,1) both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Edges draw themselves in behind the nodes. */
+@keyframes te-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .te-flow-in, .te-pop { animation: none; opacity: 1; transform: none; }
+}

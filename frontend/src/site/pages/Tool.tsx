@@ -536,221 +536,248 @@ export function Tool() {
             )}
           </div>
 
-          {/* ── the architecture, playing ── */}
-          {stage >= 0 && (
-            <div style={{ marginTop: 18, display: "grid", gap: 14 }}>
-              <ArchitectureFlow
-                stage={stage}
-                roles={roles}
-                done={done}
-                findings={flowFindings}
-                verdict={result?.final_verdict ?? cached?.verdict ?? null}
-                complete={stage >= STAGES.length}
-              />
-              {/* The schematic shows the mechanism; the rail names the stages.
-                  Both, because a reader who has not read the how-it-works page
-                  needs the words, and one who has needs the machine. */}
-              <AuditStages active={stage} complete={stage >= STAGES.length} />
-            </div>
-          )}
-
-          {/* expected scan cost, so nobody thinks it hung */}
-          {scanning && canScanLive && (
-            <P style={{ fontSize: 13, color: C.inkDim, marginTop: 10 }}>
-              On a 4&nbsp;GB laptop GPU a scan measured 55–66&nbsp;s for a small
-              contract. The models load one at a time, so the first call of a
-              session is the slowest.
-            </P>
-          )}
-
-          {err && (
-            <Card style={{ marginTop: 14, borderColor: C.nogo }}>
-              <div style={{ ...S.h3, color: C.nogo }}>Scan failed</div>
-              <code style={{ fontFamily: F.mono, fontSize: 12.5, color: C.inkMid }}>{err}</code>
-            </Card>
-          )}
-
-          {/* ── live specialist progress ── */}
-          {(roles.length > 0 || done.length > 0) && (
-            <Section title="Specialists" id="specialists">
-              <P style={{ fontSize: 14 }}>
-                The router fired {roles.length} of 8 specialists for this
-                contract. Each returns a finding only if it can quote a line of
-                the submitted source.
-              </P>
-              <div style={{ display: "grid", gap: 7 }}>
-                {roles.map((r) => {
-                  const d = done.find((x) => x.role === r);
-                  return (
-                    <div
-                      key={r}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        padding: "8px 12px",
-                        background: C.panel,
-                        border: `1px solid ${C.line}`,
-                        borderRadius: 7,
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: 7,
-                          height: 7,
-                          borderRadius: 99,
-                          background: !d ? C.inkDim : d.found ? C.nogo : C.go,
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span style={{ fontFamily: F.mono, fontSize: 12.5, color: C.ink }}>
-                        {r}
-                      </span>
-                      <span style={{ marginLeft: "auto", fontFamily: F.mono, fontSize: 11, color: C.inkDim }}>
-                        {!d ? "waiting" : d.found ? "flagged" : "clean"}
-                        {d?.model ? ` · ${d.model}` : ""}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </Section>
-          )}
-
-          {/* ── recorded verdict (shown when the models cannot run here) ── */}
-          {cached && !result && (
-            <Section title="Audit result">
-              <Card style={{ borderColor: C.lineHi }}>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 10,
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    marginBottom: 10,
-                  }}
-                >
-                  {/* Provenance, stated as instrumentation rather than as an
-                      apology. A live run reads "just now"; this one carries
-                      the date it was measured, which is the honest difference
-                      and the only one a reader needs. */}
-                  <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
-                    recorded run · {CACHE.generated_at.slice(0, 10)} · coder{" "}
-                    {CACHE.models.coder} · {cached.latency_s}s ·{" "}
-                    {cached.roles_routed.length} specialists
-                  </span>
-                </div>
-
-                <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                  <VerdictPill verdict={cached.verdict} />
-                  <span style={{ fontFamily: F.sans, fontSize: 13.5, color: C.inkMid }}>
-                    expected <strong style={{ color: C.ink }}>{cached.expected}</strong> ·{" "}
-                    {cached.agrees ? (
-                      <span style={{ color: C.go }}>match</span>
-                    ) : (
-                      <span style={{ color: C.nogo }}>mismatch</span>
-                    )}
-                  </span>
-                </div>
-
-                {cached.verdict_reason && (
-                  <P style={{ fontSize: 14, marginTop: 12 }}>{cached.verdict_reason}</P>
-                )}
-
-                {cached.findings.length > 0 && (
-                  <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
-                    {cached.findings.map((f, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          background: C.bgAlt,
-                          border: `1px solid ${C.line}`,
-                          borderRadius: 8,
-                          padding: 14,
-                        }}
-                      >
-                        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-                          <Badge fg={sevColor(f.severity)} bg={`${sevColor(f.severity)}22`}>
-                            {f.severity}
-                          </Badge>
-                          <strong style={{ fontSize: 14, color: C.ink }}>{f.type}</strong>
-                          <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
-                            confidence {f.confidence}
-                          </span>
-                        </div>
-                        {f.evidence_quote && (
-                          <pre style={{ ...S.code, marginTop: 10, marginBottom: 0 }}>
-                            {f.evidence_quote}
-                          </pre>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </Card>
-
-            </Section>
-          )}
-
-          {/* ── verdict ── */}
-          {result && (
-            <Section title="Verdict">
-              <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                <VerdictPill verdict={result.final_verdict} />
-                {active && (
-                  <span style={{ fontFamily: F.sans, fontSize: 13.5, color: C.inkMid }}>
-                    expected <strong style={{ color: C.ink }}>{active.expected}</strong> ·{" "}
-                    {result.final_verdict === active.expected ? (
-                      <span style={{ color: C.go }}>match</span>
-                    ) : (
-                      <span style={{ color: C.nogo }}>mismatch</span>
-                    )}
-                  </span>
-                )}
-              </div>
-
-              {active && result.final_verdict !== active.expected && (
-                <Caveat title="This is a disagreement, and it is not hidden">
-                  The tool returned a different verdict than this sample
-                  expects. On the full benchmark it raises a false alarm on{" "}
-                  <strong style={{ color: C.ink }}>45.9%</strong> of safe
-                  contracts, so a wrong call here is the measured behaviour
-                  rather than a surprise. The findings page explains why that
-                  floor is structural.
-                </Caveat>
-              )}
-
-              {result.verdict_reason && (
-                <P style={{ fontSize: 14, marginTop: 12 }}>{result.verdict_reason}</P>
-              )}
-
-              {vulns.length > 0 && (
-                <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
-                  {vulns.map((v, i) => (
-                    <Card key={i}>
-                      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-                        <Badge fg={sevColor(v.severity)} bg={`${sevColor(v.severity)}22`}>
-                          {v.severity}
-                        </Badge>
-                        <strong style={{ fontSize: 14, color: C.ink }}>{v.type}</strong>
-                        <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
-                          confidence {v.confidence}
-                        </span>
-                      </div>
-                      {v.evidence_quote && (
-                        <pre style={{ ...S.code, marginTop: 10, marginBottom: 0 }}>
-                          {v.evidence_quote}
-                        </pre>
-                      )}
-                      <P style={{ fontSize: 13.5, margin: "10px 0 0" }}>{v.description}</P>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </Section>
-          )}
         </div>
       </div>
+
+      {/* Everything below runs the FULL page width, not the editor
+          column. The schematic is 980 units of pipeline; squeezed into a
+          ~670px column it drew its model names at under 6px, which is a
+          diagram you cannot read. The findings cards and their evidence
+          quotes want the width for the same reason. */}
+      {/* ── the architecture, playing ── */}
+      {stage >= 0 && (
+        <div style={{ marginTop: 18, display: "grid", gap: 14 }}>
+          <ArchitectureFlow
+            stage={stage}
+            roles={roles}
+            done={done}
+            findings={flowFindings}
+            verdict={result?.final_verdict ?? cached?.verdict ?? null}
+            complete={stage >= STAGES.length}
+          />
+          {/* The schematic shows the mechanism; the rail names the stages.
+              Both, because a reader who has not read the how-it-works page
+              needs the words, and one who has needs the machine. */}
+          <AuditStages active={stage} complete={stage >= STAGES.length} />
+        </div>
+      )}
+
+      {/* expected scan cost, so nobody thinks it hung */}
+      {scanning && canScanLive && (
+        <P style={{ fontSize: 13, color: C.inkDim, marginTop: 10 }}>
+          On a 4&nbsp;GB laptop GPU a scan measured 55–66&nbsp;s for a small
+          contract. The models load one at a time, so the first call of a
+          session is the slowest.
+        </P>
+      )}
+
+      {err && (
+        <Card style={{ marginTop: 14, borderColor: C.nogo }}>
+          <div style={{ ...S.h3, color: C.nogo }}>Scan failed</div>
+          <code style={{ fontFamily: F.mono, fontSize: 12.5, color: C.inkMid }}>{err}</code>
+        </Card>
+      )}
+
+      {/* ── live specialist progress ── */}
+      {(roles.length > 0 || done.length > 0) && (
+        <Section title="Specialists" id="specialists">
+          <P style={{ fontSize: 14 }}>
+            The router fired {roles.length} of 8 specialists for this
+            contract. Each returns a finding only if it can quote a line of
+            the submitted source.
+          </P>
+          <div style={{ display: "grid", gap: 7 }}>
+            {roles.map((r) => {
+              const d = done.find((x) => x.role === r);
+              return (
+                <div
+                  key={r}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "8px 12px",
+                    background: C.panel,
+                    border: `1px solid ${C.line}`,
+                    borderRadius: 7,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: 99,
+                      background: !d ? C.inkDim : d.found ? C.nogo : C.go,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span style={{ fontFamily: F.mono, fontSize: 12.5, color: C.ink }}>
+                    {r}
+                  </span>
+                  <span style={{ marginLeft: "auto", fontFamily: F.mono, fontSize: 11, color: C.inkDim }}>
+                    {!d ? "waiting" : d.found ? "flagged" : "clean"}
+                    {d?.model ? ` · ${d.model}` : ""}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </Section>
+      )}
+
+      {/* ── recorded verdict (shown when the models cannot run here) ── */}
+      {cached && !result && (
+        <Section title="Audit result">
+          <Card style={{ borderColor: C.lineHi }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                flexWrap: "wrap",
+                marginBottom: 10,
+              }}
+            >
+              {/* Provenance, stated as instrumentation rather than as an
+                  apology. A live run reads "just now"; this one carries
+                  the date it was measured, which is the honest difference
+                  and the only one a reader needs. */}
+              <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
+                recorded run · {CACHE.generated_at.slice(0, 10)} · coder{" "}
+                {CACHE.models.coder} · {cached.latency_s}s ·{" "}
+                {cached.roles_routed.length} specialists
+              </span>
+            </div>
+
+            <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+              <VerdictPill verdict={cached.verdict} />
+              <span style={{ fontFamily: F.sans, fontSize: 13.5, color: C.inkMid }}>
+                expected <strong style={{ color: C.ink }}>{cached.expected}</strong> ·{" "}
+                {cached.agrees ? (
+                  <span style={{ color: C.go }}>match</span>
+                ) : (
+                  <span style={{ color: C.nogo }}>mismatch</span>
+                )}
+              </span>
+            </div>
+
+            {/* A mismatch gets the same explanation on the recorded path
+                that it gets on the live one. It did not -- and the deployed
+                site only HAS the recorded path, so every visitor who picked
+                Safe Vault saw "expected GO - mismatch" with nothing telling
+                them that a false alarm on a safe contract is this project's
+                headline measurement rather than a broken demo. */}
+            {!cached.agrees && (
+              <Caveat title="This is a disagreement, and it is not hidden">
+                The pipeline returned{" "}
+                <strong style={{ color: C.ink }}>{cached.verdict}</strong> on
+                a contract that is{" "}
+                <strong style={{ color: C.ink }}>{cached.expected}</strong>.
+                On the full benchmark it raises a false alarm on{" "}
+                <strong style={{ color: C.ink }}>45.9%</strong> of safe
+                contracts — the schematic above shows how this one happened,
+                with a single specialist returning confidence high enough to
+                carry the pooled risk past τ on its own. That floor is
+                structural, and the findings page explains why.
+              </Caveat>
+            )}
+
+            {cached.verdict_reason && (
+              <P style={{ fontSize: 14, marginTop: 12 }}>{cached.verdict_reason}</P>
+            )}
+
+            {cached.findings.length > 0 && (
+              <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+                {cached.findings.map((f, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      background: C.bgAlt,
+                      border: `1px solid ${C.line}`,
+                      borderRadius: 8,
+                      padding: 14,
+                    }}
+                  >
+                    <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                      <Badge fg={sevColor(f.severity)} bg={`${sevColor(f.severity)}22`}>
+                        {f.severity}
+                      </Badge>
+                      <strong style={{ fontSize: 14, color: C.ink }}>{f.type}</strong>
+                      <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
+                        confidence {f.confidence}
+                      </span>
+                    </div>
+                    {f.evidence_quote && (
+                      <pre style={{ ...S.code, marginTop: 10, marginBottom: 0 }}>
+                        {f.evidence_quote}
+                      </pre>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+
+        </Section>
+      )}
+
+      {/* ── verdict ── */}
+      {result && (
+        <Section title="Verdict">
+          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+            <VerdictPill verdict={result.final_verdict} />
+            {active && (
+              <span style={{ fontFamily: F.sans, fontSize: 13.5, color: C.inkMid }}>
+                expected <strong style={{ color: C.ink }}>{active.expected}</strong> ·{" "}
+                {result.final_verdict === active.expected ? (
+                  <span style={{ color: C.go }}>match</span>
+                ) : (
+                  <span style={{ color: C.nogo }}>mismatch</span>
+                )}
+              </span>
+            )}
+          </div>
+
+          {active && result.final_verdict !== active.expected && (
+            <Caveat title="This is a disagreement, and it is not hidden">
+              The tool returned a different verdict than this sample
+              expects. On the full benchmark it raises a false alarm on{" "}
+              <strong style={{ color: C.ink }}>45.9%</strong> of safe
+              contracts, so a wrong call here is the measured behaviour
+              rather than a surprise. The findings page explains why that
+              floor is structural.
+            </Caveat>
+          )}
+
+          {result.verdict_reason && (
+            <P style={{ fontSize: 14, marginTop: 12 }}>{result.verdict_reason}</P>
+          )}
+
+          {vulns.length > 0 && (
+            <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
+              {vulns.map((v, i) => (
+                <Card key={i}>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+                    <Badge fg={sevColor(v.severity)} bg={`${sevColor(v.severity)}22`}>
+                      {v.severity}
+                    </Badge>
+                    <strong style={{ fontSize: 14, color: C.ink }}>{v.type}</strong>
+                    <span style={{ fontFamily: F.mono, fontSize: 12, color: C.inkDim }}>
+                      confidence {v.confidence}
+                    </span>
+                  </div>
+                  {v.evidence_quote && (
+                    <pre style={{ ...S.code, marginTop: 10, marginBottom: 0 }}>
+                      {v.evidence_quote}
+                    </pre>
+                  )}
+                  <P style={{ fontSize: 13.5, margin: "10px 0 0" }}>{v.description}</P>
+                </Card>
+              ))}
+            </div>
+          )}
+        </Section>
+      )}
     </div>
   );
 }
