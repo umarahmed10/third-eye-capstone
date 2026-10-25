@@ -3,6 +3,7 @@ import { C, F, S, sevColor } from "../design";
 import { Badge, Card, Caveat, P, Section, VerdictPill } from "../ui";
 import BUNDLED_SAMPLES from "../samples.json";
 import { AuditStages } from "../AuditStages";
+import { ArchitectureFlow, type FlowFinding } from "../ArchitectureFlow";
 import { STAGES } from "../stages";
 import DEMO_CACHE from "../demo-cache.json";
 import {
@@ -110,6 +111,11 @@ export function Tool() {
   const timer = useRef<number | null>(null);
   /* Which pipeline stage the audit has reached. -1 = not started. */
   const [stage, setStage] = useState(-1);
+  /* The findings the schematic pools, held separately from `result`/`cached`.
+   * The risk column has to fill at stage 05, which is BEFORE the verdict panel
+   * renders -- the pooling is the thing being shown, so it cannot wait for the
+   * result card it feeds. */
+  const [flowFindings, setFlowFindings] = useState<FlowFinding[]>([]);
   const walkTimers = useRef<number[]>([]);
 
   const clearWalk = useCallback(() => {
@@ -176,6 +182,7 @@ export function Tool() {
     setResult(null);
     setDone([]);
     setRoles([]);
+    setFlowFindings([]);
     setPhase("idle");
     setErr(null);
   }
@@ -189,6 +196,7 @@ export function Tool() {
     setResult(null);
     setDone([]);
     setRoles([]);
+    setFlowFindings([]);
     setErr(null);
     setElapsed(0);
     clearWalk();
@@ -218,15 +226,28 @@ export function Tool() {
             /* The gate, the pooling and the verdict all happen server-side
                between the last specialist and this event, so they are shown
                completing in sequence rather than all at once. */
+            const res = e.result as CouncilResult;
+            const vs = (res.vulnerabilities as CouncilVuln[]) || [];
             setStage(3);
-            walkTimers.current.push(window.setTimeout(() => setStage(4), 260));
-            walkTimers.current.push(window.setTimeout(() => setStage(5), 520));
             walkTimers.current.push(
               window.setTimeout(() => {
-                setResult(e.result as CouncilResult);
+                setFlowFindings(
+                  vs.map((v) => ({
+                    type: String(v.type),
+                    severity: String(v.severity || "low"),
+                    confidence: Number(v.confidence) || 0,
+                  }))
+                );
+                setStage(4);
+              }, 700)
+            );
+            walkTimers.current.push(window.setTimeout(() => setStage(5), 1500));
+            walkTimers.current.push(
+              window.setTimeout(() => {
+                setResult(res);
                 setPhase("done");
                 setStage(STAGES.length);
-              }, 780)
+              }, 2200)
             );
           }
         },
@@ -245,13 +266,19 @@ export function Tool() {
   const cacheFor =
     active && code === active.code ? (CACHE.results[active.id] ?? null) : null;
 
-  /* Recorded run: walk every stage, then reveal the stored verdict.
+  /* Recorded run: play the architecture, then reveal the stored verdict.
    *
    * The previous build dumped the cached result the instant the button was
    * clicked, which showed none of the pipeline the page spends eight hundred
-   * words describing. Walking the stages makes the same data demonstrate the
-   * process. Paced at 520ms a stage -- about three seconds total, slow enough
-   * to read each label, fast enough not to stall a live demo. */
+   * words describing. This drives the schematic through the same sequence a
+   * live run does, from the SAME recorded data: the router selects the roles it
+   * actually selected, the specialists resolve to the answers they actually
+   * returned, and the risk column fills to the noisy-OR of the surviving
+   * confidences. Nothing is paced-for-effect except the order the specialists
+   * arrive in, which a recording does not preserve.
+   *
+   * ~7s end to end: slow enough that a panel can watch a stage resolve, fast
+   * enough to run twice in a demo. */
   const startRecorded = useCallback(() => {
     if (!cacheFor) return;
     clearWalk();
@@ -259,22 +286,57 @@ export function Tool() {
     setCached(null);
     setErr(null);
     setDone([]);
-    setRoles(cacheFor.roles_routed);
+    setFlowFindings([]);
+    setRoles([]);
     setElapsed(0);
     setPhase("scanning");
     setStage(0);
 
-    const STEP = 520;
-    for (let i = 1; i < STAGES.length; i++) {
-      walkTimers.current.push(window.setTimeout(() => setStage(i), STEP * i));
-    }
-    walkTimers.current.push(
-      window.setTimeout(() => {
-        setCached(cacheFor);
-        setPhase("done");
-        setStage(STAGES.length);
-      }, STEP * STAGES.length)
-    );
+    const at = (ms: number, fn: () => void) =>
+      walkTimers.current.push(window.setTimeout(fn, ms));
+
+    const roleList = cacheFor.roles_routed;
+    const findings: FlowFinding[] = cacheFor.findings.map((f) => ({
+      type: f.type,
+      severity: f.severity,
+      confidence: f.confidence,
+    }));
+    /* A specialist "flagged" if it owns a surviving finding. The gate's own
+     * drops cannot be recovered from a recording -- what it dropped is not in
+     * the stored result -- so the schematic shows the drops it can prove and
+     * claims no others. */
+    const flaggedRoles = new Set(findings.map((f) => f.type));
+
+    // 01 static -> 02 router
+    at(800, () => {
+      setStage(1);
+      setRoles(roleList);
+    });
+    // 03 the council, one specialist at a time
+    const COUNCIL_AT = 1600;
+    const PER = 460;
+    at(COUNCIL_AT, () => setStage(2));
+    roleList.forEach((r, i) => {
+      at(COUNCIL_AT + PER * (i + 1), () =>
+        setDone((d) => [
+          ...d,
+          { role: r, found: flaggedRoles.has(r), model: CACHE.models.coder },
+        ])
+      );
+    });
+    const councilEnd = COUNCIL_AT + PER * (roleList.length + 1);
+    // 04 gate -> 05 pooling -> 06 verdict
+    at(councilEnd, () => setStage(3));
+    at(councilEnd + 900, () => {
+      setFlowFindings(findings);
+      setStage(4);
+    });
+    at(councilEnd + 1900, () => setStage(5));
+    at(councilEnd + 2700, () => {
+      setCached(cacheFor);
+      setPhase("done");
+      setStage(STAGES.length);
+    });
   }, [cacheFor, clearWalk]);
 
   useEffect(() => () => clearWalk(), [clearWalk]);
@@ -453,9 +515,20 @@ export function Tool() {
             )}
           </div>
 
-          {/* ── the six stages, highlighted as the audit walks them ── */}
+          {/* ── the architecture, playing ── */}
           {stage >= 0 && (
-            <div style={{ marginTop: 18 }}>
+            <div style={{ marginTop: 18, display: "grid", gap: 14 }}>
+              <ArchitectureFlow
+                stage={stage}
+                roles={roles}
+                done={done}
+                findings={flowFindings}
+                verdict={result?.final_verdict ?? cached?.verdict ?? null}
+                complete={stage >= STAGES.length}
+              />
+              {/* The schematic shows the mechanism; the rail names the stages.
+                  Both, because a reader who has not read the how-it-works page
+                  needs the words, and one who has needs the machine. */}
               <AuditStages active={stage} complete={stage >= STAGES.length} />
             </div>
           )}
