@@ -120,7 +120,17 @@ export function Tool() {
   const refreshPreflight = useCallback(async () => {
     setPreLoading(true);
     try {
-      const r = await fetch(`${API}/preflight`);
+      /* Bounded, because an unbounded readiness check can hang forever and
+       * then reports nothing at all. Observed on the deployed site: the
+       * hosted backend was cold, the fetch never settled, and the page sat on
+       * "checking for a local engine..." indefinitely -- the same class of
+       * defect as a health check that answers confidently without knowing,
+       * just failing in the other direction. 4s is longer than a local
+       * backend ever needs and short enough that a dead one resolves to the
+       * honest answer quickly. */
+      const r = await fetch(`${API}/preflight`, {
+        signal: AbortSignal.timeout(4000),
+      });
       setPre(await r.json());
     } catch {
       setPre(null);
