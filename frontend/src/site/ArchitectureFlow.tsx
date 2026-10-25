@@ -243,7 +243,18 @@ export function ArchitectureFlow({
                 live={liveEdge(3) && state === "flagged"}
                 tone={C.accent}
               />
-              <SpecialistNode i={i} label={r.label} model={r.model} state={state} />
+              <SpecialistNode
+                i={i}
+                label={r.label}
+                /* The model that ACTUALLY answered, once it has. The config
+                   pairs this role with a 7b coder; a 4GB laptop GPU serves the
+                   3b, and the run reports which one it used. Showing the
+                   configured name after a different model replied would be the
+                   same class of mistake as counting models instead of checking
+                   them by name, which cost this project an evaluation run. */
+                model={done.find((d) => d.role === r.role)?.model || r.model}
+                state={state}
+              />
             </g>
           );
         })}
