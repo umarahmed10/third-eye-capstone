@@ -105,6 +105,43 @@ export function scrollToTopImmediate() {
   requestAnimationFrame(() => ScrollTrigger.refresh());
 }
 
+/** Bring an element to rest just under the sticky nav.
+ *
+ *  Both paths again, for the reason scrollToTopImmediate documents: Lenis
+ *  drives its scrollTo from inside a rAF, and rAF has been measured at 0
+ *  ticks/second in a non-compositing context -- so the Lenis call alone can
+ *  silently do nothing and leave the reader looking at the wrong part of the
+ *  page. The native smooth scroll is the guarantee; the Lenis call keeps its
+ *  internal position in sync so the next wheel event does not jump back. */
+export function scrollElementIntoView(el: HTMLElement, offset = 88) {
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  if (prefersReducedMotion()) {
+    window.scrollTo({ top, behavior: "auto" });
+    lenisRef?.scrollTo(top, { immediate: true });
+    return;
+  }
+  const before = window.scrollY;
+  window.scrollTo({ top, behavior: "smooth" });
+  lenisRef?.scrollTo(top, { duration: 0.75 });
+
+  /* ...and a hard landing if neither engaged.
+   *
+   * Measured: in a non-compositing context a smooth scrollTo does nothing at
+   * all -- scrollY sat at 0 while the target was 1068px down the page. Lenis
+   * cannot cover for it there either, since it drives from rAF. Without this
+   * the reader presses the button and the animation plays off-screen, which is
+   * the exact failure this function exists to prevent.
+   *
+   * Only corrects when the page has not moved AT ALL, so a reader who scrolled
+   * somewhere themselves in the meantime is never yanked back. */
+  window.setTimeout(() => {
+    if (window.scrollY === before && Math.abs(before - top) > 8) {
+      window.scrollTo({ top, behavior: "auto" });
+      lenisRef?.scrollTo(top, { immediate: true });
+    }
+  }, 650);
+}
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   /* Adding this class from script is what makes the reveal styles safe: the
    * hidden state only exists once JS is known to be running. See index.css. */

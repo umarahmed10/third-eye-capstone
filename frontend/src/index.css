@@ -436,3 +436,13 @@ html.te-io-dead [data-reveal] {
 @media (prefers-reduced-motion: reduce) {
   .te-flow-in, .te-pop { animation: none; opacity: 1; transform: none; }
 }
+
+/* Hold the schematic's entrance until the page has finished scrolling to it.
+ *
+ * The animation starts the moment the panel mounts, which is the same moment
+ * the scroll starts -- so its first beats played while the page was still
+ * travelling and the reader arrived part-way through. Paused with a `both`
+ * fill the nodes simply wait at their from-state; the element still has
+ * layout, so the scroll can measure where it is going. */
+[data-flow="hold"] .te-flow-in,
+[data-flow="hold"] .te-pop { animation-play-state: paused; }

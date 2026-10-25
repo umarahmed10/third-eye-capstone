@@ -5,6 +5,7 @@ import BUNDLED_SAMPLES from "../samples.json";
 import { AuditStages } from "../AuditStages";
 import { ArchitectureFlow, type FlowFinding } from "../ArchitectureFlow";
 import { STAGES } from "../stages";
+import { scrollElementIntoView } from "../motion";
 import { SPECIALISTS } from "../facts";
 import DEMO_CACHE from "../demo-cache.json";
 import {
@@ -118,6 +119,45 @@ export function Tool() {
    * result card it feeds. */
   const [flowFindings, setFlowFindings] = useState<FlowFinding[]>([]);
   const walkTimers = useRef<number[]>([]);
+  const flowRef = useRef<HTMLDivElement>(null);
+
+  /* The schematic's entrance runs ~1.15s: the frame lifts in, then fourteen
+   * nodes pop left to right. Starting the pipeline the instant the button is
+   * pressed meant stage 01 fired while the diagram was still assembling itself,
+   * so the first beat -- source into the static pre-pass -- was always missed.
+   * Nothing advances until the entrance has finished. */
+  const ENTRANCE_MS = 1150;
+  /* How long the scroll to the panel takes before the entrance is released. */
+  const SETTLE_MS = 520;
+  const INTRO_MS = SETTLE_MS + ENTRANCE_MS;
+  const introUntil = useRef(0);
+  /* Gates the entrance animation's play-state -- see [data-flow] in index.css. */
+  const [flowPlaying, setFlowPlaying] = useState(false);
+
+  /* Run `fn` now, or at the end of the entrance if it is still playing. */
+  const afterIntro = useCallback((fn: () => void) => {
+    const wait = introUntil.current - Date.now();
+    if (wait <= 0) fn();
+    else walkTimers.current.push(window.setTimeout(fn, wait));
+  }, []);
+
+  /* Mount the schematic, put it under the reader's eye, and hold the pipeline
+   * until both have settled. The panel renders below the editor, which on most
+   * screens is off the bottom of the window when the button is pressed. */
+  const beginRun = useCallback(() => {
+    introUntil.current = Date.now() + INTRO_MS;
+    setFlowPlaying(false);
+    setStage(0);
+    /* One frame, so the panel exists before we measure where it is. A paused
+     * entrance still lays out, so this measures the right place. */
+    walkTimers.current.push(
+      window.setTimeout(() => {
+        if (flowRef.current) scrollElementIntoView(flowRef.current);
+      }, 30)
+    );
+    // Scroll has landed: let the pipeline draw itself in.
+    walkTimers.current.push(window.setTimeout(() => setFlowPlaying(true), SETTLE_MS));
+  }, [INTRO_MS]);
 
   const clearWalk = useCallback(() => {
     walkTimers.current.forEach((t) => window.clearTimeout(t));
@@ -201,19 +241,24 @@ export function Tool() {
     setErr(null);
     setElapsed(0);
     clearWalk();
-    setStage(0); // static pre-pass
+    beginRun(); // mount the schematic, scroll to it, hold stage 01
     try {
       await streamCouncil(
         code,
         (ev: StreamEvent) => {
           const e = ev as unknown as Record<string, unknown>;
           if (e.event === "routing") {
-            setRoles((e.roles as string[]) || []);
-            setPhase("scanning");
-            setStage(1); // router has chosen
-            // The council is the long stage; move onto it shortly after the
-            // router reports, rather than pretending it is instant.
-            walkTimers.current.push(window.setTimeout(() => setStage(2), 420));
+            /* Gated: the router can answer inside the entrance -- it is a
+             * static pass, not a model call -- and an ungated handler lit the
+             * router node before the reader had seen the source enter it. */
+            afterIntro(() => {
+              setRoles((e.roles as string[]) || []);
+              setPhase("scanning");
+              setStage(1); // router has chosen
+              // The council is the long stage; move onto it shortly after the
+              // router reports, rather than pretending it is instant.
+              walkTimers.current.push(window.setTimeout(() => setStage(2), 560));
+            });
           } else if (e.event === "specialist_done") {
             setDone((d) => [
               ...d,
@@ -229,27 +274,32 @@ export function Tool() {
                completing in sequence rather than all at once. */
             const res = e.result as CouncilResult;
             const vs = (res.vulnerabilities as CouncilVuln[]) || [];
-            setStage(3);
-            walkTimers.current.push(
-              window.setTimeout(() => {
-                setFlowFindings(
-                  vs.map((v) => ({
-                    type: String(v.type),
-                    severity: String(v.severity || "low"),
-                    confidence: Number(v.confidence) || 0,
-                  }))
-                );
-                setStage(4);
-              }, 700)
-            );
-            walkTimers.current.push(window.setTimeout(() => setStage(5), 1500));
-            walkTimers.current.push(
-              window.setTimeout(() => {
-                setResult(res);
-                setPhase("done");
-                setStage(STAGES.length);
-              }, 2200)
-            );
+            /* Gated too: a cached-model run can return before the entrance is
+             * done, and a verdict landing on a half-drawn pipeline is exactly
+             * the beat this change exists to stop skipping. */
+            afterIntro(() => {
+              setStage(3);
+              walkTimers.current.push(
+                window.setTimeout(() => {
+                  setFlowFindings(
+                    vs.map((v) => ({
+                      type: String(v.type),
+                      severity: String(v.severity || "low"),
+                      confidence: Number(v.confidence) || 0,
+                    }))
+                  );
+                  setStage(4);
+                }, 700)
+              );
+              walkTimers.current.push(window.setTimeout(() => setStage(5), 1500));
+              walkTimers.current.push(
+                window.setTimeout(() => {
+                  setResult(res);
+                  setPhase("done");
+                  setStage(STAGES.length);
+                }, 2200)
+              );
+            });
           }
         },
         { signal: ctl.signal }
@@ -291,10 +341,12 @@ export function Tool() {
     setRoles([]);
     setElapsed(0);
     setPhase("scanning");
-    setStage(0);
+    beginRun();
 
+    /* Every beat sits past the entrance, so the replay starts on a pipeline
+     * that is fully drawn and in frame rather than part-way through arriving. */
     const at = (ms: number, fn: () => void) =>
-      walkTimers.current.push(window.setTimeout(fn, ms));
+      walkTimers.current.push(window.setTimeout(fn, INTRO_MS + ms));
 
     const roleList = cacheFor.roles_routed;
     const findings: FlowFinding[] = cacheFor.findings.map((f) => ({
@@ -358,7 +410,7 @@ export function Tool() {
       setPhase("done");
       setStage(STAGES.length);
     });
-  }, [cacheFor, clearWalk]);
+  }, [cacheFor, clearWalk, beginRun]);
 
   useEffect(() => () => clearWalk(), [clearWalk]);
 
@@ -546,7 +598,11 @@ export function Tool() {
           quotes want the width for the same reason. */}
       {/* ── the architecture, playing ── */}
       {stage >= 0 && (
-        <div style={{ marginTop: 18, display: "grid", gap: 14 }}>
+        <div
+          ref={flowRef}
+          data-flow={flowPlaying ? "play" : "hold"}
+          style={{ marginTop: 18, display: "grid", gap: 14 }}
+        >
           <ArchitectureFlow
             stage={stage}
             roles={roles}
@@ -560,6 +616,18 @@ export function Tool() {
               needs the words, and one who has needs the machine. */}
           <AuditStages active={stage} complete={stage >= STAGES.length} />
         </div>
+      )}
+
+      {/* Room to scroll against.
+       *
+       * The schematic is the last thing on the page while an audit is running,
+       * so scrolling it to the top of the viewport is impossible -- the browser
+       * clamps at the document end and leaves it sitting at the bottom edge.
+       * Measured: target 878px, actual 334px, panel still 631px down the
+       * window. This spacer exists only for the length of the run; by the time
+       * it goes, the result section below has taken its place. */}
+      {stage >= 0 && stage < STAGES.length && (
+        <div aria-hidden="true" style={{ height: "70vh" }} />
       )}
 
       {/* expected scan cost, so nobody thinks it hung */}
